@@ -113,6 +113,25 @@ const recentAds: HomepageAd[] = [
   },
 ];
 
+const allHomepageAds: HomepageAd[] = [...featuredAds, ...recentAds];
+
+const homepageAdsJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  itemListElement: allHomepageAds.map((ad, index) => ({
+    "@type": "Product",
+    position: index + 1,
+    name: ad.title,
+    description: ad.location,
+    offers: {
+      "@type": "Offer",
+      price: ad.price,
+      priceCurrency: "MAD",
+      areaServed: ad.location,
+    },
+  })),
+};
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-900">
@@ -338,6 +357,10 @@ export default function Home() {
           </div>
         </footer>
       </div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(homepageAdsJsonLd) }}
+      />
     </div>
   );
 }
