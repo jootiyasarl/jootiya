@@ -12,7 +12,7 @@ export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const redirectTo = searchParams.get("redirectTo") ?? "/dashboard/profile";
+  const redirectTo = searchParams.get("redirectTo") ?? "/dashboard";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
