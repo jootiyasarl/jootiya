@@ -106,8 +106,10 @@ export async function middleware(req: NextRequest) {
 
     // Dashboard is primary for sellers; admins/moderators go to their own area
     if (pathname.startsWith("/dashboard")) {
-      if (role === "admin" || role === "moderator") {
-        return NextResponse.redirect(new URL(targetForRole, req.url));
+      if (role !== "seller") {
+        const loginUrl = new URL("/login", req.url);
+        loginUrl.searchParams.set("redirectTo", `${pathname}${search}`);
+        return NextResponse.redirect(loginUrl);
       }
     }
   }

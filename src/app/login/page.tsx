@@ -59,7 +59,35 @@ export default function LoginPage() {
 
       if (data.session) {
         setMessage("Signed in. Redirecting...");
-        router.push(redirectTo);
+
+        try {
+          const userId = data.user?.id ?? data.session.user.id;
+
+          const { data: profile, error: profileError } = await supabase
+            .from("profiles")
+            .select("role")
+            .eq("id", userId)
+            .maybeSingle();
+
+          if (!profileError) {
+            const role = (profile?.role ?? "").toString().trim();
+
+            if (role === "seller") {
+              router.push("/dashboard");
+              return;
+            }
+
+            if (role === "super_admin") {
+              router.push("/admin");
+              return;
+            }
+          }
+
+          router.push(redirectTo);
+        } catch (profileLookupError) {
+          console.error(profileLookupError);
+          router.push(redirectTo);
+        }
       } else {
         setMessage("Signed in successfully.");
       }
