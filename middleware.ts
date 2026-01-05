@@ -16,18 +16,44 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   },
 });
 
-type Role = "buyer" | "seller" | "admin" | "moderator";
+type Role = "seller" | "admin" | "super_admin" | "moderator" | "buyer";
 
-function getUserRole(user: User): Role | null {
+async function getUserRole(user: User): Promise<Role | null> {
+  // 1) Prefer the canonical role stored in the profiles table.
+  const { data: profile, error } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (!error && profile?.role) {
+    const value = String(profile.role).trim();
+    if (
+      value === "seller" ||
+      value === "admin" ||
+      value === "super_admin" ||
+      value === "moderator" ||
+      value === "buyer"
+    ) {
+      return value as Role;
+    }
+  }
+
+  // 2) Backwards-compatible fallback to metadata-based roles.
   const meta = (user.app_metadata as any) ?? {};
   const userMeta = (user.user_metadata as any) ?? {};
+  const roleFromMeta = (meta.role ?? userMeta.role) as string | undefined;
 
-  const role = (meta.role ?? userMeta.role) as string | undefined;
+  if (!roleFromMeta) return null;
 
-  if (!role) return null;
-
-  if (["buyer", "seller", "admin", "moderator"].includes(role)) {
-    return role as Role;
+  if (
+    roleFromMeta === "seller" ||
+    roleFromMeta === "admin" ||
+    roleFromMeta === "super_admin" ||
+    roleFromMeta === "moderator" ||
+    roleFromMeta === "buyer"
+  ) {
+    return roleFromMeta as Role;
   }
 
   return null;
@@ -38,6 +64,7 @@ function getRoleHome(role: Role | null): string {
     case "seller":
       return "/dashboard";
     case "admin":
+    case "super_admin":
       return "/admin";
     case "moderator":
       return "/moderator";
@@ -72,7 +99,7 @@ export async function middleware(req: NextRequest) {
     pathname.startsWith("/moderator");
 
   const user = await getUserFromRequest(req);
-  const role = user ? getUserRole(user) : null;
+  const role = user ? await getUserRole(user) : null;
 
   // Not logged in → redirect to /login for protected routes
   if (!user && isProtectedRoute) {
@@ -94,8 +121,11 @@ export async function middleware(req: NextRequest) {
   if (user && isProtectedRoute) {
     const targetForRole = getRoleHome(role);
 
-    // Admin-only area
-    if (pathname.startsWith("/admin") && role !== "admin") {
+    // Admin-only area (admins and super_admins)
+    if (
+      pathname.startsWith("/admin") &&
+      !(role === "admin" || role === "super_admin")
+    ) {
       return NextResponse.redirect(new URL(targetForRole, req.url));
     }
 

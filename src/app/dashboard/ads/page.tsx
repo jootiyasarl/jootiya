@@ -185,7 +185,7 @@ export default function MyAdsPage() {
           </div>
           <Button
             className="sm:w-auto"
-            onClick={() => router.push("/dashboard/create-ad")}
+            onClick={() => router.push("/dashboard/ads/create")}
           >
             Create new ad
           </Button>
@@ -272,7 +272,7 @@ export default function MyAdsPage() {
             Create your first listing to reach buyers on Jootiya. You can
             always edit, pause, or boost it later from your dashboard.
           </p>
-          <Button onClick={() => router.push("/dashboard/create-ad")}>
+          <Button onClick={() => router.push("/dashboard/ads/create")}>
             Create new ad
           </Button>
         </div>

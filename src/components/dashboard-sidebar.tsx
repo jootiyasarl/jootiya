@@ -13,7 +13,7 @@ const navItems = [
   },
   {
     label: "Create Ad",
-    href: "/dashboard/create-ad",
+    href: "/dashboard/ads/create",
     icon: PlusCircle,
   },
   {

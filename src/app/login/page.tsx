@@ -1,168 +1,107 @@
-"use client";
-
-import { useState, type FormEvent } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
+import { redirect } from "next/navigation";
+import type { Metadata } from "next";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+import { SubmitButton } from "@/components/submit-button";
+import {
+  createSupabaseServerClient,
+  getProfileRole,
+  setAuthSession,
+} from "@/lib/supabase";
 
-export default function LoginPage() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+export const metadata: Metadata = {
+  title: "Login | Jootiya",
+};
 
-  const redirectTo = searchParams.get("redirectTo") ?? "/dashboard";
+interface LoginPageProps {
+  searchParams: {
+    redirectTo?: string;
+    error?: string;
+    message?: string;
+  };
+}
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+async function loginAction(formData: FormData) {
+  "use server";
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-  const [isResetting, setIsResetting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
+  const email = formData.get("email");
+  const password = formData.get("password");
+  const redirectTo = formData.get("redirectTo");
 
-  async function handleEmailLogin(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  const safeRedirectTo =
+    typeof redirectTo === "string" && redirectTo.startsWith("/")
+      ? redirectTo
+      : undefined;
 
-    if (!email || !password) {
-      setError("Email and password are required.");
-      return;
+  if (typeof email !== "string" || typeof password !== "string") {
+    const params = new URLSearchParams();
+    params.set("error", "Please enter both email and password.");
+    if (safeRedirectTo) params.set("redirectTo", safeRedirectTo);
+    redirect(`/login?${params.toString()}`);
+  }
+
+  const trimmedEmail = email.trim();
+  const trimmedPassword = password.trim();
+
+  if (!trimmedEmail || !trimmedPassword) {
+    const params = new URLSearchParams();
+    params.set("error", "Please enter both email and password.");
+    if (safeRedirectTo) params.set("redirectTo", safeRedirectTo);
+    redirect(`/login?${params.toString()}`);
+  }
+
+  const supabase = createSupabaseServerClient();
+
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: trimmedEmail,
+    password: trimmedPassword,
+  });
+
+  if (error || !data.session || !data.user) {
+    const params = new URLSearchParams();
+    params.set("error", "Invalid email or password.");
+    if (safeRedirectTo) params.set("redirectTo", safeRedirectTo);
+    redirect(`/login?${params.toString()}`);
+  }
+
+  await setAuthSession(data.session);
+
+  const role = await getProfileRole(data.user.id);
+
+  let target = "/dashboard";
+
+  if (role === "admin" || role === "super_admin") {
+    target = "/admin";
+  } else if (role === "seller") {
+    target = "/dashboard";
+  }
+
+  if (safeRedirectTo) {
+    if (role === "seller" && safeRedirectTo.startsWith("/dashboard")) {
+      target = safeRedirectTo;
     }
-
-    setIsSubmitting(true);
-    setError(null);
-    setMessage(null);
-
-    try {
-      const {
-        data,
-        error: signInError,
-      } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-
-      if (signInError) {
-        const normalized = signInError.message.toLowerCase();
-
-        if (normalized.includes("invalid login credentials")) {
-          setError("The email or password is incorrect.");
-        } else {
-          setError("Unable to sign you in. Please try again.");
-          console.error(signInError);
-        }
-
-        return;
-      }
-
-      if (data.session) {
-        setMessage("Signed in. Redirecting...");
-
-        try {
-          const userId = data.user?.id ?? data.session.user.id;
-
-          const { data: profile, error: profileError } = await supabase
-            .from("profiles")
-            .select("role")
-            .eq("id", userId)
-            .maybeSingle();
-
-          if (!profileError) {
-            const role = (profile?.role ?? "").toString().trim();
-
-            if (role === "seller") {
-              router.push("/dashboard");
-              return;
-            }
-
-            if (role === "super_admin") {
-              router.push("/admin");
-              return;
-            }
-          }
-
-          router.push(redirectTo);
-        } catch (profileLookupError) {
-          console.error(profileLookupError);
-          router.push(redirectTo);
-        }
-      } else {
-        setMessage("Signed in successfully.");
-      }
-    } catch (err) {
-      console.error(err);
-      setError("Unable to sign you in. Please try again.");
-    } finally {
-      setIsSubmitting(false);
+    if (
+      (role === "admin" || role === "super_admin") &&
+      safeRedirectTo.startsWith("/admin")
+    ) {
+      target = safeRedirectTo;
     }
   }
 
-  async function handleGoogleLogin() {
-    setError(null);
-    setMessage(null);
-    setIsGoogleLoading(true);
+  redirect(target);
+}
 
-    try {
-      const origin = window.location.origin;
-      const redirectPath = redirectTo === "/" ? "" : redirectTo;
-
-      const { error: oauthError } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: `${origin}${redirectPath}`,
-        },
-      });
-
-      if (oauthError) {
-        throw oauthError;
-      }
-    } catch (err: any) {
-      console.error(err);
-      setError(err.message ?? "Failed to start Google sign-in.");
-      setIsGoogleLoading(false);
-    }
-  }
-
-  async function handleResetPassword() {
-    if (!email) {
-      setError("Enter your email first to reset your password.");
-      return;
-    }
-
-    setError(null);
-    setMessage(null);
-    setIsResetting(true);
-
-    try {
-      const origin = window.location.origin;
-
-      const { error: resetError } = await supabase.auth.resetPasswordForEmail(
-        email,
-        {
-          redirectTo: `${origin}/reset-password`,
-        },
-      );
-
-      if (resetError) {
-        console.error(resetError);
-      }
-
-      setMessage(
-        "If an account exists for this email, you will receive password reset instructions shortly.",
-      );
-    } catch (err) {
-      console.error(err);
-      setMessage(
-        "If an account exists for this email, you will receive password reset instructions shortly.",
-      );
-    } finally {
-      setIsResetting(false);
-    }
-  }
-
-  const isBusy = isSubmitting || isGoogleLoading || isResetting;
+export default function LoginPage({ searchParams }: LoginPageProps) {
+  const error =
+    typeof searchParams.error === "string" ? searchParams.error : undefined;
+  const message =
+    typeof searchParams.message === "string" ? searchParams.message : undefined;
+  const redirectTo =
+    typeof searchParams.redirectTo === "string"
+      ? searchParams.redirectTo
+      : undefined;
 
   return (
     <div className="min-h-screen bg-zinc-50">
@@ -175,14 +114,14 @@ export default function LoginPage() {
             Sign in to your Jootiya account
           </h1>
           <p className="mt-3 text-sm text-zinc-600 md:text-base">
-            Use your email and password or continue with Google. We never
-            share your data and use secure authentication powered by Supabase.
+            Use your email and password to access a secure seller or admin
+            dashboard powered by Supabase Auth.
           </p>
 
           <div className="mt-6 grid gap-3 text-sm text-zinc-600 md:grid-cols-2">
             <div className="flex items-start gap-2">
               <div className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              <p>Encrypted sessions and OAuth with Google.</p>
+              <p>Encrypted sessions with HTTP-only cookies.</p>
             </div>
             <div className="flex items-start gap-2">
               <div className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-500" />
@@ -190,105 +129,93 @@ export default function LoginPage() {
             </div>
             <div className="flex items-start gap-2">
               <div className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              <p>Sign in from any device, stay in control.</p>
+              <p>Mobile-friendly login for busy sellers.</p>
             </div>
             <div className="flex items-start gap-2">
               <div className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              <p>Designed for both teams and professional sellers.</p>
+              <p>Designed for both admins and professional sellers.</p>
             </div>
           </div>
         </div>
 
         <div className="md:flex-1">
-          <div className="rounded-2xl border bg-white p-6 shadow-sm">
-            <div className="mb-4 flex flex-col gap-1">
+          <Card className="border bg-white">
+            <CardHeader className="flex flex-col gap-1 px-4 pt-4">
               <h2 className="text-sm font-semibold text-zinc-900">Login</h2>
               <p className="text-xs text-zinc-500">
-                Enter your credentials to access your marketplace dashboard.
+                Enter your email and password to access your dashboard.
               </p>
-            </div>
-
-            {error ? (
-              <div className="mb-3 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
-                {error}
-              </div>
-            ) : null}
-
-            {message ? (
-              <div className="mb-3 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-700">
-                {message}
-              </div>
-            ) : null}
-
-            <form onSubmit={handleEmailLogin} className="space-y-4">
-              <div className="space-y-1">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  autoComplete="email"
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                  placeholder="you@example.com"
-                  disabled={isBusy}
-                />
-              </div>
-
-              <div className="space-y-1">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="password">Password</Label>
-                  <button
-                    type="button"
-                    onClick={handleResetPassword}
-                    disabled={isBusy}
-                    className="text-xs font-medium text-zinc-600 underline-offset-4 hover:text-zinc-900 hover:underline"
-                  >
-                    Forgot password?
-                  </button>
+            </CardHeader>
+            <CardContent className="px-4 pb-4">
+              {error ? (
+                <div className="mb-3 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
+                  {error}
                 </div>
-                <Input
-                  id="password"
-                  type="password"
-                  autoComplete="current-password"
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
-                  placeholder="Your password"
-                  disabled={isBusy}
+              ) : null}
+
+              {message ? (
+                <div className="mb-3 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-700">
+                  {message}
+                </div>
+              ) : null}
+
+              <form className="mt-2 space-y-4" action={loginAction}>
+                {redirectTo ? (
+                  <input
+                    type="hidden"
+                    name="redirectTo"
+                    value={redirectTo}
+                  />
+                ) : null}
+
+                <div className="space-y-1.5">
+                  <Label htmlFor="email" className="text-xs text-zinc-700">
+                    Email
+                  </Label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                    className="h-9 text-xs"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label htmlFor="password" className="text-xs text-zinc-700">
+                    Password
+                  </Label>
+                  <Input
+                    id="password"
+                    name="password"
+                    type="password"
+                    autoComplete="current-password"
+                    minLength={8}
+                    required
+                    className="h-9 text-xs"
+                  />
+                </div>
+
+                <SubmitButton
+                  label="Sign in"
+                  loadingLabel="Signing in..."
+                  className="mt-2 w-full text-xs"
                 />
-              </div>
+              </form>
 
-              <Button type="submit" className="w-full" disabled={isBusy}>
-                {isSubmitting ? "Signing you in..." : "Continue"}
-              </Button>
-            </form>
-
-            <div className="my-4 flex items-center gap-2 text-[11px] text-zinc-400">
-              <div className="h-px flex-1 bg-zinc-200" />
-              <span>or continue with</span>
-              <div className="h-px flex-1 bg-zinc-200" />
-            </div>
-
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full text-xs"
-              onClick={handleGoogleLogin}
-              disabled={isBusy}
-            >
-              {isGoogleLoading ? "Connecting to Google..." : "Continue with Google"}
-            </Button>
-
-            <p className="mt-4 text-center text-xs text-zinc-500">
-              New to Jootiya?{" "}
-              <Link
-                href="/register"
-                className="font-medium text-zinc-900 underline-offset-4 hover:underline"
-              >
-                Create an account
-              </Link>
-              .
-            </p>
-          </div>
+              <p className="mt-4 text-center text-xs text-zinc-500">
+                New to Jootiya?{" "}
+                <Link
+                  href="/register"
+                  className="font-medium text-zinc-900 underline-offset-4 hover:underline"
+                >
+                  Create an account
+                </Link>
+                .
+              </p>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

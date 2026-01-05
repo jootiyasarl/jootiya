@@ -1,114 +1,97 @@
-"use client";
-
-import { useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import type { Metadata } from "next";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { SubmitButton } from "@/components/submit-button";
+import { createSupabaseServerClient, setAuthSession } from "@/lib/supabase";
 
-type Role = "buyer" | "seller";
+export const metadata: Metadata = {
+  title: "Register | Jootiya",
+};
 
-export default function RegisterPage() {
-  const router = useRouter();
+interface RegisterPageProps {
+  searchParams: {
+    error?: string;
+    message?: string;
+  };
+}
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [role, setRole] = useState<Role>("buyer");
-  const [acceptTerms, setAcceptTerms] = useState(false);
+async function registerAction(formData: FormData) {
+  "use server";
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
+  const email = formData.get("email");
+  const password = formData.get("password");
 
-  async function handleEmailRegister(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    if (!email || !password) {
-      setError("Email and password are required.");
-      return;
-    }
-
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters.");
-      return;
-    }
-
-    if (!acceptTerms) {
-      setError("You must accept the Terms of Service and Privacy Policy.");
-      return;
-    }
-
-    setIsSubmitting(true);
-    setError(null);
-    setMessage(null);
-
-    try {
-      const {
-        data,
-        error: signUpError,
-      } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            role,
-          },
-        },
-      });
-
-      if (signUpError) {
-        throw signUpError;
-      }
-
-      if (data.user && !data.session) {
-        setMessage(
-          "Check your email to confirm your account. Once confirmed, you can sign in.",
-        );
-      } else if (data.session) {
-        setMessage("Account created. Redirecting...");
-        router.push("/dashboard/profile");
-      } else {
-        setMessage("Account created. You can now sign in.");
-      }
-    } catch (err: any) {
-      setError(err.message ?? "Failed to create account.");
-    } finally {
-      setIsSubmitting(false);
-    }
+  if (typeof email !== "string" || typeof password !== "string") {
+    const params = new URLSearchParams();
+    params.set("error", "Please enter both email and password.");
+    redirect(`/register?${params.toString()}`);
   }
 
-  async function handleGoogleRegister() {
-    setError(null);
-    setMessage(null);
-    setIsGoogleLoading(true);
+  const trimmedEmail = email.trim();
+  const trimmedPassword = password.trim();
 
-    try {
-      const origin = window.location.origin;
-
-      const { error: oauthError } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: `${origin}/`,
-        },
-      });
-
-      if (oauthError) {
-        throw oauthError;
-      }
-    } catch (err: any) {
-      setError(err.message ?? "Failed to start Google sign-in.");
-      setIsGoogleLoading(false);
-    }
+  if (!trimmedEmail || !trimmedPassword || trimmedPassword.length < 8) {
+    const params = new URLSearchParams();
+    params.set(
+      "error",
+      "Please provide a valid email and a password with at least 8 characters.",
+    );
+    redirect(`/register?${params.toString()}`);
   }
+
+  const supabase = createSupabaseServerClient();
+
+  const { data, error } = await supabase.auth.signUp({
+    email: trimmedEmail,
+    password: trimmedPassword,
+  });
+
+  if (error || !data.user) {
+    const params = new URLSearchParams();
+    params.set("error", error?.message ?? "Failed to create account.");
+    redirect(`/register?${params.toString()}`);
+  }
+
+  const user = data.user;
+
+  const { error: profileError } = await supabase
+    .from("profiles")
+    .upsert(
+      {
+        id: user.id,
+        email: user.email ?? trimmedEmail,
+        role: "seller",
+      },
+      { onConflict: "id" },
+    );
+
+  if (profileError) {
+    const params = new URLSearchParams();
+    params.set("error", "Failed to save your profile.");
+    redirect(`/register?${params.toString()}`);
+  }
+
+  if (data.session) {
+    await setAuthSession(data.session);
+    redirect("/dashboard");
+  }
+
+  const params = new URLSearchParams();
+  params.set(
+    "message",
+    "Account created. Please check your email to confirm your address, then sign in.",
+  );
+  redirect(`/login?${params.toString()}`);
+}
+
+export default function RegisterPage({ searchParams }: RegisterPageProps) {
+  const error =
+    typeof searchParams.error === "string" ? searchParams.error : undefined;
+  const message =
+    typeof searchParams.message === "string" ? searchParams.message : undefined;
 
   return (
     <div className="min-h-screen bg-zinc-50">
@@ -121,14 +104,14 @@ export default function RegisterPage() {
             Create your marketplace account
           </h1>
           <p className="mt-3 text-sm text-zinc-600 md:text-base">
-            Join Jootiya to buy and sell safely. We use secure authentication
-            powered by Supabase and modern best practices.
+            Join Jootiya to buy and sell safely. Use your email to create a secure
+            seller account powered by Supabase Auth.
           </p>
 
           <div className="mt-6 grid gap-3 text-sm text-zinc-600 md:grid-cols-2">
             <div className="flex items-start gap-2">
               <div className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              <p>Encrypted authentication and OAuth with Google.</p>
+              <p>Email + password authentication with modern security.</p>
             </div>
             <div className="flex items-start gap-2">
               <div className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-500" />
@@ -136,7 +119,7 @@ export default function RegisterPage() {
             </div>
             <div className="flex items-start gap-2">
               <div className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              <p>Designed for both buyers and professional sellers.</p>
+              <p>Designed for professional sellers in Morocco.</p>
             </div>
             <div className="flex items-start gap-2">
               <div className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-500" />
@@ -146,144 +129,74 @@ export default function RegisterPage() {
         </div>
 
         <div className="md:flex-1">
-          <div className="rounded-2xl border bg-white p-6 shadow-sm">
-            <div className="mb-4 flex flex-col gap-1">
-              <h2 className="text-sm font-semibold text-zinc-900">
-                Register
-              </h2>
+          <Card className="border bg-white">
+            <CardHeader className="flex flex-col gap-1 px-4 pt-4">
+              <h2 className="text-sm font-semibold text-zinc-900">Register</h2>
               <p className="text-xs text-zinc-500">
-                Create your account to start using the marketplace.
+                Create your seller account with email and password.
               </p>
-            </div>
+            </CardHeader>
+            <CardContent className="px-4 pb-4">
+              {error ? (
+                <div className="mb-3 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
+                  {error}
+                </div>
+              ) : null}
+              {message ? (
+                <div className="mb-3 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-700">
+                  {message}
+                </div>
+              ) : null}
 
-            {error ? (
-              <div className="mb-3 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
-                {error}
-              </div>
-            ) : null}
-            {message ? (
-              <div className="mb-3 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-700">
-                {message}
-              </div>
-            ) : null}
+              <form className="mt-2 space-y-4" action={registerAction}>
+                <div className="space-y-1.5">
+                  <Label htmlFor="email" className="text-xs text-zinc-700">
+                    Email
+                  </Label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                    className="h-9 text-xs"
+                  />
+                </div>
 
-            <form
-              onSubmit={handleEmailRegister}
-              className="space-y-4"
-            >
-              <div className="space-y-1">
-                <Label htmlFor="role">I want to use Jootiya as</Label>
-                <Select
-                  value={role}
-                  onValueChange={(value) => setRole(value as Role)}
+                <div className="space-y-1.5">
+                  <Label htmlFor="password" className="text-xs text-zinc-700">
+                    Password
+                  </Label>
+                  <Input
+                    id="password"
+                    name="password"
+                    type="password"
+                    autoComplete="new-password"
+                    minLength={8}
+                    required
+                    className="h-9 text-xs"
+                  />
+                </div>
+
+                <SubmitButton
+                  label="Create account"
+                  loadingLabel="Creating account..."
+                  className="mt-2 w-full text-xs"
+                />
+              </form>
+
+              <p className="mt-4 text-center text-xs text-zinc-500">
+                Already have an account?{" "}
+                <Link
+                  href="/login"
+                  className="font-medium text-zinc-900 underline-offset-4 hover:underline"
                 >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="buyer">Buyer</SelectItem>
-                    <SelectItem value="seller">Seller</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-1">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  autoComplete="email"
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                  placeholder="you@example.com"
-                  disabled={isSubmitting || isGoogleLoading}
-                />
-              </div>
-
-              <div className="space-y-1">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  autoComplete="new-password"
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
-                  placeholder="At least 8 characters"
-                  disabled={isSubmitting || isGoogleLoading}
-                />
-              </div>
-
-              <div className="flex items-start gap-2 text-xs text-zinc-600">
-                <input
-                  id="terms"
-                  type="checkbox"
-                  checked={acceptTerms}
-                  onChange={(event) => setAcceptTerms(event.target.checked)}
-                  disabled={isSubmitting || isGoogleLoading}
-                  className="mt-0.5 h-3.5 w-3.5 rounded border border-zinc-300 text-zinc-900"
-                />
-                <label
-                  htmlFor="terms"
-                  className="select-none"
-                >
-                  I agree to the
-                  {" "}
-                  <a
-                    href="#"
-                    className="font-medium text-zinc-900 underline-offset-4 hover:underline"
-                  >
-                    Terms of Service
-                  </a>
-                  {" "}
-                  and
-                  {" "}
-                  <a
-                    href="#"
-                    className="font-medium text-zinc-900 underline-offset-4 hover:underline"
-                  >
-                    Privacy Policy
-                  </a>
-                  .
-                </label>
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={isSubmitting || isGoogleLoading}
-              >
-                {isSubmitting ? "Creating account..." : "Create account"}
-              </Button>
-            </form>
-
-            <div className="my-4 flex items-center gap-2 text-[11px] text-zinc-400">
-              <div className="h-px flex-1 bg-zinc-200" />
-              <span>or continue with</span>
-              <div className="h-px flex-1 bg-zinc-200" />
-            </div>
-
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full text-xs"
-              onClick={handleGoogleRegister}
-              disabled={isSubmitting || isGoogleLoading}
-            >
-              {isGoogleLoading ? "Connecting to Google..." : "Continue with Google"}
-            </Button>
-
-            <p className="mt-4 text-center text-xs text-zinc-500">
-              Already have an account?
-              {" "}
-              <a
-                href="#"
-                className="font-medium text-zinc-900 underline-offset-4 hover:underline"
-              >
-                Sign in
-              </a>
-              .
-            </p>
-          </div>
+                  Sign in
+                </Link>
+                .
+              </p>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

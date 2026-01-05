@@ -157,10 +157,15 @@ export default function Home() {
             </button>
           </div>
           <div className="flex items-center gap-3">
-            <button className="hidden text-sm font-medium text-zinc-700 md:inline-flex">Login</button>
-            <button className="inline-flex items-center justify-center rounded-full bg-zinc-900 px-4 py-2 text-sm font-medium text-zinc-50">
+            <Link href="/login" className="hidden text-sm font-medium text-zinc-700 md:inline-flex">
+              Login
+            </Link>
+            <Link
+              href="/post-ad"
+              className="inline-flex items-center justify-center rounded-full bg-zinc-900 px-4 py-2 text-sm font-medium text-zinc-50"
+            >
               Post an ad
-            </button>
+            </Link>
           </div>
         </header>
 
