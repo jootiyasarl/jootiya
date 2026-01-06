@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import { AdCard } from "@/components/AdCard";
+import { NearbyNowSection } from "@/components/NearbyNowSection";
 
 type HomepageAd = {
   id: string;
@@ -215,6 +217,20 @@ export default function Home() {
             </div>
           </section>
 
+          <section className="space-y-4">
+            <div className="flex items-baseline justify-between">
+              <div>
+                <h2 className="text-base font-semibold tracking-tight text-zinc-900">
+                  قريب منك الآن
+                </h2>
+                <p className="text-xs text-zinc-500">
+                  إعلانات قريبة من حيّك، مرتبة حسب المسافة.
+                </p>
+              </div>
+            </div>
+            <NearbyNowSection />
+          </section>
+
           <section className="rounded-3xl border border-zinc-100 bg-white px-5 py-4 sm:px-6">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
@@ -367,44 +383,5 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(homepageAdsJsonLd) }}
       />
     </div>
-  );
-}
-
-function AdCard({ ad, variant = "default" }: { ad: HomepageAd; variant?: "default" | "featured" }) {
-  const isFeatured = variant === "featured" || ad.isFeatured;
-
-  return (
-    <article
-      className={[
-        "flex flex-col overflow-hidden rounded-2xl border bg-white shadow-sm transition",
-        isFeatured ? "border-zinc-900/10 shadow-md" : "border-zinc-100 hover:-translate-y-0.5 hover:shadow-md",
-      ].join(" ")}
-    >
-      <div className="relative">
-        <div className="h-40 bg-zinc-100" />
-        {isFeatured ? (
-          <div className="absolute left-3 top-3 inline-flex items-center rounded-full bg-zinc-900/90 px-2 py-0.5 text-[10px] font-medium text-zinc-50">
-            Featured
-          </div>
-        ) : null}
-      </div>
-      <div className="flex flex-1 flex-col gap-2 px-3.5 pb-3.5 pt-3">
-        <div className="space-y-1">
-          <h3 className="line-clamp-2 text-sm font-medium text-zinc-900">{ad.title}</h3>
-          <p className="text-sm font-semibold text-zinc-900">{ad.price}</p>
-        </div>
-        <div className="mt-auto space-y-1">
-          <p className="text-xs text-zinc-600">
-            {ad.location} • {ad.distance}
-          </p>
-          <div className="flex items-center justify-between text-[11px] text-zinc-500">
-            <span>{ad.createdAt}</span>
-            <span className="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-medium text-emerald-700">
-              {ad.sellerBadge}
-            </span>
-          </div>
-        </div>
-      </div>
-    </article>
   );
 }

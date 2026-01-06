@@ -2,18 +2,17 @@ import type { ReactNode } from "react";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
-import { AdminLayout } from "@/components/admin-layout";
 
-interface AdminAppLayoutProps {
+interface DashboardAnalyticsLayoutProps {
   children: ReactNode;
 }
 
-async function ensureAdminOrSuperAdmin() {
+async function ensureSeller() {
   const cookieStore = await cookies();
   const accessToken = cookieStore.get("sb-access-token")?.value;
 
   if (!accessToken) {
-    redirect("/login?redirectTo=/admin");
+    redirect("/login?redirectTo=/dashboard/analytics");
   }
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -32,7 +31,7 @@ async function ensureAdminOrSuperAdmin() {
   const { data, error } = await supabase.auth.getUser(accessToken);
 
   if (error || !data.user) {
-    redirect("/login?redirectTo=/admin");
+    redirect("/login?redirectTo=/dashboard/analytics");
   }
 
   const { data: profile, error: profileError } = await supabase
@@ -47,15 +46,15 @@ async function ensureAdminOrSuperAdmin() {
 
   const role = (profile?.role ?? "").toString().trim();
 
-  if (role !== "super_admin" && role !== "admin") {
+  if (role !== "seller") {
     redirect("/");
   }
 }
 
-export default async function AdminAppLayout({
+export default async function DashboardAnalyticsLayout({
   children,
-}: AdminAppLayoutProps) {
-  await ensureAdminOrSuperAdmin();
+}: DashboardAnalyticsLayoutProps) {
+  await ensureSeller();
 
-  return <AdminLayout>{children}</AdminLayout>;
+  return <>{children}</>;
 }

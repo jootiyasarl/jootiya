@@ -5,6 +5,15 @@ import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowUpRight, BarChart3, Eye, MessageSquare, Sparkles } from "lucide-react";
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+} from "recharts";
 
 type AnalyticsAd = {
   id: string;
@@ -121,11 +130,6 @@ export default function SellerAnalyticsPage() {
     return entries.map(([date, views]) => ({ date, views }));
   }, [ads]);
 
-  const maxViewsInSeries = viewsOverTime.reduce(
-    (max, point) => (point.views > max ? point.views : max),
-    0,
-  );
-
   const hasData = ads.length > 0;
 
   return (
@@ -227,39 +231,80 @@ export default function SellerAnalyticsPage() {
                 </div>
               </div>
 
-              {viewsOverTime.length === 0 || maxViewsInSeries === 0 ? (
+              {viewsOverTime.length === 0 ? (
                 <div className="mt-6 flex h-28 items-center justify-center rounded-xl bg-zinc-50 text-xs text-zinc-500">
                   Not enough data yet.
                 </div>
               ) : (
-                <div className="mt-4">
-                  <div className="flex h-32 items-end gap-2">
-                    {viewsOverTime.map((point) => {
-                      const percentage =
-                        maxViewsInSeries > 0
-                          ? Math.max(12, (point.views / maxViewsInSeries) * 100)
-                          : 0;
-                      return (
-                        <div
-                          key={point.date}
-                          className="flex flex-1 flex-col items-center gap-1"
+                <div className="mt-4 h-48">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart
+                      data={viewsOverTime}
+                      margin={{ top: 8, right: 8, left: -16, bottom: 0 }}
+                    >
+                      <defs>
+                        <linearGradient
+                          id="viewsGradient"
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
                         >
-                          <div className="flex h-full w-full items-end justify-center">
-                            <div
-                              className="w-full rounded-t-md bg-gradient-to-t from-emerald-500 to-emerald-400"
-                              style={{ height: `${percentage}%` }}
-                            />
-                          </div>
-                          <span className="text-[11px] text-zinc-500">
-                            {new Date(point.date).toLocaleDateString(undefined, {
+                          <stop
+                            offset="0%"
+                            stopColor="#10b981"
+                            stopOpacity={1}
+                          />
+                          <stop
+                            offset="100%"
+                            stopColor="#10b981"
+                            stopOpacity={0.3}
+                          />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                      <XAxis
+                        dataKey="date"
+                        tickFormatter={(value: string | number) =>
+                          new Date(String(value)).toLocaleDateString(
+                            undefined,
+                            {
                               month: "short",
                               day: "numeric",
-                            })}
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
+                            },
+                          )
+                        }
+                        tick={{ fontSize: 11, fill: "#6b7280" }}
+                        axisLine={false}
+                        tickLine={false}
+                      />
+                      <YAxis
+                        tick={{ fontSize: 11, fill: "#6b7280" }}
+                        axisLine={false}
+                        tickLine={false}
+                        allowDecimals={false}
+                      />
+                      <Tooltip
+                        cursor={{ fill: "rgba(16,185,129,0.08)" }}
+                        contentStyle={{ fontSize: 12 }}
+                        labelFormatter={(value: string | number) =>
+                          new Date(String(value)).toLocaleDateString(
+                            undefined,
+                            {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            },
+                          )
+                        }
+                      />
+                      <Bar
+                        dataKey="views"
+                        radius={[4, 4, 0, 0]}
+                        fill="url(#viewsGradient)"
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
                 </div>
               )}
             </div>
