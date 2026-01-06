@@ -319,7 +319,7 @@ export default function CreateAdPage() {
         ? Number(form.minimumQuantity.trim() || "0") || null
         : null;
 
-      const response = await fetch("/dashboard/ads/create", {
+      const response = await fetch("/api/ads/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
