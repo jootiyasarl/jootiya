@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { GoogleLoginButton } from "@/components/auth/GoogleLoginButton";
 import { LoginRedirectHandler } from "@/components/auth/LoginRedirectHandler";
@@ -21,7 +22,9 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
 
   return (
     <div className="min-h-screen bg-zinc-50">
-      <LoginRedirectHandler />
+      <Suspense fallback={null}>
+        <LoginRedirectHandler />
+      </Suspense>
       <div className="mx-auto flex min-h-screen w-full max-w-5xl flex-col justify-center px-4 py-10 md:flex-row md:items-center md:gap-16">
         <div className="mb-10 md:mb-0 md:flex-1">
           <div className="inline-flex items-center rounded-full border border-zinc-200 bg-white px-3 py-1 text-xs font-medium text-zinc-600 shadow-sm">
@@ -52,9 +55,11 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
                 </div>
               ) : null}
 
-              <div className="mt-4 flex justify-center">
-                <GoogleLoginButton />
-              </div>
+              <Suspense fallback={null}>
+                <div className="mt-4 flex justify-center">
+                  <GoogleLoginButton />
+                </div>
+              </Suspense>
 
               <p className="mt-4 text-center text-xs text-zinc-500">
                 لا تملك حساباً على Jootiya؟{" "}
