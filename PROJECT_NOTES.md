@@ -6,6 +6,13 @@
   - Next.js (App Router) مع TypeScript.
   - استخدام Supabase كخلفية (قاعدة بيانات / Auth) عبر `src/lib/supabaseClient.ts`.
 
+## متغيرات البيئة (Supabase)
+
+- `NEXT_PUBLIC_SUPABASE_URL`:
+  `https://ssfcfvuosxxmvsdoktws.supabase.co`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`:
+  `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNzZmNmdnVvc3h4bXZzZG9rdHdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYxMzQ0NTAsImV4cCI6MjA4MTcxMDQ1MH0.yapozcOEBlZ6kLtNs5nwt-CusuDQfojYq1nUZtH2AoE`
+
 - **الصفحات الموجودة (Routes)**
   - `/` → الصفحة الرئيسية (`src/app/page.tsx`).
   - `/login` → صفحة تسجيل الدخول (`src/app/login/page.tsx`).
