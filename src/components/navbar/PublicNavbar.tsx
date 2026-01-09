@@ -63,9 +63,9 @@ function PublicNavbar() {
     } = await supabase.auth.getSession();
 
     if (session) {
-      router.push("/create-ad");
+      router.push("/post-ad");
     } else {
-      router.push("/login?redirect=/create-ad");
+      router.push("/login?redirect=/post-ad");
     }
   };
 

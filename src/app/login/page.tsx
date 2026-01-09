@@ -12,13 +12,14 @@ export const metadata: Metadata = {
 interface LoginPageProps {
   searchParams?: {
     redirect?: string;
+    redirectTo?: string;
   };
 }
 
 export default function LoginPage({ searchParams }: LoginPageProps) {
-  const redirect = searchParams?.redirect;
+  const redirectParam = searchParams?.redirect ?? searchParams?.redirectTo;
   const showPostAdMessage =
-    typeof redirect === "string" && redirect.startsWith("/create-ad");
+    typeof redirectParam === "string" && redirectParam.startsWith("/post-ad");
 
   return (
     <div className="min-h-screen bg-zinc-50">

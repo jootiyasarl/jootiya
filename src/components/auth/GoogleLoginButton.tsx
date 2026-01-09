@@ -7,7 +7,7 @@ export function GoogleLoginButton() {
   const searchParams = useSearchParams();
 
   const handleGoogleLogin = async () => {
-    const redirect = searchParams.get("redirect");
+    const redirect = searchParams.get("redirect") ?? searchParams.get("redirectTo");
     const origin = window.location.origin;
 
     const redirectTo = redirect
