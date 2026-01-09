@@ -24,6 +24,20 @@ export function LoginRedirectHandler() {
 
       let target: string;
 
+      // Sync client session to server cookies so that middleware
+      // (which reads sb-access-token from cookies) recognizes the user.
+      try {
+        await fetch("/api/auth/set-session", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ session }),
+        });
+      } catch (error) {
+        console.error("Failed to sync auth session", error);
+      }
+
       if (redirectParam && redirectParam.startsWith("/")) {
         // Explicit redirect from query param always wins
         target = redirectParam;

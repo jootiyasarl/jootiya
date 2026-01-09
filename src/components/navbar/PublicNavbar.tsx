@@ -175,8 +175,8 @@ function PublicNavbar() {
           </ul>
         </nav>
 
-        {/* Right: Actions (desktop) */}
-        <div className="hidden items-center gap-4 md:flex">
+        {/* Right: Actions */}
+        <div className="flex items-center gap-4">
           <button
             type="button"
             onClick={handlePostAdClick}
