@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -45,6 +45,8 @@ function PublicNavbar() {
   const router = useRouter();
   const pathname = usePathname();
 
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+
   const isActive = (href: string) => {
     if (!pathname) return false;
     if (href === "/") return pathname === "/";
@@ -57,6 +59,26 @@ function PublicNavbar() {
       isActive(href) && "border-zinc-900 text-zinc-900",
     );
 
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadSession = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!isMounted) return;
+
+      setUserEmail(session?.user?.email ?? null);
+    };
+
+    void loadSession();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const handlePostAdClick = async () => {
     const {
       data: { session },
@@ -67,6 +89,12 @@ function PublicNavbar() {
     } else {
       router.push("/login?redirect=/post-ad");
     }
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setUserEmail(null);
+    router.replace("/");
   };
 
   return (
@@ -157,12 +185,27 @@ function PublicNavbar() {
             نشر إعلان
           </button>
 
-          <Link
-            href="/login"
-            className="inline-flex items-center rounded-full border border-zinc-200 px-4 py-1.5 text-sm font-medium text-zinc-600 transition-colors duration-150 hover:bg-zinc-50 hover:text-zinc-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-300"
-          >
-            دخول
-          </Link>
+          {userEmail ? (
+            <>
+              <span className="hidden text-xs text-zinc-500 lg:inline">
+                {userEmail}
+              </span>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="inline-flex items-center rounded-full border border-zinc-200 px-4 py-1.5 text-sm font-medium text-zinc-600 transition-colors duration-150 hover:bg-zinc-50 hover:text-zinc-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-300"
+              >
+                خروج
+              </button>
+            </>
+          ) : (
+            <Link
+              href="/login"
+              className="inline-flex items-center rounded-full border border-zinc-200 px-4 py-1.5 text-sm font-medium text-zinc-600 transition-colors duration-150 hover:bg-zinc-50 hover:text-zinc-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-300"
+            >
+              دخول
+            </Link>
+          )}
         </div>
       </div>
     </header>
