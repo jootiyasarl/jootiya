@@ -158,9 +158,14 @@ function PublicNavbar() {
 
           {userEmail ? (
             <>
-              <span className="hidden text-xs text-zinc-500 lg:inline">
-                {userEmail}
-              </span>
+              <Link
+                href={
+                  userEmail === "jootiyasarl@gmail.com" ? "/admin" : "/dashboard"
+                }
+                className="inline-flex items-center rounded-full border border-zinc-200 px-4 py-1.5 text-sm font-medium text-zinc-600 transition-colors duration-150 hover:bg-zinc-50 hover:text-zinc-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-300"
+              >
+                {userEmail === "jootiyasarl@gmail.com" ? "Admin" : "Dashboard"}
+              </Link>
               <button
                 type="button"
                 onClick={handleLogout}
