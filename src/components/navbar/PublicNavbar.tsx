@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabaseClient";
-import { MegaMenuCities } from "./MegaMenuCities";
 import { MegaMenuCategories } from "./MegaMenuCategories";
 
 interface DesktopMegaMenuItemProps {
@@ -136,14 +135,6 @@ function PublicNavbar() {
                 Buy
               </Link>
             </li>
-            {/* Mega menu: Cities (desktop only) */}
-            <DesktopMegaMenuItem
-              href="/cities"
-              label="Cities"
-              isActive={isActive("/cities")}
-            >
-              <MegaMenuCities />
-            </DesktopMegaMenuItem>
             {/* Mega menu: Categories (desktop only) */}
             <DesktopMegaMenuItem
               href="/categories"
@@ -152,26 +143,6 @@ function PublicNavbar() {
             >
               <MegaMenuCategories />
             </DesktopMegaMenuItem>
-            <li>
-              <Link
-                href="/wholesale"
-                className={navLinkClass("/wholesale")}
-                aria-current={
-                  isActive("/wholesale") ? "page" : undefined
-                }
-              >
-                Wholesale
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/blog"
-                className={navLinkClass("/blog")}
-                aria-current={isActive("/blog") ? "page" : undefined}
-              >
-                Blog
-              </Link>
-            </li>
           </ul>
         </nav>
 
