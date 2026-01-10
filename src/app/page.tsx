@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { AdCard } from "@/components/AdCard";
 import { NearbyNowSection } from "@/components/NearbyNowSection";
+import PublicNavbar from "@/components/navbar/PublicNavbar";
 
 type HomepageAd = {
   id: string;
@@ -137,40 +138,8 @@ const homepageAdsJsonLd = {
 export default function Home() {
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-900">
+      <PublicNavbar />
       <div className="mx-auto flex min-h-screen max-w-6xl flex-col px-4 pb-10 pt-4 sm:px-6 lg:px-8">
-        <header className="flex items-center justify-between gap-3 border-b border-zinc-100 pb-4">
-          <div className="flex items-center gap-2">
-            <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-zinc-900">
-                <Image src="/next.svg" alt="Jootiya logo" width={18} height={18} className="dark:invert" />
-              </div>
-              <span className="text-lg font-semibold tracking-tight">Jootiya</span>
-            </div>
-          </div>
-          <div className="hidden flex-1 items-center gap-3 md:flex">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-4 py-2 text-sm text-zinc-500 shadow-sm">
-                <span className="truncate">Search for bikes, phones, furniture</span>
-              </div>
-            </div>
-            <button className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-3 py-2 text-xs font-medium text-zinc-700 shadow-sm">
-              <span className="h-2 w-2 rounded-full bg-emerald-500" />
-              <span>Maarif, Casablanca</span>
-            </button>
-          </div>
-          <div className="flex items-center gap-3">
-            <Link href="/login" className="hidden text-sm font-medium text-zinc-700 md:inline-flex">
-              Login
-            </Link>
-            <Link
-              href="/post-ad"
-              className="inline-flex items-center justify-center rounded-full bg-zinc-900 px-4 py-2 text-sm font-medium text-zinc-50"
-            >
-              Post an ad
-            </Link>
-          </div>
-        </header>
-
         <main className="flex-1 space-y-10 pt-6">
           <section className="grid gap-6 rounded-3xl bg-white px-5 py-6 shadow-sm sm:px-8 sm:py-10 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
             <div className="space-y-4">
