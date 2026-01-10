@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { AdCard } from "@/components/AdCard";
 import { NearbyNowSection } from "@/components/NearbyNowSection";
-import PublicNavbar from "@/components/navbar/PublicNavbar";
 
 type HomepageAd = {
   id: string;
@@ -138,7 +137,6 @@ const homepageAdsJsonLd = {
 export default function Home() {
   return (
     <div className="min-h-screen bg-zinc-50 text-zinc-900">
-      <PublicNavbar />
       <div className="mx-auto flex min-h-screen max-w-6xl flex-col px-4 pb-10 pt-4 sm:px-6 lg:px-8">
         <main className="flex-1 space-y-10 pt-6">
           <section className="grid gap-6 rounded-3xl bg-white px-5 py-6 shadow-sm sm:px-8 sm:py-10 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">

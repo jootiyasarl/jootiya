@@ -114,7 +114,7 @@ function PublicNavbar() {
 
         {/* Center: Main navigation (desktop) */}
         <nav
-          aria-label="التنقل الرئيسي للموقع"
+          aria-label="Main site navigation"
           className="hidden flex-1 justify-center md:flex"
         >
           <ul className="flex items-center gap-7 text-sm font-medium text-zinc-600">
@@ -124,7 +124,7 @@ function PublicNavbar() {
                 className={navLinkClass("/sell")}
                 aria-current={isActive("/sell") ? "page" : undefined}
               >
-                بيع
+                Sell
               </Link>
             </li>
             <li>
@@ -133,13 +133,13 @@ function PublicNavbar() {
                 className={navLinkClass("/ads")}
                 aria-current={isActive("/ads") ? "page" : undefined}
               >
-                اشترِ
+                Buy
               </Link>
             </li>
             {/* Mega menu: Cities (desktop only) */}
             <DesktopMegaMenuItem
               href="/cities"
-              label="المدن"
+              label="Cities"
               isActive={isActive("/cities")}
             >
               <MegaMenuCities />
@@ -147,7 +147,7 @@ function PublicNavbar() {
             {/* Mega menu: Categories (desktop only) */}
             <DesktopMegaMenuItem
               href="/categories"
-              label="الفئات"
+              label="Categories"
               isActive={isActive("/categories")}
             >
               <MegaMenuCategories />
@@ -160,7 +160,7 @@ function PublicNavbar() {
                   isActive("/wholesale") ? "page" : undefined
                 }
               >
-                الجملة
+                Wholesale
               </Link>
             </li>
             <li>
@@ -169,7 +169,7 @@ function PublicNavbar() {
                 className={navLinkClass("/blog")}
                 aria-current={isActive("/blog") ? "page" : undefined}
               >
-                المدوّنة
+                Blog
               </Link>
             </li>
           </ul>
@@ -182,7 +182,7 @@ function PublicNavbar() {
             onClick={handlePostAdClick}
             className="inline-flex items-center justify-center whitespace-nowrap rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground shadow-sm transition-colors duration-150 hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           >
-            نشر إعلان
+            Post Ad
           </button>
 
           {userEmail ? (
@@ -195,7 +195,7 @@ function PublicNavbar() {
                 onClick={handleLogout}
                 className="inline-flex items-center rounded-full border border-zinc-200 px-4 py-1.5 text-sm font-medium text-zinc-600 transition-colors duration-150 hover:bg-zinc-50 hover:text-zinc-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-300"
               >
-                خروج
+                Logout
               </button>
             </>
           ) : (
@@ -203,7 +203,7 @@ function PublicNavbar() {
               href="/login"
               className="inline-flex items-center rounded-full border border-zinc-200 px-4 py-1.5 text-sm font-medium text-zinc-600 transition-colors duration-150 hover:bg-zinc-50 hover:text-zinc-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-300"
             >
-              دخول
+              Login
             </Link>
           )}
         </div>
