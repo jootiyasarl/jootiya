@@ -2,7 +2,11 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Eye, MessageSquare, ListOrdered, Activity } from "lucide-react";
 import { SubscriptionUpgradeCta } from "@/components/subscription/SubscriptionUpgradeCta";
-import { createSupabaseServerClient, getProfileRole } from "@/lib/supabase";
+import {
+  createSupabaseServerClient,
+  getProfileRole,
+  getServerUser,
+} from "@/lib/supabase";
 
 type DashboardOverviewAd = {
   id: string;
@@ -11,16 +15,13 @@ type DashboardOverviewAd = {
 };
 
 export default async function DashboardHomePage() {
-  const supabase = createSupabaseServerClient();
+  const user = await getServerUser();
 
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
-
-  if (userError || !user) {
+  if (!user) {
     redirect("/login?redirectTo=/dashboard");
   }
+
+  const supabase = createSupabaseServerClient();
 
   const role = await getProfileRole(user.id);
 

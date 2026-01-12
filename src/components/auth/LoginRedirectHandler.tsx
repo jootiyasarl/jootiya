@@ -18,9 +18,34 @@ export function LoginRedirectHandler() {
 
       if (!isActive || !session) return;
 
+      const email = session.user?.email ?? "";
+      const userId = session.user?.id;
+
+      if (!userId) return;
+
+      try {
+        const { data: existingProfile, error: profileError } = await supabase
+          .from("profiles")
+          .select("id, role")
+          .eq("id", userId)
+          .maybeSingle();
+
+        if (!profileError && !existingProfile) {
+          const defaultRole =
+            email === "jootiyasarl@gmail.com" ? "admin" : "seller";
+
+          await supabase.from("profiles").insert({
+            id: userId,
+            email,
+            role: defaultRole,
+          });
+        }
+      } catch (error) {
+        console.error("Failed to ensure user profile", error);
+      }
+
       const redirectParam =
         searchParams.get("redirect") ?? searchParams.get("redirectTo");
-      const email = session.user?.email ?? "";
 
       let target: string;
 
