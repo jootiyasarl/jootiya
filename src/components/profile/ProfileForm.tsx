@@ -226,7 +226,7 @@ export function ProfileForm() {
 
       <form
         onSubmit={handleProfileSubmit}
-        className="rounded-2xl border bg-white p-6"
+        className="rounded-2xl border bg-white p-4 sm:p-6"
       >
         <div className="flex flex-col gap-1">
           <h2 className="text-sm font-semibold text-zinc-900">
@@ -299,7 +299,7 @@ export function ProfileForm() {
 
       <form
         onSubmit={handlePasswordSubmit}
-        className="rounded-2xl border bg-white p-6"
+        className="rounded-2xl border bg-white p-4 sm:p-6"
       >
         <div className="flex flex-col gap-1">
           <h2 className="text-sm font-semibold text-zinc-900">
@@ -356,7 +356,7 @@ export function ProfileForm() {
         </div>
       </form>
 
-      <div className="rounded-2xl border border-red-200 bg-red-50 p-6">
+      <div className="rounded-2xl border border-red-200 bg-red-50 p-4 sm:p-6">
         <div className="flex flex-col gap-1">
           <h2 className="text-sm font-semibold text-red-700">
             Delete account
@@ -367,7 +367,7 @@ export function ProfileForm() {
           </p>
         </div>
 
-        <div className="mt-4 flex justify-between gap-2">
+        <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:justify-between">
           <p className="max-w-sm text-xs text-red-600">
             This action is irreversible once fully implemented in your
             backend. Make sure you have exported any data you need

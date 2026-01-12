@@ -62,8 +62,8 @@ export default async function DashboardHomePage() {
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-4">
-        <div className="rounded-2xl border bg-white p-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="rounded-2xl border bg-white p-4 sm:p-5 lg:p-6">
           <div className="flex items-center justify-between gap-2">
             <span className="text-xs font-medium uppercase tracking-[0.16em] text-zinc-500">
               Total ads
@@ -76,7 +76,7 @@ export default async function DashboardHomePage() {
           </p>
         </div>
 
-        <div className="rounded-2xl border bg-white p-4">
+        <div className="rounded-2xl border bg-white p-4 sm:p-5 lg:p-6">
           <div className="flex items-center justify-between gap-2">
             <span className="text-xs font-medium uppercase tracking-[0.16em] text-zinc-500">
               Active ads
@@ -89,7 +89,7 @@ export default async function DashboardHomePage() {
           </p>
         </div>
 
-        <div className="rounded-2xl border bg-white p-4">
+        <div className="rounded-2xl border bg-white p-4 sm:p-5 lg:p-6">
           <div className="flex items-center justify-between gap-2">
             <span className="text-xs font-medium uppercase tracking-[0.16em] text-zinc-500">
               Views
@@ -102,7 +102,7 @@ export default async function DashboardHomePage() {
           </p>
         </div>
 
-        <div className="rounded-2xl border bg-white p-4">
+        <div className="rounded-2xl border bg-white p-4 sm:p-5 lg:p-6">
           <div className="flex items-center justify-between gap-2">
             <span className="text-xs font-medium uppercase tracking-[0.16em] text-zinc-500">
               Messages
@@ -118,8 +118,8 @@ export default async function DashboardHomePage() {
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-2xl border bg-white p-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="rounded-2xl border bg-white p-4 sm:p-5 lg:p-6">
           <h2 className="text-sm font-semibold text-zinc-900">My ads</h2>
           <p className="mt-1 text-xs text-zinc-500">
             Review all of your active and pending listings.
@@ -134,7 +134,7 @@ export default async function DashboardHomePage() {
           </div>
         </div>
 
-        <div className="rounded-2xl border bg-white p-4">
+        <div className="rounded-2xl border bg-white p-4 sm:p-5 lg:p-6">
           <h2 className="text-sm font-semibold text-zinc-900">Analytics</h2>
           <p className="mt-1 text-xs text-zinc-500">
             Understand how buyers are engaging with your ads.
@@ -149,7 +149,7 @@ export default async function DashboardHomePage() {
           </div>
         </div>
 
-        <div className="rounded-2xl border bg-white p-4">
+        <div className="rounded-2xl border bg-white p-4 sm:p-5 lg:p-6">
           <h2 className="text-sm font-semibold text-zinc-900">
             Profile & subscription
           </h2>

@@ -133,7 +133,7 @@ export default function SellerAnalyticsPage() {
   const hasData = ads.length > 0;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 md:space-y-8">
       <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
         <div>
           <h1 className="text-xl font-semibold text-zinc-900">Seller analytics</h1>
@@ -148,7 +148,7 @@ export default function SellerAnalyticsPage() {
       </div>
 
       {loading ? (
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <div className="h-24 animate-pulse rounded-2xl bg-zinc-100" />
           <div className="h-24 animate-pulse rounded-2xl bg-zinc-100" />
           <div className="h-24 animate-pulse rounded-2xl bg-zinc-100" />
@@ -169,8 +169,8 @@ export default function SellerAnalyticsPage() {
         </div>
       ) : (
         <>
-          <div className="grid gap-4 md:grid-cols-3">
-            <div className="rounded-2xl border bg-white p-4">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="rounded-2xl border bg-white p-4 sm:p-5 lg:p-6">
               <div className="flex items-center justify-between gap-2">
                 <span className="text-xs font-medium uppercase tracking-[0.16em] text-zinc-500">
                   Total ads
@@ -219,7 +219,7 @@ export default function SellerAnalyticsPage() {
           </div>
 
           <div className="grid gap-4 md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
-            <div className="rounded-2xl border bg-white p-4">
+            <div className="rounded-2xl border bg-white p-4 sm:p-5 lg:p-6">
               <div className="flex items-center justify-between gap-2">
                 <div>
                   <h2 className="text-sm font-semibold text-zinc-900">

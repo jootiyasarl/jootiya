@@ -174,7 +174,7 @@ export default function MyAdsPage() {
   const canBoost = false;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 md:space-y-8">
       <div className="space-y-3">
         <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
           <div>
@@ -184,7 +184,7 @@ export default function MyAdsPage() {
             </p>
           </div>
           <Button
-            className="sm:w-auto"
+            className="w-full sm:w-auto"
             onClick={() => router.push("/dashboard/ads/create")}
           >
             Create new ad
@@ -264,7 +264,7 @@ export default function MyAdsPage() {
           {error}
         </div>
       ) : !hasAds ? (
-        <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-zinc-200 bg-white px-6 py-10 text-center">
+        <div className="mx-auto flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-zinc-200 bg-white px-4 py-8 text-center sm:px-6 sm:py-10 max-w-md">
           <p className="text-sm font-medium text-zinc-900">
             You haven't published any ads yet.
           </p>
