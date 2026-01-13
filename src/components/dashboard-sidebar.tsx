@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, PlusCircle, BarChart3, BadgeDollarSign, User2 } from "lucide-react";
+import { LayoutDashboard, PlusCircle, User2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -15,16 +15,6 @@ const navItems = [
     label: "Create Ad",
     href: "/dashboard/ads/create",
     icon: PlusCircle,
-  },
-  {
-    label: "Analytics",
-    href: "/dashboard/analytics",
-    icon: BarChart3,
-  },
-  {
-    label: "Subscription",
-    href: "/dashboard/subscription",
-    icon: BadgeDollarSign,
   },
   {
     label: "Profile",
