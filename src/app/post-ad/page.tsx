@@ -141,7 +141,11 @@ export default function PostAdPage() {
 
       if (!isMounted) return;
 
+      // Instead of using a separate, legacy form on /post-ad, send
+      // authenticated sellers into the main multi-step ad creation flow
+      // inside the dashboard so the experience is consistent.
       setCheckingAuth(false);
+      router.replace("/dashboard/ads/create");
     };
 
     void checkAuth();
