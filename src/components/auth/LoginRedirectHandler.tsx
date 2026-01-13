@@ -24,21 +24,32 @@ export function LoginRedirectHandler() {
       if (!userId) return;
 
       try {
+        const desiredRole =
+          email === "jootiyasarl@gmail.com" ? "admin" : "seller";
+
         const { data: existingProfile, error: profileError } = await supabase
           .from("profiles")
           .select("id, role")
           .eq("id", userId)
           .maybeSingle();
 
-        if (!profileError && !existingProfile) {
-          const defaultRole =
-            email === "jootiyasarl@gmail.com" ? "admin" : "seller";
+        if (!profileError) {
+          if (!existingProfile) {
+            await supabase.from("profiles").insert({
+              id: userId,
+              email,
+              role: desiredRole,
+            });
+          } else {
+            const currentRole = (existingProfile.role ?? "").toString().trim();
 
-          await supabase.from("profiles").insert({
-            id: userId,
-            email,
-            role: defaultRole,
-          });
+            if (currentRole !== desiredRole) {
+              await supabase
+                .from("profiles")
+                .update({ role: desiredRole })
+                .eq("id", userId);
+            }
+          }
         }
       } catch (error) {
         console.error("Failed to ensure user profile", error);

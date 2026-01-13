@@ -101,7 +101,7 @@ export default function CreateAdPage() {
         const { data, error: selectError } = await supabase
           .from("categories")
           .select("id, name, slug")
-          .order("popularity", { ascending: false })
+          .order("name", { ascending: true })
           .returns<CategoryOption[]>();
 
         if (selectError) {

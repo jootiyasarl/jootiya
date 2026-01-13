@@ -92,6 +92,13 @@ function PublicNavbar() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch (error) {
+      console.error("Failed to clear auth session", error);
+    }
+
     setUserEmail(null);
     router.replace("/");
   };
