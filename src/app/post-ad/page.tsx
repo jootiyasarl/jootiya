@@ -87,6 +87,60 @@ export default function PostAdPage() {
         return;
       }
 
+      // User has a client-side session; make sure their profile role is
+      // normalized and the session is synced to server cookies so that
+      // middleware and server components see them as logged in.
+      try {
+        const email = session.user?.email ?? "";
+        const userId = session.user?.id;
+
+        if (userId) {
+          const desiredRole =
+            email === "jootiyasarl@gmail.com" ? "admin" : "seller";
+
+          const { data: existingProfile, error: profileError } = await supabase
+            .from("profiles")
+            .select("id, role")
+            .eq("id", userId)
+            .maybeSingle();
+
+          if (!profileError) {
+            if (!existingProfile) {
+              await supabase.from("profiles").insert({
+                id: userId,
+                email,
+                role: desiredRole,
+              });
+            } else {
+              const currentRole = (existingProfile.role ?? "").toString().trim();
+
+              if (currentRole !== desiredRole) {
+                await supabase
+                  .from("profiles")
+                  .update({ role: desiredRole })
+                  .eq("id", userId);
+              }
+            }
+          }
+
+          try {
+            await fetch("/api/auth/set-session", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ session }),
+            });
+          } catch (error) {
+            console.error("Failed to sync auth session for /post-ad", error);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to ensure user profile for /post-ad", error);
+      }
+
+      if (!isMounted) return;
+
       setCheckingAuth(false);
     };
 
