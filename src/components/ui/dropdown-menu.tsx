@@ -57,7 +57,9 @@ export function DropdownMenu({
 
   return (
     <DropdownMenuContext.Provider value={value}>
-      {children}
+      <div className="relative inline-flex items-stretch">
+        {children}
+      </div>
     </DropdownMenuContext.Provider>
   );
 }
@@ -103,7 +105,7 @@ export const DropdownMenuContent = React.forwardRef<
       ref={ref}
       role="menu"
       className={cn(
-        "relative z-50 mt-1 min-w-[8rem] rounded-md border bg-popover p-1 text-popover-foreground shadow-md",
+        "absolute right-0 top-full z-50 mt-1 min-w-[9rem] rounded-md border border-zinc-200 bg-white p-1 text-sm text-zinc-800 shadow-lg",
         className,
       )}
       {...props}
@@ -120,19 +122,35 @@ export interface DropdownMenuItemProps
 export const DropdownMenuItem = React.forwardRef<
   HTMLDivElement,
   DropdownMenuItemProps
->(({ className, children, ...props }, ref) => (
-  <div
-    ref={ref}
-    role="menuitem"
-    className={cn(
-      "flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground",
-      className,
-    )}
-    {...props}
-  >
-    {children}
-  </div>
-));
+>(({ className, children, onClick, ...props }, ref) => {
+  const { setOpen } = useDropdownMenuContext();
+
+  // Hide any menu item labeled "Subscription" so the unused
+  // subscription entry disappears from account menus.
+  if (typeof children === "string" && children.trim().toLowerCase() === "subscription") {
+    return null;
+  }
+
+  const handleClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
+    onClick?.(event);
+    setOpen(false);
+  };
+
+  return (
+    <div
+      ref={ref}
+      role="menuitem"
+      className={cn(
+        "flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-zinc-100 hover:text-zinc-900",
+        className,
+      )}
+      onClick={handleClick}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+});
 DropdownMenuItem.displayName = "DropdownMenuItem";
 
 export interface DropdownMenuLabelProps
