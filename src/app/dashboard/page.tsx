@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Eye, MessageSquare, ListOrdered, Activity } from "lucide-react";
-import { SubscriptionUpgradeCta } from "@/components/subscription/SubscriptionUpgradeCta";
+import { Eye, ListOrdered, Activity } from "lucide-react";
 import {
   createSupabaseServerClient,
   getProfileRole,
@@ -32,7 +31,6 @@ export default async function DashboardHomePage() {
   let totalAds = 0;
   let activeAds = 0;
   let totalViews = 0;
-  const messagesCount = 0;
 
   const { data: ads, error: adsError } = await supabase
     .from("ads")
@@ -54,15 +52,31 @@ export default async function DashboardHomePage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-1">
-        <h1 className="text-xl font-semibold text-zinc-900">Seller dashboard</h1>
-        <p className="text-sm text-zinc-500">
-          Keep track of your listings, performance, and subscription in one place.
-        </p>
+    <div className="space-y-6 sm:space-y-8">
+      <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+        <div className="space-y-1">
+          <h1 className="text-xl font-semibold text-zinc-900">Seller dashboard</h1>
+          <p className="text-sm text-zinc-500">
+            Manage your listings and profile in one simple place.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Link
+            href="/dashboard/ads/create"
+            className="inline-flex h-9 items-center justify-center rounded-md bg-zinc-900 px-4 text-xs font-medium text-zinc-50 shadow-sm transition hover:bg-zinc-800"
+          >
+            Create new ad
+          </Link>
+          <Link
+            href="/dashboard/ads"
+            className="inline-flex h-9 items-center justify-center rounded-md border border-zinc-200 bg-white px-4 text-xs font-medium text-zinc-800 shadow-sm transition hover:bg-zinc-50"
+          >
+            View my ads
+          </Link>
+        </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div className="rounded-2xl border bg-white p-4 sm:p-5 lg:p-6">
           <div className="flex items-center justify-between gap-2">
             <span className="text-xs font-medium uppercase tracking-[0.16em] text-zinc-500">
@@ -72,7 +86,7 @@ export default async function DashboardHomePage() {
           </div>
           <p className="mt-3 text-2xl font-semibold text-zinc-900">{totalAds}</p>
           <p className="mt-1 text-xs text-zinc-500">
-            Across all statuses except deleted.
+            All your listings except those marked as deleted.
           </p>
         </div>
 
@@ -85,7 +99,7 @@ export default async function DashboardHomePage() {
           </div>
           <p className="mt-3 text-2xl font-semibold text-zinc-900">{activeAds}</p>
           <p className="mt-1 text-xs text-zinc-500">
-            Published listings visible to buyers.
+            Currently visible to buyers.
           </p>
         </div>
 
@@ -101,79 +115,45 @@ export default async function DashboardHomePage() {
             Sum of views across all your ads.
           </p>
         </div>
-
-        <div className="rounded-2xl border bg-white p-4 sm:p-5 lg:p-6">
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-xs font-medium uppercase tracking-[0.16em] text-zinc-500">
-              Messages
-            </span>
-            <MessageSquare className="h-4 w-4 text-amber-500" />
-          </div>
-          <p className="mt-3 text-2xl font-semibold text-zinc-900">
-            {messagesCount}
-          </p>
-          <p className="mt-1 text-xs text-zinc-500">
-            Conversation analytics will appear once messaging is enabled.
-          </p>
-        </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2">
         <div className="rounded-2xl border bg-white p-4 sm:p-5 lg:p-6">
-          <h2 className="text-sm font-semibold text-zinc-900">My ads</h2>
+          <h2 className="text-sm font-semibold text-zinc-900">Manage my ads</h2>
           <p className="mt-1 text-xs text-zinc-500">
-            Review all of your active and pending listings.
+            See all your listings, update details, or pause ads that are no longer needed.
           </p>
-          <div className="mt-3">
+          <div className="mt-3 flex flex-wrap gap-2">
             <Link
               href="/dashboard/ads"
               className="inline-flex h-8 items-center justify-center rounded-md bg-zinc-900 px-3 text-xs font-medium text-zinc-50 shadow-sm transition hover:bg-zinc-800"
             >
               Go to My ads
             </Link>
-          </div>
-        </div>
-
-        <div className="rounded-2xl border bg-white p-4 sm:p-5 lg:p-6">
-          <h2 className="text-sm font-semibold text-zinc-900">Analytics</h2>
-          <p className="mt-1 text-xs text-zinc-500">
-            Understand how buyers are engaging with your ads.
-          </p>
-          <div className="mt-3">
             <Link
-              href="/dashboard/analytics"
+              href="/dashboard/ads/create"
               className="inline-flex h-8 items-center justify-center rounded-md border border-zinc-200 bg-white px-3 text-xs font-medium text-zinc-800 shadow-sm transition hover:bg-zinc-50"
             >
-              View analytics
+              Create new ad
             </Link>
           </div>
         </div>
 
         <div className="rounded-2xl border bg-white p-4 sm:p-5 lg:p-6">
-          <h2 className="text-sm font-semibold text-zinc-900">
-            Profile & subscription
-          </h2>
+          <h2 className="text-sm font-semibold text-zinc-900">Profile</h2>
           <p className="mt-1 text-xs text-zinc-500">
-            Update your contact details and manage your plan.
+            Update your contact details so buyers can reach you easily.
           </p>
-          <div className="mt-3 flex flex-wrap gap-2">
+          <div className="mt-3">
             <Link
               href="/dashboard/profile"
               className="inline-flex h-8 items-center justify-center rounded-md border border-zinc-200 bg-white px-3 text-xs font-medium text-zinc-800 shadow-sm transition hover:bg-zinc-50"
             >
               Edit profile
             </Link>
-            <Link
-              href="/dashboard/subscription"
-              className="inline-flex h-8 items-center justify-center rounded-md bg-amber-900 px-3 text-xs font-medium text-amber-50 shadow-sm transition hover:bg-amber-800"
-            >
-              View plan
-            </Link>
           </div>
         </div>
       </div>
-
-      <SubscriptionUpgradeCta />
     </div>
   );
 }
