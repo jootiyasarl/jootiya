@@ -7,32 +7,20 @@ export async function POST(request: Request) {
 
     const {
       title,
-      description,
       price,
       currency,
       city,
       neighborhood,
-      latitude,
-      longitude,
-      searchRadiusKm,
-      isWholesale,
       categorySlug,
       phone,
       whatsapp,
-      wholesalePrice,
-      minQuantity,
+      description,
+      searchRadiusKm,
     } = body ?? {};
 
     if (typeof title !== "string" || !title.trim()) {
       return NextResponse.json(
         { error: "Title is required." },
-        { status: 400 },
-      );
-    }
-
-    if (typeof description !== "string" || !description.trim()) {
-      return NextResponse.json(
-        { error: "Description is required." },
         { status: 400 },
       );
     }
@@ -52,15 +40,20 @@ export async function POST(request: Request) {
       );
     }
 
-    const radiusNumber = Number(searchRadiusKm);
-    const effectiveRadius =
-      Number.isFinite(radiusNumber) && radiusNumber > 0
-        ? radiusNumber
-        : null;
+    const trimmedPhone =
+      typeof phone === "string" && phone.trim() ? phone.trim() : "";
+    const trimmedWhatsapp =
+      typeof whatsapp === "string" && whatsapp.trim() ? whatsapp.trim() : "";
+
+    if (!trimmedPhone && !trimmedWhatsapp) {
+      return NextResponse.json(
+        { error: "Please provide a phone number or WhatsApp." },
+        { status: 400 },
+      );
+    }
 
     const result = await createAd({
       title: title.trim(),
-      description: description.trim(),
       price: priceNumber,
       currency:
         typeof currency === "string" && currency.trim()
@@ -71,38 +64,22 @@ export async function POST(request: Request) {
         typeof neighborhood === "string" && neighborhood.trim()
           ? neighborhood.trim()
           : null,
-      latitude:
-        typeof latitude === "number" && Number.isFinite(latitude)
-          ? latitude
+      description:
+        typeof description === "string" && description.trim()
+          ? description.trim()
           : null,
-      longitude:
-        typeof longitude === "number" && Number.isFinite(longitude)
-          ? longitude
-          : null,
-      searchRadiusKm: effectiveRadius,
-      isWholesale: Boolean(isWholesale),
+      searchRadiusKm:
+        typeof searchRadiusKm === "number" &&
+        Number.isFinite(searchRadiusKm) &&
+        searchRadiusKm > 0
+          ? searchRadiusKm
+          : undefined,
       categorySlug:
         typeof categorySlug === "string" && categorySlug.trim()
           ? categorySlug.trim()
           : undefined,
-      phone:
-        typeof phone === "string" && phone.trim() ? phone.trim() : undefined,
-      whatsapp:
-        typeof whatsapp === "string" && whatsapp.trim()
-          ? whatsapp.trim()
-          : undefined,
-      wholesalePrice:
-        typeof wholesalePrice === "number" &&
-        Number.isFinite(wholesalePrice) &&
-        wholesalePrice > 0
-          ? wholesalePrice
-          : null,
-      minQuantity:
-        typeof minQuantity === "number" &&
-        Number.isFinite(minQuantity) &&
-        minQuantity > 0
-          ? Math.floor(minQuantity)
-          : null,
+      phone: trimmedPhone || undefined,
+      whatsapp: trimmedWhatsapp || undefined,
     });
 
     return NextResponse.json(result, { status: 201 });

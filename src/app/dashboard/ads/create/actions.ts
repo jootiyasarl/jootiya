@@ -10,10 +10,10 @@ type AdStatus = "pending" | "active" | "rejected";
 
 export interface CreateAdPayload {
   title: string;
-  description: string;
   price: number;
-  currency: string;
   city: string;
+  description?: string | null;
+  currency?: string | null;
   neighborhood?: string | null;
   latitude?: number | null;
   longitude?: number | null;
@@ -89,6 +89,16 @@ export async function createAd(input: CreateAdPayload): Promise<CreateAdResult> 
 
   const status: AdStatus = "pending";
 
+  const normalizedDescription =
+    typeof description === "string" && description.trim()
+      ? description.trim()
+      : null;
+
+  const finalCurrency =
+    typeof currency === "string" && currency.trim()
+      ? currency.trim()
+      : "MAD";
+
   const numericRadius =
     typeof searchRadiusKm === "number" &&
     Number.isFinite(searchRadiusKm) &&
@@ -103,9 +113,9 @@ export async function createAd(input: CreateAdPayload): Promise<CreateAdResult> 
     .insert({
       seller_id: user.id,
       title,
-      description,
+      description: normalizedDescription,
       price,
-      currency,
+      currency: finalCurrency,
       city,
       neighborhood: neighborhood ?? null,
       latitude,
