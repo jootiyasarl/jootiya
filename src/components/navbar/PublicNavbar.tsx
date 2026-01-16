@@ -83,11 +83,19 @@ function PublicNavbar() {
       data: { session },
     } = await supabase.auth.getSession();
 
-    if (session) {
-      router.push("/post-ad");
-    } else {
-      router.push("/login?redirect=/post-ad");
+    const email = session?.user?.email ?? "";
+
+    if (!session) {
+      router.push("/login?redirectTo=/dashboard/ads/create");
+      return;
     }
+
+    if (email === "jootiyasarl@gmail.com") {
+      router.push("/admin");
+      return;
+    }
+
+    router.push("/dashboard/ads/create");
   };
 
   const handleLogout = async () => {
