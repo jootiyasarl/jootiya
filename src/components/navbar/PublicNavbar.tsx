@@ -126,10 +126,10 @@ function PublicNavbar() {
           </Link>
         </div>
 
-        {/* Center: Main navigation (desktop) */}
+        {/* Center: Main navigation (now visible on mobile and desktop) */}
         <nav
           aria-label="Main site navigation"
-          className="hidden flex-1 justify-center md:flex"
+          className="flex flex-1 justify-center"
         >
           <ul className="flex items-center gap-7 text-sm font-medium text-zinc-600">
             <li>
