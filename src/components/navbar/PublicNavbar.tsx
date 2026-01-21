@@ -67,25 +67,38 @@ function PublicNavbar() {
   return (
     <header className="sticky top-0 z-40 border-b border-zinc-100 bg-white/80 backdrop-blur">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center gap-6">
+        <div className="flex flex-col gap-3 py-2 sm:h-16 sm:flex-row sm:items-center sm:gap-6">
           {/* Left: Logo + primary action */}
-          <div className="flex items-center gap-4">
-            <Link href="/" className="flex items-center gap-2">
+          <div className="flex w-full items-center justify-between sm:w-auto sm:justify-start sm:gap-4">
+            {/* Mobile hamburger icon */}
+            <button
+              type="button"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-zinc-200 text-xl text-zinc-700 sm:hidden"
+              aria-label="Ouvrir le menu"
+            >
+              ☰
+            </button>
+            <Link
+              href="/"
+              className="flex-1 text-center sm:flex-none sm:text-left"
+            >
               <span className="text-2xl font-semibold tracking-tight text-orange-500">
                 jootiya
               </span>
             </Link>
+            {/* Placeholder to keep logo centered on mobile */}
+            <span className="inline-block h-9 w-9 sm:hidden" />
             <button
               type="button"
               onClick={handlePostAdClick}
-              className="inline-flex items-center justify-center whitespace-nowrap rounded-full bg-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors duration-150 hover:bg-orange-600 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-orange-400"
+              className="hidden items-center justify-center whitespace-nowrap rounded-full bg-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors duration-150 hover:bg-orange-600 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-orange-400 sm:inline-flex"
             >
               Déposer une annonce
             </button>
           </div>
 
           {/* Center: Search bar */}
-          <div className="flex flex-1 justify-center">
+          <div className="flex w-full sm:flex-1 sm:justify-center">
             <div className="flex w-full max-w-xl items-center rounded-full bg-zinc-100 px-4 py-2 text-sm text-zinc-500 shadow-inner">
               <input
                 type="search"
@@ -157,18 +170,8 @@ function PublicNavbar() {
         </div>
 
         {/* Category menu */}
-        <nav className="flex h-10 items-center justify-between text-sm text-zinc-700">
-          {/* Mobile: simple menu button */}
-          <button
-            type="button"
-            className="inline-flex items-center gap-2 text-xs font-medium text-zinc-700 sm:hidden"
-          >
-            <span className="text-lg">☰</span>
-            <span>Menu</span>
-          </button>
-
-          {/* Desktop: full category list */}
-          <ul className="hidden flex-wrap gap-4 text-xs sm:flex sm:text-sm">
+        <nav className="mt-1 flex h-10 items-center text-sm text-zinc-700 overflow-x-auto">
+          <ul className="flex flex-nowrap gap-4 whitespace-nowrap text-xs sm:text-sm">
             {[
               "Immobilier",
               "Véhicules",
