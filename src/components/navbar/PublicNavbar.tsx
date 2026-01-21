@@ -10,6 +10,21 @@ function PublicNavbar() {
   const router = useRouter();
 
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const categoryLabels = [
+    "Immobilier",
+    "Véhicules",
+    "Vacances",
+    "Emploi",
+    "Mode",
+    "Maison & Jardin",
+    "Famille",
+    "Électronique",
+    "Loisirs",
+    "Autres",
+    "Bons plans !",
+  ] as const;
 
   useEffect(() => {
     let isMounted = true;
@@ -75,6 +90,8 @@ function PublicNavbar() {
               type="button"
               className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-zinc-200 text-xl text-zinc-700 sm:hidden"
               aria-label="Ouvrir le menu"
+              aria-expanded={isMobileMenuOpen}
+              onClick={() => setIsMobileMenuOpen((open) => !open)}
             >
               ☰
             </button>
@@ -169,22 +186,103 @@ function PublicNavbar() {
           </div>
         </div>
 
+        {/* Mobile menu panel */}
+        {isMobileMenuOpen ? (
+          <div className="mt-2 space-y-3 rounded-2xl border border-zinc-100 bg-white p-4 text-sm shadow-lg sm:hidden">
+            <div className="flex flex-wrap gap-3 text-xs font-medium text-zinc-700">
+              <button
+                type="button"
+                className="inline-flex items-center gap-2 rounded-full border border-zinc-200 px-3 py-1.5 hover:border-orange-400 hover:text-orange-600"
+              >
+                <span className="text-lg">🔔</span>
+                <span>Mes recherches</span>
+              </button>
+              <button
+                type="button"
+                className="inline-flex items-center gap-2 rounded-full border border-zinc-200 px-3 py-1.5 hover:border-orange-400 hover:text-orange-600"
+              >
+                <span className="text-lg">❤</span>
+                <span>Favoris</span>
+              </button>
+              <button
+                type="button"
+                className="inline-flex items-center gap-2 rounded-full border border-zinc-200 px-3 py-1.5 hover:border-orange-400 hover:text-orange-600"
+              >
+                <span className="text-lg">💬</span>
+                <span>Messages</span>
+              </button>
+              <button
+                type="button"
+                onClick={handlePostAdClick}
+                className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-orange-500 px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-orange-600"
+              >
+                Déposer une annonce
+              </button>
+            </div>
+
+            <div className="flex items-center justify-between border-t border-zinc-100 pt-3 text-xs">
+              {userEmail ? (
+                <div className="flex flex-col gap-1">
+                  <Link
+                    href={
+                      userEmail === "jootiyasarl@gmail.com" ? "/admin" : "/dashboard"
+                    }
+                    className="inline-flex items-center gap-2 text-zinc-700 hover:text-zinc-900"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <span className="text-lg">👤</span>
+                    <span>Mon compte</span>
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      await handleLogout();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="self-start text-[11px] text-zinc-400 hover:text-zinc-700"
+                  >
+                    Se déconnecter
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  href="/login"
+                  className="inline-flex items-center gap-2 text-zinc-700 hover:text-zinc-900"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <span className="text-lg">👤</span>
+                  <span>Se connecter</span>
+                </Link>
+              )}
+            </div>
+
+            <div className="border-t border-zinc-100 pt-3">
+              <p className="text-[11px] font-medium uppercase tracking-wide text-zinc-500">
+                Catégories
+              </p>
+              <div className="mt-2 flex flex-wrap gap-2 text-xs">
+                {categoryLabels.map((label, index) => (
+                  <button
+                    key={label}
+                    type="button"
+                    className={cn(
+                      "rounded-full border border-zinc-200 px-3 py-1 text-zinc-700 hover:border-orange-400 hover:text-orange-600",
+                      index === 10 &&
+                        "border-orange-500 font-semibold text-orange-600",
+                    )}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : null}
+
         {/* Category menu */}
         <nav className="mt-1 flex h-10 items-center text-sm text-zinc-700 overflow-x-auto">
           <ul className="flex flex-nowrap gap-4 whitespace-nowrap text-xs sm:text-sm">
-            {[
-              "Immobilier",
-              "Véhicules",
-              "Vacances",
-              "Emploi",
-              "Mode",
-              "Maison & Jardin",
-              "Famille",
-              "Électronique",
-              "Loisirs",
-              "Autres",
-              "Bons plans !",
-            ].map((label, index) => (
+            {categoryLabels.map((label, index) => (
               <li key={label}>
                 <button
                   type="button"
