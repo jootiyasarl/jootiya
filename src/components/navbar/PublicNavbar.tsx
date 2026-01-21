@@ -157,8 +157,18 @@ function PublicNavbar() {
         </div>
 
         {/* Category menu */}
-        <nav className="flex h-10 items-center text-sm text-zinc-700">
-          <ul className="flex flex-wrap gap-4 text-xs sm:text-sm">
+        <nav className="flex h-10 items-center justify-between text-sm text-zinc-700">
+          {/* Mobile: simple menu button */}
+          <button
+            type="button"
+            className="inline-flex items-center gap-2 text-xs font-medium text-zinc-700 sm:hidden"
+          >
+            <span className="text-lg">☰</span>
+            <span>Menu</span>
+          </button>
+
+          {/* Desktop: full category list */}
+          <ul className="hidden flex-wrap gap-4 text-xs sm:flex sm:text-sm">
             {[
               "Immobilier",
               "Véhicules",
