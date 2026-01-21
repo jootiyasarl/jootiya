@@ -8,7 +8,7 @@ import { SubmitButton } from "@/components/submit-button";
 import { createSupabaseServerClient, setAuthSession } from "@/lib/supabase";
 
 export const metadata: Metadata = {
-  title: "Register | Jootiya",
+  title: "Inscription | Jootiya",
 };
 
 interface RegisterPageProps {
@@ -26,7 +26,7 @@ async function registerAction(formData: FormData) {
 
   if (typeof email !== "string" || typeof password !== "string") {
     const params = new URLSearchParams();
-    params.set("error", "Please enter both email and password.");
+    params.set("error", "Veuillez saisir une adresse e-mail et un mot de passe.");
     redirect(`/register?${params.toString()}`);
   }
 
@@ -37,7 +37,7 @@ async function registerAction(formData: FormData) {
     const params = new URLSearchParams();
     params.set(
       "error",
-      "Please provide a valid email and a password with at least 8 characters.",
+      "Veuillez fournir une adresse e-mail valide et un mot de passe d'au moins 8 caractères.",
     );
     redirect(`/register?${params.toString()}`);
   }
@@ -51,7 +51,7 @@ async function registerAction(formData: FormData) {
 
   if (error || !data.user) {
     const params = new URLSearchParams();
-    params.set("error", error?.message ?? "Failed to create account.");
+    params.set("error", error?.message ?? "Échec de la création du compte.");
     redirect(`/register?${params.toString()}`);
   }
 
@@ -70,7 +70,7 @@ async function registerAction(formData: FormData) {
 
   if (profileError) {
     const params = new URLSearchParams();
-    params.set("error", "Failed to save your profile.");
+    params.set("error", "Échec de l'enregistrement de votre profil.");
     redirect(`/register?${params.toString()}`);
   }
 
@@ -82,7 +82,7 @@ async function registerAction(formData: FormData) {
   const params = new URLSearchParams();
   params.set(
     "message",
-    "Account created. Please check your email to confirm your address, then sign in.",
+    "Compte créé. Veuillez vérifier votre e-mail pour confirmer votre adresse, puis connectez-vous.",
   );
   redirect(`/login?${params.toString()}`);
 }
@@ -98,32 +98,33 @@ export default function RegisterPage({ searchParams }: RegisterPageProps) {
       <div className="mx-auto flex min-h-screen w-full max-w-5xl flex-col justify-center px-4 py-10 md:flex-row md:items-center md:gap-16">
         <div className="mb-10 md:mb-0 md:flex-1">
           <div className="inline-flex items-center rounded-full border border-zinc-200 bg-white px-3 py-1 text-xs font-medium text-zinc-600 shadow-sm">
-            Marketplace SaaS onboarding
+            Onboarding pour une marketplace SaaS
           </div>
           <h1 className="mt-4 text-3xl font-semibold tracking-tight text-zinc-900 md:text-4xl">
-            Create your marketplace account
+            Créez votre compte marketplace
           </h1>
           <p className="mt-3 text-sm text-zinc-600 md:text-base">
-            Join Jootiya to buy and sell safely. Use your email to create a secure
-            seller account powered by Supabase Auth.
+            Rejoignez Jootiya pour acheter et vendre en toute sécurité. Utilisez
+            votre e-mail pour créer un compte vendeur sécurisé propulsé par
+            Supabase Auth.
           </p>
 
           <div className="mt-6 grid gap-3 text-sm text-zinc-600 md:grid-cols-2">
             <div className="flex items-start gap-2">
               <div className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              <p>Email + password authentication with modern security.</p>
+              <p>Authentification e-mail + mot de passe avec une sécurité moderne.</p>
             </div>
             <div className="flex items-start gap-2">
               <div className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              <p>No spam. You control your notifications.</p>
+              <p>Pas de spam. Vous contrôlez vos notifications.</p>
             </div>
             <div className="flex items-start gap-2">
               <div className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              <p>Designed for professional sellers in Morocco.</p>
+              <p>Conçu pour les vendeurs professionnels au Maroc.</p>
             </div>
             <div className="flex items-start gap-2">
               <div className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              <p>Backed by modern infrastructure and best practices.</p>
+              <p>Reposant sur une infrastructure moderne et des bonnes pratiques.</p>
             </div>
           </div>
         </div>
@@ -131,9 +132,9 @@ export default function RegisterPage({ searchParams }: RegisterPageProps) {
         <div className="md:flex-1">
           <Card className="border bg-white">
             <CardHeader className="flex flex-col gap-1 px-4 pt-4">
-              <h2 className="text-sm font-semibold text-zinc-900">Register</h2>
+              <h2 className="text-sm font-semibold text-zinc-900">Inscription</h2>
               <p className="text-xs text-zinc-500">
-                Create your seller account with email and password.
+                Créez votre compte vendeur avec e-mail et mot de passe.
               </p>
             </CardHeader>
             <CardContent className="px-4 pb-4">
@@ -151,7 +152,7 @@ export default function RegisterPage({ searchParams }: RegisterPageProps) {
               <form className="mt-2 space-y-4" action={registerAction}>
                 <div className="space-y-1.5">
                   <Label htmlFor="email" className="text-xs text-zinc-700">
-                    Email
+                    E-mail
                   </Label>
                   <Input
                     id="email"
@@ -165,7 +166,7 @@ export default function RegisterPage({ searchParams }: RegisterPageProps) {
 
                 <div className="space-y-1.5">
                   <Label htmlFor="password" className="text-xs text-zinc-700">
-                    Password
+                    Mot de passe
                   </Label>
                   <Input
                     id="password"
@@ -179,19 +180,19 @@ export default function RegisterPage({ searchParams }: RegisterPageProps) {
                 </div>
 
                 <SubmitButton
-                  label="Create account"
-                  loadingLabel="Creating account..."
+                  label="Créer un compte"
+                  loadingLabel="Création du compte..."
                   className="mt-2 w-full text-xs"
                 />
               </form>
 
               <p className="mt-4 text-center text-xs text-zinc-500">
-                Already have an account?{" "}
+                Vous avez déjà un compte ?{" "}
                 <Link
                   href="/login"
                   className="font-medium text-zinc-900 underline-offset-4 hover:underline"
                 >
-                  Sign in
+                  Se connecter
                 </Link>
                 .
               </p>
