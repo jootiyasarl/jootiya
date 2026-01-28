@@ -52,37 +52,39 @@ export default async function DashboardHomePage() {
   }
 
   return (
-    <div className="space-y-6 sm:space-y-8">
-      <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
-        <div className="space-y-1">
-          <h1 className="text-xl font-semibold text-zinc-900">Seller dashboard</h1>
-          <p className="text-sm text-zinc-500">
-            Manage your listings and profile in one simple place.
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <Link
-            href="/dashboard/ads/create"
-            className="inline-flex h-9 items-center justify-center rounded-md bg-zinc-900 px-4 text-xs font-medium text-zinc-50 shadow-sm transition hover:bg-zinc-800"
-          >
-            Create new ad
-          </Link>
-          <Link
-            href="/dashboard/ads"
-            className="inline-flex h-9 items-center justify-center rounded-md border border-zinc-200 bg-white px-4 text-xs font-medium text-zinc-800 shadow-sm transition hover:bg-zinc-50"
-          >
-            View my ads
-          </Link>
+    <div className="space-y-6 sm:space-y-8 max-w-4xl mx-auto">
+      <div className="overflow-hidden rounded-2xl bg-gradient-to-r from-orange-500 via-orange-400 to-orange-500 px-4 py-4 text-white shadow-sm sm:px-6 sm:py-5">
+        <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+          <div className="space-y-1">
+            <h1 className="text-xl font-semibold text-white">Seller dashboard</h1>
+            <p className="text-sm text-orange-50/90">
+              Manage your listings and profile in one simple place.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Link
+              href="/dashboard/ads/create"
+              className="inline-flex h-9 items-center justify-center rounded-full bg-white px-4 text-xs font-semibold text-orange-600 shadow-sm transition hover:bg-orange-50"
+            >
+              Create new ad
+            </Link>
+            <Link
+              href="/dashboard/ads"
+              className="inline-flex h-9 items-center justify-center rounded-full border border-orange-200 bg-orange-500/10 px-4 text-xs font-medium text-white shadow-sm transition hover:bg-orange-400/90 hover:border-transparent"
+            >
+              View my ads
+            </Link>
+          </div>
         </div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <div className="rounded-2xl border bg-white p-4 sm:p-5 lg:p-6">
+        <div className="rounded-2xl border border-orange-100 bg-white/90 p-4 shadow-sm sm:p-5 lg:p-6">
           <div className="flex items-center justify-between gap-2">
-            <span className="text-xs font-medium uppercase tracking-[0.16em] text-zinc-500">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-orange-500">
               Total ads
             </span>
-            <ListOrdered className="h-4 w-4 text-zinc-400" />
+            <ListOrdered className="h-4 w-4 text-orange-400" />
           </div>
           <p className="mt-3 text-2xl font-semibold text-zinc-900">{totalAds}</p>
           <p className="mt-1 text-xs text-zinc-500">
@@ -90,12 +92,12 @@ export default async function DashboardHomePage() {
           </p>
         </div>
 
-        <div className="rounded-2xl border bg-white p-4 sm:p-5 lg:p-6">
+        <div className="rounded-2xl border border-orange-100 bg-white/90 p-4 shadow-sm sm:p-5 lg:p-6">
           <div className="flex items-center justify-between gap-2">
-            <span className="text-xs font-medium uppercase tracking-[0.16em] text-zinc-500">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-orange-500">
               Active ads
             </span>
-            <Activity className="h-4 w-4 text-emerald-500" />
+            <Activity className="h-4 w-4 text-orange-400" />
           </div>
           <p className="mt-3 text-2xl font-semibold text-zinc-900">{activeAds}</p>
           <p className="mt-1 text-xs text-zinc-500">
@@ -103,12 +105,12 @@ export default async function DashboardHomePage() {
           </p>
         </div>
 
-        <div className="rounded-2xl border bg-white p-4 sm:p-5 lg:p-6">
+        <div className="rounded-2xl border border-orange-100 bg-white/90 p-4 shadow-sm sm:p-5 lg:p-6">
           <div className="flex items-center justify-between gap-2">
-            <span className="text-xs font-medium uppercase tracking-[0.16em] text-zinc-500">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-orange-500">
               Views
             </span>
-            <Eye className="h-4 w-4 text-sky-500" />
+            <Eye className="h-4 w-4 text-orange-400" />
           </div>
           <p className="mt-3 text-2xl font-semibold text-zinc-900">{totalViews}</p>
           <p className="mt-1 text-xs text-zinc-500">
@@ -118,36 +120,36 @@ export default async function DashboardHomePage() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <div className="rounded-2xl border bg-white p-4 sm:p-5 lg:p-6">
-          <h2 className="text-sm font-semibold text-zinc-900">Manage my ads</h2>
+        <div className="rounded-2xl border border-orange-100 bg-white/90 p-4 shadow-sm sm:p-5 lg:p-6">
+          <h2 className="text-sm font-semibold text-orange-700">Manage my ads</h2>
           <p className="mt-1 text-xs text-zinc-500">
             See all your listings, update details, or pause ads that are no longer needed.
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
             <Link
               href="/dashboard/ads"
-              className="inline-flex h-8 items-center justify-center rounded-md bg-zinc-900 px-3 text-xs font-medium text-zinc-50 shadow-sm transition hover:bg-zinc-800"
+              className="inline-flex h-8 items-center justify-center rounded-full bg-orange-500 px-3 text-xs font-medium text-white shadow-sm transition hover:bg-orange-600"
             >
               Go to My ads
             </Link>
             <Link
               href="/dashboard/ads/create"
-              className="inline-flex h-8 items-center justify-center rounded-md border border-zinc-200 bg-white px-3 text-xs font-medium text-zinc-800 shadow-sm transition hover:bg-zinc-50"
+              className="inline-flex h-8 items-center justify-center rounded-full border border-orange-200 bg-white px-3 text-xs font-medium text-orange-600 shadow-sm transition hover:bg-orange-50"
             >
               Create new ad
             </Link>
           </div>
         </div>
 
-        <div className="rounded-2xl border bg-white p-4 sm:p-5 lg:p-6">
-          <h2 className="text-sm font-semibold text-zinc-900">Profile</h2>
+        <div className="rounded-2xl border border-orange-100 bg-white/90 p-4 shadow-sm sm:p-5 lg:p-6">
+          <h2 className="text-sm font-semibold text-orange-700">Profile</h2>
           <p className="mt-1 text-xs text-zinc-500">
             Update your contact details so buyers can reach you easily.
           </p>
           <div className="mt-3">
             <Link
               href="/dashboard/profile"
-              className="inline-flex h-8 items-center justify-center rounded-md border border-zinc-200 bg-white px-3 text-xs font-medium text-zinc-800 shadow-sm transition hover:bg-zinc-50"
+              className="inline-flex h-8 items-center justify-center rounded-full border border-orange-200 bg-white px-3 text-xs font-medium text-orange-600 shadow-sm transition hover:bg-orange-50"
             >
               Edit profile
             </Link>
