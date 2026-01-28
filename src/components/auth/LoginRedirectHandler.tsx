@@ -82,7 +82,7 @@ export function LoginRedirectHandler() {
         target = "/admin";
       } else {
         // Default home for regular users
-        target = "/dashboard";
+        target = "/dashboard/ads/create";
       }
 
       router.replace(target);
