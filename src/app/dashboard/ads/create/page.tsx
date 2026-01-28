@@ -231,7 +231,7 @@ export default function CreateAdPage() {
   }
 
   return (
-    <div className="space-y-6 sm:space-y-8">
+    <div className="space-y-6 sm:space-y-8 max-w-4xl mx-auto">
       <div className="space-y-1">
         <h1 className="text-xl font-semibold text-zinc-900">نشر إعلان جديد</h1>
         <p className="text-sm text-zinc-500">
@@ -242,7 +242,7 @@ export default function CreateAdPage() {
 
       <form
         onSubmit={handleSubmit}
-        className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]"
+        className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] max-w-3xl lg:max-w-none"
       >
         <div className="space-y-5 rounded-2xl border bg-white p-4 shadow-sm sm:p-6">
           {error ? (
@@ -413,7 +413,7 @@ export default function CreateAdPage() {
           </div>
         </div>
 
-        <aside className="space-y-4 text-xs text-zinc-600">
+        <aside className="hidden lg:block space-y-4 text-xs text-zinc-600">
           <div className="rounded-2xl border bg-white p-4">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">
               نصائح لإعلان ناجح
