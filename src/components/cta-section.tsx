@@ -12,7 +12,7 @@ export interface CallToActionSectionProps {
 
 export function CallToActionSection({
   className,
-  createAdHref = "/post-ad",
+  createAdHref = "/dashboard/ads/create",
   browseHref = "/marketplace",
 }: CallToActionSectionProps) {
   return (

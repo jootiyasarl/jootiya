@@ -83,7 +83,7 @@ export default function PostAdPage() {
       }
 
       if (!session) {
-        router.replace("/login?redirect=/post-ad");
+        router.replace("/login?redirect=/dashboard/ads/create");
         return;
       }
 
@@ -269,7 +269,7 @@ export default function PostAdPage() {
 
     if (sessionError || !session) {
       setSubmitting(false);
-      router.replace("/login?redirect=/post-ad");
+      router.replace("/login?redirect=/dashboard/ads/create");
       return;
     }
 

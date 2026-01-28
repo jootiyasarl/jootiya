@@ -19,7 +19,9 @@ interface LoginPageProps {
 export default function LoginPage({ searchParams }: LoginPageProps) {
   const redirectParam = searchParams?.redirect ?? searchParams?.redirectTo;
   const showPostAdMessage =
-    typeof redirectParam === "string" && redirectParam.startsWith("/post-ad");
+    typeof redirectParam === "string" &&
+    (redirectParam.startsWith("/post-ad") ||
+      redirectParam.startsWith("/dashboard/ads/create"));
 
   return (
     <div className="min-h-screen bg-zinc-50">
