@@ -12,9 +12,26 @@ export function LoginRedirectHandler() {
     let isActive = true;
 
     const checkSessionAndRedirect = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+      let session = null;
+
+      // Poll a few times in case Supabase hasn't finished restoring
+      // the session immediately after returning from Google OAuth.
+      for (let attempt = 0; attempt < 10; attempt++) {
+        const {
+          data: { session: currentSession },
+        } = await supabase.auth.getSession();
+
+        if (!isActive) {
+          return;
+        }
+
+        if (currentSession) {
+          session = currentSession;
+          break;
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, 200));
+      }
 
       if (!isActive || !session) return;
 
