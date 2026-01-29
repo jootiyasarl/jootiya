@@ -69,6 +69,14 @@ const categories = [
   },
 ] as const;
 
+const CATEGORY_SECTION_ORDER = [
+  "electronics", // إلكترونيات
+  "clothes", // ملابس
+  "real-estate", // عقارات
+  "cars", // سيارات
+  "other", // أشياء أخرى / متفرقات
+];
+
 export default async function Home() {
   const supabase = createSupabaseServerClient();
 
@@ -189,6 +197,18 @@ export default async function Home() {
       ads: uncategorizedAds,
     });
   }
+
+  categorySections.sort((a, b) => {
+    const indexA = CATEGORY_SECTION_ORDER.indexOf(a.slug);
+    const indexB = CATEGORY_SECTION_ORDER.indexOf(b.slug);
+
+    const orderA = indexA === -1 ? CATEGORY_SECTION_ORDER.length : indexA;
+    const orderB = indexB === -1 ? CATEGORY_SECTION_ORDER.length : indexB;
+
+    if (orderA !== orderB) return orderA - orderB;
+
+    return a.name.localeCompare(b.name, "fr");
+  });
 
   const allHomepageAds: HomepageAd[] = [...featuredAds, ...recentAds];
 
