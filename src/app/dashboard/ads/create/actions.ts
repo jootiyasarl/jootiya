@@ -79,9 +79,6 @@ export async function createAd(input: CreateAdPayload): Promise<CreateAdResult> 
     currency,
     city,
     neighborhood,
-    latitude = null,
-    longitude = null,
-    searchRadiusKm,
     categorySlug,
   } = input;
 
@@ -97,15 +94,6 @@ export async function createAd(input: CreateAdPayload): Promise<CreateAdResult> 
       ? currency.trim()
       : "MAD";
 
-  const numericRadius =
-    typeof searchRadiusKm === "number" &&
-    Number.isFinite(searchRadiusKm) &&
-    searchRadiusKm > 0
-      ? searchRadiusKm
-      : null;
-
-  const finalRadiusKm = numericRadius ?? DEFAULT_SEARCH_RADIUS_KM;
-
   const { data, error: insertError } = await supabase
     .from("ads")
     .insert({
@@ -116,9 +104,6 @@ export async function createAd(input: CreateAdPayload): Promise<CreateAdResult> 
       currency: finalCurrency,
       city,
       neighborhood: neighborhood ?? null,
-      latitude,
-      longitude,
-      search_radius_km: finalRadiusKm,
       image_urls: [],
       category: categorySlug ?? null,
       status,

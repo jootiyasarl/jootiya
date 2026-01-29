@@ -38,9 +38,6 @@ export async function publishFreeAd(
     currency,
     city,
     neighborhood,
-    latitude = null,
-    longitude = null,
-    searchRadiusKm,
     imageUrls = [],
   } = input;
 
@@ -69,9 +66,6 @@ export async function publishFreeAd(
       currency,
       city,
       neighborhood: neighborhood ?? null,
-      latitude,
-      longitude,
-      search_radius_km: searchRadiusKm ?? DEFAULT_SEARCH_RADIUS_KM,
       image_urls: imageUrls,
       status,
     })
