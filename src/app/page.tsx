@@ -165,36 +165,40 @@ export default async function Home() {
     ? recentData.map(mapRowToHomepageAd)
     : [];
 
+  // Group all recent (approved) ads by an effective category slug.
+  // If the ad's category slug is missing or not present in the categories table,
+  // we fall back to the special "other" bucket so that no approved ad is lost.
   const adsByCategory = new Map<string, HomepageAd[]>();
   for (const ad of recentAds) {
-    const slug = ad.categorySlug ?? "other";
-    if (!adsByCategory.has(slug)) {
-      adsByCategory.set(slug, []);
+    const hasValidCategorySlug =
+      ad.categorySlug && categoryNameBySlug.has(ad.categorySlug);
+
+    const effectiveSlug = hasValidCategorySlug ? ad.categorySlug! : "other";
+
+    if (!adsByCategory.has(effectiveSlug)) {
+      adsByCategory.set(effectiveSlug, []);
     }
-    adsByCategory.get(slug)!.push(ad);
+
+    adsByCategory.get(effectiveSlug)!.push({
+      ...ad,
+      categorySlug: effectiveSlug,
+    });
   }
 
   const categorySections: { slug: string; name: string; ads: HomepageAd[] }[] = [];
 
-  if (Array.isArray(categoriesData)) {
-    for (const category of categoriesData as { slug: string; name: string | null }[]) {
-      const adsForCategory = adsByCategory.get(category.slug);
-      if (adsForCategory && adsForCategory.length) {
-        categorySections.push({
-          slug: category.slug,
-          name: category.name ?? category.slug,
-          ads: adsForCategory,
-        });
-      }
-    }
-  }
+  for (const [slug, adsForCategory] of adsByCategory) {
+    if (!adsForCategory.length) continue;
 
-  const uncategorizedAds = recentAds.filter((ad) => !ad.categorySlug);
-  if (uncategorizedAds.length) {
+    const name =
+      slug === "other"
+        ? "Autres annonces"
+        : categoryNameBySlug.get(slug) ?? slug;
+
     categorySections.push({
-      slug: "other",
-      name: "Autres annonces",
-      ads: uncategorizedAds,
+      slug,
+      name,
+      ads: adsForCategory,
     });
   }
 
