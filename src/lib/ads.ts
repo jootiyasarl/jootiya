@@ -16,7 +16,6 @@ export interface CreateFreeAdInput {
   longitude?: number | null;
   searchRadiusKm?: number;
   imageUrls?: string[];
-  isWholesale?: boolean;
 }
 
 export interface PublishAdResult {
@@ -43,7 +42,6 @@ export async function publishFreeAd(
     longitude = null,
     searchRadiusKm,
     imageUrls = [],
-    isWholesale = false,
   } = input;
 
   const {
@@ -75,7 +73,6 @@ export async function publishFreeAd(
       longitude,
       search_radius_km: searchRadiusKm ?? DEFAULT_SEARCH_RADIUS_KM,
       image_urls: imageUrls,
-      is_wholesale: isWholesale,
       status,
     })
     .select("id, status")

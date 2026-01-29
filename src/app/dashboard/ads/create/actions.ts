@@ -18,7 +18,6 @@ export interface CreateAdPayload {
   latitude?: number | null;
   longitude?: number | null;
   searchRadiusKm?: number | null;
-  isWholesale?: boolean;
   categorySlug?: string;
   phone?: string;
   whatsapp?: string;
@@ -83,7 +82,6 @@ export async function createAd(input: CreateAdPayload): Promise<CreateAdResult> 
     latitude = null,
     longitude = null,
     searchRadiusKm,
-    isWholesale = false,
     categorySlug,
   } = input;
 
@@ -122,7 +120,6 @@ export async function createAd(input: CreateAdPayload): Promise<CreateAdResult> 
       longitude,
       search_radius_km: finalRadiusKm,
       image_urls: [],
-      is_wholesale: isWholesale,
       category: categorySlug ?? null,
       status,
     })
