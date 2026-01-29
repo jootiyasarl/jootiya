@@ -13,6 +13,9 @@ type HomepageAd = {
   createdAt?: string;
   sellerBadge?: string;
   isFeatured?: boolean;
+  imageUrl?: string;
+  categorySlug?: string;
+  categoryName?: string;
 };
 
 const categories = [
@@ -70,23 +73,37 @@ export default async function Home() {
   const supabase = createSupabaseServerClient();
 
   const baseSelect =
-    "id, title, price, currency, city, neighborhood, created_at, is_featured";
+    "id, title, price, currency, city, neighborhood, created_at, is_featured, image_urls, category";
 
-  const [{ data: featuredData }, { data: recentData }] = await Promise.all([
-    supabase
-      .from("ads")
-      .select(baseSelect)
-      .eq("status", "active")
-      .eq("is_featured", true)
-      .order("created_at", { ascending: false })
-      .limit(6),
-    supabase
-      .from("ads")
-      .select(baseSelect)
-      .eq("status", "active")
-      .order("created_at", { ascending: false })
-      .limit(9),
-  ]);
+  const [{ data: featuredData }, { data: recentData }, { data: categoriesData }] =
+    await Promise.all([
+      supabase
+        .from("ads")
+        .select(baseSelect)
+        .eq("status", "active")
+        .eq("is_featured", true)
+        .order("created_at", { ascending: false })
+        .limit(6),
+      supabase
+        .from("ads")
+        .select(baseSelect)
+        .eq("status", "active")
+        .order("created_at", { ascending: false })
+        .limit(48),
+      supabase
+        .from("categories")
+        .select("slug, name")
+        .order("name", { ascending: true }),
+    ]);
+
+  const categoryNameBySlug = new Map<string, string>();
+  if (Array.isArray(categoriesData)) {
+    for (const category of categoriesData as { slug: string; name: string | null }[]) {
+      if (category.slug) {
+        categoryNameBySlug.set(category.slug, category.name ?? category.slug);
+      }
+    }
+  }
 
   const mapRowToHomepageAd = (row: any): HomepageAd => {
     const locationParts: string[] = [];
@@ -102,6 +119,17 @@ export default async function Home() {
       }
     }
 
+    const primaryImageUrl =
+      Array.isArray(row.image_urls) && row.image_urls.length > 0
+        ? (row.image_urls[0] as string)
+        : undefined;
+
+    const categorySlug = (row.category as string | null) ?? null;
+    const categoryName =
+      categorySlug && categoryNameBySlug.get(categorySlug)
+        ? categoryNameBySlug.get(categorySlug)!
+        : null;
+
     const priceLabel =
       row.price != null
         ? `${row.price} ${row.currency?.trim() || "MAD"}`
@@ -115,6 +143,9 @@ export default async function Home() {
       createdAt: createdAtLabel,
       sellerBadge: row.is_featured ? "En vedette" : "Annonce approuvée",
       isFeatured: Boolean(row.is_featured),
+      imageUrl: primaryImageUrl,
+      categorySlug: categorySlug ?? undefined,
+      categoryName: categoryName ?? undefined,
     };
   };
 
@@ -125,6 +156,39 @@ export default async function Home() {
   const recentAds: HomepageAd[] = Array.isArray(recentData)
     ? recentData.map(mapRowToHomepageAd)
     : [];
+
+  const adsByCategory = new Map<string, HomepageAd[]>();
+  for (const ad of recentAds) {
+    const slug = ad.categorySlug ?? "other";
+    if (!adsByCategory.has(slug)) {
+      adsByCategory.set(slug, []);
+    }
+    adsByCategory.get(slug)!.push(ad);
+  }
+
+  const categorySections: { slug: string; name: string; ads: HomepageAd[] }[] = [];
+
+  if (Array.isArray(categoriesData)) {
+    for (const category of categoriesData as { slug: string; name: string | null }[]) {
+      const adsForCategory = adsByCategory.get(category.slug);
+      if (adsForCategory && adsForCategory.length) {
+        categorySections.push({
+          slug: category.slug,
+          name: category.name ?? category.slug,
+          ads: adsForCategory,
+        });
+      }
+    }
+  }
+
+  const uncategorizedAds = recentAds.filter((ad) => !ad.categorySlug);
+  if (uncategorizedAds.length) {
+    categorySections.push({
+      slug: "other",
+      name: "Autres annonces",
+      ads: uncategorizedAds,
+    });
+  }
 
   const allHomepageAds: HomepageAd[] = [...featuredAds, ...recentAds];
 
@@ -313,25 +377,44 @@ export default async function Home() {
             <div className="flex items-baseline justify-between">
               <div className="text-right">
                 <h2 className="text-base font-semibold tracking-tight text-zinc-900">
-                  Dernières annonces à Maârif
+                  Annonces par catégorie
                 </h2>
                 <p className="text-xs text-zinc-500">
-                  Annonces ajoutées au cours des dernières 24 heures.
+                  Les annonces approuvées, organisées par catégorie.
                 </p>
               </div>
               <Link href="/marketplace" className="text-xs font-medium text-zinc-600 hover:text-zinc-800">
                 Voir toutes les annonces
               </Link>
             </div>
-            {recentAds.length ? (
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {recentAds.map((ad) => (
-                  <AdCard
-                    key={ad.id}
-                    ad={ad}
-                    variant="default"
-                    href={`/ads/${ad.id}`}
-                  />
+            {categorySections.length ? (
+              <div className="space-y-6">
+                {categorySections.map((section) => (
+                  <div key={section.slug} className="space-y-3">
+                    <div className="flex items-baseline justify-between">
+                      <div className="text-right">
+                        <h3 className="text-sm font-semibold tracking-tight text-zinc-900">
+                          {section.name}
+                        </h3>
+                      </div>
+                      <Link
+                        href={`/marketplace?category=${encodeURIComponent(section.slug)}`}
+                        className="text-[11px] font-medium text-zinc-600 hover:text-zinc-800"
+                      >
+                        Voir toutes les annonces
+                      </Link>
+                    </div>
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                      {section.ads.slice(0, 4).map((ad) => (
+                        <AdCard
+                          key={ad.id}
+                          ad={ad}
+                          variant="default"
+                          href={`/ads/${ad.id}`}
+                        />
+                      ))}
+                    </div>
+                  </div>
                 ))}
               </div>
             ) : (

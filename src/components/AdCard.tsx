@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Image from "next/image";
 import Link from "next/link";
 
 export type PublicAdCardAd = {
@@ -10,6 +11,7 @@ export type PublicAdCardAd = {
   createdAt?: string;
   sellerBadge?: string;
   isFeatured?: boolean;
+  imageUrl?: string;
 };
 
 export interface AdCardProps {
@@ -31,8 +33,16 @@ export function AdCard({ ad, variant = "default", footerSlot, href }: AdCardProp
           : "border-zinc-100 hover:-translate-y-0.5 hover:shadow-md",
       ].join(" ")}
     >
-      <div className="relative">
-        <div className="h-40 bg-zinc-100" />
+      <div className="relative h-40 bg-zinc-100">
+        {ad.imageUrl ? (
+          <Image
+            src={ad.imageUrl}
+            alt={ad.title}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            className="object-cover"
+          />
+        ) : null}
         {isFeatured ? (
           <div className="absolute left-3 top-3 inline-flex items-center rounded-full bg-zinc-900/90 px-2 py-0.5 text-[10px] font-medium text-zinc-50">
             Featured
