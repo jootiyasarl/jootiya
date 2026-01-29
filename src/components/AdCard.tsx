@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Link from "next/link";
 
 export type PublicAdCardAd = {
   id: string;
@@ -15,12 +16,13 @@ export interface AdCardProps {
   ad: PublicAdCardAd;
   variant?: "default" | "featured";
   footerSlot?: ReactNode;
+  href?: string;
 }
 
-export function AdCard({ ad, variant = "default", footerSlot }: AdCardProps) {
+export function AdCard({ ad, variant = "default", footerSlot, href }: AdCardProps) {
   const isFeatured = variant === "featured" || ad.isFeatured;
 
-  return (
+  const card = (
     <article
       className={[
         "flex flex-col overflow-hidden rounded-2xl border bg-white shadow-sm transition",
@@ -62,4 +64,14 @@ export function AdCard({ ad, variant = "default", footerSlot }: AdCardProps) {
       </div>
     </article>
   );
+
+  if (href) {
+    return (
+      <Link href={href} className="block">
+        {card}
+      </Link>
+    );
+  }
+
+  return card;
 }

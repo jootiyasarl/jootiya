@@ -134,6 +134,7 @@ export function NearbyNowSection({ radiusKm = 5, limit = 6 }: NearbyNowSectionPr
               isFeatured: false,
             }}
             variant="default"
+            href={`/ads/${ad.id}`}
           />
         );
       })}

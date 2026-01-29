@@ -2,15 +2,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { AdCard } from "@/components/AdCard";
 import { NearbyNowSection } from "@/components/NearbyNowSection";
+import { createSupabaseServerClient } from "@/lib/supabase";
 
 type HomepageAd = {
   id: string;
   title: string;
   price: string;
   location: string;
-  distance: string;
-  createdAt: string;
-  sellerBadge: string;
+  distance?: string;
+  createdAt?: string;
+  sellerBadge?: string;
   isFeatured?: boolean;
 };
 
@@ -65,116 +66,85 @@ const categories = [
   },
 ] as const;
 
-const featuredAds: HomepageAd[] = [
-  {
-    id: "1",
-    title: "iPhone 13 Pro 256 Go en excellent état",
-    price: "7,500 MAD",
-    location: "Maârif, Casablanca",
-    distance: "1,2 km",
-    createdAt: "Il y a 3 heures",
-    sellerBadge: "Vendeur de confiance",
-    isFeatured: true,
-  },
-  {
-    id: "2",
-    title: "Table en bois style nordique avec 4 chaises",
-    price: "2,300 MAD",
-    location: "Gauthier, Casablanca",
-    distance: "2,4 km",
-    createdAt: "Aujourd'hui",
-    sellerBadge: "Vendeur actif",
-    isFeatured: true,
-  },
-  {
-    id: "3",
-    title: "Vélo Decathlon, récemment révisé",
-    price: "1,200 MAD",
-    location: "Aïn Diab, Casablanca",
-    distance: "3,1 km",
-    createdAt: "Hier",
-    sellerBadge: "Vendeur de confiance",
-    isFeatured: true,
-  },
-];
+export default async function Home() {
+  const supabase = createSupabaseServerClient();
 
-const recentAds: HomepageAd[] = [
-  {
-    id: "4",
-    title: "Téléviseur Samsung 55\" 4K, neuf",
-    price: "3,900 MAD",
-    location: "Maârif, Casablanca",
-    distance: "0,9 km",
-    createdAt: "À l'instant",
-    sellerBadge: "Vendeur de confiance",
-  },
-  {
-    id: "5",
-    title: "Fauteuil de bureau avec soutien lombaire",
-    price: "650 MAD",
-    location: "Bourgogne, Casablanca",
-    distance: "1,8 km",
-    createdAt: "Il y a 30 minutes",
-    sellerBadge: "Vendeur actif",
-  },
-  {
-    id: "6",
-    title: "PlayStation 5 avec deux manettes et jeux",
-    price: "5,200 MAD",
-    location: "Maârif, Casablanca",
-    distance: "1,1 km",
-    createdAt: "Il y a 1 heure",
-    sellerBadge: "Vendeur de confiance",
-  },
-  {
-    id: "7",
-    title: "Meuble TV simple, blanc",
-    price: "480 MAD",
-    location: "Oasis, Casablanca",
-    distance: "4,3 km",
-    createdAt: "Il y a 2 heures",
-    sellerBadge: "Vendeur actif",
-  },
-  {
-    id: "8",
-    title: "Xiaomi Redmi Note 12, 8 Go de RAM",
-    price: "2,000 MAD",
-    location: "Aïn Sebaâ, Casablanca",
-    distance: "7,0 km",
-    createdAt: "Aujourd'hui",
-    sellerBadge: "Vendeur de confiance",
-  },
-  {
-    id: "9",
-    title: "Lit bébé en bois avec matelas",
-    price: "1,100 MAD",
-    location: "Derb Ghallef, Casablanca",
-    distance: "3,6 km",
-    createdAt: "Aujourd'hui",
-    sellerBadge: "Vendeur actif",
-  },
-];
+  const baseSelect =
+    "id, title, price, currency, city, neighborhood, created_at, is_featured";
 
-const allHomepageAds: HomepageAd[] = [...featuredAds, ...recentAds];
+  const [{ data: featuredData }, { data: recentData }] = await Promise.all([
+    supabase
+      .from("ads")
+      .select(baseSelect)
+      .eq("status", "active")
+      .eq("is_featured", true)
+      .order("created_at", { ascending: false })
+      .limit(6),
+    supabase
+      .from("ads")
+      .select(baseSelect)
+      .eq("status", "active")
+      .order("created_at", { ascending: false })
+      .limit(9),
+  ]);
 
-const homepageAdsJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "ItemList",
-  itemListElement: allHomepageAds.map((ad, index) => ({
-    "@type": "Product",
-    position: index + 1,
-    name: ad.title,
-    description: ad.location,
-    offers: {
-      "@type": "Offer",
-      price: ad.price,
-      priceCurrency: "MAD",
-      areaServed: ad.location,
-    },
-  })),
-};
+  const mapRowToHomepageAd = (row: any): HomepageAd => {
+    const locationParts: string[] = [];
+    if (row.neighborhood) locationParts.push(row.neighborhood);
+    if (row.city) locationParts.push(row.city);
+    const location = locationParts.join(", ") || "Près de chez vous";
 
-export default function Home() {
+    let createdAtLabel: string | undefined;
+    if (row.created_at) {
+      const d = new Date(row.created_at);
+      if (!Number.isNaN(d.getTime())) {
+        createdAtLabel = d.toLocaleDateString("fr-FR");
+      }
+    }
+
+    const priceLabel =
+      row.price != null
+        ? `${row.price} ${row.currency?.trim() || "MAD"}`
+        : "—";
+
+    return {
+      id: row.id,
+      title: row.title,
+      price: priceLabel,
+      location,
+      createdAt: createdAtLabel,
+      sellerBadge: row.is_featured ? "En vedette" : "Annonce approuvée",
+      isFeatured: Boolean(row.is_featured),
+    };
+  };
+
+  const featuredAds: HomepageAd[] = Array.isArray(featuredData)
+    ? featuredData.map(mapRowToHomepageAd)
+    : [];
+
+  const recentAds: HomepageAd[] = Array.isArray(recentData)
+    ? recentData.map(mapRowToHomepageAd)
+    : [];
+
+  const allHomepageAds: HomepageAd[] = [...featuredAds, ...recentAds];
+
+  const homepageAdsJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: allHomepageAds.map((ad, index) => ({
+      "@type": "Product",
+      position: index + 1,
+      name: ad.title,
+      description: ad.location,
+      offers: {
+        "@type": "Offer",
+        price: ad.price,
+        priceCurrency: "MAD",
+        areaServed: ad.location,
+      },
+    })),
+  };
+
   return (
     <div dir="ltr" lang="fr" className="min-h-screen bg-zinc-50 text-zinc-900">
       <div className="mx-auto flex min-h-screen max-w-6xl flex-col px-4 pb-10 pt-4 sm:px-6 lg:px-8">
@@ -321,11 +291,22 @@ export default function Home() {
                 Voir tout
               </button>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {featuredAds.map((ad) => (
-                <AdCard key={ad.id} ad={ad} variant="featured" />
-              ))}
-            </div>
+            {featuredAds.length ? (
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {featuredAds.map((ad) => (
+                  <AdCard
+                    key={ad.id}
+                    ad={ad}
+                    variant="featured"
+                    href={`/ads/${ad.id}`}
+                  />
+                ))}
+              </div>
+            ) : (
+              <p className="text-xs text-zinc-500">
+                Aucune annonce en vedette pour le moment.
+              </p>
+            )}
           </section>
 
           <section className="space-y-4">
@@ -342,11 +323,22 @@ export default function Home() {
                 Voir toutes les annonces
               </Link>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {recentAds.map((ad) => (
-                <AdCard key={ad.id} ad={ad} variant="default" />
-              ))}
-            </div>
+            {recentAds.length ? (
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {recentAds.map((ad) => (
+                  <AdCard
+                    key={ad.id}
+                    ad={ad}
+                    variant="default"
+                    href={`/ads/${ad.id}`}
+                  />
+                ))}
+              </div>
+            ) : (
+              <p className="text-xs text-zinc-500">
+                Aucune annonce récente n'est encore publiée.
+              </p>
+            )}
           </section>
 
           <section className="rounded-3xl border border-zinc-100 bg-white px-5 py-6 sm:px-6">

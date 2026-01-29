@@ -45,6 +45,19 @@ function createInitialFormState(): CreateAdFormState {
     images: [],
   };
 }
+
+const CITY_OPTIONS = [
+  { value: "Casablanca", label: "الدار البيضاء" },
+  { value: "Rabat", label: "الرباط" },
+  { value: "Marrakech", label: "مراكش" },
+  { value: "Tanger", label: "طنجة" },
+  { value: "Fès", label: "فاس" },
+  { value: "Agadir", label: "أكادير" },
+  { value: "Kenitra", label: "القنيطرة" },
+  { value: "Oujda", label: "وجدة" },
+  { value: "Tetouan", label: "تطوان" },
+  { value: "Mohammedia", label: "المحمدية" },
+];
 export default function CreateAdPage() {
   const router = useRouter();
 
@@ -338,15 +351,22 @@ export default function CreateAdPage() {
           <div className="grid gap-3 md:grid-cols-2">
             <div className="space-y-1">
               <Label htmlFor="city">المدينة</Label>
-              <Input
-                id="city"
+              <Select
                 value={form.city}
-                onChange={(event) =>
-                  setForm((prev) => ({ ...prev, city: event.target.value }))
-                }
-                placeholder="مثال: الدار البيضاء"
-                disabled={publishing}
-              />
+                onValueChange={(value) =>
+                  setForm((prev) => ({ ...prev, city: value }))
+                }>
+                <SelectTrigger id="city" disabled={publishing}>
+                  <SelectValue placeholder="اختر المدينة" />
+                </SelectTrigger>
+                <SelectContent>
+                  {CITY_OPTIONS.map((city) => (
+                    <SelectItem key={city.value} value={city.value}>
+                      {city.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-1">
