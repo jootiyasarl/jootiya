@@ -83,26 +83,31 @@ export default async function Home() {
   const baseSelect =
     "id, title, price, currency, city, neighborhood, created_at, is_featured, image_urls, category";
 
-  const [{ data: featuredData }, { data: recentData }, { data: categoriesData }] =
-    await Promise.all([
-      supabase
-        .from("ads")
-        .select(baseSelect)
-        .eq("status", "active")
-        .eq("is_featured", true)
-        .order("created_at", { ascending: false })
-        .limit(6),
-      supabase
-        .from("ads")
-        .select(baseSelect)
-        .eq("status", "active")
-        .order("created_at", { ascending: false })
-        .limit(48),
-      supabase
-        .from("categories")
-        .select("slug, name")
-        .order("name", { ascending: true }),
-    ]);
+  const [
+    { data: featuredData, error: featuredError },
+    { data: recentData, error: recentError },
+    { data: categoriesData, error: categoriesError },
+  ] = await Promise.all([
+    supabase
+      .from("ads")
+      .select(baseSelect)
+      .eq("status", "active")
+      .eq("is_featured", true)
+      .order("created_at", { ascending: false })
+      .limit(6),
+    supabase
+      .from("ads")
+      .select(baseSelect)
+      .eq("status", "active")
+      .order("created_at", { ascending: false })
+      .limit(48),
+    supabase
+      .from("categories")
+      .select("slug, name")
+      .order("name", { ascending: true }),
+  ]);
+
+  const supabaseError = featuredError ?? recentError ?? categoriesError ?? null;
 
   const categoryNameBySlug = new Map<string, string>();
   if (Array.isArray(categoriesData)) {
@@ -244,6 +249,19 @@ export default async function Home() {
             <p className="text-sm text-zinc-600">
               تصفّح أحدث الإعلانات التي تمّت الموافقة عليها، مرتبة حسب نوع المنتج.
             </p>
+            {supabaseError ? (
+              <div className="mt-2 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-right text-xs text-red-700">
+                <p className="font-medium">حدث خطأ أثناء جلب الإعلانات من Supabase.</p>
+                <p className="mt-1 break-words">
+                  {supabaseError.message ?? "Unknown error"}
+                </p>
+              </div>
+            ) : null}
+            {!supabaseError ? (
+              <p className="text-[11px] text-zinc-500">
+                عدد الإعلانات النشطة (status = 'active') التي تم جلبها: {recentAds.length}
+              </p>
+            ) : null}
           </section>
 
           <section className="space-y-4">
