@@ -154,7 +154,8 @@ export default async function Home() {
       price: priceLabel,
       location,
       createdAt: createdAtLabel,
-      sellerBadge: row.is_featured ? "En vedette" : "Annonce approuvée",
+      // Show a badge only for featured ads; regular approved ads don't display a label.
+      sellerBadge: row.is_featured ? "En vedette" : undefined,
       isFeatured: Boolean(row.is_featured),
       imageUrl: primaryImageUrl,
       categorySlug: categorySlug ?? undefined,
