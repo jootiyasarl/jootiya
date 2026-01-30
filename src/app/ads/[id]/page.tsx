@@ -54,7 +54,6 @@ async function fetchAdWithSeller(id: string): Promise<
     .from("ads")
     .select("*")
     .eq("id", id)
-    .eq("status", "active")
     .maybeSingle<AdRow>();
 
   if (error) {
@@ -85,7 +84,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const data = await fetchAdWithSeller(params.id);
 
-  if (!data || data.ad.status !== "active") {
+  if (!data) {
     return {
       title: "Ad not found | Jootiya",
       description: "This ad is not available or not yet approved.",
@@ -150,7 +149,7 @@ export async function generateMetadata(
 export default async function AdPage({ params }: PageProps) {
   const data = await fetchAdWithSeller(params.id);
 
-  if (!data || data.ad.status !== "active") {
+  if (!data) {
     notFound();
   }
 
