@@ -101,7 +101,7 @@ async function getPendingAds(): Promise<PendingAd[]> {
   }));
 }
 
-async function updateAdStatus(adId: string, status: "approved" | "rejected"): Promise<void> {
+async function updateAdStatus(adId: string, status: "active" | "rejected"): Promise<void> {
   if (!adId) {
     throw new Error("Missing ad id");
   }
@@ -130,7 +130,7 @@ async function approveAd(formData: FormData): Promise<void> {
   const adId = formData.get("adId");
   const id = typeof adId === "string" ? adId : "";
 
-  await updateAdStatus(id, "approved");
+  await updateAdStatus(id, "active");
 }
 
 async function rejectAd(formData: FormData): Promise<void> {
