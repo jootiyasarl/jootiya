@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
+import { createSupabaseServerClient } from "@/lib/supabase";
 import { AdCardPreview } from "@/components/ads/AdCardPreview";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+// Ensure we always have a valid absolute URL (with protocol) for canonical links.
+const rawSiteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+const siteUrl =
+  rawSiteUrl && !rawSiteUrl.startsWith("http")
+    ? `https://${rawSiteUrl}`
+    : rawSiteUrl || "http://localhost:3000";
 
 type PageProps = {
   params: {
@@ -43,14 +48,18 @@ async function fetchAdWithSeller(id: string): Promise<
     }
   | null
 > {
+  const supabase = createSupabaseServerClient();
+
   const { data: ad, error } = await supabase
     .from("ads")
     .select("*")
     .eq("id", id)
+    .eq("status", "active")
     .maybeSingle<AdRow>();
 
   if (error) {
-    throw error;
+    console.error("Failed to load ad", error);
+    return null;
   }
 
   if (!ad) {
