@@ -147,13 +147,53 @@ export async function generateMetadata(
 }
 
 export default async function AdPage({ params }: PageProps) {
-  const data = await fetchAdWithSeller(params.id);
+  const supabase = createSupabaseServerClient();
 
-  if (!data) {
-    notFound();
+  console.log("AD ID:", params.id);
+
+  const { data: ad, error } = await supabase
+    .from("ads")
+    .select("*")
+    .eq("id", params.id)
+    .maybeSingle<AdRow>();
+
+  if (error) {
+    console.error("Error loading ad details:", error);
+
+    return (
+      <div className="min-h-screen bg-zinc-50">
+        <div className="mx-auto w-full max-w-4xl px-4 py-8">
+          <div className="rounded-2xl border bg-white p-4 text-red-500">
+            Error: {error.message}
+          </div>
+        </div>
+      </div>
+    );
   }
 
-  const { ad, seller } = data;
+  if (!ad) {
+    return (
+      <div className="min-h-screen bg-zinc-50">
+        <div className="mx-auto w-full max-w-4xl px-4 py-8">
+          <div className="rounded-2xl border bg-white p-4">
+            ❌ الإعلان غير موجود
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const { data: seller, error: sellerError } = await supabase
+    .from("profiles")
+    .select("id, full_name, city")
+    .eq("id", ad.seller_id)
+    .maybeSingle<SellerProfile>();
+
+  if (sellerError) {
+    console.error("Failed to load seller profile", sellerError);
+  }
+
+  const resolvedSeller = seller ?? null;
 
   const images = Array.isArray(ad.image_urls) ? ad.image_urls : [];
   const formattedPrice =
@@ -194,7 +234,7 @@ export default async function AdPage({ params }: PageProps) {
   const localBusinessSchema = {
     "@type": "LocalBusiness",
     "@id": "#seller",
-    name: seller?.full_name ?? "Jootiya seller",
+    name: resolvedSeller?.full_name ?? "Jootiya seller",
     areaServed: ad.city ?? undefined,
     address: {
       "@type": "PostalAddress",
@@ -250,7 +290,7 @@ export default async function AdPage({ params }: PageProps) {
             </div>
             <div>
               <p className="font-medium text-zinc-700">Seller</p>
-              <p>{seller?.full_name ?? "Private seller"}</p>
+              <p>{resolvedSeller?.full_name ?? "Private seller"}</p>
             </div>
           </div>
         </section>
