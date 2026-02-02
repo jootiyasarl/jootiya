@@ -18,7 +18,7 @@ export default async function AdPage({
   );
 
   if (!isValidUuid) {
-    return <div>Ad not found</div>;
+    return <div>Ad not found (id: {String(id)})</div>;
   }
 
   const { data, error } = await supabase
