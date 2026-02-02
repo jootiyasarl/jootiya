@@ -12,10 +12,6 @@ export default async function AdPage({
 }) {
   const id = params.id;
 
-  if (!id) {
-    return <div>Invalid ad id</div>;
-  }
-
   const { data, error } = await supabase
     .from("ads")
     .select("*")
