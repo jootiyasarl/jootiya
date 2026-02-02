@@ -12,6 +12,15 @@ export default async function AdPage({
 }) {
   const id = params.id;
 
+  // Validate that the id is a proper UUID before querying Supabase
+  const isValidUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+    id ?? "",
+  );
+
+  if (!isValidUuid) {
+    return <div>Ad not found</div>;
+  }
+
   const { data, error } = await supabase
     .from("ads")
     .select("*")
