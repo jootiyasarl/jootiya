@@ -53,17 +53,20 @@ function PublicNavbar() {
 
     const email = session?.user?.email ?? "";
 
+    // If not authenticated, send user to login specifically for posting an ad.
     if (!session) {
-      router.push("/login?redirectTo=/dashboard/ads/create");
+      router.push("/login?redirect=/post-ad");
       return;
     }
 
+    // Admin keeps access to admin area.
     if (email === "jootiyasarl@gmail.com") {
       router.push("/admin");
       return;
     }
 
-    router.push("/dashboard/ads/create");
+    // Regular authenticated users go directly to the post-ad page.
+    router.push("/post-ad");
   };
 
   const handleLogout = async () => {
@@ -174,15 +177,7 @@ function PublicNavbar() {
                   Se déconnecter
                 </button>
               </div>
-            ) : (
-              <Link
-                href="/login"
-                className="flex flex-col items-center gap-1 hover:text-zinc-900"
-              >
-                <span className="text-lg">👤</span>
-                <span>Se connecter</span>
-              </Link>
-            )}
+            ) : null}
           </div>
         </div>
 
@@ -244,16 +239,7 @@ function PublicNavbar() {
                     Se déconnecter
                   </button>
                 </div>
-              ) : (
-                <Link
-                  href="/login"
-                  className="inline-flex items-center gap-2 text-zinc-700 hover:text-zinc-900"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <span className="text-lg">👤</span>
-                  <span>Se connecter</span>
-                </Link>
-              )}
+              ) : null}
             </div>
 
             <div className="border-t border-zinc-100 pt-3">
