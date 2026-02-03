@@ -109,17 +109,26 @@ export default function AdPostForm() {
         setIsSubmitting(true);
         try {
             const { data: { user } } = await supabase.auth.getUser();
-            if (!user) throw new Error("Non authentifié");
+            if (!user) throw new Error("Vous devez être connecté pour publier une annonce.");
 
             // 1. Upload Images
             const uploadedUrls = [];
             for (const file of images) {
-                const fileName = `${user.id}/${Date.now()}-${file.name.replace(/\s+/g, '_')}`;
+                // Sanitize filename: remove special chars and spaces
+                const cleanName = file.name.replace(/[^\w.-]/g, '_');
+                const fileName = `${user.id}/${Date.now()}-${cleanName}`;
+
                 const { error: uploadError } = await supabase.storage
                     .from('ad-images')
                     .upload(fileName, file);
 
-                if (uploadError) throw uploadError;
+                if (uploadError) {
+                    // Check if bucket exists error or permission
+                    if (uploadError.message.includes('bucket not found')) {
+                        throw new Error("Le compartiment de stockage 'ad-images' n'existe pas. Veuillez le créer dans le tableau de bord Supabase.");
+                    }
+                    throw uploadError;
+                }
 
                 const { data: { publicUrl } } = supabase.storage
                     .from('ad-images')
@@ -128,25 +137,46 @@ export default function AdPostForm() {
                 uploadedUrls.push(publicUrl);
             }
 
-            // 2. Insert Ad Record
+            // 2. Generate Slug (to match our database unique constraint)
+            const baseSlug = data.title
+                .toLowerCase()
+                .trim()
+                .replace(/[^\w\s-]/g, '')
+                .replace(/[\s_-]+/g, '-')
+                .replace(/^-+|-+$/g, '');
+            const uniqueId = Math.random().toString(36).substring(2, 7);
+            const slug = `${baseSlug}-${uniqueId}`;
+
+            // 3. Map Location
+            // We'll split location into city and neighborhood if possible
+            const locParts = data.location.split(',').map(s => s.trim());
+            const city = locParts[0] || data.location;
+            const neighborhood = locParts[1] || null;
+
+            // 4. Insert Ad Record
             const { error: insertError } = await supabase
                 .from('ads')
                 .insert({
                     seller_id: user.id,
                     title: data.title,
+                    slug: slug,
                     description: data.description,
                     price: data.price,
-                    location: data.location,
+                    currency: 'MAD',
+                    city: city,
+                    neighborhood: neighborhood,
+                    location: data.location, // Keep for legacy
                     category: data.category,
                     image_urls: uploadedUrls,
+                    images: uploadedUrls, // Some parts of the app might still use 'images'
                     status: 'pending'
                 });
 
             if (insertError) throw insertError;
             setIsSuccess(true);
-        } catch (error) {
-            console.error(error);
-            alert('Échec de la publication de l\'annonce. Vérifiez votre connexion.');
+        } catch (error: any) {
+            console.error("Ad Publication Error:", error);
+            alert(`Échec: ${error.message || "Une erreur inconnue est survenue"}`);
         } finally {
             setIsSubmitting(false);
         }
