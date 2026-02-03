@@ -26,7 +26,7 @@ export default async function Home() {
   // Fetch all active ads
   const { data: adsData, error: adsError } = await supabase
     .from("ads")
-    .select("id, title, price, currency, city, neighborhood, created_at, is_featured, images, category, status")
+    .select("id, title, price, currency, city, neighborhood, created_at, is_featured, image_urls, category, status")
     // .eq("status", "active") // Using OR condition directly if needed, but best to filter by active
     .or("status.eq.active,status.eq.approved")
     .order("is_featured", { ascending: false }) // Featured first
