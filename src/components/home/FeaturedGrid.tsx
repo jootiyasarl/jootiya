@@ -29,7 +29,7 @@ export function FeaturedGrid({ title, ads, viewAllLink }: FeaturedGridProps) {
                     )}
                 </div>
 
-                <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
+                <div className="grid grid-cols-2 gap-3 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
                     {ads.map((ad) => (
                         <AdCard key={ad.id} ad={ad} variant="default" href={`/ads/${ad.id}`} />
                     ))}
