@@ -281,7 +281,8 @@ export default function PostAdPage() {
       city_id: form.cityId,
       neighborhood_id: form.neighborhoodId || null,
       status: "pending",
-      user_id: session.user.id,
+      // Align with RLS which expects seller_id = auth.uid()
+      seller_id: session.user.id,
     });
 
     if (insertError) {

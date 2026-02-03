@@ -51,6 +51,12 @@ export async function createAd(input: CreateAdPayload): Promise<CreateAdResult> 
     auth: {
       persistSession: false,
     },
+    // Attach the user's access token so that RLS auth.uid() is populated
+    global: {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    },
   });
 
   const {
