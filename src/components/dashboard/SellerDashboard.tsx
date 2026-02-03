@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { DashboardStats } from './DashboardStats';
 import { AdsTable } from './AdsTable';
+import { DashboardCharts } from './DashboardCharts';
 import { Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -65,6 +66,26 @@ export default function SellerDashboard({ initialStats, initialAds, initialCount
 
             {/* Stats Cards */}
             <DashboardStats stats={initialStats} />
+
+            <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-7">
+                {/* Charts Area */}
+                <div className="lg:col-span-4">
+                    <DashboardCharts />
+                </div>
+
+                {/* Quick Actions / Activity Feed or just a placeholder for now to balance grid */}
+                <div className="lg:col-span-3 space-y-4">
+                    <div className="rounded-2xl border border-blue-100 bg-blue-50/50 p-6 dark:border-blue-900/30 dark:bg-blue-900/10">
+                        <h3 className="font-semibold text-blue-900 dark:text-blue-100">Pro Tip</h3>
+                        <p className="mt-2 text-sm text-blue-700 dark:text-blue-300">
+                            Ads with 3+ images get 2.5x more views. Edit your listings to add more photos!
+                        </p>
+                        <Button variant="outline" size="sm" className="mt-4 border-blue-200 text-blue-700 hover:bg-blue-100 dark:border-blue-800 dark:text-blue-300 dark:hover:bg-blue-900/50">
+                            Check Quality
+                        </Button>
+                    </div>
+                </div>
+            </div>
 
             {/* Main Content: Ads Table */}
             <div className="space-y-4">
