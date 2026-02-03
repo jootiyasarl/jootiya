@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { GoogleLoginButton } from "@/components/auth/GoogleLoginButton";
-import { LoginRedirectHandler } from "@/components/auth/LoginRedirectHandler";
+import { LoginRedirectHandler } from "@/components/auth/LoginRedirectHandler"; // Ensure this handles client logic appropriately
 
 export const metadata: Metadata = {
   title: "Login | Jootiya",
@@ -18,65 +17,92 @@ interface LoginPageProps {
 
 export default function LoginPage({ searchParams }: LoginPageProps) {
   const redirectParam = searchParams?.redirect ?? searchParams?.redirectTo;
+
+  // Note: searchParams is synchronous here but handling it safely is good. 
+  // Next.js 15+ might make searchParams async, but for now 14/15 usage:
   const showPostAdMessage =
     typeof redirectParam === "string" &&
     (redirectParam.startsWith("/post-ad") ||
       redirectParam.startsWith("/dashboard/ads/create"));
 
   return (
-    <div className="min-h-screen bg-zinc-50">
+    <div className="min-h-screen relative overflow-hidden bg-zinc-50 dark:bg-zinc-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      {/* Background Ambience */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-blue-500/10 blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-purple-500/10 blur-[120px]" />
+      </div>
+
       <Suspense fallback={null}>
         <LoginRedirectHandler />
       </Suspense>
-      <div className="mx-auto flex min-h-screen w-full max-w-5xl flex-col justify-center px-4 py-10 md:flex-row md:items-center md:gap-16">
-        <div className="mb-10 md:mb-0 md:flex-1">
-          <div className="inline-flex items-center rounded-full border border-zinc-200 bg-white px-3 py-1 text-xs font-medium text-zinc-600 shadow-sm">
-            دخول بسيط وآمن إلى Jootiya
-          </div>
-          <h1 className="mt-4 text-3xl font-semibold tracking-tight text-zinc-900 md:text-4xl">
-            سجّل الدخول إلى حسابك
-          </h1>
-          <p className="mt-3 text-sm text-zinc-600 md:text-base">
-            استخدم حسابك على Google للوصول إلى إعلاناتك ولوحة التحكم بسهولة وأمان.
-          </p>
-        </div>
 
-        <div className="md:flex-1">
-          <Card className="border bg-white">
-            <CardHeader className="flex flex-col gap-1 px-4 pt-4">
-              <h2 className="text-sm font-semibold text-zinc-900">
-                تسجيل الدخول
-              </h2>
-              <p className="text-xs text-zinc-500">
-                تسجيل الدخول يتم حصرياً عبر حساب Google الخاص بك.
-              </p>
-            </CardHeader>
-            <CardContent className="px-4 pb-4">
-              {showPostAdMessage ? (
-                <div className="mb-3 rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
-                  يجب تسجيل الدخول باستخدام Google لنشر إعلان
-                </div>
-              ) : null}
+      <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10">
+        <Link href="/" className="flex justify-center mb-6">
+          {/* Logo could go here, text for now */}
+          <span className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+            JOOTIYA
+          </span>
+        </Link>
 
-              <Suspense fallback={null}>
-                <div className="mt-4 flex justify-center">
-                  <GoogleLoginButton />
+        <h2 className="text-center text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+          Welcome back
+        </h2>
+        <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
+          Sign in to your account
+        </p>
+      </div>
+
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-[420px] relative z-10">
+        <div className="bg-white/70 backdrop-blur-xl py-8 px-4 shadow-2xl shadow-black/5 ring-1 ring-black/5 sm:rounded-2xl sm:px-10 dark:bg-zinc-900/70 dark:ring-white/10">
+
+          {showPostAdMessage && (
+            <div className="mb-6 rounded-xl bg-blue-50/80 p-4 border border-blue-100 dark:bg-blue-900/20 dark:border-blue-800">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                  </svg>
                 </div>
+                <div className="ml-3 flex-1 md:flex md:justify-between">
+                  <p className="text-sm text-blue-700 dark:text-blue-200">
+                    You need to sign in to post an ad.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="space-y-6">
+            <div>
+              <Suspense fallback={<div className="h-10 bg-gray-200 rounded animate-pulse" />}>
+                <GoogleLoginButton />
               </Suspense>
+            </div>
 
-              <p className="mt-4 text-center text-xs text-zinc-500">
-                لا تملك حساباً على Jootiya؟{" "}
-                <Link
-                  href="/register"
-                  className="font-medium text-zinc-900 underline-offset-4 hover:underline"
-                >
-                  أنشئ حساباً جديداً
-                </Link>
-                .
-              </p>
-            </CardContent>
-          </Card>
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-200 dark:border-zinc-700" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-transparent text-gray-500 dark:text-gray-400 bg-white dark:bg-zinc-900">
+                  Secure access
+                </span>
+              </div>
+            </div>
+
+            <p className="text-center text-xs text-gray-500 dark:text-gray-400">
+              By signing in, you agree to our Terms of Service and Privacy Policy.
+            </p>
+          </div>
         </div>
+
+        <p className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
+          Don't have an account?{' '}
+          <Link href="/register" className="font-semibold text-blue-600 hover:text-blue-500 dark:text-blue-400">
+            Create one for free
+          </Link>
+        </p>
       </div>
     </div>
   );
