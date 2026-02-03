@@ -103,12 +103,10 @@ export function AdsTable({ ads, onDelete }: AdsTableProps) {
                                             </Link>
 
                                             <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button size="icon" variant="ghost" className="h-9 w-9 rounded-xl text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition-all outline-none">
-                                                        <MoreHorizontal size={16} />
-                                                    </Button>
+                                                <DropdownMenuTrigger className="h-9 w-9 rounded-xl text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition-all outline-none flex items-center justify-center">
+                                                    <MoreHorizontal size={16} />
                                                 </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end" className="w-48 rounded-2xl p-2 border-zinc-100 shadow-2xl">
+                                                <DropdownMenuContent className="w-48 rounded-2xl p-2 border-zinc-100 shadow-2xl">
                                                     <DropdownMenuItem className="rounded-xl px-3 py-2 text-sm font-bold cursor-pointer gap-3">
                                                         <Pencil size={14} className="text-zinc-400" /> Modifier
                                                     </DropdownMenuItem>

@@ -129,7 +129,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 <ChevronDown className="ml-1 h-4 w-4 text-zinc-400" />
               </DropdownMenuTrigger>
 
-              <DropdownMenuContent className="mt-2 w-56 rounded-2xl border-zinc-100 shadow-2xl p-2" align="end">
+              <DropdownMenuContent className="mt-2 w-56 rounded-2xl border-zinc-100 shadow-2xl p-2">
                 <DropdownMenuLabel className="px-3 pb-2 pt-1 text-[11px] font-black uppercase tracking-widest text-zinc-400">
                   Gestion Compte
                 </DropdownMenuLabel>
