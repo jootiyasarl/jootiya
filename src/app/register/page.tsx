@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -187,14 +186,8 @@ export default function RegisterPage({ searchParams }: RegisterPageProps) {
               </form>
 
               <p className="mt-4 text-center text-xs text-zinc-500">
-                Vous avez déjà un compte ?{" "}
-                <Link
-                  href="/login"
-                  className="font-medium text-zinc-900 underline-offset-4 hover:underline"
-                >
-                  Se connecter
-                </Link>
-                .
+                Vous avez déjà un compte ? Utilisez le bouton « Déposer une annonce
+                » sur la page d’accueil pour vous connecter.
               </p>
             </CardContent>
           </Card>
