@@ -241,7 +241,7 @@ export default async function Home() {
 
   return (
     <div dir="ltr" lang="fr" className="min-h-screen bg-zinc-50 text-zinc-900">
-      <div className="mx-auto flex min-h-screen max-w-6xl flex-col px-4 pb-10 pt-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex min-h-screen max-w-7xl flex-col px-4 pb-10 pt-6 sm:px-6 lg:px-8">
         <main className="flex-1 space-y-8 pt-6">
           <section className="space-y-2 text-right">
             <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl">
@@ -265,7 +265,7 @@ export default async function Home() {
             ) : null}
           </section>
 
-          <section className="space-y-4">
+          <section className="mt-4 space-y-4 rounded-2xl border border-zinc-100 bg-white/60 p-4 shadow-sm backdrop-blur-sm sm:p-6">
             {categorySections.length ? (
               <div className="space-y-6">
                 {categorySections.map((section) => (
