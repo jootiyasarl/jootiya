@@ -20,7 +20,14 @@ const adSchema = z.object({
     location: z.string().min(3, "Location is required"),
 });
 
-type AdFormValues = z.infer<typeof adSchema>;
+// Explicitly define form values for inputs, allowing string for price input which HTML returns
+type AdFormValues = {
+    title: string;
+    price: number | string; // Allow string input from HTML form
+    category: string;
+    description: string;
+    location: string;
+};
 
 export default function AdPostForm() {
     const [images, setImages] = useState<File[]>([]);
@@ -28,7 +35,9 @@ export default function AdPostForm() {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const { register, handleSubmit, formState: { errors } } = useForm<AdFormValues>({
-        resolver: zodResolver(adSchema),
+        // Type casting resolver to any or unknown prevents the complex deep type mismatch
+        // between Zod's inferred output (number) and RHF's input expectations (string | number)
+        resolver: zodResolver(adSchema) as any,
     });
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
