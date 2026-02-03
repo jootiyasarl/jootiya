@@ -14,7 +14,7 @@ export type AdminAdStatus = string | null;
 export interface AdminAd {
   id: string;
   title: string;
-  city: string | null;
+  location: string | null;
   category: string | null;
   status: AdminAdStatus;
   price: number | null;
@@ -25,7 +25,7 @@ export interface AdminAd {
 
 export interface AdsTableFilters {
   status: string;
-  city: string;
+  location: string;
   category: string;
   query: string;
 }
@@ -53,7 +53,7 @@ function getStatusMeta(status: AdminAdStatus): {
     return { label: "Pending review", tone: "info" };
   }
 
-  if (normalized === "active" || normalized === "published") {
+  if (normalized === "active" || normalized === "approved" || normalized === "published") {
     return { label: "Active", tone: "success" };
   }
 
@@ -98,7 +98,7 @@ function formatDate(value: string | null): string {
   return date.toLocaleDateString();
 }
 
-function getUniqueValues(items: AdminAd[], key: keyof Pick<AdminAd, "status" | "city" | "category">): string[] {
+function getUniqueValues(items: AdminAd[], key: keyof Pick<AdminAd, "status" | "location" | "category">): string[] {
   const set = new Set<string>();
 
   for (const ad of items) {
@@ -125,7 +125,7 @@ export function AdsTable({
   const optionSource = allAds.length ? allAds : ads;
 
   const statusOptions = getUniqueValues(optionSource, "status");
-  const cityOptions = getUniqueValues(optionSource, "city");
+  const locationOptions = getUniqueValues(optionSource, "location");
   const categoryOptions = getUniqueValues(optionSource, "category");
 
   const currentStatusLabel =
@@ -133,8 +133,8 @@ export function AdsTable({
       ? "All statuses"
       : getStatusMeta(filters.status).label;
 
-  const currentCityLabel =
-    filters.city === "all" ? "All cities" : filters.city || "All cities";
+  const currentLocationLabel =
+    filters.location === "all" ? "All locations" : filters.location || "All locations";
 
   const currentCategoryLabel =
     filters.category === "all"
@@ -145,8 +145,8 @@ export function AdsTable({
     onFiltersChange({ ...filters, status: value });
   };
 
-  const handleCityChange = (value: string) => {
-    onFiltersChange({ ...filters, city: value });
+  const handleLocationChange = (value: string) => {
+    onFiltersChange({ ...filters, location: value });
   };
 
   const handleCategoryChange = (value: string) => {
@@ -193,16 +193,16 @@ export function AdsTable({
           </div>
 
           <div className="space-y-1.5">
-            <Label className="text-xs text-zinc-400">City</Label>
-            <Select value={filters.city} onValueChange={handleCityChange}>
+            <Label className="text-xs text-zinc-400">Location</Label>
+            <Select value={filters.location} onValueChange={handleLocationChange}>
               <SelectTrigger className="h-9 border-zinc-800 bg-zinc-900/60 text-xs text-zinc-100">
                 <span className="truncate text-left text-xs">
-                  {currentCityLabel}
+                  {currentLocationLabel}
                 </span>
               </SelectTrigger>
               <SelectContent className="border-zinc-800 bg-zinc-900 text-xs text-zinc-50">
-                <SelectItem value="all">All cities</SelectItem>
-                {cityOptions.map((value) => (
+                <SelectItem value="all">All locations</SelectItem>
+                {locationOptions.map((value) => (
                   <SelectItem key={value} value={value}>
                     {value}
                   </SelectItem>
@@ -246,7 +246,7 @@ export function AdsTable({
                 Status
               </TableHead>
               <TableHead className="w-[12%] text-[11px] uppercase tracking-[0.16em] text-zinc-500">
-                City / Category
+                Location / Category
               </TableHead>
               <TableHead className="w-[12%] text-[11px] uppercase tracking-[0.16em] text-zinc-500">
                 Price
@@ -276,8 +276,7 @@ export function AdsTable({
                 const badgeClasses = getStatusBadgeClasses(tone);
                 const normalizedStatus =
                   (ad.status ?? "").toString().toLowerCase();
-                const isPending = normalizedStatus === "pending";
-                const isActive = normalizedStatus === "active";
+                const isActive = normalizedStatus === "active" || normalizedStatus === "approved";
                 const isRejected = normalizedStatus === "rejected";
                 const isDeleted = normalizedStatus === "deleted";
                 const isFeatured = Boolean(ad.is_featured);
@@ -324,7 +323,7 @@ export function AdsTable({
 
                     <TableCell className="align-top text-xs text-zinc-300">
                       <div className="flex flex-col gap-1">
-                        <span>{ad.city ?? "—"}</span>
+                        <span>{ad.location ?? "—"}</span>
                         <span className="text-[11px] text-zinc-500">
                           {ad.category ?? "No category"}
                         </span>
@@ -375,18 +374,6 @@ export function AdsTable({
                         >
                           <X className="mr-1 h-3 w-3" />
                           Reject
-                        </Button>
-
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="outline"
-                          disabled={isBusy}
-                          className="h-8 border-zinc-700 bg-zinc-900 px-2 text-[11px] text-zinc-100 hover:bg-zinc-800"
-                          onClick={() => onEdit(ad)}
-                        >
-                          <Pencil className="mr-1 h-3 w-3" />
-                          Edit
                         </Button>
 
                         <Button
