@@ -1,18 +1,18 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabaseClient';
+import { createSupabaseServerClient, getServerUser } from '@/lib/supabase';
 import { getSellerStats } from '@/lib/db/dashboard';
 
-export async function GET(request: Request) {
-    // 1. Secure Route: Check Auth
-    // Note: We use getUser() to validate the token on the server
-    const { data: { user }, error } = await supabase.auth.getUser();
+export async function GET() {
+    const user = await getServerUser();
 
-    if (error || !user) {
+    if (!user) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const supabase = createSupabaseServerClient();
+
     try {
-        const stats = await getSellerStats(user.id);
+        const stats = await getSellerStats(supabase, user.id);
         return NextResponse.json(stats);
     } catch (err: any) {
         return NextResponse.json({ error: err.message }, { status: 500 });
