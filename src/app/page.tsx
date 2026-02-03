@@ -1,10 +1,9 @@
-import Image from "next/image";
 import Link from "next/link";
 import { createSupabaseServerClient } from "@/lib/supabase";
-import { HeroSection } from "@/components/home/HeroSection";
-import { CategoryGrid } from "@/components/home/CategoryGrid";
-import { FeaturedGrid } from "@/components/home/FeaturedGrid";
-import { TrustSection } from "@/components/home/TrustSection";
+import { CategoryFilterBar } from "@/components/home/CategoryFilterBar";
+import { AdCard } from "@/components/AdCard";
+
+export const dynamic = "force-dynamic";
 
 type HomepageAd = {
   id: string;
@@ -23,34 +22,20 @@ type HomepageAd = {
 export default async function Home() {
   const supabase = createSupabaseServerClient();
 
-  const baseSelect =
-    "id, title, price, currency, city, neighborhood, created_at, is_featured, images, category"; // Note: Changed image_urls to images based on previous schema knowledge
-
-  const [
-    { data: featuredData, error: featuredError },
-    { data: recentData, error: recentError },
-  ] = await Promise.all([
-    supabase
-      .from("ads")
-      .select(baseSelect)
-      .eq("status", "active") // or approved, check DB
-      .eq("is_featured", true)
-      .order("created_at", { ascending: false })
-      .limit(4),
-    supabase
-      .from("ads")
-      .select(baseSelect)
-      // .eq("status", "active") // Assuming 'active' or 'approved'
-      .or("status.eq.active,status.eq.approved")
-      .order("created_at", { ascending: false })
-      .limit(8),
-  ]);
+  // Fetch all active ads
+  const { data: adsData, error: adsError } = await supabase
+    .from("ads")
+    .select("id, title, price, currency, city, neighborhood, created_at, is_featured, images, category, status")
+    // .eq("status", "active") // Using OR condition directly if needed, but best to filter by active
+    .or("status.eq.active,status.eq.approved")
+    .order("is_featured", { ascending: false }) // Featured first
+    .order("created_at", { ascending: false })
+    .limit(60);
 
   const mapRowToHomepageAd = (row: any): HomepageAd => {
     const locationParts: string[] = [];
     if (row.neighborhood) locationParts.push(row.neighborhood);
     if (row.city) locationParts.push(row.city);
-    // Fallback if location parts are empty but 'location' string exists (schema variance)
     if (locationParts.length === 0 && row.location) locationParts.push(row.location);
 
     const location = locationParts.join(", ") || "المغرب";
@@ -59,7 +44,7 @@ export default async function Home() {
     if (row.created_at) {
       const d = new Date(row.created_at);
       if (!Number.isNaN(d.getTime())) {
-        createdAtLabel = d.toLocaleDateString("ar-MA"); // Arabic locale
+        createdAtLabel = d.toLocaleDateString("fr-FR", { month: 'short', day: 'numeric' });
       }
     }
 
@@ -88,77 +73,55 @@ export default async function Home() {
     };
   };
 
-  const featuredAds: HomepageAd[] = Array.isArray(featuredData)
-    ? featuredData.map(mapRowToHomepageAd)
-    : [];
-
-  const recentAds: HomepageAd[] = Array.isArray(recentData)
-    ? recentData.map(mapRowToHomepageAd)
+  const ads: HomepageAd[] = Array.isArray(adsData)
+    ? adsData.map(mapRowToHomepageAd)
     : [];
 
   return (
-    <div dir="rtl" className="min-h-screen bg-white font-sans text-zinc-900">
+    <div dir="rtl" className="min-h-screen bg-white font-sans text-zinc-900 pb-20">
 
-      <HeroSection />
+      {/* Sticky Category Bar */}
+      <CategoryFilterBar />
 
-      <main className="space-y-10">
+      <main className="mx-auto max-w-[1920px] px-4 sm:px-6 lg:px-8 pt-6">
 
-        <CategoryGrid />
-
-        {/* Featured Ads Section */}
-        {featuredAds.length > 0 && (
-          <div className="bg-blue-50/50">
-            <FeaturedGrid
-              title="إعلانات مميزة"
-              ads={featuredAds}
-            />
+        {adsError ? (
+          <div className="rounded-md border border-red-200 bg-red-50 px-4 py-8 text-center text-red-700">
+            <p>حدث خطأ أثناء تحميل الإعلانات.</p>
           </div>
-        )}
+        ) : null}
 
-        {/* Recent Ads Section */}
-        <FeaturedGrid
-          title="وصل حديثاً"
-          ads={recentAds}
-          viewAllLink="/marketplace"
-        />
+        {!adsError && ads.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 text-center">
+            <h3 className="text-lg font-semibold text-zinc-900">لا توجد إعلانات حالياً</h3>
+            <p className="text-zinc-500 mt-2">كن أول من ينشر إعلاناً!</p>
+            <Link href="/marketplace/post" className="mt-4 px-6 py-2 bg-zinc-900 text-white rounded-full font-medium hover:bg-zinc-800 transition">
+              نشر إعلان
+            </Link>
+          </div>
+        ) : null}
 
-        <TrustSection />
+        {/* Unified Grid Layout */}
+        <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+          {ads.map((ad) => (
+            <AdCard
+              key={ad.id}
+              ad={ad}
+              href={`/ads/${ad.id}`}
+            />
+          ))}
+        </div>
 
       </main>
 
-      <footer className="mt-16 border-t border-zinc-100 bg-zinc-50 py-12 text-sm text-zinc-500">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            <div>
-              <h3 className="text-zinc-900 font-bold text-lg mb-4">Jootiya</h3>
-              <p>منصتك الأولى للبيع والشراء في المغرب. سهولة، أمان، وسرعة في التواصل.</p>
-            </div>
-            <div>
-              <h4 className="font-semibold text-zinc-900 mb-3">روابط سريعة</h4>
-              <ul className="space-y-2">
-                <li><Link href="/marketplace" className="hover:text-blue-600">تصفح الإعلانات</Link></li>
-                <li><Link href="/marketplace/post" className="hover:text-blue-600">بع شيئاً</Link></li>
-                <li><Link href="/login" className="hover:text-blue-600">تسجيل الدخول</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold text-zinc-900 mb-3">دعم</h4>
-              <ul className="space-y-2">
-                <li><Link href="#" className="hover:text-blue-600">مركز المساعدة</Link></li>
-                <li><Link href="#" className="hover:text-blue-600">شروط الاستخدام</Link></li>
-                <li><Link href="#" className="hover:text-blue-600">سياسة الخصوصية</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold text-zinc-900 mb-3">تواصل معنا</h4>
-              <p>info@jootiya.com</p>
-            </div>
-          </div>
-          <div className="mt-8 border-t border-zinc-200 pt-8 text-center">
-            <p>&copy; {new Date().getFullYear()} Jootiya. جميع الحقوق محفوظة.</p>
-          </div>
-        </div>
-      </footer>
+      {/* Floating Map Button (Visual Only for now) */}
+      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40">
+        <button className="flex items-center gap-2 bg-zinc-900 text-white px-5 py-3 rounded-full shadow-xl hover:scale-105 transition-transform font-medium text-sm">
+          <span>عرض الخريطة</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-map"><polygon points="3 6 9 3 15 6 21 3 21 21 15 18 9 21 3 18 3 6" /></svg>
+        </button>
+      </div>
+
     </div>
   );
 }
