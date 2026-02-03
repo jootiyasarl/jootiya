@@ -45,6 +45,9 @@ export default async function AdPage({ params }: AdPageProps) {
     notFound();
   }
 
+  // Increment views (fire and forget)
+  supabase.rpc('increment_ad_views', { ad_id: id }).then();
+
   const images = ad.image_urls || [];
   const formattedPrice = ad.price
     ? Number(ad.price).toLocaleString() + " " + (ad.currency?.trim() || "MAD")
