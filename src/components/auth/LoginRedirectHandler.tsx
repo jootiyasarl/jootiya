@@ -99,7 +99,7 @@ export function LoginRedirectHandler() {
         target = "/admin";
       } else {
         // Default home for regular users
-        target = "/dashboard/ads/create";
+        target = "/post-ad";
       }
 
       router.replace(target);
