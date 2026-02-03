@@ -34,50 +34,53 @@ export default async function Home() {
     .order("created_at", { ascending: false })
     .limit(60);
 
-  const mapRowToHomepageAd = (row: any): HomepageAd => {
-    const locationParts: string[] = [];
-    if (row.neighborhood) locationParts.push(row.neighborhood);
-    if (row.city) locationParts.push(row.city);
-    if (locationParts.length === 0 && row.location) locationParts.push(row.location);
+  let ads: HomepageAd[] = [];
+  let fetchError = adsError;
 
-    const location = locationParts.join(", ") || "Maroc";
+  try {
+    if (!adsError && Array.isArray(adsData)) {
+      ads = adsData.map((row: any): HomepageAd => {
+        const locationParts: string[] = [];
+        if (row.neighborhood) locationParts.push(row.neighborhood);
+        if (row.city) locationParts.push(row.city);
+        if (locationParts.length === 0 && row.location) locationParts.push(row.location);
 
-    let createdAtLabel: string | undefined;
-    if (row.created_at) {
-      const d = new Date(row.created_at);
-      if (!Number.isNaN(d.getTime())) {
-        createdAtLabel = d.toLocaleDateString("fr-FR", { month: 'short', day: 'numeric' });
-      }
+        const location = locationParts.join(", ") || "Maroc";
+
+        let createdAtLabel: string | undefined;
+        if (row.created_at) {
+          const d = new Date(row.created_at);
+          if (!Number.isNaN(d.getTime())) {
+            createdAtLabel = d.toLocaleDateString("fr-FR", { month: 'short', day: 'numeric' });
+          }
+        }
+
+        const images = row.images || row.image_urls;
+        const primaryImageUrl =
+          Array.isArray(images) && images.length > 0
+            ? (images[0] as string)
+            : undefined;
+
+        const currency = typeof row.currency === 'string' ? row.currency.trim() : "MAD";
+        const priceLabel = row.price != null ? `${row.price} ${currency || "MAD"}` : "—";
+
+        return {
+          id: row.id,
+          title: row.title,
+          price: priceLabel,
+          location,
+          createdAt: createdAtLabel,
+          sellerBadge: row.is_featured ? "À la une" : undefined,
+          isFeatured: Boolean(row.is_featured),
+          imageUrl: primaryImageUrl,
+          categorySlug: row.category,
+        };
+      });
     }
-
-    // Handle image_urls (old) vs images (new) schema divergence safely
-    const images = row.images || row.image_urls;
-    const primaryImageUrl =
-      Array.isArray(images) && images.length > 0
-        ? (images[0] as string)
-        : undefined;
-
-    const priceLabel =
-      row.price != null
-        ? `${row.price} ${row.currency?.trim() || "MAD"}`
-        : "—";
-
-    return {
-      id: row.id,
-      title: row.title,
-      price: priceLabel,
-      location,
-      createdAt: createdAtLabel,
-      sellerBadge: row.is_featured ? "À la une" : undefined,
-      isFeatured: Boolean(row.is_featured),
-      imageUrl: primaryImageUrl,
-      categorySlug: row.category,
-    };
-  };
-
-  const ads: HomepageAd[] = Array.isArray(adsData)
-    ? adsData.map(mapRowToHomepageAd)
-    : [];
+  } catch (err: any) {
+    console.error("Critical error mapping ads:", err);
+    fetchError = err;
+  }
 
   return (
     <div dir="ltr" className="min-h-screen bg-white font-sans text-zinc-900 pb-20">
@@ -91,7 +94,7 @@ export default async function Home() {
 
       <main className="mx-auto max-w-7xl px-4 space-y-16">
 
-        {adsError ? (
+        {fetchError ? (
           <div className="rounded-xl border border-red-200 bg-red-50 p-8 text-center text-red-700">
             <p>Une erreur s'est produite lors du chargement des annonces.</p>
           </div>
