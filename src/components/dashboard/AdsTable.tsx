@@ -1,9 +1,16 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge"; // Ensure this exists or I'll create it
-import { Pencil, Trash2, Eye } from "lucide-react";
+import { Pencil, Trash2, Eye, MoreHorizontal, MessageSquare, Calendar } from "lucide-react";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 
 interface Ad {
     id: string;
@@ -12,6 +19,7 @@ interface Ad {
     currency: string;
     status: string;
     created_at: string;
+    category?: string;
 }
 
 interface AdsTableProps {
@@ -21,64 +29,101 @@ interface AdsTableProps {
 
 export function AdsTable({ ads, onDelete }: AdsTableProps) {
     return (
-        <div className="rounded-2xl border border-gray-100 bg-white/70 backdrop-blur-md shadow-sm overflow-hidden dark:border-zinc-800 dark:bg-zinc-900/70">
+        <div className="rounded-3xl border border-zinc-100 bg-white shadow-xl shadow-zinc-200/40 overflow-hidden dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-none">
             <div className="overflow-x-auto">
-                <table className="w-full text-sm text-left">
-                    <thead className="bg-gray-50/50 text-gray-500 dark:bg-zinc-800/50 dark:text-gray-400">
-                        <tr>
-                            <th className="px-6 py-4 font-medium">Titre</th>
-                            <th className="px-6 py-4 font-medium">Prix</th>
-                            <th className="px-6 py-4 font-medium">Statut</th>
-                            <th className="px-6 py-4 font-medium">Date de création</th>
-                            <th className="px-6 py-4 font-medium text-right">Actions</th>
+                <table className="w-full text-sm text-left border-collapse">
+                    <thead>
+                        <tr className="border-b border-zinc-50 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/30">
+                            <th className="px-6 py-5 text-[11px] font-black uppercase tracking-wider text-zinc-400">Annonce</th>
+                            <th className="px-6 py-5 text-[11px] font-black uppercase tracking-wider text-zinc-400">Statut</th>
+                            <th className="px-6 py-5 text-[11px] font-black uppercase tracking-wider text-zinc-400">Prix</th>
+                            <th className="px-6 py-5 text-[11px] font-black uppercase tracking-wider text-zinc-400">Date</th>
+                            <th className="px-6 py-5 text-[11px] font-black uppercase tracking-wider text-zinc-400 text-right">Actions</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100 dark:divide-zinc-800">
+                    <tbody className="divide-y divide-zinc-50 dark:divide-zinc-800">
                         {ads.length === 0 ? (
                             <tr>
-                                <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
-                                    Aucune annonce trouvée. Commencez à vendre dès aujourd'hui !
+                                <td colSpan={5} className="px-6 py-16 text-center">
+                                    <div className="max-w-xs mx-auto space-y-3">
+                                        <div className="w-16 h-16 rounded-full bg-zinc-50 flex items-center justify-center mx-auto text-zinc-300">
+                                            <TrendingUp className="w-8 h-8" />
+                                        </div>
+                                        <p className="text-zinc-500 font-bold">Aucune annonce pour le moment.</p>
+                                        <p className="text-[11px] text-zinc-400 uppercase tracking-widest font-black">Commencez par en créer une !</p>
+                                    </div>
                                 </td>
                             </tr>
                         ) : (
                             ads.map((ad) => (
-                                <tr key={ad.id} className="hover:bg-gray-50/50 transition-colors dark:hover:bg-zinc-800/30">
-                                    <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
-                                        {ad.title}
+                                <tr key={ad.id} className="group hover:bg-zinc-50/70 transition-all dark:hover:bg-zinc-800/20">
+                                    <td className="px-6 py-5">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-12 h-12 rounded-2xl bg-zinc-100 overflow-hidden shrink-0 shadow-sm border border-white dark:border-zinc-800 flex items-center justify-center text-zinc-400">
+                                                {/* In a real app, show image here */}
+                                                <ShoppingBag size={20} />
+                                            </div>
+                                            <div>
+                                                <p className="font-black text-zinc-900 dark:text-white mb-0.5 line-clamp-1 group-hover:text-blue-600 transition-colors uppercase tracking-tight">
+                                                    {ad.title}
+                                                </p>
+                                                <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
+                                                    ID: #{ad.id.slice(0, 8)}
+                                                </p>
+                                            </div>
+                                        </div>
                                     </td>
-                                    <td className="px-6 py-4 text-gray-600 dark:text-gray-300">
-                                        {ad.currency} {ad.price.toLocaleString()}
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize
-                            ${ad.status === 'approved' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
-                                                ad.status === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' :
-                                                    'bg-gray-100 text-gray-800 dark:bg-zinc-800 dark:text-gray-400'}`}>
+                                    <td className="px-6 py-5">
+                                        <span className={cn(
+                                            "inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest transition-all",
+                                            ad.status === 'approved' ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400' :
+                                                ad.status === 'pending' ? 'bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400' :
+                                                    'bg-zinc-100 text-zinc-500 dark:bg-zinc-800'
+                                        )}>
                                             {ad.status === 'approved' ? 'Approuvé' : ad.status === 'pending' ? 'En attente' : ad.status}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 text-gray-500 dark:text-gray-400">
-                                        {new Date(ad.created_at).toLocaleDateString("fr-FR")}
+                                    <td className="px-6 py-5">
+                                        <p className="font-black text-zinc-900 dark:text-white uppercase tracking-tighter">
+                                            {ad.price.toLocaleString()} <span className="text-[10px] text-zinc-400 ml-1">{ad.currency || 'MAD'}</span>
+                                        </p>
                                     </td>
-                                    <td className="px-6 py-4 text-right">
-                                        <div className="flex items-center justify-end gap-2">
+                                    <td className="px-6 py-5">
+                                        <div className="flex items-center gap-1.5 text-[11px] font-bold text-zinc-500">
+                                            <Calendar size={12} className="text-zinc-300" />
+                                            {new Date(ad.created_at).toLocaleDateString("fr-FR")}
+                                        </div>
+                                    </td>
+                                    <td className="px-6 py-5 text-right">
+                                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                             <Link href={`/marketplace/${ad.id}`}>
-                                                <Button size="icon" variant="ghost" className="h-8 w-8 text-gray-500 hover:text-blue-600">
-                                                    <Eye className="h-4 w-4" />
+                                                <Button size="icon" variant="ghost" className="h-9 w-9 rounded-xl text-zinc-400 hover:text-blue-600 hover:bg-blue-50 transition-all">
+                                                    <Eye size={16} />
                                                 </Button>
                                             </Link>
-                                            {/* In a real app, Edit would link to an edit page */}
-                                            <Button size="icon" variant="ghost" className="h-8 w-8 text-gray-500 hover:text-green-600">
-                                                <Pencil className="h-4 w-4" />
-                                            </Button>
-                                            <Button
-                                                size="icon"
-                                                variant="ghost"
-                                                className="h-8 w-8 text-gray-500 hover:text-red-600"
-                                                onClick={() => onDelete(ad.id)}
-                                            >
-                                                <Trash2 className="h-4 w-4" />
-                                            </Button>
+
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button size="icon" variant="ghost" className="h-9 w-9 rounded-xl text-zinc-400 hover:text-zinc-900 hover:bg-zinc-100 transition-all outline-none">
+                                                        <MoreHorizontal size={16} />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="end" className="w-48 rounded-2xl p-2 border-zinc-100 shadow-2xl">
+                                                    <DropdownMenuItem className="rounded-xl px-3 py-2 text-sm font-bold cursor-pointer gap-3">
+                                                        <Pencil size={14} className="text-zinc-400" /> Modifier
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuItem className="rounded-xl px-3 py-2 text-sm font-bold cursor-pointer gap-3">
+                                                        <TrendingUp size={14} className="text-emerald-400" /> Booster l'annonce
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuSeparator className="my-1 bg-zinc-50" />
+                                                    <DropdownMenuItem
+                                                        onClick={() => onDelete(ad.id)}
+                                                        className="rounded-xl px-3 py-2 text-sm font-bold cursor-pointer text-red-600 hover:bg-red-50 gap-3"
+                                                    >
+                                                        <Trash2 size={14} className="text-red-400" /> Supprimer
+                                                    </DropdownMenuItem>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
                                         </div>
                                     </td>
                                 </tr>
@@ -90,3 +135,6 @@ export function AdsTable({ ads, onDelete }: AdsTableProps) {
         </div>
     );
 }
+
+// Ensure all sub-icons are imported correctly
+import { TrendingUp, ShoppingBag } from "lucide-react";
