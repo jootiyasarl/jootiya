@@ -1,8 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import { AdCard } from "@/components/AdCard";
-import { NearbyNowSection } from "@/components/NearbyNowSection";
 import { createSupabaseServerClient } from "@/lib/supabase";
+import { HeroSection } from "@/components/home/HeroSection";
+import { CategoryGrid } from "@/components/home/CategoryGrid";
+import { FeaturedGrid } from "@/components/home/FeaturedGrid";
+import { TrustSection } from "@/components/home/TrustSection";
 
 type HomepageAd = {
   id: string;
@@ -18,130 +20,55 @@ type HomepageAd = {
   categoryName?: string;
 };
 
-const categories = [
-  {
-    id: "phones",
-    label: "Téléphones et tablettes",
-    icon: "📱",
-    description: "Smartphones, tablettes, accessoires",
-  },
-  {
-    id: "home",
-    label: "Maison & meubles",
-    icon: "🛋️",
-    description: "Canapés, tables, décoration",
-  },
-  {
-    id: "vehicles",
-    label: "Voitures & véhicules",
-    icon: "🚗",
-    description: "Voitures, motos, vélos",
-  },
-  {
-    id: "electronics",
-    label: "Électronique",
-    icon: "💻",
-    description: "Ordinateurs, téléviseurs, audio",
-  },
-  {
-    id: "fashion",
-    label: "Vêtements & mode",
-    icon: "👕",
-    description: "Vêtements, chaussures, accessoires",
-  },
-  {
-    id: "sports",
-    label: "Sport & loisirs",
-    icon: "⚽",
-    description: "Équipement sportif, jeux, instruments de musique",
-  },
-  {
-    id: "kids",
-    label: "Enfants & bébés",
-    icon: "🧸",
-    description: "Poussettes, jouets, vêtements pour enfants",
-  },
-  {
-    id: "other",
-    label: "Autre",
-    icon: "📦",
-    description: "Tout le reste",
-  },
-] as const;
-
-const CATEGORY_SECTION_ORDER = [
-  "electronics", // إلكترونيات
-  "clothes", // ملابس
-  "real-estate", // عقارات
-  "cars", // سيارات
-  "other", // أشياء أخرى / متفرقات
-];
-
 export default async function Home() {
   const supabase = createSupabaseServerClient();
 
   const baseSelect =
-    "id, title, price, currency, city, neighborhood, created_at, is_featured, image_urls, category";
+    "id, title, price, currency, city, neighborhood, created_at, is_featured, images, category"; // Note: Changed image_urls to images based on previous schema knowledge
 
   const [
     { data: featuredData, error: featuredError },
     { data: recentData, error: recentError },
-    { data: categoriesData, error: categoriesError },
   ] = await Promise.all([
     supabase
       .from("ads")
       .select(baseSelect)
-      .eq("status", "active")
+      .eq("status", "active") // or approved, check DB
       .eq("is_featured", true)
       .order("created_at", { ascending: false })
-      .limit(6),
+      .limit(4),
     supabase
       .from("ads")
       .select(baseSelect)
-      .eq("status", "active")
+      // .eq("status", "active") // Assuming 'active' or 'approved'
+      .or("status.eq.active,status.eq.approved")
       .order("created_at", { ascending: false })
-      .limit(48),
-    supabase
-      .from("categories")
-      .select("slug, name")
-      .order("name", { ascending: true }),
+      .limit(8),
   ]);
-
-  const supabaseError = featuredError ?? recentError ?? categoriesError ?? null;
-
-  const categoryNameBySlug = new Map<string, string>();
-  if (Array.isArray(categoriesData)) {
-    for (const category of categoriesData as { slug: string; name: string | null }[]) {
-      if (category.slug) {
-        categoryNameBySlug.set(category.slug, category.name ?? category.slug);
-      }
-    }
-  }
 
   const mapRowToHomepageAd = (row: any): HomepageAd => {
     const locationParts: string[] = [];
     if (row.neighborhood) locationParts.push(row.neighborhood);
     if (row.city) locationParts.push(row.city);
-    const location = locationParts.join(", ") || "Près de chez vous";
+    // Fallback if location parts are empty but 'location' string exists (schema variance)
+    if (locationParts.length === 0 && row.location) locationParts.push(row.location);
+
+    const location = locationParts.join(", ") || "المغرب";
 
     let createdAtLabel: string | undefined;
     if (row.created_at) {
       const d = new Date(row.created_at);
       if (!Number.isNaN(d.getTime())) {
-        createdAtLabel = d.toLocaleDateString("fr-FR");
+        createdAtLabel = d.toLocaleDateString("ar-MA"); // Arabic locale
       }
     }
 
+    // Handle image_urls (old) vs images (new) schema divergence safely
+    const images = row.images || row.image_urls;
     const primaryImageUrl =
-      Array.isArray(row.image_urls) && row.image_urls.length > 0
-        ? (row.image_urls[0] as string)
+      Array.isArray(images) && images.length > 0
+        ? (images[0] as string)
         : undefined;
-
-    const categorySlug = (row.category as string | null) ?? null;
-    const categoryName =
-      categorySlug && categoryNameBySlug.get(categorySlug)
-        ? categoryNameBySlug.get(categorySlug)!
-        : null;
 
     const priceLabel =
       row.price != null
@@ -154,12 +81,10 @@ export default async function Home() {
       price: priceLabel,
       location,
       createdAt: createdAtLabel,
-      // Show a badge only for featured ads; regular approved ads don't display a label.
-      sellerBadge: row.is_featured ? "En vedette" : undefined,
+      sellerBadge: row.is_featured ? "مميز" : undefined,
       isFeatured: Boolean(row.is_featured),
       imageUrl: primaryImageUrl,
-      categorySlug: categorySlug ?? undefined,
-      categoryName: categoryName ?? undefined,
+      categorySlug: row.category,
     };
   };
 
@@ -171,167 +96,69 @@ export default async function Home() {
     ? recentData.map(mapRowToHomepageAd)
     : [];
 
-  // Group all recent (approved) ads by an effective category slug.
-  // If the ad's category slug is missing or not present in the categories table,
-  // we fall back to the special "other" bucket so that no approved ad is lost.
-  const adsByCategory = new Map<string, HomepageAd[]>();
-  for (const ad of recentAds) {
-    const hasValidCategorySlug =
-      ad.categorySlug && categoryNameBySlug.has(ad.categorySlug);
-
-    const effectiveSlug = hasValidCategorySlug ? ad.categorySlug! : "other";
-
-    if (!adsByCategory.has(effectiveSlug)) {
-      adsByCategory.set(effectiveSlug, []);
-    }
-
-    adsByCategory.get(effectiveSlug)!.push({
-      ...ad,
-      categorySlug: effectiveSlug,
-    });
-  }
-
-  const categorySections: { slug: string; name: string; ads: HomepageAd[] }[] = [];
-
-  for (const [slug, adsForCategory] of adsByCategory) {
-    if (!adsForCategory.length) continue;
-
-    const name =
-      slug === "other"
-        ? "Autres annonces"
-        : categoryNameBySlug.get(slug) ?? slug;
-
-    categorySections.push({
-      slug,
-      name,
-      ads: adsForCategory,
-    });
-  }
-
-  categorySections.sort((a, b) => {
-    const indexA = CATEGORY_SECTION_ORDER.indexOf(a.slug);
-    const indexB = CATEGORY_SECTION_ORDER.indexOf(b.slug);
-
-    const orderA = indexA === -1 ? CATEGORY_SECTION_ORDER.length : indexA;
-    const orderB = indexB === -1 ? CATEGORY_SECTION_ORDER.length : indexB;
-
-    if (orderA !== orderB) return orderA - orderB;
-
-    return a.name.localeCompare(b.name, "fr");
-  });
-
-  const allHomepageAds: HomepageAd[] = [...featuredAds, ...recentAds];
-
-  const homepageAdsJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    itemListElement: allHomepageAds.map((ad, index) => ({
-      "@type": "Product",
-      position: index + 1,
-      name: ad.title,
-      description: ad.location,
-      offers: {
-        "@type": "Offer",
-        price: ad.price,
-        priceCurrency: "MAD",
-        areaServed: ad.location,
-      },
-    })),
-  };
-
   return (
-    <div dir="ltr" lang="fr" className="min-h-screen bg-zinc-50 text-zinc-900">
-      <div className="mx-auto flex min-h-screen max-w-7xl flex-col px-4 pb-10 pt-6 sm:px-6 lg:px-8">
-        <main className="flex-1 space-y-8 pt-6">
-          <section className="space-y-2 text-right">
-            <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 sm:text-3xl">
-              الإعلانات حسب التصنيفات
-            </h1>
-            <p className="text-sm text-zinc-600">
-              تصفّح أحدث الإعلانات التي تمّت الموافقة عليها، مرتبة حسب نوع المنتج.
-            </p>
-            {supabaseError ? (
-              <div className="mt-2 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-right text-xs text-red-700">
-                <p className="font-medium">حدث خطأ أثناء جلب الإعلانات من Supabase.</p>
-                <p className="mt-1 break-words">
-                  {supabaseError.message ?? "Unknown error"}
-                </p>
-              </div>
-            ) : null}
-            {!supabaseError ? (
-              <p className="text-[11px] text-zinc-500">
-                عدد الإعلانات النشطة (status = 'active') التي تم جلبها: {recentAds.length}
-              </p>
-            ) : null}
-          </section>
+    <div dir="rtl" className="min-h-screen bg-white font-sans text-zinc-900">
 
-          <section className="mt-4 space-y-4 rounded-2xl border border-zinc-100 bg-white/60 p-4 shadow-sm backdrop-blur-sm sm:p-6">
-            {categorySections.length ? (
-              <div className="space-y-6">
-                {categorySections.map((section) => (
-                  <div key={section.slug} className="space-y-3">
-                    <div className="flex items-baseline justify-between">
-                      <div className="text-right">
-                        <h2 className="text-base font-semibold tracking-tight text-zinc-900">
-                          {section.name}
-                        </h2>
-                      </div>
-                      <Link
-                        href={`/marketplace?category=${encodeURIComponent(section.slug)}`}
-                        className="text-[11px] font-medium text-zinc-600 hover:text-zinc-800"
-                      >
-                        عرض كل الإعلانات
-                      </Link>
-                    </div>
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                      {section.ads.slice(0, 4).map((ad) => (
-                        <AdCard
-                          key={ad.id}
-                          ad={ad}
-                          variant="default"
-                          href={`/ads/${ad.id}`}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-xs text-zinc-500">
-                لا توجد إعلانات منشورة بعد.
-              </p>
-            )}
-          </section>
-        </main>
+      <HeroSection />
 
-        <footer className="mt-10 border-t border-zinc-100 pt-6 text-xs text-zinc-500">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-2">
-              <span className="font-medium text-zinc-800">Jootiya</span>
-              <span>•</span>
-              <span>Un marché en ligne simple pour tous</span>
+      <main className="space-y-10">
+
+        <CategoryGrid />
+
+        {/* Featured Ads Section */}
+        {featuredAds.length > 0 && (
+          <div className="bg-blue-50/50">
+            <FeaturedGrid
+              title="إعلانات مميزة"
+              ads={featuredAds}
+            />
+          </div>
+        )}
+
+        {/* Recent Ads Section */}
+        <FeaturedGrid
+          title="وصل حديثاً"
+          ads={recentAds}
+          viewAllLink="/marketplace"
+        />
+
+        <TrustSection />
+
+      </main>
+
+      <footer className="mt-16 border-t border-zinc-100 bg-zinc-50 py-12 text-sm text-zinc-500">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            <div>
+              <h3 className="text-zinc-900 font-bold text-lg mb-4">Jootiya</h3>
+              <p>منصتك الأولى للبيع والشراء في المغرب. سهولة، أمان، وسرعة في التواصل.</p>
             </div>
-            <div className="flex flex-wrap gap-3">
-              <Link href="#" className="hover:text-zinc-700">
-                Aide & FAQ
-              </Link>
-              <Link href="#" className="hover:text-zinc-700">
-                Sécurité
-              </Link>
-              <Link href="#" className="hover:text-zinc-700">
-                Conditions
-              </Link>
-              <Link href="#" className="hover:text-zinc-700">
-                Confidentialité
-              </Link>
+            <div>
+              <h4 className="font-semibold text-zinc-900 mb-3">روابط سريعة</h4>
+              <ul className="space-y-2">
+                <li><Link href="/marketplace" className="hover:text-blue-600">تصفح الإعلانات</Link></li>
+                <li><Link href="/marketplace/post" className="hover:text-blue-600">بع شيئاً</Link></li>
+                <li><Link href="/login" className="hover:text-blue-600">تسجيل الدخول</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold text-zinc-900 mb-3">دعم</h4>
+              <ul className="space-y-2">
+                <li><Link href="#" className="hover:text-blue-600">مركز المساعدة</Link></li>
+                <li><Link href="#" className="hover:text-blue-600">شروط الاستخدام</Link></li>
+                <li><Link href="#" className="hover:text-blue-600">سياسة الخصوصية</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold text-zinc-900 mb-3">تواصل معنا</h4>
+              <p>info@jootiya.com</p>
             </div>
           </div>
-        </footer>
-      </div>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(homepageAdsJsonLd) }}
-      />
+          <div className="mt-8 border-t border-zinc-200 pt-8 text-center">
+            <p>&copy; {new Date().getFullYear()} Jootiya. جميع الحقوق محفوظة.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
