@@ -3,8 +3,8 @@ import { getAds } from '@/lib/db/ads';
 import MarketplaceManager from '@/components/marketplace/MarketplaceManager';
 
 export const metadata = {
-  title: 'Marketplace - Jootiya',
-  description: 'Buy and sell everything on Jootiya Marketplace.',
+  title: 'Marché - Jootiya',
+  description: 'Achetez et vendez tout sur le marché Jootiya.',
 };
 
 export default async function MarketplacePage({
@@ -23,15 +23,15 @@ export default async function MarketplacePage({
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">
-            Marketplace
+            Marché
           </h1>
           <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-            Discover great deals around you.
+            Découvrez de superbes offres autour de vous.
           </p>
         </div>
       </div>
 
-      <Suspense fallback={<div>Loading marketplace...</div>}>
+      <Suspense fallback={<div>Chargement du marché...</div>}>
         <MarketplaceManager ads={ads || []} />
       </Suspense>
     </div>

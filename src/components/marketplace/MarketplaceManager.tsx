@@ -11,11 +11,11 @@ function transformAdToCard(ad: any): ListingCardProps {
         id: ad.id,
         title: ad.title,
         subtitle: ad.description, // truncate in UI if needed
-        price: `${ad.currency || '$'} ${ad.price}`,
+        price: `${ad.currency || 'MAD'} ${ad.price}`,
         rating: 0, // Placeholder
         ratingCount: 0,
         imageUrl: ad.images?.[0] || '/placeholder-ad.jpg',
-        sellerName: ad.profiles?.full_name || 'Unknown Seller',
+        sellerName: ad.profiles?.full_name || 'Vendeur inconnu',
         href: `/marketplace/${ad.id}`,
     };
 }
@@ -58,9 +58,9 @@ export default function MarketplaceManager({ ads }: { ads: any[] }) {
                     router.push(`/marketplace?${params.toString()}`);
                 },
                 options: [
-                    { label: "Newest", value: "newest" },
-                    { label: "Price: Low to High", value: "price_asc" },
-                    { label: "Price: High to Low", value: "price_desc" },
+                    { label: "Plus récents", value: "newest" },
+                    { label: "Prix : Croissant", value: "price_asc" },
+                    { label: "Prix : Décroissant", value: "price_desc" },
                 ]
             }}
             listingGridProps={{

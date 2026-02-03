@@ -25,7 +25,7 @@ export default function SellerDashboard({ initialStats, initialAds, initialCount
     // const [page, setPage] = useState(1);
 
     const handleDelete = async (id: string) => {
-        if (!confirm("Are you sure you want to delete this ad?")) return;
+        if (!confirm("Voulez-vous vraiment supprimer cette annonce ?")) return;
 
         try {
             const { error } = await supabase
@@ -40,7 +40,7 @@ export default function SellerDashboard({ initialStats, initialAds, initialCount
             router.refresh(); // Refresh server stats
         } catch (err) {
             console.error("Delete failed", err);
-            alert("Failed to delete ad");
+            alert("Échec de la suppression de l'annonce");
         }
     };
 
@@ -51,15 +51,15 @@ export default function SellerDashboard({ initialStats, initialAds, initialCount
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div>
                     <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent dark:from-white dark:to-gray-400">
-                        Seller Dashboard
+                        Tableau de bord vendeur
                     </h1>
                     <p className="text-gray-500 dark:text-gray-400 mt-1">
-                        Manage your listings and performance
+                        Gérez vos annonces et vos performances
                     </p>
                 </div>
                 <Link href="/marketplace/post">
                     <Button size="lg" className="rounded-2xl shadow-lg hover:shadow-xl transition-all">
-                        <Plus className="mr-2 h-5 w-5" /> Post New Ad
+                        <Plus className="mr-2 h-5 w-5" /> Publier une annonce
                     </Button>
                 </Link>
             </div>
@@ -76,12 +76,12 @@ export default function SellerDashboard({ initialStats, initialAds, initialCount
                 {/* Quick Actions / Activity Feed or just a placeholder for now to balance grid */}
                 <div className="lg:col-span-3 space-y-4">
                     <div className="rounded-2xl border border-blue-100 bg-blue-50/50 p-6 dark:border-blue-900/30 dark:bg-blue-900/10">
-                        <h3 className="font-semibold text-blue-900 dark:text-blue-100">Pro Tip</h3>
+                        <h3 className="font-semibold text-blue-900 dark:text-blue-100">Astuce Pro</h3>
                         <p className="mt-2 text-sm text-blue-700 dark:text-blue-300">
-                            Ads with 3+ images get 2.5x more views. Edit your listings to add more photos!
+                            Les annonces avec 3 images ou plus reçoivent 2,5x plus de vues. Modifiez vos annonces pour ajouter plus de photos !
                         </p>
                         <Button variant="outline" size="sm" className="mt-4 border-blue-200 text-blue-700 hover:bg-blue-100 dark:border-blue-800 dark:text-blue-300 dark:hover:bg-blue-900/50">
-                            Check Quality
+                            Vérifier la qualité
                         </Button>
                     </div>
                 </div>
@@ -89,7 +89,7 @@ export default function SellerDashboard({ initialStats, initialAds, initialCount
 
             {/* Main Content: Ads Table */}
             <div className="space-y-4">
-                <h2 className="text-xl font-semibold text-gray-800 dark:text-white">Your Listings</h2>
+                <h2 className="text-xl font-semibold text-gray-800 dark:text-white">Vos annonces</h2>
                 <AdsTable ads={ads} onDelete={handleDelete} />
             </div>
 

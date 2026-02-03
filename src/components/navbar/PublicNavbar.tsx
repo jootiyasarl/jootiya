@@ -75,10 +75,10 @@ function PublicNavbar() {
   };
 
   const navLinks = [
-    { name: "العقارات", href: "/marketplace?category=real-estate" },
-    { name: "السيارات", href: "/marketplace?category=vehicles" },
-    { name: "الإلكترونيات", href: "/marketplace?category=electronics" },
-    { name: "المنزل", href: "/marketplace?category=home" },
+    { name: "Immobilier", href: "/marketplace?category=real-estate" },
+    { name: "Véhicules", href: "/marketplace?category=vehicles" },
+    { name: "Électronique", href: "/marketplace?category=electronics" },
+    { name: "Maison", href: "/marketplace?category=home" },
   ];
 
   return (
@@ -128,7 +128,7 @@ function PublicNavbar() {
             </div>
             <input
               type="text"
-              placeholder="ابحث عن أي شيء..."
+              placeholder="Rechercher n'importe quoi..."
               className="w-full bg-zinc-100 border-transparent focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-200 rounded-2xl py-2.5 pr-11 pl-4 text-sm transition-all outline-none"
             />
           </div>
@@ -149,7 +149,7 @@ function PublicNavbar() {
                 <Link href={isAdmin ? "/admin" : "/dashboard"}>
                   <Button className="hidden sm:flex gap-2 rounded-2xl bg-zinc-900 border-none hover:bg-zinc-800 text-white font-bold h-11 px-6 shadow-lg shadow-zinc-200 shadow-zinc-900/10">
                     {isAdmin ? <ShieldAlert className="w-4 h-4" /> : <LayoutDashboard className="w-4 h-4" />}
-                    <span>{isAdmin ? "لوحة الإدارة" : "حسابي"}</span>
+                    <span>{isAdmin ? "Administration" : "Mon compte"}</span>
                   </Button>
                 </Link>
                 <div className="lg:relative group">
@@ -158,6 +158,7 @@ function PublicNavbar() {
                     size="icon"
                     onClick={handleLogout}
                     className="rounded-full text-zinc-400 hover:text-red-500 hover:bg-red-50"
+                    title="Déconnexion"
                   >
                     <LogOut className="w-5 h-5" />
                   </Button>
@@ -166,7 +167,7 @@ function PublicNavbar() {
             ) : (
               <Link href="/login">
                 <Button variant="ghost" className="font-bold text-zinc-700 hover:text-blue-600 rounded-2xl hidden sm:flex">
-                  دخول
+                  Connexion
                 </Button>
               </Link>
             )}
@@ -174,7 +175,7 @@ function PublicNavbar() {
             <Link href="/marketplace/post">
               <Button className="rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold h-11 px-6 shadow-lg shadow-blue-200 transition-all active:scale-[0.98] gap-2">
                 <PlusCircle className="w-5 h-5" />
-                <span className="hidden sm:inline">أضف إعلاناً</span>
+                <span className="hidden sm:inline">Déposer une annonce</span>
                 <span className="sm:hidden text-lg">+</span>
               </Button>
             </Link>
@@ -203,7 +204,7 @@ function PublicNavbar() {
               <div className="pt-4 border-t border-zinc-100">
                 <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
                   <Button className="w-full rounded-2xl h-12 bg-zinc-100 text-zinc-900 hover:bg-zinc-200 border-none font-bold">
-                    تسجيل الدخول
+                    Se connecter
                   </Button>
                 </Link>
               </div>

@@ -39,7 +39,7 @@ export default async function Home() {
     if (row.city) locationParts.push(row.city);
     if (locationParts.length === 0 && row.location) locationParts.push(row.location);
 
-    const location = locationParts.join(", ") || "المغرب";
+    const location = locationParts.join(", ") || "Maroc";
 
     let createdAtLabel: string | undefined;
     if (row.created_at) {
@@ -67,7 +67,7 @@ export default async function Home() {
       price: priceLabel,
       location,
       createdAt: createdAtLabel,
-      sellerBadge: row.is_featured ? "مميز" : undefined,
+      sellerBadge: row.is_featured ? "À la une" : undefined,
       isFeatured: Boolean(row.is_featured),
       imageUrl: primaryImageUrl,
       categorySlug: row.category,
@@ -79,7 +79,7 @@ export default async function Home() {
     : [];
 
   return (
-    <div dir="rtl" className="min-h-screen bg-white font-sans text-zinc-900 pb-20">
+    <div dir="ltr" className="min-h-screen bg-white font-sans text-zinc-900 pb-20">
 
       <HeroSection />
 
@@ -89,16 +89,16 @@ export default async function Home() {
 
         {adsError ? (
           <div className="rounded-md border border-red-200 bg-red-50 px-4 py-8 text-center text-red-700">
-            <p>حدث خطأ أثناء تحميل الإعلانات.</p>
+            <p>Une erreur s'est produite lors du chargement des annonces.</p>
           </div>
         ) : null}
 
         {!adsError && ads.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <h3 className="text-lg font-semibold text-zinc-900">لا توجد إعلانات حالياً</h3>
-            <p className="text-zinc-500 mt-2">كن أول من ينشر إعلاناً!</p>
+            <h3 className="text-lg font-semibold text-zinc-900">Aucune annonce pour le moment</h3>
+            <p className="text-zinc-500 mt-2">Soyez le premier à publier une annonce !</p>
             <Link href="/marketplace/post" className="mt-4 px-6 py-2 bg-zinc-900 text-white rounded-full font-medium hover:bg-zinc-800 transition">
-              نشر إعلان
+              Publier une annonce
             </Link>
           </div>
         ) : null}

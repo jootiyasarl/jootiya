@@ -13,11 +13,11 @@ import { cn } from '@/lib/utils';
 import { supabase } from '@/lib/supabaseClient';
 
 const adSchema = z.object({
-    title: z.string().min(5, "Title must be at least 5 characters"),
-    price: z.coerce.number().min(1, "Price must be greater than 0"),
-    category: z.string().min(1, "Please select a category"),
-    description: z.string().min(20, "Description must be detailed (min 20 chars)"),
-    location: z.string().min(3, "Location is required"),
+    title: z.string().min(5, "Le titre doit contenir au moins 5 caractères"),
+    price: z.coerce.number().min(1, "Le prix doit être supérieur à 0"),
+    category: z.string().min(1, "Veuillez sélectionner une catégorie"),
+    description: z.string().min(20, "La description doit être détaillée (min 20 caractères)"),
+    location: z.string().min(3, "La localisation est requise"),
 });
 
 type AdFormValues = {
@@ -29,10 +29,10 @@ type AdFormValues = {
 };
 
 const CATEGORIES = [
-    { id: 'electronics', label: 'Electronics', icon: Smartphone, color: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-900/20' },
-    { id: 'vehicles', label: 'Vehicles', icon: Car, color: 'text-orange-500', bg: 'bg-orange-50 dark:bg-orange-900/20' },
-    { id: 'fashion', label: 'Fashion', icon: Shirt, color: 'text-pink-500', bg: 'bg-pink-50 dark:bg-pink-900/20' },
-    { id: 'property', label: 'Property', icon: Home, color: 'text-emerald-500', bg: 'bg-emerald-50 dark:bg-emerald-900/20' },
+    { id: 'electronics', label: 'Électronique', icon: Smartphone, color: 'text-blue-500', bg: 'bg-blue-50 dark:bg-blue-900/20' },
+    { id: 'vehicles', label: 'Véhicules', icon: Car, color: 'text-orange-500', bg: 'bg-orange-50 dark:bg-orange-900/20' },
+    { id: 'fashion', label: 'Mode', icon: Shirt, color: 'text-pink-500', bg: 'bg-pink-50 dark:bg-pink-900/20' },
+    { id: 'property', label: 'Immobilier', icon: Home, color: 'text-emerald-500', bg: 'bg-emerald-50 dark:bg-emerald-900/20' },
 ];
 
 export default function AdPostForm() {
@@ -65,7 +65,7 @@ export default function AdPostForm() {
         setIsSubmitting(true);
         try {
             const user = await supabase.auth.getUser();
-            if (!user.data.user) throw new Error("Not authenticated");
+            if (!user.data.user) throw new Error("Non authentifié");
 
             // 1. Upload Images
             const uploadedUrls = [];
@@ -100,10 +100,10 @@ export default function AdPostForm() {
 
             if (insertError) throw insertError;
 
-            alert('Ad posted successfully! Pending approval.');
+            alert('Annonce publiée avec succès ! En attente d\'approbation.');
         } catch (error) {
             console.error(error);
-            alert('Failed to post ad.');
+            alert('Échec de la publication de l\'annonce.');
         } finally {
             setIsSubmitting(false);
         }
@@ -116,13 +116,13 @@ export default function AdPostForm() {
             <div className="bg-white/70 backdrop-blur-xl border border-white/20 shadow-xl rounded-3xl p-6 md:p-8 dark:bg-zinc-900/70">
                 <h2 className="text-xl font-semibold mb-6 text-gray-900 dark:text-white flex items-center gap-2">
                     <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-blue-600 text-sm font-bold dark:bg-blue-900 dark:text-blue-300">1</span>
-                    Item Details
+                    Détails de l'article
                 </h2>
 
                 <div className="space-y-6">
                     {/* Category Selection */}
                     <div className="space-y-3">
-                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Category</label>
+                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Catégorie</label>
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             {CATEGORIES.map((cat) => {
                                 const Icon = cat.icon;
@@ -159,8 +159,8 @@ export default function AdPostForm() {
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Title</label>
-                        <Input {...register('title')} placeholder="e.g. iPhone 15 Pro Max - Like New" className="bg-white/50 dark:bg-zinc-900/50" />
+                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Titre</label>
+                        <Input {...register('title')} placeholder="ex: iPhone 15 Pro Max - État neuf" className="bg-white/50 dark:bg-zinc-900/50" />
                         {errors.title && <p className="text-red-500 text-xs">{errors.title.message}</p>}
                     </div>
 
@@ -169,7 +169,7 @@ export default function AdPostForm() {
                         <textarea
                             {...register('description')}
                             className="flex min-h-[150px] w-full rounded-2xl border border-input bg-white/50 px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-zinc-900/50 resize-y"
-                            placeholder="Describe your item in detail (condition, features, reason for selling)..."
+                            placeholder="Décrivez votre article en détail (état, caractéristiques, raison de la vente)..."
                         />
                         {errors.description && <p className="text-red-500 text-xs">{errors.description.message}</p>}
                     </div>
@@ -190,7 +190,7 @@ export default function AdPostForm() {
                                 <div className="p-4 rounded-full bg-blue-50 mb-3 group-hover:scale-110 transition-transform dark:bg-zinc-800">
                                     <Upload className="w-8 h-8 text-blue-500" />
                                 </div>
-                                <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Click to upload photos</p>
+                                <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Cliquez pour télécharger des photos</p>
                                 <p className="text-xs text-gray-500 mt-1">SVG, PNG, JPG (max 800x400px)</p>
                             </div>
                             <input type="file" className="hidden" multiple accept="image/*" onChange={handleImageChange} />
@@ -218,22 +218,22 @@ export default function AdPostForm() {
                 <div className="bg-white/70 backdrop-blur-xl border border-white/20 shadow-xl rounded-3xl p-6 md:p-8 dark:bg-zinc-900/70 h-fit">
                     <h2 className="text-xl font-semibold mb-6 text-gray-900 dark:text-white flex items-center gap-2">
                         <span className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-blue-600 text-sm font-bold dark:bg-blue-900 dark:text-blue-300">3</span>
-                        Details
+                        Détails
                     </h2>
 
                     <div className="space-y-6">
                         <div className="space-y-2">
-                            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Price ($)</label>
+                            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Prix (DH)</label>
                             <div className="relative">
-                                <span className="absolute left-3 top-2.5 text-gray-500">$</span>
-                                <Input type="number" {...register('price')} className="pl-7 bg-white/50 dark:bg-zinc-900/50" />
+                                <span className="absolute left-3 top-2.5 text-gray-500">DH</span>
+                                <Input type="number" {...register('price')} className="pl-10 bg-white/50 dark:bg-zinc-900/50" />
                             </div>
                             {errors.price && <p className="text-red-500 text-xs">{errors.price.message}</p>}
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Location</label>
-                            <Input {...register('location')} placeholder="City, Area" className="bg-white/50 dark:bg-zinc-900/50" />
+                            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Localisation</label>
+                            <Input {...register('location')} placeholder="Ville, Quartier" className="bg-white/50 dark:bg-zinc-900/50" />
                             {errors.location && <p className="text-red-500 text-xs">{errors.location.message}</p>}
                         </div>
                     </div>
@@ -244,10 +244,10 @@ export default function AdPostForm() {
                 {isSubmitting ? (
                     <>
                         <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                        Publishing Listing...
+                        Publication en cours...
                     </>
                 ) : (
-                    'Post Ad Now'
+                    'Publier l\'annonce'
                 )}
             </Button>
         </form>

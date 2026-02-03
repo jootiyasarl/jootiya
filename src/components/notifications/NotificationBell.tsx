@@ -6,7 +6,7 @@ import { useNotifications, type Notification } from "@/hooks/useNotifications";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
-import { ar } from "date-fns/locale";
+import { fr } from "date-fns/locale";
 
 export function NotificationBell() {
     const [isOpen, setIsOpen] = useState(false);
@@ -40,7 +40,7 @@ export function NotificationBell() {
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className="relative p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
-                aria-label="التنبيهات"
+                aria-label="Notifications"
             >
                 <Bell className="h-5 w-5 text-zinc-600 dark:text-zinc-400" />
                 {unreadCount > 0 && (
@@ -54,13 +54,13 @@ export function NotificationBell() {
             {isOpen && (
                 <div className="absolute left-0 mt-2 w-80 sm:w-96 origin-top-left rounded-2xl border border-zinc-200 bg-white/95 shadow-2xl backdrop-blur-xl dark:border-zinc-800 dark:bg-zinc-900/95 z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
                     <div className="p-4 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
-                        <h3 className="font-bold text-zinc-900 dark:text-white">التنبيهات</h3>
+                        <h3 className="font-bold text-zinc-900 dark:text-white">Notifications</h3>
                         {unreadCount > 0 && (
                             <button
                                 onClick={() => markAllAsRead()}
                                 className="text-xs font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 transition-colors"
                             >
-                                تحديد الكل كمقروء
+                                Tout marquer comme lu
                             </button>
                         )}
                     </div>
@@ -94,7 +94,7 @@ export function NotificationBell() {
                                                         {notification.title}
                                                     </p>
                                                     <span className="text-[10px] text-zinc-500 whitespace-nowrap mr-2">
-                                                        {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true, locale: ar })}
+                                                        {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true, locale: fr })}
                                                     </span>
                                                 </div>
                                                 <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
@@ -109,7 +109,7 @@ export function NotificationBell() {
                                                             setIsOpen(false);
                                                         }}
                                                     >
-                                                        عرض التفاصيل
+                                                        Voir les détails
                                                         <ExternalLink className="h-3 w-3" />
                                                     </Link>
                                                 )}
@@ -123,7 +123,7 @@ export function NotificationBell() {
                                 <div className="mx-auto h-12 w-12 rounded-full bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center mb-3">
                                     <Bell className="h-6 w-6 text-zinc-300 dark:text-zinc-600" />
                                 </div>
-                                <p className="text-sm text-zinc-500">لا توجد تنبيهات حالياً</p>
+                                <p className="text-sm text-zinc-500">Aucune notification pour le moment</p>
                             </div>
                         )}
                     </div>
@@ -133,7 +133,7 @@ export function NotificationBell() {
                         className="block p-3 text-center text-xs font-medium text-zinc-500 hover:bg-zinc-50 dark:hover:bg-zinc-800 border-t border-zinc-100 dark:border-zinc-800 transition-colors"
                         onClick={() => setIsOpen(false)}
                     >
-                        عرض جميع التنبيهات
+                        Voir toutes les notifications
                     </Link>
                 </div>
             )}

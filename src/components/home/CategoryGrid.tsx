@@ -2,13 +2,13 @@ import Link from "next/link";
 import { Smartphone, Home, Car, Shirt, Club, Baby, Package, ArrowRight } from "lucide-react";
 
 const CATEGORIES = [
-    { id: "electronics", label: "إلكترونيات", icon: Smartphone, color: "bg-blue-100 text-blue-600", href: "/marketplace?category=electronics" },
-    { id: "vehicles", label: "سيارات", icon: Car, color: "bg-orange-100 text-orange-600", href: "/marketplace?category=vehicles" },
-    { id: "home", label: "منزل وأثاث", icon: Home, color: "bg-green-100 text-green-600", href: "/marketplace?category=home" },
-    { id: "fashion", label: "أزياء", icon: Shirt, color: "bg-pink-100 text-pink-600", href: "/marketplace?category=fashion" },
-    { id: "sports", label: "رياضة", icon: Club, color: "bg-purple-100 text-purple-600", href: "/marketplace?category=sports" },
-    { id: "kids", label: "أطفال", icon: Baby, color: "bg-yellow-100 text-yellow-600", href: "/marketplace?category=kids" },
-    { id: "other", label: "أخرى", icon: Package, color: "bg-zinc-100 text-zinc-600", href: "/marketplace?category=other" },
+    { id: "electronics", label: "Électronique", icon: Smartphone, color: "bg-blue-100 text-blue-600", href: "/marketplace?category=electronics" },
+    { id: "vehicles", label: "Véhicules", icon: Car, color: "bg-orange-100 text-orange-600", href: "/marketplace?category=vehicles" },
+    { id: "home", label: "Maison", icon: Home, color: "bg-green-100 text-green-600", href: "/marketplace?category=home" },
+    { id: "fashion", label: "Mode", icon: Shirt, color: "bg-pink-100 text-pink-600", href: "/marketplace?category=fashion" },
+    { id: "sports", label: "Sports", icon: Club, color: "bg-purple-100 text-purple-600", href: "/marketplace?category=sports" },
+    { id: "kids", label: "Enfants", icon: Baby, color: "bg-yellow-100 text-yellow-600", href: "/marketplace?category=kids" },
+    { id: "other", label: "Autres", icon: Package, color: "bg-zinc-100 text-zinc-600", href: "/marketplace?category=other" },
 ];
 
 export function CategoryGrid() {
@@ -16,9 +16,9 @@ export function CategoryGrid() {
         <section className="py-16 bg-zinc-50">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between mb-8">
-                    <h2 className="text-2xl font-bold tracking-tight text-zinc-900">تصفح الأقسام</h2>
+                    <h2 className="text-2xl font-bold tracking-tight text-zinc-900">Parcourir les catégories</h2>
                     <Link href="/marketplace" className="text-sm font-medium text-blue-600 hover:text-blue-500 flex items-center gap-1">
-                        عرض الكل <ArrowRight className="h-4 w-4" />
+                        Tout voir <ArrowRight className="h-4 w-4" />
                     </Link>
                 </div>
 

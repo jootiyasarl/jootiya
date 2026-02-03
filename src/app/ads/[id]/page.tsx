@@ -60,25 +60,25 @@ export default async function AdPage({ params }: AdPageProps) {
   const images = ad.image_urls || [];
   const formattedPrice = ad.price
     ? Number(ad.price).toLocaleString() + " " + (ad.currency?.trim() || "MAD")
-    : "اتصل للمزيد من المعلومات";
+    : "Contactez-nous pour plus d'informations";
 
-  const formattedDate = new Date(ad.created_at).toLocaleDateString("ar-MA", {
+  const formattedDate = new Date(ad.created_at).toLocaleDateString("fr-FR", {
     day: "numeric",
     month: "long",
     year: "numeric",
   });
 
   return (
-    <div dir="rtl" className="min-h-screen bg-[#F8FAFC] pb-20 font-sans text-zinc-900">
+    <div dir="ltr" className="min-h-screen bg-[#F8FAFC] pb-20 font-sans text-zinc-900">
 
       {/* Top Header / Breadcrumbs */}
       <div className="bg-white border-b border-zinc-200">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-14 items-center justify-between text-sm">
             <nav className="flex items-center gap-2 text-zinc-500">
-              <Link href="/" className="hover:text-zinc-900 transition-colors">الرئيسية</Link>
+              <Link href="/" className="hover:text-zinc-900 transition-colors">Accueil</Link>
               <ChevronRight className="h-4 w-4" />
-              <Link href="/marketplace" className="hover:text-zinc-900 transition-colors">السوق</Link>
+              <Link href="/marketplace" className="hover:text-zinc-900 transition-colors">Marché</Link>
               <ChevronRight className="h-4 w-4" />
               <span className="text-zinc-900 font-medium truncate max-w-[200px]">{ad.title}</span>
             </nav>
@@ -86,11 +86,11 @@ export default async function AdPage({ params }: AdPageProps) {
             <div className="flex items-center gap-3">
               <Button variant="ghost" size="sm" className="hidden sm:flex gap-2 text-zinc-600 hover:text-zinc-900">
                 <Share2 className="h-4 w-4" />
-                <span>مشاركة</span>
+                <span>Partager</span>
               </Button>
               <Button variant="ghost" size="sm" className="hidden sm:flex gap-2 text-zinc-600 hover:text-red-600">
                 <Heart className="h-4 w-4" />
-                <span>حفظ</span>
+                <span>Enregistrer</span>
               </Button>
             </div>
           </div>
@@ -117,7 +117,7 @@ export default async function AdPage({ params }: AdPageProps) {
               <div className="flex flex-wrap gap-4 text-sm text-zinc-500">
                 <div className="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-full border border-zinc-200 shadow-sm">
                   <MapPin className="h-4 w-4 text-zinc-400" />
-                  <span>{ad.city || "المغرب"}</span>
+                  <span>{ad.city || "Maroc"}</span>
                 </div>
                 <div className="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-full border border-zinc-200 shadow-sm">
                   <Calendar className="h-4 w-4 text-zinc-400" />
@@ -125,7 +125,7 @@ export default async function AdPage({ params }: AdPageProps) {
                 </div>
                 <div className="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-full border border-zinc-200 shadow-sm">
                   <Eye className="h-4 w-4 text-zinc-400" />
-                  <span>{ad.views_count || 0} مشاهدة</span>
+                  <span>{ad.views_count || 0} vues</span>
                 </div>
               </div>
             </div>
@@ -136,24 +136,24 @@ export default async function AdPage({ params }: AdPageProps) {
               <div className="rounded-3xl bg-white p-6 shadow-md shadow-zinc-200/50 border border-zinc-100 sm:p-8">
                 <h2 className="mb-6 text-xl font-bold flex items-center gap-2">
                   <span className="h-8 w-1.5 rounded-full bg-blue-600" />
-                  تفاصيل الإعلان
+                  Détails de l'annonce
                 </h2>
                 <div className="prose prose-zinc max-w-none text-[16px] leading-relaxed text-zinc-700 whitespace-pre-wrap">
-                  {ad.description || "لا يوجد وصف إضافي لهذا الإعلان."}
+                  {ad.description || "Aucune description supplémentaire pour cette annonce."}
                 </div>
 
                 {/* Meta list */}
                 <div className="mt-8 grid grid-cols-2 gap-4 border-t border-zinc-100 pt-8 sm:grid-cols-3">
                   <div className="space-y-1">
-                    <span className="text-xs uppercase tracking-wider text-zinc-400 font-bold">الفئة</span>
-                    <p className="font-semibold text-zinc-900">{ad.category || "غير محدد"}</p>
+                    <span className="text-xs uppercase tracking-wider text-zinc-400 font-bold">Catégorie</span>
+                    <p className="font-semibold text-zinc-900">{ad.category || "Non spécifié"}</p>
                   </div>
                   <div className="space-y-1">
-                    <span className="text-xs uppercase tracking-wider text-zinc-400 font-bold">الحالة</span>
-                    <p className="font-semibold text-zinc-900">مستعمل</p>
+                    <span className="text-xs uppercase tracking-wider text-zinc-400 font-bold">État</span>
+                    <p className="font-semibold text-zinc-900">Occasion</p>
                   </div>
                   <div className="space-y-1">
-                    <span className="text-xs uppercase tracking-wider text-zinc-400 font-bold">الموقع دقيق</span>
+                    <span className="text-xs uppercase tracking-wider text-zinc-400 font-bold">Quartier</span>
                     <p className="font-semibold text-zinc-900">{ad.neighborhood || ad.city}</p>
                   </div>
                 </div>
@@ -166,26 +166,26 @@ export default async function AdPage({ params }: AdPageProps) {
                     <ShieldCheck className="h-6 w-6" />
                   </div>
                   <div className="space-y-1">
-                    <h3 className="font-bold text-amber-900">إرشادات السلامة</h3>
+                    <h3 className="font-bold text-amber-900">Conseils de sécurité</h3>
                     <p className="text-sm text-amber-800/80">
-                      نحن نهتم بسلامتك. يرجى اتباع هذه الخطوات لضمان تجربة شراء آمنة:
+                      Votre sécurité nous tient à cœur. Veuillez suivre ces étapes pour une transaction sécurisée :
                     </p>
                     <ul className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 text-sm text-amber-800/70">
                       <li className="flex items-center gap-2">
                         <CheckCircle2 className="h-4 w-4 text-amber-600" />
-                        <span>قابل البائع في مكان عام ونهاراً.</span>
+                        <span>Rencontrez le vendeur dans un lieu public.</span>
                       </li>
                       <li className="flex items-center gap-2">
                         <CheckCircle2 className="h-4 w-4 text-amber-600" />
-                        <span>لا تقم بتحويل مالي قبل المعاينة.</span>
+                        <span>N'envoyez pas d'argent avant d'avoir vu l'article.</span>
                       </li>
                       <li className="flex items-center gap-2">
                         <CheckCircle2 className="h-4 w-4 text-amber-600" />
-                        <span>تحقق من ثمن السلعة في السوق.</span>
+                        <span>Vérifiez le prix du marché pour cet article.</span>
                       </li>
                       <li className="flex items-center gap-2">
                         <CheckCircle2 className="h-4 w-4 text-amber-600" />
-                        <span>أخبر أحداً بمكان لقائك مع البائع.</span>
+                        <span>Informez un proche de votre rendez-vous.</span>
                       </li>
                     </ul>
                   </div>
@@ -206,7 +206,7 @@ export default async function AdPage({ params }: AdPageProps) {
                     <MapPin className="h-4 w-4" />
                     <span>{ad.city}</span>
                     <span>•</span>
-                    <span>منذ {formattedDate}</span>
+                    <span>Modifié le {formattedDate}</span>
                   </div>
                 </div>
 
@@ -216,11 +216,11 @@ export default async function AdPage({ params }: AdPageProps) {
                   <div className="space-y-3">
                     <Button className="w-full h-14 text-lg font-bold rounded-2xl bg-zinc-900 hover:bg-zinc-800 text-white shadow-lg transition-all active:scale-[0.98] gap-3">
                       <Phone className="h-5 w-5" />
-                      إظهار رقم الهاتف
+                      Afficher le numéro
                     </Button>
                     <Button variant="outline" className="w-full h-14 text-lg font-semibold rounded-2xl border-zinc-200 hover:bg-zinc-50 transition-all active:scale-[0.98] gap-3">
                       <MessageCircle className="h-5 w-5" />
-                      إرسال رسالة
+                      Envoyer un message
                     </Button>
                   </div>
                 </div>
@@ -228,24 +228,24 @@ export default async function AdPage({ params }: AdPageProps) {
 
               {/* Seller Profiling Card */}
               <div className="rounded-3xl bg-white p-6 shadow-md shadow-zinc-200/50 border border-zinc-100">
-                <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-zinc-400">البائع</h3>
+                <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-zinc-400">Vendeur</h3>
                 <div className="flex items-center gap-4">
                   <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-zinc-100 to-zinc-200 flex items-center justify-center text-zinc-400 ring-4 ring-zinc-50">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7"><path fillRule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clipRule="evenodd" /></svg>
                   </div>
                   <div className="space-y-0.5">
                     <div className="flex items-center gap-1.5 font-bold text-zinc-900">
-                      مستخدم جوتيا
+                      Utilisateur Jootiya
                       <CheckCircle2 className="h-4 w-4 text-blue-500" />
                     </div>
-                    <div className="text-sm text-zinc-500">عضو نشط منذ سنة</div>
+                    <div className="text-sm text-zinc-500">Membre actif depuis 1 an</div>
                   </div>
                 </div>
 
                 <div className="mt-6 pt-6 border-t border-zinc-50">
                   <Link href={`/seller/${ad.seller_id}`} className="text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors flex items-center gap-1">
-                    عرض جميع الإعلانات لهذا البائع
-                    <ChevronRight className="h-4 w-4 rotate-180" />
+                    Voir toutes les annonces de ce vendeur
+                    <ChevronRight className="h-4 w-4" />
                   </Link>
                 </div>
               </div>
@@ -254,12 +254,12 @@ export default async function AdPage({ params }: AdPageProps) {
               <div className="flex flex-col items-center gap-4">
                 <button className="text-zinc-400 hover:text-red-500 flex items-center gap-1.5 text-xs font-medium transition-colors">
                   <Flag className="h-3.5 w-3.5" />
-                  هل يوجد خطأ في الإعلان؟ أبلغنا
+                  Signaler un problème
                 </button>
 
                 <div className="flex items-center gap-2 py-3 px-4 rounded-2xl bg-red-50 text-red-700 text-[11px] border border-red-100">
                   <AlertTriangle className="h-4 w-4 flex-shrink-0" />
-                  <span>لا ترسل مبالغ مالية مسبقة، Jootiya لا تضمن عمليات الدفع.</span>
+                  <span>Ne transférez jamais d'argent à l'avance. Jootiya ne garantit pas les paiements.</span>
                 </div>
               </div>
             </div>
@@ -272,7 +272,7 @@ export default async function AdPage({ params }: AdPageProps) {
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-t border-zinc-100 p-4 pb-safe-bottom shadow-[0_-10px_20px_rgba(0,0,0,0.05)]">
         <div className="mx-auto max-w-7xl flex gap-3">
           <Button className="flex-1 h-14 rounded-2xl bg-zinc-900 text-white font-bold shadow-lg shadow-zinc-900/10">
-            اتصل الآن
+            Appeler maintenant
           </Button>
           <Button variant="outline" size="icon" className="h-14 w-14 rounded-2xl border-zinc-200">
             <MessageCircle className="h-6 w-6 text-zinc-700" />

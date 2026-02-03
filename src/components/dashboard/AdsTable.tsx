@@ -26,10 +26,10 @@ export function AdsTable({ ads, onDelete }: AdsTableProps) {
                 <table className="w-full text-sm text-left">
                     <thead className="bg-gray-50/50 text-gray-500 dark:bg-zinc-800/50 dark:text-gray-400">
                         <tr>
-                            <th className="px-6 py-4 font-medium">Title</th>
-                            <th className="px-6 py-4 font-medium">Price</th>
-                            <th className="px-6 py-4 font-medium">Status</th>
-                            <th className="px-6 py-4 font-medium">Created At</th>
+                            <th className="px-6 py-4 font-medium">Titre</th>
+                            <th className="px-6 py-4 font-medium">Prix</th>
+                            <th className="px-6 py-4 font-medium">Statut</th>
+                            <th className="px-6 py-4 font-medium">Date de création</th>
                             <th className="px-6 py-4 font-medium text-right">Actions</th>
                         </tr>
                     </thead>
@@ -37,7 +37,7 @@ export function AdsTable({ ads, onDelete }: AdsTableProps) {
                         {ads.length === 0 ? (
                             <tr>
                                 <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
-                                    No ads found. Start selling today!
+                                    Aucune annonce trouvée. Commencez à vendre dès aujourd'hui !
                                 </td>
                             </tr>
                         ) : (
@@ -54,11 +54,11 @@ export function AdsTable({ ads, onDelete }: AdsTableProps) {
                             ${ad.status === 'approved' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
                                                 ad.status === 'pending' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' :
                                                     'bg-gray-100 text-gray-800 dark:bg-zinc-800 dark:text-gray-400'}`}>
-                                            {ad.status}
+                                            {ad.status === 'approved' ? 'Approuvé' : ad.status === 'pending' ? 'En attente' : ad.status}
                                         </span>
                                     </td>
                                     <td className="px-6 py-4 text-gray-500 dark:text-gray-400">
-                                        {new Date(ad.created_at).toLocaleDateString()}
+                                        {new Date(ad.created_at).toLocaleDateString("fr-FR")}
                                     </td>
                                     <td className="px-6 py-4 text-right">
                                         <div className="flex items-center justify-end gap-2">

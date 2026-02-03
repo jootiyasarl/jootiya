@@ -10,9 +10,9 @@ const geistSans = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "جوتيا - الموقع الأول في المغرب للبيع والشراء",
+  title: "Jootiya - Le n°1 de l'achat et de la vente au Maroc",
   description:
-    "جوتيا، المنصة الأولى في المغرب للبيع والشراء بكل أمان.",
+    "Jootiya, la première plateforme au Maroc pour acheter et vendre en toute sécurité.",
   icons: {
     icon: "/favicon.svg",
   },
@@ -24,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ar" dir="rtl" className="scroll-smooth">
+    <html lang="fr" dir="ltr" className="scroll-smooth">
       <body
         className={`${geistSans.variable} font-sans antialiased bg-white text-zinc-900`}
       >

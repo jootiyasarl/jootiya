@@ -20,7 +20,7 @@ export function ListingGrid({ items, isLoading, skeletonCount = 8 }: ListingGrid
   if (!items.length) {
     return (
       <div className="rounded-xl border border-dashed bg-zinc-50 p-8 text-center text-sm text-zinc-500">
-        No listings found.
+        Aucune annonce trouvée.
       </div>
     );
   }

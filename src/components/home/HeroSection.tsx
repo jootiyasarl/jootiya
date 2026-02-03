@@ -18,10 +18,10 @@ export function HeroSection() {
             <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8 text-center text-white">
                 <div className="mx-auto max-w-2xl">
                     <h1 className="text-4xl font-bold tracking-tight sm:text-6xl bg-gradient-to-r from-blue-200 via-white to-purple-200 bg-clip-text text-transparent">
-                        كل ما تحتاجه، <br /> في مكان واحد.
+                        Tout ce dont vous avez besoin, <br /> en un seul endroit.
                     </h1>
                     <p className="mt-6 text-lg leading-8 text-zinc-300">
-                        أفضل سوق إلكتروني للبيع والشراء في المغرب. إلكترونيات، عقارات، سيارات، والمزيد. بيع واشتري بكل أمان وسهولة.
+                        Le meilleur marché en ligne pour acheter et vendre au Maroc. Électronique, immobilier, voitures, et plus encore. Vendez et achetez en toute sécurité et simplicité.
                     </p>
 
                     {/* Search Bar */}
@@ -32,17 +32,17 @@ export function HeroSection() {
                             </div>
                             <input
                                 type="text"
-                                placeholder="ابحث عن هاتف، سيارة، شقة..."
+                                placeholder="Rechercher un téléphone, une voiture, un appartement..."
                                 className="block w-full rounded-full border-0 bg-white/10 py-4 pl-10 pr-4 text-white placeholder:text-zinc-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6 backdrop-blur-md"
                             />
                         </div>
                         <Button size="lg" className="rounded-full bg-blue-600 hover:bg-blue-500 text-white px-8 py-6 text-base shadow-lg shadow-blue-500/25 transition-all hover:scale-105">
-                            ابحث الآن
+                            Rechercher maintenant
                         </Button>
                     </div>
 
                     <div className="mt-8 flex items-center justify-center gap-x-6 text-sm">
-                        <span className="text-zinc-400">الأكثر بحثًا:</span>
+                        <span className="text-zinc-400">Les plus recherchés :</span>
                         <div className="flex gap-2">
                             <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition-colors">iPhone 15</span>
                             <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition-colors">Appartement</span>

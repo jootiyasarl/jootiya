@@ -6,7 +6,7 @@ export function MarketplaceSearchBar({
   query,
   onQueryChange,
   onSubmit,
-  placeholder = "Search services, products, or sellers...",
+  placeholder = "Rechercher des services, des produits ou des vendeurs...",
 }: MarketplaceSearchBarProps) {
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
@@ -30,7 +30,7 @@ export function MarketplaceSearchBar({
         onClick={onSubmit}
         className="inline-flex items-center rounded-full bg-zinc-900 px-4 py-1.5 text-xs font-medium text-zinc-50 hover:bg-zinc-800"
       >
-        Search
+        Rechercher
       </button>
     </div>
   );
