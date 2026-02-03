@@ -1,5 +1,5 @@
-"use client";
+import { redirect } from "next/navigation";
 
-import ModeratorAdsPage from "@/app/admin/moderation/ads/page";
-
-export default ModeratorAdsPage;
+export default function ModeratorAdsPage() {
+    redirect("/admin/ads");
+}
