@@ -56,18 +56,29 @@ export default function MyAdsPage() {
         const { data, error: adsError } = await supabase
           .from("ads")
           .select(
-            "id, title, price, currency, status, images, location, created_at, views_count",
+            "id, title, price, currency, status, image_urls, location, created_at, views_count",
           )
           .eq("seller_id", user.id)
-          .neq("status", "deleted")
-          .returns<DashboardAd[]>();
+          .neq("status", "deleted");
 
         if (adsError) {
           throw adsError;
         }
 
         if (!cancelled) {
-          setAds(data ?? []);
+          // Map database column 'image_urls' to component prop 'images'
+          const mappedAds: DashboardAd[] = (data || []).map((ad: any) => ({
+            id: ad.id,
+            title: ad.title,
+            price: ad.price,
+            currency: ad.currency,
+            status: ad.status,
+            location: ad.location,
+            created_at: ad.created_at,
+            views_count: ad.views_count,
+            images: ad.image_urls || []
+          }));
+          setAds(mappedAds);
         }
       } catch (err: any) {
         if (!cancelled) {
