@@ -3,6 +3,7 @@ import { createSupabaseServerClient } from "@/lib/supabase";
 import { HeroSection } from "@/components/home/HeroSection";
 import { CategoryGrid } from "@/components/home/CategoryGrid";
 import { AdCard } from "@/components/AdCard";
+import { Package, ArrowRight } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -81,38 +82,82 @@ export default async function Home() {
   return (
     <div dir="ltr" className="min-h-screen bg-white font-sans text-zinc-900 pb-20">
 
-      <HeroSection />
+      {/* Minimal Top Header / Hero replacement */}
+      <div className="mx-auto max-w-7xl px-4 pt-10 pb-6">
+        <h1 className="text-2xl font-bold tracking-tight text-zinc-900">
+          En ce moment sur Jootiya
+        </h1>
+      </div>
 
-      <main className="mx-auto max-w-[1920px] px-4 sm:px-6 lg:px-8 pt-6">
-
-        <CategoryGrid />
+      <main className="mx-auto max-w-7xl px-4 space-y-16">
 
         {adsError ? (
-          <div className="rounded-md border border-red-200 bg-red-50 px-4 py-8 text-center text-red-700">
+          <div className="rounded-xl border border-red-200 bg-red-50 p-8 text-center text-red-700">
             <p>Une erreur s'est produite lors du chargement des annonces.</p>
           </div>
-        ) : null}
-
-        {!adsError && ads.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 text-center">
-            <h3 className="text-lg font-semibold text-zinc-900">Aucune annonce pour le moment</h3>
-            <p className="text-zinc-500 mt-2">Soyez le premier à publier une annonce !</p>
-            <Link href="/marketplace/post" className="mt-4 px-6 py-2 bg-zinc-900 text-white rounded-full font-medium hover:bg-zinc-800 transition">
-              Publier une annonce
+        ) : ads.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 text-center border-2 border-dashed rounded-3xl">
+            <div className="bg-zinc-100 p-6 rounded-full mb-4">
+              <Package className="w-10 h-10 text-zinc-400" />
+            </div>
+            <h3 className="text-xl font-bold text-zinc-900">Aucune annonce pour le moment</h3>
+            <p className="text-zinc-500 mt-2 max-w-xs">Soyez le premier à publier une annonce sur notre nouvelle plateforme !</p>
+            <Link href="/marketplace/post" className="mt-6 px-8 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-100">
+              Déposer une annonce
             </Link>
           </div>
-        ) : null}
+        ) : (
+          <>
+            {/* Categorized Sections */}
+            {[
+              { id: 'electronics', label: 'Électronique' },
+              { id: 'vehicles', label: 'Véhicules' },
+              { id: 'real-estate', label: 'Immobilier' }
+            ].map((cat) => {
+              const catAds = ads.filter(ad => ad.categorySlug === cat.id).slice(0, 6);
+              if (catAds.length === 0) return null;
 
-        {/* Unified Grid Layout */}
-        <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
-          {ads.map((ad) => (
-            <AdCard
-              key={ad.id}
-              ad={ad}
-              href={`/ads/${ad.id}`}
-            />
-          ))}
-        </div>
+              return (
+                <section key={cat.id} className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-xl font-bold text-zinc-900">{cat.label}</h2>
+                    <Link
+                      href={`/marketplace?category=${cat.id}`}
+                      className="text-sm font-bold text-zinc-900 hover:text-blue-600 flex items-center gap-1 group"
+                    >
+                      Voir plus d'annonces
+                      <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                    </Link>
+                  </div>
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+                    {catAds.map((ad) => (
+                      <AdCard key={ad.id} ad={ad} href={`/ads/${ad.id}`} />
+                    ))}
+                  </div>
+                </section>
+              );
+            })}
+
+            {/* General Section for everything else */}
+            <section className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-bold text-zinc-900">Toutes les annonces</h2>
+                <Link
+                  href="/marketplace"
+                  className="text-sm font-bold text-zinc-900 hover:text-blue-600 flex items-center gap-1 group"
+                >
+                  Tout parcourir
+                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                </Link>
+              </div>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+                {ads.slice(0, 12).map((ad) => (
+                  <AdCard key={ad.id} ad={ad} href={`/ads/${ad.id}`} />
+                ))}
+              </div>
+            </section>
+          </>
+        )}
 
       </main>
     </div>

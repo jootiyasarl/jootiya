@@ -3,6 +3,7 @@
 import type { ListingCardProps } from "@/types/components/marketplace";
 import Image from "next/image";
 import Link from "next/link";
+import { Heart, User } from "lucide-react";
 
 export function ListingCard(props: ListingCardProps) {
   const {
@@ -10,8 +11,6 @@ export function ListingCard(props: ListingCardProps) {
     title,
     subtitle,
     price,
-    rating,
-    ratingCount,
     imageUrl,
     sellerName,
     badgeLabel,
@@ -19,72 +18,67 @@ export function ListingCard(props: ListingCardProps) {
   } = props;
 
   return (
-    <Link
-      href={href}
-      className="group flex flex-col overflow-hidden rounded-xl border bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-    >
-      {imageUrl ? (
-        <div className="relative h-40 w-full overflow-hidden">
-          <Image
-            src={imageUrl}
-            alt={title}
-            fill
-            className="object-cover transition-transform group-hover:scale-105"
-          />
-        </div>
-      ) : (
-        <div className="flex h-40 w-full items-center justify-center bg-zinc-100 text-sm text-zinc-400">
-          No image
-        </div>
-      )}
-
-      <div className="flex flex-1 flex-col gap-2 p-4">
-        <div className="flex items-start justify-between gap-2">
-          <div>
-            <h3 className="line-clamp-2 text-sm font-semibold text-zinc-900">
-              {title}
-            </h3>
-            {subtitle ? (
-              <p className="mt-1 line-clamp-2 text-xs text-zinc-500">
-                {subtitle}
-              </p>
-            ) : null}
+    <article className="group cursor-pointer flex flex-col gap-3 bg-white hover:bg-zinc-50/50 transition-colors duration-200">
+      <Link href={href} className="flex flex-col gap-3">
+        {/* Seller Info */}
+        <div className="flex items-center gap-2 px-1">
+          <div className="w-6 h-6 rounded-full bg-zinc-200 flex items-center justify-center overflow-hidden">
+            <User className="w-4 h-4 text-zinc-400" />
           </div>
+          <span className="text-xs font-bold text-zinc-900 truncate">{sellerName || "Vendeur Jootiya"}</span>
+        </div>
 
-          {badgeLabel ? (
-            <span className="inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-800">
-              {badgeLabel}
+        {/* Image Container */}
+        <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-zinc-100">
+          {imageUrl ? (
+            <Image
+              src={imageUrl}
+              alt={title}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center text-zinc-400">
+              <span className="text-xs">Aucune image</span>
+            </div>
+          )}
+
+          {/* Heart Overlay */}
+          <button
+            className="absolute right-3 top-3 z-10 p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm text-zinc-800 hover:text-blue-600 transition-colors"
+            onClick={(e) => {
+              e.preventDefault();
+            }}
+          >
+            <Heart className="h-5 w-5" />
+          </button>
+
+          {badgeLabel && (
+            <div className="absolute left-3 top-3 rounded-lg bg-blue-600 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
+              {badgeLabel === "Featured" ? "À la une" : badgeLabel}
+            </div>
+          )}
+        </div>
+
+        {/* Content Section */}
+        <div className="flex flex-col gap-1 px-1 pb-2">
+          <h3 className="text-[15px] font-medium text-zinc-900 leading-tight line-clamp-2 min-h-[2.5rem]">
+            {title}
+          </h3>
+
+          <div className="flex flex-col gap-0.5 mt-1">
+            <span className="text-[17px] font-black text-zinc-900">
+              {price}
             </span>
-          ) : null}
-        </div>
-
-        <div className="mt-auto flex items-center justify-between text-xs text-zinc-500">
-          <div className="flex items-center gap-1">
-            {rating !== undefined ? (
-              <span className="font-medium text-zinc-900">
-                {rating.toFixed(1)}
-              </span>
-            ) : null}
-            {ratingCount !== undefined ? (
-              <span className="text-[11px] text-zinc-400">
-                ({ratingCount})
-              </span>
-            ) : null}
+            <div className="flex items-center gap-1.5 text-zinc-500 text-xs mt-1">
+              <span className="truncate">{subtitle || "Maroc"}</span>
+              <span className="shrink-0">•</span>
+              <span className="shrink-0">Aujourd'hui</span>
+            </div>
           </div>
-
-          {sellerName ? (
-            <span className="truncate text-[11px] text-zinc-500">
-              by {sellerName}
-            </span>
-          ) : null}
         </div>
-
-        {price ? (
-          <div className="mt-2 text-sm font-semibold text-zinc-900">
-            {price}
-          </div>
-        ) : null}
-      </div>
-    </Link>
+      </Link>
+    </article>
   );
 }

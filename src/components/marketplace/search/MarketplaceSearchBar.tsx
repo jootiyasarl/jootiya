@@ -1,6 +1,7 @@
 "use client";
 
 import type { MarketplaceSearchBarProps } from "@/types/components/marketplace";
+import { Search } from "lucide-react";
 
 export function MarketplaceSearchBar({
   query,
@@ -16,9 +17,9 @@ export function MarketplaceSearchBar({
   };
 
   return (
-    <div className="flex w-full items-center gap-2 rounded-full border bg-white px-4 py-2 shadow-sm">
+    <div className="flex w-full items-center relative group max-w-xl">
       <input
-        className="flex-1 bg-transparent text-sm outline-none placeholder:text-zinc-400"
+        className="w-full bg-white border border-zinc-200 focus:border-blue-300 focus:ring-4 focus:ring-blue-100 rounded-xl py-3 pr-12 pl-4 text-sm transition-all outline-none"
         type="search"
         value={query}
         onChange={(e) => onQueryChange(e.target.value)}
@@ -28,9 +29,9 @@ export function MarketplaceSearchBar({
       <button
         type="button"
         onClick={onSubmit}
-        className="inline-flex items-center rounded-full bg-zinc-900 px-4 py-1.5 text-xs font-medium text-zinc-50 hover:bg-zinc-800"
+        className="absolute right-2 p-2 bg-blue-600 rounded-lg text-white hover:bg-blue-700 transition-colors"
       >
-        Rechercher
+        <Search className="h-4 w-4" />
       </button>
     </div>
   );
