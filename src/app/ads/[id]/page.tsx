@@ -1,36 +1,11 @@
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-);
-
-export default async function AdPage({
-  params,
-}: {
-  params: { id: string };
-}) {
-  const id = params.id;
-
-  const { data, error } = await supabase
-    .from("ads")
-    .select("*")
-    .eq("id", id)
-    .maybeSingle();
-
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
-
-  if (!data) {
-    return <div>Ad not found (id: {id})</div>;
-  }
-
+export default function AdPage() {
   return (
-    <div>
-      <h1>{data.title}</h1>
-      <p>{data.description}</p>
-      <p>Price: {data.price}</p>
+    <div className="min-h-screen bg-zinc-50">
+      <div className="mx-auto w-full max-w-4xl px-4 py-8">
+        <div className="rounded-2xl border bg-white p-4">
+          تفاصيل الإعلان غير متاحة حاليًا.
+        </div>
+      </div>
     </div>
   );
 }
