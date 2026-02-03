@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createSupabaseServerClient } from "@/lib/supabase";
-import { CategoryFilterBar } from "@/components/home/CategoryFilterBar";
+import { HeroSection } from "@/components/home/HeroSection";
+import { CategoryGrid } from "@/components/home/CategoryGrid";
 import { AdCard } from "@/components/AdCard";
 
 export const dynamic = "force-dynamic";
@@ -80,10 +81,11 @@ export default async function Home() {
   return (
     <div dir="rtl" className="min-h-screen bg-white font-sans text-zinc-900 pb-20">
 
-      {/* Sticky Category Bar */}
-      <CategoryFilterBar />
+      <HeroSection />
 
       <main className="mx-auto max-w-[1920px] px-4 sm:px-6 lg:px-8 pt-6">
+
+        <CategoryGrid />
 
         {adsError ? (
           <div className="rounded-md border border-red-200 bg-red-50 px-4 py-8 text-center text-red-700">
