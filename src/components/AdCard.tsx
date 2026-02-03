@@ -5,6 +5,7 @@ import { Heart } from "lucide-react";
 
 export type PublicAdCardAd = {
   id: string;
+  slug?: string;
   title: string;
   price: string;
   location: string;
@@ -26,6 +27,7 @@ export interface AdCardProps {
 
 export function AdCard({ ad, variant = "default", footerSlot, href, onDelete }: AdCardProps) {
   const isFeatured = variant === "featured" || ad.isFeatured;
+  const linkHref = href || `/ads/${ad.slug || ad.id}`;
 
   const card = (
     <article className="group cursor-pointer flex flex-col gap-2">
@@ -83,9 +85,9 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete }: 
     </article>
   );
 
-  if (href) {
+  if (linkHref) {
     return (
-      <Link href={href} className="block">
+      <Link href={linkHref} className="block">
         {card}
       </Link>
     );

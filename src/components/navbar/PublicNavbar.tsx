@@ -6,7 +6,6 @@ import { useRouter, usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabaseClient";
 import {
-  Bell,
   Heart,
   MessageCircle,
   User,
@@ -19,6 +18,7 @@ import {
   ShieldAlert
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 
 function PublicNavbar() {
   const router = useRouter();
@@ -135,14 +135,14 @@ function PublicNavbar() {
 
           {/* Actions */}
           <div className="flex items-center gap-2 sm:gap-4">
-            <div className="hidden sm:flex items-center gap-1 border-l border-zinc-200 pl-4">
-              <Button variant="ghost" size="icon" className="rounded-full text-zinc-600 hover:text-blue-600 hover:bg-blue-50">
-                <Bell className="w-5 h-5" />
-              </Button>
-              <Button variant="ghost" size="icon" className="rounded-full text-zinc-600 hover:text-red-600 hover:bg-red-50">
-                <Heart className="w-5 h-5" />
-              </Button>
-            </div>
+            {userEmail && (
+              <div className="hidden sm:flex items-center gap-1 border-l border-zinc-200 pl-4">
+                <NotificationBell />
+                <Button variant="ghost" size="icon" className="rounded-full text-zinc-600 hover:text-red-600 hover:bg-red-50">
+                  <Heart className="w-5 h-5" />
+                </Button>
+              </div>
+            )}
 
             {userEmail ? (
               <div className="flex items-center gap-3">

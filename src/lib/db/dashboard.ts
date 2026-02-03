@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabaseClient';
+import { SupabaseClient } from '@supabase/supabase-js';
 
 export interface DashboardStats {
     totalAds: number;
@@ -7,7 +7,7 @@ export interface DashboardStats {
     revenue: number;
 }
 
-export async function getSellerStats(userId: string): Promise<DashboardStats> {
+export async function getSellerStats(supabase: SupabaseClient, userId: string): Promise<DashboardStats> {
     const { data, error } = await supabase
         .from('ads')
         .select('price, status')
@@ -22,8 +22,6 @@ export async function getSellerStats(userId: string): Promise<DashboardStats> {
         totalAds: data.length,
         approvedAds: data.filter((ad) => ad.status === 'approved').length,
         pendingAds: data.filter((ad) => ad.status === 'pending').length,
-        // Calculating revenue based on 'approved' ads as requested (or 'sold' if we had that flow)
-        // User expectation: "Calculate total revenue (sum of approved ads)"
         revenue: data
             .filter((ad) => ad.status === 'approved')
             .reduce((sum, ad) => sum + (Number(ad.price) || 0), 0),
@@ -32,7 +30,7 @@ export async function getSellerStats(userId: string): Promise<DashboardStats> {
     return stats;
 }
 
-export async function getSellerAds(userId: string, page: number = 1, limit: number = 10) {
+export async function getSellerAds(supabase: SupabaseClient, userId: string, page: number = 1, limit: number = 10) {
     const from = (page - 1) * limit;
     const to = from + limit - 1;
 

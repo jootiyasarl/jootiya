@@ -1,19 +1,21 @@
-import { supabase } from '@/lib/supabaseClient';
-import { getSellerAds, getSellerStats } from '@/lib/db/dashboard';
+import { createSupabaseServerClient, getServerUser } from "@/lib/supabase";
+import { getSellerAds, getSellerStats } from "@/lib/db/dashboard";
 import SellerDashboard from "@/components/dashboard/SellerDashboard";
-import { redirect } from 'next/navigation';
+import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
-  const { data: { user } } = await supabase.auth.getUser();
+  const user = await getServerUser();
 
   if (!user) {
-    redirect('/login?redirectTo=/dashboard');
+    redirect("/login?redirectTo=/dashboard");
   }
 
-  // Fetch data in parallel
+  const supabase = createSupabaseServerClient();
+
+  // Fetch data in parallel using the server client
   const [stats, { ads, count }] = await Promise.all([
-    getSellerStats(user.id),
-    getSellerAds(user.id, 1, 100), // Defaulting to first 100 for now
+    getSellerStats(supabase, user.id),
+    getSellerAds(supabase, user.id, 1, 100),
   ]);
 
   return (

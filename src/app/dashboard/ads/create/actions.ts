@@ -3,6 +3,7 @@
 import { cookies } from "next/headers";
 import { createClient } from "@supabase/supabase-js";
 import { getProfileRole } from "@/lib/supabase";
+import { slugify } from "@/lib/slug";
 
 const DEFAULT_SEARCH_RADIUS_KM = 3;
 
@@ -100,11 +101,14 @@ export async function createAd(input: CreateAdPayload): Promise<CreateAdResult> 
       ? currency.trim()
       : "MAD";
 
+  const slug = `${slugify(title)}-${Math.random().toString(36).substring(2, 8)}`;
+
   const { data, error: insertError } = await supabase
     .from("ads")
     .insert({
       seller_id: user.id,
       title,
+      slug, // Storing the generated slug
       description: normalizedDescription,
       price,
       currency: finalCurrency,

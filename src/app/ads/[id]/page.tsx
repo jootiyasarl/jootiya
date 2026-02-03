@@ -30,13 +30,22 @@ export default async function AdPage({ params }: AdPageProps) {
   const { id } = await params;
   const supabase = createSupabaseServerClient();
 
-  const { data: ad, error } = await supabase
+  const identifier = id;
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(identifier);
+
+  let query = supabase
     .from("ads")
     .select(
-      "id, title, description, price, currency, city, neighborhood, created_at, image_urls, category, status, views_count, seller_id"
-    )
-    .eq("id", id)
-    .single();
+      "id, title, description, price, currency, city, neighborhood, created_at, image_urls, category, status, views_count, seller_id, slug"
+    );
+
+  if (isUuid) {
+    query = query.or(`id.eq.${identifier},slug.eq.${identifier}`);
+  } else {
+    query = query.eq("slug", identifier);
+  }
+
+  const { data: ad, error } = await query.single();
 
   if (error || !ad) {
     if (error?.code !== "PGRST116") {
@@ -45,8 +54,8 @@ export default async function AdPage({ params }: AdPageProps) {
     notFound();
   }
 
-  // Increment views (fire and forget)
-  supabase.rpc('increment_ad_views', { ad_id: id }).then();
+  // Increment views using the actual UUID
+  supabase.rpc('increment_ad_views', { ad_id: ad.id }).then();
 
   const images = ad.image_urls || [];
   const formattedPrice = ad.price
