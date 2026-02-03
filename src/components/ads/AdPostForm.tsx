@@ -168,7 +168,6 @@ export default function AdPostForm() {
                     location: data.location, // Keep for legacy
                     category: data.category,
                     image_urls: uploadedUrls,
-                    images: uploadedUrls, // Some parts of the app might still use 'images'
                     status: 'pending'
                 });
 
