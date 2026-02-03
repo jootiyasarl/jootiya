@@ -1,157 +1,58 @@
-import Link from "next/link";
-import { Eye, Pencil, Trash2, Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import type { DashboardAd, DashboardAdStatus } from "@/components/ads/AdRow";
+import Image from 'next/image';
+import Link from 'next/link';
+import { Clock, MapPin } from 'lucide-react';
 
-interface AdCardProps {
-  ad: DashboardAd;
-  canBoost?: boolean;
-  onEdit?: (ad: DashboardAd) => void;
-  onDelete?: (ad: DashboardAd) => void;
-  onBoost?: (ad: DashboardAd) => void;
+export interface Ad {
+  id: string;
+  title: string;
+  price: number;
+  currency: string;
+  images: string[];
+  location?: string;
+  created_at: string;
 }
 
-function getStatusMeta(status: DashboardAdStatus) {
-  const normalized = (status ?? "").toString().toLowerCase();
-
-  if (normalized === "draft") {
-    return {
-      label: "Draft",
-      badgeClass:
-        "border-zinc-200 bg-zinc-50 text-zinc-700",
-      dotClass: "bg-zinc-400",
-    };
-  }
-
-  if (normalized === "pending") {
-    return {
-      label: "Pending review",
-      badgeClass:
-        "border-amber-200 bg-amber-50 text-amber-800",
-      dotClass: "bg-amber-500",
-    };
-  }
-
-  if (normalized === "active" || normalized === "published") {
-    return {
-      label: "Published",
-      badgeClass:
-        "border-emerald-200 bg-emerald-50 text-emerald-800",
-      dotClass: "bg-emerald-500",
-    };
-  }
-
-  if (normalized === "rejected") {
-    return {
-      label: "Rejected",
-      badgeClass:
-        "border-red-200 bg-red-50 text-red-700",
-      dotClass: "bg-red-500",
-    };
-  }
-
-  return {
-    label: "Unknown",
-    badgeClass:
-      "border-zinc-200 bg-zinc-50 text-zinc-700",
-    dotClass: "bg-zinc-400",
-  };
-}
-
-function formatPrice(price: number | null, currency: string | null) {
-  if (price == null) return "—";
-  const trimmedCurrency = (currency ?? "").trim();
-  if (!trimmedCurrency) return String(price);
-  return `${price} ${trimmedCurrency}`;
-}
-
-export function AdCard({ ad, canBoost = false, onEdit, onDelete, onBoost }: AdCardProps) {
-  const { label, badgeClass, dotClass } = getStatusMeta(ad.status);
-  const priceLabel = formatPrice(ad.price, ad.currency);
-  const views = ad.views_count ?? 0;
-  const thumbnail = Array.isArray(ad.image_urls) && ad.image_urls.length > 0
-    ? ad.image_urls[0]
-    : null;
+export function AdCard({ ad }: { ad: Ad }) {
+  // Use first image or placeholder
+  const mainImage = ad.images?.[0] || '/placeholder-ad.jpg';
 
   return (
-    <div className="flex flex-col overflow-hidden rounded-2xl border bg-white shadow-sm">
-      <div className="relative h-40 w-full bg-zinc-100">
-        {thumbnail ? (
-          <img
-            src={thumbnail}
-            alt={ad.title}
-            className="h-full w-full object-cover"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center text-xs font-medium text-zinc-400">
-            No image
-          </div>
-        )}
-        <div className="absolute left-2 top-2 flex flex-wrap gap-1">
-          <Badge
-            variant="outline"
-            className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium ${badgeClass}`}
-          >
-            <span className={`h-1.5 w-1.5 rounded-full ${dotClass}`} />
-            {label}
-          </Badge>
-        </div>
+    <Link 
+      href={`/marketplace/${ad.id}`}
+      className="group relative block h-full overflow-hidden rounded-2xl bg-white/70 shadow-sm backdrop-blur-md transition-all duration-300 hover:scale-[1.02] hover:shadow-xl dark:bg-zinc-900/70 dark:border dark:border-white/10"
+    >
+      <div className="relative aspect-square w-full overflow-hidden bg-gray-100 dark:bg-zinc-800">
+        <Image
+          src={mainImage}
+          alt={ad.title}
+          fill
+          className="object-cover transition-transform duration-500 group-hover:scale-110"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
       </div>
 
-      <div className="flex flex-1 flex-col gap-3 p-4">
-        <div className="space-y-1">
-          <Link
-            href={`/ads/${ad.id}`}
-            className="line-clamp-2 text-sm font-semibold text-zinc-900 hover:underline"
-          >
+      <div className="p-4">
+        <div className="flex items-start justify-between gap-2">
+          <h3 className="line-clamp-2 text-lg font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 transition-colors">
             {ad.title}
-          </Link>
-          <p className="text-sm font-medium text-zinc-900">{priceLabel}</p>
-          <div className="flex flex-wrap items-center gap-2 text-xs text-zinc-500">
-            {ad.city ? <span>{ad.city}</span> : null}
-            <span className="inline-flex items-center gap-1 rounded-full border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-[11px] font-medium text-zinc-700">
-              <Eye className="h-3 w-3 text-zinc-400" />
-              {views} views
-            </span>
-          </div>
+          </h3>
+          <span className="shrink-0 rounded-full bg-blue-100 px-3 py-1 text-sm font-bold text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+            {ad.currency} {ad.price.toLocaleString()}
+          </span>
         </div>
 
-        <div className="mt-auto flex flex-wrap items-center gap-2 pt-1">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="h-8 px-2 text-xs"
-            onClick={() => onEdit?.(ad)}
-          >
-            <Pencil className="mr-1 h-3.5 w-3.5" />
-            Edit
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="h-8 px-2 text-xs text-red-600 hover:bg-red-50 hover:text-red-700"
-            onClick={() => onDelete?.(ad)}
-          >
-            <Trash2 className="mr-1 h-3.5 w-3.5" />
-            Delete
-          </Button>
-          {canBoost ? (
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="h-8 px-2 text-xs text-amber-700 hover:bg-amber-50"
-              onClick={() => onBoost?.(ad)}
-            >
-              <Sparkles className="mr-1 h-3.5 w-3.5" />
-              Boost
-            </Button>
-          ) : null}
+        <div className="mt-4 flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
+          <div className="flex items-center gap-1">
+            <MapPin className="h-4 w-4" />
+            <span className="truncate max-w-[100px]">{ad.location || 'Unknown'}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <Clock className="h-4 w-4" />
+            <span>{new Date(ad.created_at).toLocaleDateString()}</span>
+          </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
