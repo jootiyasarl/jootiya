@@ -56,7 +56,7 @@ export default function MyAdsPage() {
         const { data, error: adsError } = await supabase
           .from("ads")
           .select(
-            "id, title, price, currency, status, image_urls, city",
+            "id, title, price, currency, status, images, location, created_at, views_count",
           )
           .eq("seller_id", user.id)
           .neq("status", "deleted")

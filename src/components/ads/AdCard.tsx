@@ -5,19 +5,21 @@ import { Clock, MapPin } from 'lucide-react';
 export interface Ad {
   id: string;
   title: string;
-  price: number;
-  currency: string;
-  images: string[];
-  location?: string;
+  price: number | null;
+  currency: string | null;
+  images: string[] | null;
+  location?: string | null;
   created_at: string;
 }
 
-export function AdCard({ ad }: { ad: Ad }) {
+export function AdCard({ ad, canBoost, onDelete }: { ad: Ad; canBoost?: boolean; onDelete?: (ad: any) => void }) {
   // Use first image or placeholder
   const mainImage = ad.images?.[0] || '/placeholder-ad.jpg';
+  const priceDisplay = ad.price != null ? ad.price.toLocaleString() : 'N/A';
+  const currencyDisplay = ad.currency || '';
 
   return (
-    <Link 
+    <Link
       href={`/marketplace/${ad.id}`}
       className="group relative block h-full overflow-hidden rounded-2xl bg-white/70 shadow-sm backdrop-blur-md transition-all duration-300 hover:scale-[1.02] hover:shadow-xl dark:bg-zinc-900/70 dark:border dark:border-white/10"
     >
@@ -38,7 +40,7 @@ export function AdCard({ ad }: { ad: Ad }) {
             {ad.title}
           </h3>
           <span className="shrink-0 rounded-full bg-blue-100 px-3 py-1 text-sm font-bold text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
-            {ad.currency} {ad.price.toLocaleString()}
+            {currencyDisplay} {priceDisplay}
           </span>
         </div>
 

@@ -11,8 +11,9 @@ export interface DashboardAd {
   price: number | null;
   currency: string | null;
   status: DashboardAdStatus;
-  image_urls: string[] | null;
-  city: string | null;
+  images: string[] | null;
+  location: string | null;
+  created_at: string;
   views_count?: number | null;
 }
 
@@ -82,8 +83,8 @@ export function AdRow({ ad, canBoost = false, onEdit, onDelete, onBoost }: AdRow
   const { label, badgeClass, dotClass } = getStatusMeta(ad.status);
   const priceLabel = formatPrice(ad.price, ad.currency);
   const views = ad.views_count ?? 0;
-  const thumbnail = Array.isArray(ad.image_urls) && ad.image_urls.length > 0
-    ? ad.image_urls[0]
+  const thumbnail = Array.isArray(ad.images) && ad.images.length > 0
+    ? ad.images[0]
     : null;
 
   return (
@@ -118,7 +119,7 @@ export function AdRow({ ad, canBoost = false, onEdit, onDelete, onBoost }: AdRow
                 <span className={`h-1.5 w-1.5 rounded-full ${dotClass}`} />
                 {label}
               </Badge>
-              {ad.city ? <span>{ad.city}</span> : null}
+              {ad.location ? <span>{ad.location}</span> : null}
             </div>
           </div>
         </div>
