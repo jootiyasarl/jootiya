@@ -115,15 +115,6 @@ export default async function Home() {
         </div>
 
       </main>
-
-      {/* Floating Map Button (Visual Only for now) */}
-      <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40">
-        <button className="flex items-center gap-2 bg-zinc-900 text-white px-5 py-3 rounded-full shadow-xl hover:scale-105 transition-transform font-medium text-sm">
-          <span>عرض الخريطة</span>
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-map"><polygon points="3 6 9 3 15 6 21 3 21 21 15 18 9 21 3 18 3 6" /></svg>
-        </button>
-      </div>
-
     </div>
   );
 }
