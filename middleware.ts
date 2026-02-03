@@ -96,7 +96,8 @@ export async function middleware(req: NextRequest) {
   const isProtectedRoute =
     pathname.startsWith("/dashboard") ||
     pathname.startsWith("/admin") ||
-    pathname.startsWith("/moderator");
+    pathname.startsWith("/moderator") ||
+    pathname === "/marketplace/post";
 
   const user = await getUserFromRequest(req);
   const role = user ? await getUserRole(user) : null;
@@ -154,5 +155,6 @@ export const config = {
     "/dashboard/:path*",
     "/admin/:path*",
     "/moderator/:path*",
+    "/marketplace/post",
   ],
 };

@@ -22,7 +22,7 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
   // Next.js 15+ might make searchParams async, but for now 14/15 usage:
   const showPostAdMessage =
     typeof redirectParam === "string" &&
-    (redirectParam.startsWith("/post-ad") ||
+    (redirectParam.startsWith("/marketplace/post") ||
       redirectParam.startsWith("/dashboard/ads/create"));
 
   return (
