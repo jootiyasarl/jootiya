@@ -26,9 +26,9 @@ export function GoogleLoginButton() {
     <button
       type="button"
       onClick={handleGoogleLogin}
-      className="relative w-full inline-flex items-center justify-center rounded-xl bg-white px-4 py-3 text-sm font-semibold text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-zinc-800 dark:text-gray-200 dark:ring-zinc-700 dark:hover:bg-zinc-700 transition-all duration-200"
+      className="relative w-full inline-flex items-center justify-center rounded-2xl bg-white px-4 py-3.5 text-sm font-bold text-zinc-700 shadow-md ring-1 ring-inset ring-zinc-100 hover:bg-zinc-50 transition-all duration-200 active:scale-[0.98]"
     >
-      <span className="mr-2">
+      <span className="ml-3 flex-shrink-0">
         <svg className="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
           <path
             d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -48,7 +48,7 @@ export function GoogleLoginButton() {
           />
         </svg>
       </span>
-      Sign in with Google
+      متابعة باستخدام جوجل
     </button>
   );
 }

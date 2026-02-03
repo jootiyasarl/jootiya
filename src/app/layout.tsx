@@ -6,21 +6,13 @@ import { RootNavbarShell } from "@/components/navbar/RootNavbarShell";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-const inter = Inter({
-  subsets: ["latin"],
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: "Jootiya - الموقع الأول في المغرب للبيع والشراء",
+  title: "جوتيا - الموقع الأول في المغرب للبيع والشراء",
   description:
-    "Jootiya, la première plateforme au Maroc pour acheter et vendre en toute sécurité.",
+    "جوتيا، المنصة الأولى في المغرب للبيع والشراء بكل أمان.",
   icons: {
     icon: "/favicon.svg",
   },
@@ -32,9 +24,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" dir="ltr">
+    <html lang="ar" dir="rtl" className="scroll-smooth">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${inter.className} antialiased`}
+        className={`${geistSans.variable} font-sans antialiased bg-white text-zinc-900`}
       >
         <RootNavbarShell>{children}</RootNavbarShell>
       </body>

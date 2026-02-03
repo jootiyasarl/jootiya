@@ -2,288 +2,215 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabaseClient";
+import {
+  Bell,
+  Heart,
+  MessageCircle,
+  User,
+  LogOut,
+  PlusCircle,
+  Search,
+  Menu,
+  X,
+  LayoutDashboard,
+  ShieldAlert
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 function PublicNavbar() {
   const router = useRouter();
+  const pathname = usePathname();
 
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
-  const categoryLabels = [
-    "Immobilier",
-    "Véhicules",
-    "Vacances",
-    "Emploi",
-    "Mode",
-    "Maison & Jardin",
-    "Famille",
-    "Électronique",
-    "Loisirs",
-    "Autres",
-    "Bons plans !",
-  ] as const;
+  const isAdminEmail = (email: string) => email === "jootiyasarl@gmail.com";
 
   useEffect(() => {
-    let isMounted = true;
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener("scroll", handleScroll);
 
-    const loadSession = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      if (!isMounted) return;
-
-      setUserEmail(session?.user?.email ?? null);
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user?.email) {
+        setUserEmail(session.user.email);
+        setIsAdmin(isAdminEmail(session.user.email));
+      }
     };
 
-    void loadSession();
+    checkSession();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN") {
+        setUserEmail(session?.user?.email ?? null);
+        setIsAdmin(session?.user?.email ? isAdminEmail(session.user.email) : false);
+      } else if (event === "SIGNED_OUT") {
+        setUserEmail(null);
+        setIsAdmin(false);
+      }
+    });
 
     return () => {
-      isMounted = false;
+      window.removeEventListener("scroll", handleScroll);
+      subscription.unsubscribe();
     };
   }, []);
 
-  const handlePostAdClick = async () => {
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    const email = session?.user?.email ?? "";
-
-    // If not authenticated, send user to login specifically for posting an ad.
-    if (!session) {
-      router.push("/login?redirect=/post-ad");
-      return;
-    }
-
-    // Admin keeps access to admin area.
-    if (email === "jootiyasarl@gmail.com") {
-      router.push("/admin");
-      return;
-    }
-
-    // Regular authenticated users go directly to the post-ad page.
-    router.push("/post-ad");
-  };
-
   const handleLogout = async () => {
     await supabase.auth.signOut();
-
     try {
       await fetch("/api/auth/logout", { method: "POST" });
     } catch (error) {
       console.error("Failed to clear auth session", error);
     }
-
-    setUserEmail(null);
-    router.replace("/");
+    router.push("/");
+    router.refresh();
   };
 
+  const navLinks = [
+    { name: "العقارات", href: "/marketplace?category=real-estate" },
+    { name: "السيارات", href: "/marketplace?category=vehicles" },
+    { name: "الإلكترونيات", href: "/marketplace?category=electronics" },
+    { name: "المنزل", href: "/marketplace?category=home" },
+  ];
+
   return (
-    <header className="sticky top-0 z-40 border-b border-zinc-100 bg-white/80 backdrop-blur">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col gap-3 py-2 sm:h-16 sm:flex-row sm:items-center sm:gap-6">
-          {/* Left: Logo + primary action */}
-          <div className="flex w-full items-center justify-between sm:w-auto sm:justify-start sm:gap-4">
-            {/* Mobile hamburger icon */}
+    <header
+      className={cn(
+        "sticky top-0 z-50 w-full transition-all duration-300",
+        isScrolled
+          ? "bg-white/80 backdrop-blur-xl border-b border-zinc-200 shadow-sm py-2"
+          : "bg-white border-b border-zinc-100 py-4"
+      )}
+    >
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between gap-4">
+
+          {/* Logo */}
+          <div className="flex items-center gap-4">
             <button
-              type="button"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-zinc-200 text-xl text-zinc-700 sm:hidden"
-              aria-label="Ouvrir le menu"
-              aria-expanded={isMobileMenuOpen}
-              onClick={() => setIsMobileMenuOpen((open) => !open)}
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="lg:hidden p-2 text-zinc-600 hover:bg-zinc-100 rounded-xl"
             >
-              ☰
+              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
-            <Link
-              href="/"
-              className="flex-1 text-center sm:flex-none sm:text-left"
-            >
-              <span className="text-2xl font-semibold tracking-tight text-orange-500">
-                jootiya
+            <Link href="/" className="flex items-center gap-2 group">
+              <span className="text-2xl font-black tracking-tighter text-blue-600 group-hover:scale-105 transition-transform">
+                JOOTIYA
               </span>
             </Link>
-            {/* Placeholder to keep logo centered on mobile */}
-            <span className="inline-block h-9 w-9 sm:hidden" />
-            <button
-              type="button"
-              onClick={handlePostAdClick}
-              className="hidden items-center justify-center whitespace-nowrap rounded-full bg-orange-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors duration-150 hover:bg-orange-600 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-orange-400 sm:inline-flex"
-            >
-              Déposer une annonce
-            </button>
           </div>
 
-          {/* Center: Search bar */}
-          <div className="flex w-full sm:flex-1 sm:justify-center">
-            <div className="flex w-full max-w-xl items-center rounded-full bg-zinc-100 px-4 py-2 text-sm text-zinc-500 shadow-inner">
-              <input
-                type="search"
-                placeholder="Rechercher sur jootiya"
-                className="w-full bg-transparent text-sm text-zinc-700 placeholder:text-zinc-400 focus:outline-none"
-              />
-              <button
-                type="button"
-                className="ml-3 flex h-8 w-8 items-center justify-center rounded-full bg-orange-500 text-white"
-                aria-label="Rechercher"
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex items-center gap-8">
+            {navLinks.map((link) => (
+              <Link
+                key={link.name}
+                href={link.href}
+                className="text-sm font-bold text-zinc-600 hover:text-blue-600 transition-colors"
               >
-                🔍
-              </button>
+                {link.name}
+              </Link>
+            ))}
+          </nav>
+
+          {/* Search Bar - Professional Look */}
+          <div className="hidden md:flex flex-1 max-w-md relative group">
+            <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+              <Search className="h-4 w-4 text-zinc-400 group-focus-within:text-blue-500 transition-colors" />
             </div>
+            <input
+              type="text"
+              placeholder="ابحث عن أي شيء..."
+              className="w-full bg-zinc-100 border-transparent focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-200 rounded-2xl py-2.5 pr-11 pl-4 text-sm transition-all outline-none"
+            />
           </div>
 
-          {/* Right: Icons / account */}
-          <div className="hidden items-center gap-6 text-[11px] font-medium text-zinc-600 sm:flex">
-            <button
-              type="button"
-              className="flex flex-col items-center gap-1 hover:text-zinc-900"
-            >
-              <span className="text-lg">🔔</span>
-              <span>Mes recherches</span>
-            </button>
-            <button
-              type="button"
-              className="flex flex-col items-center gap-1 hover:text-zinc-900"
-            >
-              <span className="text-lg">❤</span>
-              <span>Favoris</span>
-            </button>
-            <button
-              type="button"
-              className="flex flex-col items-center gap-1 hover:text-zinc-900"
-            >
-              <span className="text-lg">💬</span>
-              <span>Messages</span>
-            </button>
+          {/* Actions */}
+          <div className="flex items-center gap-2 sm:gap-4">
+            <div className="hidden sm:flex items-center gap-1 border-l border-zinc-200 pl-4">
+              <Button variant="ghost" size="icon" className="rounded-full text-zinc-600 hover:text-blue-600 hover:bg-blue-50">
+                <Bell className="w-5 h-5" />
+              </Button>
+              <Button variant="ghost" size="icon" className="rounded-full text-zinc-600 hover:text-red-600 hover:bg-red-50">
+                <Heart className="w-5 h-5" />
+              </Button>
+            </div>
+
             {userEmail ? (
-              <div className="flex flex-col items-center gap-1">
-                <Link
-                  href={
-                    userEmail === "jootiyasarl@gmail.com" ? "/admin" : "/dashboard"
-                  }
-                  className="flex flex-col items-center gap-1 hover:text-zinc-900"
-                >
-                  <span className="text-lg">👤</span>
-                  <span>Mon compte</span>
+              <div className="flex items-center gap-3">
+                <Link href={isAdmin ? "/admin" : "/dashboard"}>
+                  <Button className="hidden sm:flex gap-2 rounded-2xl bg-zinc-900 border-none hover:bg-zinc-800 text-white font-bold h-11 px-6 shadow-lg shadow-zinc-200 shadow-zinc-900/10">
+                    {isAdmin ? <ShieldAlert className="w-4 h-4" /> : <LayoutDashboard className="w-4 h-4" />}
+                    <span>{isAdmin ? "لوحة الإدارة" : "حسابي"}</span>
+                  </Button>
                 </Link>
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className="text-[10px] text-zinc-400 hover:text-zinc-700"
-                >
-                  Se déconnecter
-                </button>
+                <div className="lg:relative group">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={handleLogout}
+                    className="rounded-full text-zinc-400 hover:text-red-500 hover:bg-red-50"
+                  >
+                    <LogOut className="w-5 h-5" />
+                  </Button>
+                </div>
               </div>
-            ) : null}
+            ) : (
+              <Link href="/login">
+                <Button variant="ghost" className="font-bold text-zinc-700 hover:text-blue-600 rounded-2xl hidden sm:flex">
+                  دخول
+                </Button>
+              </Link>
+            )}
+
+            <Link href="/marketplace/post">
+              <Button className="rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold h-11 px-6 shadow-lg shadow-blue-200 transition-all active:scale-[0.98] gap-2">
+                <PlusCircle className="w-5 h-5" />
+                <span className="hidden sm:inline">أضف إعلاناً</span>
+                <span className="sm:hidden text-lg">+</span>
+              </Button>
+            </Link>
+          </div>
+
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className="lg:hidden absolute top-full left-0 w-full bg-white border-b border-zinc-200 animate-in slide-in-from-top duration-300">
+          <div className="p-6 space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex flex-col items-center justify-center p-4 rounded-2xl bg-zinc-50 hover:bg-blue-50 hover:text-blue-600 transition-colors border border-transparent hover:border-blue-100"
+                >
+                  <span className="text-sm font-bold">{link.name}</span>
+                </Link>
+              ))}
+            </div>
+            {!userEmail && (
+              <div className="pt-4 border-t border-zinc-100">
+                <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
+                  <Button className="w-full rounded-2xl h-12 bg-zinc-100 text-zinc-900 hover:bg-zinc-200 border-none font-bold">
+                    تسجيل الدخول
+                  </Button>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
-
-        {/* Mobile menu panel */}
-        {isMobileMenuOpen ? (
-          <div className="mt-2 space-y-3 rounded-2xl border border-zinc-100 bg-white p-4 text-sm shadow-lg sm:hidden">
-            <div className="flex flex-wrap gap-3 text-xs font-medium text-zinc-700">
-              <button
-                type="button"
-                className="inline-flex items-center gap-2 rounded-full border border-zinc-200 px-3 py-1.5 hover:border-orange-400 hover:text-orange-600"
-              >
-                <span className="text-lg">🔔</span>
-                <span>Mes recherches</span>
-              </button>
-              <button
-                type="button"
-                className="inline-flex items-center gap-2 rounded-full border border-zinc-200 px-3 py-1.5 hover:border-orange-400 hover:text-orange-600"
-              >
-                <span className="text-lg">❤</span>
-                <span>Favoris</span>
-              </button>
-              <button
-                type="button"
-                className="inline-flex items-center gap-2 rounded-full border border-zinc-200 px-3 py-1.5 hover:border-orange-400 hover:text-orange-600"
-              >
-                <span className="text-lg">💬</span>
-                <span>Messages</span>
-              </button>
-              <button
-                type="button"
-                onClick={handlePostAdClick}
-                className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-orange-500 px-3 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-orange-600"
-              >
-                Déposer une annonce
-              </button>
-            </div>
-
-            <div className="flex items-center justify-between border-t border-zinc-100 pt-3 text-xs">
-              {userEmail ? (
-                <div className="flex flex-col gap-1">
-                  <Link
-                    href={
-                      userEmail === "jootiyasarl@gmail.com" ? "/admin" : "/dashboard"
-                    }
-                    className="inline-flex items-center gap-2 text-zinc-700 hover:text-zinc-900"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <span className="text-lg">👤</span>
-                    <span>Mon compte</span>
-                  </Link>
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      await handleLogout();
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="self-start text-[11px] text-zinc-400 hover:text-zinc-700"
-                  >
-                    Se déconnecter
-                  </button>
-                </div>
-              ) : null}
-            </div>
-
-            <div className="border-t border-zinc-100 pt-3">
-              <p className="text-[11px] font-medium uppercase tracking-wide text-zinc-500">
-                Catégories
-              </p>
-              <div className="mt-2 flex flex-wrap gap-2 text-xs">
-                {categoryLabels.map((label, index) => (
-                  <button
-                    key={label}
-                    type="button"
-                    className={cn(
-                      "rounded-full border border-zinc-200 px-3 py-1 text-zinc-700 hover:border-orange-400 hover:text-orange-600",
-                      index === 10 &&
-                        "border-orange-500 font-semibold text-orange-600",
-                    )}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        ) : null}
-
-        {/* Category menu */}
-        <nav className="mt-1 flex h-10 items-center text-sm text-zinc-700 overflow-x-auto">
-          <ul className="flex flex-nowrap gap-4 whitespace-nowrap text-xs sm:text-sm">
-            {categoryLabels.map((label, index) => (
-              <li key={label}>
-                <button
-                  type="button"
-                  className={cn(
-                    "text-zinc-700 hover:text-orange-600",
-                    index === 10 && "font-semibold text-orange-600",
-                  )}
-                >
-                  {label}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </div>
+      )}
     </header>
   );
 }

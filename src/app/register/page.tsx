@@ -1,20 +1,22 @@
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SubmitButton } from "@/components/submit-button";
 import { createSupabaseServerClient, setAuthSession } from "@/lib/supabase";
+import { UserPlus, ShieldCheck, Mail, Lock, ChevronLeft } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Inscription | Jootiya",
+  title: "إنشاء حساب | جوتيا",
 };
 
 interface RegisterPageProps {
-  searchParams: {
+  searchParams: Promise<{
     error?: string;
     message?: string;
-  };
+  }>;
 }
 
 async function registerAction(formData: FormData) {
@@ -25,7 +27,7 @@ async function registerAction(formData: FormData) {
 
   if (typeof email !== "string" || typeof password !== "string") {
     const params = new URLSearchParams();
-    params.set("error", "Veuillez saisir une adresse e-mail et un mot de passe.");
+    params.set("error", "يرجى إدخال البريد الإلكتروني وكلمة المرور.");
     redirect(`/register?${params.toString()}`);
   }
 
@@ -36,7 +38,7 @@ async function registerAction(formData: FormData) {
     const params = new URLSearchParams();
     params.set(
       "error",
-      "Veuillez fournir une adresse e-mail valide et un mot de passe d'au moins 8 caractères.",
+      "يرجى تقديم بريد إلكتروني صالح وكلمة مرور لا تقل عن 8 أحرف.",
     );
     redirect(`/register?${params.toString()}`);
   }
@@ -50,12 +52,13 @@ async function registerAction(formData: FormData) {
 
   if (error || !data.user) {
     const params = new URLSearchParams();
-    params.set("error", error?.message ?? "Échec de la création du compte.");
+    params.set("error", error?.message ?? "فشل في إنشاء الحساب.");
     redirect(`/register?${params.toString()}`);
   }
 
   const user = data.user;
 
+  // Ensure profile is created
   const { error: profileError } = await supabase
     .from("profiles")
     .upsert(
@@ -69,129 +72,119 @@ async function registerAction(formData: FormData) {
 
   if (profileError) {
     const params = new URLSearchParams();
-    params.set("error", "Échec de l'enregistrement de votre profil.");
+    params.set("error", "فشل في حفظ ملفك الشخصي.");
     redirect(`/register?${params.toString()}`);
   }
 
   if (data.session) {
     await setAuthSession(data.session);
-    redirect("/dashboard");
+    redirect("/marketplace");
   }
 
   const params = new URLSearchParams();
   params.set(
     "message",
-    "Compte créé. Veuillez vérifier votre e-mail pour confirmer votre adresse, puis connectez-vous.",
+    "تم إنشاء الحساب. يرجى التحقق من بريدك الإلكتروني لتأكيد التسجيل، ثم قم بتسجيل الدخول.",
   );
   redirect(`/login?${params.toString()}`);
 }
 
-export default function RegisterPage({ searchParams }: RegisterPageProps) {
-  const error =
-    typeof searchParams.error === "string" ? searchParams.error : undefined;
-  const message =
-    typeof searchParams.message === "string" ? searchParams.message : undefined;
+export default async function RegisterPage({ searchParams }: RegisterPageProps) {
+  const { error, message } = await searchParams;
 
   return (
-    <div className="min-h-screen bg-zinc-50">
-      <div className="mx-auto flex min-h-screen w-full max-w-5xl flex-col justify-center px-4 py-10 md:flex-row md:items-center md:gap-16">
-        <div className="mb-10 md:mb-0 md:flex-1">
-          <div className="inline-flex items-center rounded-full border border-zinc-200 bg-white px-3 py-1 text-xs font-medium text-zinc-600 shadow-sm">
-            Onboarding pour une marketplace SaaS
-          </div>
-          <h1 className="mt-4 text-3xl font-semibold tracking-tight text-zinc-900 md:text-4xl">
-            Créez votre compte marketplace
-          </h1>
-          <p className="mt-3 text-sm text-zinc-600 md:text-base">
-            Rejoignez Jootiya pour acheter et vendre en toute sécurité. Utilisez
-            votre e-mail pour créer un compte vendeur sécurisé propulsé par
-            Supabase Auth.
-          </p>
+    <div className="min-h-screen relative overflow-hidden bg-zinc-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      {/* Background Ambience */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-blue-500/5 blur-[120px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-purple-500/5 blur-[120px]" />
+      </div>
 
-          <div className="mt-6 grid gap-3 text-sm text-zinc-600 md:grid-cols-2">
-            <div className="flex items-start gap-2">
-              <div className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              <p>Authentification e-mail + mot de passe avec une sécurité moderne.</p>
-            </div>
-            <div className="flex items-start gap-2">
-              <div className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              <p>Pas de spam. Vous contrôlez vos notifications.</p>
-            </div>
-            <div className="flex items-start gap-2">
-              <div className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              <p>Conçu pour les vendeurs professionnels au Maroc.</p>
-            </div>
-            <div className="flex items-start gap-2">
-              <div className="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              <p>Reposant sur une infrastructure moderne et des bonnes pratiques.</p>
-            </div>
-          </div>
-        </div>
+      <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10 px-4">
+        <Link href="/" className="inline-flex items-center gap-2 text-zinc-500 hover:text-zinc-900 transition-colors mb-8 group">
+          <ChevronLeft className="w-4 h-4 rotate-180 group-hover:-translate-x-1 transition-transform" />
+          <span className="text-sm font-bold">العودة للرئيسية</span>
+        </Link>
+        <h1 className="text-3xl font-black tracking-tighter text-blue-600 mb-2">JOOTIYA</h1>
+        <h2 className="text-3xl font-bold text-zinc-900">إنشاء حساب جديد</h2>
+        <p className="mt-2 text-zinc-500 text-sm">ابدأ البيع والشراء في أكبر سوق مغربي</p>
+      </div>
 
-        <div className="md:flex-1">
-          <Card className="border bg-white">
-            <CardHeader className="flex flex-col gap-1 px-4 pt-4">
-              <h2 className="text-sm font-semibold text-zinc-900">Inscription</h2>
-              <p className="text-xs text-zinc-500">
-                Créez votre compte vendeur avec e-mail et mot de passe.
-              </p>
-            </CardHeader>
-            <CardContent className="px-4 pb-4">
-              {error ? (
-                <div className="mb-3 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
-                  {error}
-                </div>
-              ) : null}
-              {message ? (
-                <div className="mb-3 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-700">
-                  {message}
-                </div>
-              ) : null}
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-[440px] relative z-10 px-4">
+        <Card className="border-none shadow-2xl shadow-zinc-200/50 bg-white/80 backdrop-blur-xl rounded-3xl overflow-hidden ring-1 ring-zinc-200/50">
+          <CardContent className="p-8 sm:p-10">
+            {error && (
+              <div className="mb-6 rounded-2xl bg-red-50 p-4 border border-red-100 flex gap-3 items-center">
+                <ShieldCheck className="w-5 h-5 text-red-500 flex-shrink-0" />
+                <p className="text-xs font-bold text-red-700 leading-tight">{error}</p>
+              </div>
+            )}
+            {message && (
+              <div className="mb-6 rounded-2xl bg-emerald-50 p-4 border border-emerald-100 flex gap-3 items-center">
+                <ShieldCheck className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+                <p className="text-xs font-bold text-emerald-700 leading-tight">{message}</p>
+              </div>
+            )}
 
-              <form className="mt-2 space-y-4" action={registerAction}>
-                <div className="space-y-1.5">
-                  <Label htmlFor="email" className="text-xs text-zinc-700">
-                    E-mail
-                  </Label>
+            <form action={registerAction} className="space-y-5">
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-sm font-bold text-zinc-700 mr-1">البريد الإلكتروني</Label>
+                <div className="relative group">
+                  <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                    <Mail className="h-4 w-4 text-zinc-400 group-focus-within:text-blue-500 transition-colors" />
+                  </div>
                   <Input
                     id="email"
                     name="email"
                     type="email"
-                    autoComplete="email"
+                    placeholder="example@mail.com"
                     required
-                    className="h-9 text-xs"
+                    className="h-12 pr-11 text-sm rounded-2xl bg-zinc-50 border-transparent focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-200 transition-all"
                   />
                 </div>
+              </div>
 
-                <div className="space-y-1.5">
-                  <Label htmlFor="password" className="text-xs text-zinc-700">
-                    Mot de passe
-                  </Label>
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-sm font-bold text-zinc-700 mr-1">كلمة المرور</Label>
+                <div className="relative group">
+                  <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                    <Lock className="h-4 w-4 text-zinc-400 group-focus-within:text-blue-500 transition-colors" />
+                  </div>
                   <Input
                     id="password"
                     name="password"
                     type="password"
-                    autoComplete="new-password"
+                    placeholder="••••••••"
                     minLength={8}
                     required
-                    className="h-9 text-xs"
+                    className="h-12 pr-11 text-sm rounded-2xl bg-zinc-50 border-transparent focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-200 transition-all"
                   />
                 </div>
+                <p className="text-[10px] text-zinc-400 pr-1">يجب أن تتكون من 8 أحرف على الأقل</p>
+              </div>
 
-                <SubmitButton
-                  label="Créer un compte"
-                  loadingLabel="Création du compte..."
-                  className="mt-2 w-full text-xs"
-                />
-              </form>
+              <SubmitButton
+                label="إنشاء الحساب"
+                loadingLabel="جاري الإنشاء..."
+                className="w-full h-12 text-sm font-bold rounded-2xl bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-200 transition-all active:scale-[0.98] mt-2"
+              />
+            </form>
 
-              <p className="mt-4 text-center text-xs text-zinc-500">
-                Vous avez déjà un compte ? Utilisez le bouton « Déposer une annonce
-                » sur la page d’accueil pour vous connecter.
+            <div className="mt-8 pt-8 border-t border-zinc-100 text-center">
+              <p className="text-sm text-zinc-500">
+                لديك حساب بالفعل؟{' '}
+                <Link href="/login" className="font-bold text-blue-600 hover:text-blue-700 transition-colors">
+                  سجل الدخول الآن
+                </Link>
               </p>
-            </CardContent>
-          </Card>
-        </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Legal links */}
+        <p className="mt-8 text-center text-[11px] text-zinc-400">
+          من خلال إنشاء حساب، فإنك توافق على <Link href="/terms" className="underline hover:text-zinc-600">شروط الاستخدام</Link> و <Link href="/privacy" className="underline hover:text-zinc-600">سياسة الخصوصية</Link>
+        </p>
       </div>
     </div>
   );

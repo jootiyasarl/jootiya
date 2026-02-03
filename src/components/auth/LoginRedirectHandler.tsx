@@ -98,11 +98,12 @@ export function LoginRedirectHandler() {
         // Site owner / admin default home
         target = "/admin";
       } else {
-        // Default home for regular users
-        target = "/post-ad";
+        // Default home for regular users is now the main marketplace
+        target = "/marketplace";
       }
 
       router.replace(target);
+      router.refresh(); // Force refresh to update navbar session state
     };
 
     void checkSessionAndRedirect();
