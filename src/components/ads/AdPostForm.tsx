@@ -165,7 +165,6 @@ export default function AdPostForm() {
                     currency: 'MAD',
                     city: city,
                     neighborhood: neighborhood,
-                    location: data.location, // Keep for legacy
                     category: data.category,
                     image_urls: uploadedUrls,
                     status: 'pending'
