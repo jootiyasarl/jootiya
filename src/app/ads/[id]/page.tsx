@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { createSupabaseServerClient } from "@/lib/supabase";
+import { createSupabaseServerClient, getServerUser } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { AdImageGallery } from "@/components/ads/AdImageGallery";
+import { ContactActions } from "@/components/ads/ContactActions";
 import {
   MapPin,
   Calendar,
@@ -28,6 +29,7 @@ interface AdPageProps {
 
 export default async function AdPage({ params }: AdPageProps) {
   const { id } = await params;
+  const user = await getServerUser();
   const supabase = createSupabaseServerClient();
 
   const identifier = id;
@@ -213,16 +215,11 @@ export default async function AdPage({ params }: AdPageProps) {
                 <div className="space-y-6">
                   <div className="text-3xl font-black text-blue-600">{formattedPrice}</div>
 
-                  <div className="space-y-3">
-                    <Button className="w-full h-14 text-lg font-bold rounded-2xl bg-zinc-900 hover:bg-zinc-800 text-white shadow-lg transition-all active:scale-[0.98] gap-3">
-                      <Phone className="h-5 w-5" />
-                      Afficher le numéro
-                    </Button>
-                    <Button variant="outline" className="w-full h-14 text-lg font-semibold rounded-2xl border-zinc-200 hover:bg-zinc-50 transition-all active:scale-[0.98] gap-3">
-                      <MessageCircle className="h-5 w-5" />
-                      Envoyer un message
-                    </Button>
-                  </div>
+                  <ContactActions
+                    adId={ad.id}
+                    sellerId={ad.seller_id}
+                    currentUser={user}
+                  />
                 </div>
               </div>
 
