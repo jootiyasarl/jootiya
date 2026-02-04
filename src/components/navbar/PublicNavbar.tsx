@@ -108,7 +108,7 @@ function PublicNavbar() {
             </Link>
 
             <Link href="/marketplace/post" className="hidden lg:block">
-              <Button className="rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold h-11 px-6 shadow-md shadow-blue-100 transition-all active:scale-[0.98] flex items-center gap-2">
+              <Button className="rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold h-11 px-5 shadow-lg shadow-blue-200/50 transition-all hover:translate-y-[-1px] active:translate-y-[0px] active:scale-[0.98] flex items-center gap-2">
                 <PlusCircle className="w-5 h-5" />
                 <span>Déposer une annonce</span>
               </Button>
@@ -132,24 +132,30 @@ function PublicNavbar() {
             <div className="hidden lg:flex items-center">
               <NotificationBell label="Notifications" />
 
-              <Link href="/dashboard/favorites" className="flex flex-col items-center gap-1 px-4 py-1.5 group transition-colors">
-                <Heart className="w-6 h-6 text-zinc-800 group-hover:text-blue-600 transition-colors" />
-                <span className="text-[11px] font-bold text-zinc-600 group-hover:text-blue-600 transition-colors uppercase tracking-tight">Favoris</span>
+              <Link href="/dashboard/favorites" className="flex flex-col items-center gap-0 px-4 py-1 group transition-colors">
+                <div className="p-1.5 rounded-full group-hover:bg-zinc-100 transition-colors">
+                  <Heart className="w-5 h-5 text-zinc-800 group-hover:text-blue-600 transition-colors" />
+                </div>
+                <span className="text-[11px] font-bold text-zinc-600 group-hover:text-blue-600 transition-colors uppercase tracking-tight -mt-1">Favoris</span>
               </Link>
 
-              <Link href="/dashboard/messages" className="flex flex-col items-center gap-1 px-4 py-1.5 group transition-colors">
-                <MessageCircle className="w-6 h-6 text-zinc-800 group-hover:text-blue-600 transition-colors" />
-                <span className="text-[11px] font-bold text-zinc-600 group-hover:text-blue-600 transition-colors uppercase tracking-tight">Messages</span>
+              <Link href="/dashboard/messages" className="flex flex-col items-center gap-0 px-4 py-1 group transition-colors">
+                <div className="p-1.5 rounded-full group-hover:bg-zinc-100 transition-colors">
+                  <MessageCircle className="w-5 h-5 text-zinc-800 group-hover:text-blue-600 transition-colors" />
+                </div>
+                <span className="text-[11px] font-bold text-zinc-600 group-hover:text-blue-600 transition-colors uppercase tracking-tight -mt-1">Messages</span>
               </Link>
 
               <div className="ml-4 pl-4 border-l border-zinc-200">
                 {userEmail ? (
                   <div className="flex items-center gap-3">
-                    <Link href={isAdmin ? "/admin" : "/dashboard"} className="flex flex-col items-center gap-1 px-2 group transition-colors">
-                      <div className="w-6 h-6 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-all ring-1 ring-blue-100">
-                        {isAdmin ? <ShieldAlert className="w-4 h-4" /> : <User className="w-4 h-4" />}
+                    <Link href={isAdmin ? "/admin" : "/dashboard"} className="flex flex-col items-center gap-0 px-2 group transition-colors">
+                      <div className="p-1.5 rounded-full group-hover:bg-zinc-100 transition-colors">
+                        <div className="w-5 h-5 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-all ring-1 ring-blue-100 text-[10px]">
+                          {isAdmin ? <ShieldAlert className="w-3.5 h-3.5" /> : <User className="w-3.5 h-3.5" />}
+                        </div>
                       </div>
-                      <span className="text-[11px] font-bold text-zinc-600 group-hover:text-blue-600 transition-colors uppercase tracking-tight">
+                      <span className="text-[11px] font-bold text-zinc-600 group-hover:text-blue-600 transition-colors uppercase tracking-tight -mt-1">
                         {isAdmin ? "Admin" : "Compte"}
                       </span>
                     </Link>
@@ -158,22 +164,24 @@ function PublicNavbar() {
                     </button>
                   </div>
                 ) : (
-                  <Link href="/login" className="flex flex-col items-center gap-1 px-4 group transition-colors">
-                    <User className="w-6 h-6 text-zinc-800 group-hover:text-blue-600 transition-colors" />
-                    <span className="text-[11px] font-bold text-zinc-600 group-hover:text-blue-600 transition-colors uppercase tracking-tight">Connexion</span>
+                  <Link href="/login" className="flex flex-col items-center gap-0 px-4 py-1 group transition-colors">
+                    <div className="p-1.5 rounded-full group-hover:bg-zinc-100 transition-colors">
+                      <User className="w-5 h-5 text-zinc-800 group-hover:text-blue-600 transition-colors" />
+                    </div>
+                    <span className="text-[11px] font-bold text-zinc-600 group-hover:text-blue-600 transition-colors uppercase tracking-tight -mt-1">Connexion</span>
                   </Link>
                 )}
               </div>
             </div>
 
             {/* Mobile Icons */}
-            <div className="lg:hidden flex items-center gap-1">
-              <Link href="/marketplace" className="p-2.5 text-zinc-600 hover:bg-zinc-100 rounded-xl transition-colors">
-                <Search className="w-6 h-6" />
+            <div className="lg:hidden flex items-center gap-0.5">
+              <Link href="/marketplace" className="p-2 text-zinc-600 hover:bg-zinc-100 rounded-xl transition-colors">
+                <Search className="w-5 h-5" />
               </Link>
               <Link href="/marketplace/post">
-                <Button size="icon" className="w-10 h-10 rounded-xl bg-blue-600 shadow-md shadow-blue-100">
-                  <PlusCircle className="w-6 h-6" />
+                <Button size="icon" className="w-9 h-9 rounded-xl bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-100/50 transition-all active:scale-95">
+                  <PlusCircle className="w-5 h-5" />
                 </Button>
               </Link>
             </div>
@@ -225,18 +233,18 @@ function PublicNavbar() {
                     <Link
                       href="/dashboard"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="flex items-center justify-between p-4 rounded-2xl bg-zinc-50 hover:bg-zinc-100 transition-colors group"
+                      className="flex items-center justify-between p-3.5 rounded-2xl bg-zinc-50 hover:bg-zinc-100 transition-colors group"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-100">
-                          <User className="w-5 h-5" />
+                        <div className="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-100">
+                          <User className="w-4.5 h-4.5" />
                         </div>
                         <div>
                           <p className="text-sm font-bold text-zinc-900">Mon profil</p>
-                          <p className="text-xs text-zinc-500 truncate max-w-[150px]">{userEmail}</p>
+                          <p className="text-[11px] text-zinc-500 truncate max-w-[150px]">{userEmail}</p>
                         </div>
                       </div>
-                      <ChevronRight className="w-5 h-5 text-zinc-400 group-hover:text-blue-600 transition-colors" />
+                      <ChevronRight className="w-4 h-4 text-zinc-400 group-hover:text-blue-600 transition-colors" />
                     </Link>
                     <button
                       onClick={handleLogout}
@@ -269,15 +277,15 @@ function PublicNavbar() {
                       key={link.name}
                       href={link.href}
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="flex items-center justify-between p-4 rounded-2xl hover:bg-blue-50 group transition-all"
+                      className="flex items-center justify-between p-3.5 rounded-2xl hover:bg-blue-50 group transition-all"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-zinc-50 flex items-center justify-center text-zinc-600 group-hover:bg-white group-hover:text-blue-600 transition-colors">
-                          <link.icon className="w-5 h-5" />
+                        <div className="w-9 h-9 rounded-xl bg-zinc-50 flex items-center justify-center text-zinc-600 group-hover:bg-white group-hover:text-blue-600 transition-colors shadow-sm shadow-zinc-200/50">
+                          <link.icon className="w-4.5 h-4.5" />
                         </div>
                         <span className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors">{link.name}</span>
                       </div>
-                      <ChevronRight className="w-5 h-5 text-zinc-300 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" />
+                      <ChevronRight className="w-4 h-4 text-zinc-300 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" />
                     </Link>
                   ))}
                   <Link

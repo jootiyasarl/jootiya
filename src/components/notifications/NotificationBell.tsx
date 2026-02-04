@@ -39,13 +39,13 @@ export function NotificationBell({ label }: { label?: string }) {
         <div className="relative" ref={dropdownRef}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex flex-col items-center gap-1 group transition-colors outline-none"
+                className="flex flex-col items-center gap-0 group transition-colors outline-none"
                 aria-label="Notifications"
             >
-                <div className="relative p-2 rounded-full group-hover:bg-zinc-100 transition-colors">
-                    <Bell className="h-6 w-6 text-zinc-800 group-hover:text-blue-600 transition-colors" />
+                <div className="relative p-1.5 rounded-full group-hover:bg-zinc-100 transition-colors">
+                    <Bell className="h-5 w-5 text-zinc-800 group-hover:text-blue-600 transition-colors" />
                     {unreadCount > 0 && (
-                        <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white ring-2 ring-white">
+                        <span className="absolute top-0.5 right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white ring-2 ring-white">
                             {unreadCount > 9 ? "+9" : unreadCount}
                         </span>
                     )}
