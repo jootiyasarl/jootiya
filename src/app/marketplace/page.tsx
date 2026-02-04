@@ -1,6 +1,8 @@
 import { Suspense } from 'react';
+import Link from 'next/link';
 import { getAds } from '@/lib/db/ads';
 import MarketplaceManager from '@/components/marketplace/MarketplaceManager';
+import { createSupabaseServerClient } from '@/lib/supabase';
 
 export const metadata = {
   title: 'Marché - Jootiya',
@@ -13,7 +15,8 @@ export default async function MarketplacePage({
   searchParams: Promise<{ q?: string; sort?: string; seller_id?: string; category?: string }>;
 }) {
   const params = await searchParams; // Await in Next.js 15+
-  const { ads, error } = await getAds({
+  const supabase = createSupabaseServerClient();
+  const { ads, error } = await getAds(supabase, {
     query: params.q,
     sort: params.sort as any,
     sellerId: params.seller_id,
@@ -26,7 +29,7 @@ export default async function MarketplacePage({
         <div className="text-center p-8 bg-white rounded-3xl shadow-xl border border-zinc-100 max-w-md">
           <h2 className="text-xl font-bold text-zinc-900 mb-2">Erreur de chargement</h2>
           <p className="text-zinc-500 mb-6">Désolé, une erreur est survenue lors de la récupération des annonces.</p>
-          <button onClick={() => window.location.reload()} className="px-6 py-2 bg-blue-600 text-white rounded-xl font-bold">Ressayer</button>
+          <Link href="/marketplace" className="inline-block px-6 py-2 bg-blue-600 text-white rounded-xl font-bold">Ressayer</Link>
         </div>
       </div>
     );

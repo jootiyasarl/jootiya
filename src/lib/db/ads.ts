@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabaseClient';
+// Removed unused import
 
 export type AdFilters = {
     query?: string;
@@ -11,7 +11,7 @@ export type AdFilters = {
 
 const IS_UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
-export async function getAds({ query, category, sellerId, minPrice, maxPrice, sort = 'newest' }: AdFilters) {
+export async function getAds(supabase: any, { query, category, sellerId, minPrice, maxPrice, sort = 'newest' }: AdFilters) {
     let dbQuery = supabase
         .from('ads')
         .select('*, profiles(full_name, avatar_url)', { count: 'exact' })
