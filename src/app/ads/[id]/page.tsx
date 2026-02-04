@@ -240,7 +240,7 @@ export default async function AdPage({ params }: AdPageProps) {
                 </div>
 
                 <div className="mt-6 pt-6 border-t border-zinc-50">
-                  <Link href={`/seller/${ad.seller_id}`} className="text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors flex items-center gap-1">
+                  <Link href={`/marketplace?seller_id=${ad.seller_id}`} className="text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors flex items-center gap-1">
                     Voir toutes les annonces de ce vendeur
                     <ChevronRight className="h-4 w-4" />
                   </Link>

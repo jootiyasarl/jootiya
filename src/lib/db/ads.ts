@@ -3,16 +3,21 @@ import { supabase } from '@/lib/supabaseClient';
 export type AdFilters = {
     query?: string;
     category?: string;
+    sellerId?: string;
     minPrice?: number;
     maxPrice?: number;
     sort?: 'newest' | 'price_asc' | 'price_desc';
 };
 
-export async function getAds({ query, category, minPrice, maxPrice, sort = 'newest' }: AdFilters) {
+export async function getAds({ query, category, sellerId, minPrice, maxPrice, sort = 'newest' }: AdFilters) {
     let dbQuery = supabase
         .from('ads')
         .select('*, profiles(full_name, avatar_url)', { count: 'exact' })
         .eq('status', 'approved');
+
+    if (sellerId) {
+        dbQuery = dbQuery.eq('seller_id', sellerId);
+    }
 
     // Text Search
     if (query) {

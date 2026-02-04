@@ -14,9 +14,9 @@ function transformAdToCard(ad: any): ListingCardProps {
         price: `${ad.currency || 'MAD'} ${ad.price}`,
         rating: 0, // Placeholder
         ratingCount: 0,
-        imageUrl: ad.images?.[0] || '/placeholder-ad.jpg',
+        imageUrl: ad.image_urls?.[0] || '/placeholder-ad.jpg',
         sellerName: ad.profiles?.full_name || 'Vendeur inconnu',
-        href: `/marketplace/${ad.id}`,
+        href: `/ads/${ad.id}`, // Fixed href to match ad detail route
     };
 }
 

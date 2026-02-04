@@ -10,12 +10,13 @@ export const metadata = {
 export default async function MarketplacePage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; sort?: string }>;
+  searchParams: Promise<{ q?: string; sort?: string; seller_id?: string }>;
 }) {
   const params = await searchParams; // Await in Next.js 15+
   const { ads } = await getAds({
     query: params.q,
-    sort: params.sort as any
+    sort: params.sort as any,
+    sellerId: params.seller_id
   });
 
   return (
