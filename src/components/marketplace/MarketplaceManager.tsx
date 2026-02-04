@@ -7,16 +7,21 @@ import { useCallback, useState } from "react";
 
 // Transform Supabase Ad to ListingCardProps
 function transformAdToCard(ad: any): ListingCardProps {
+    if (!ad) return { id: 'error', title: 'Ad Error', price: '0', imageUrl: '', sellerName: '', href: '#' };
+
+    // Safety check for profiles join (sometimes can be an array depending on Supabase version/logic)
+    const profile = Array.isArray(ad.profiles) ? ad.profiles[0] : ad.profiles;
+
     return {
-        id: ad.id,
-        title: ad.title,
-        subtitle: ad.description, // truncate in UI if needed
-        price: `${ad.currency || 'MAD'} ${ad.price}`,
-        rating: 0, // Placeholder
+        id: ad.id || Math.random().toString(),
+        title: ad.title || 'Sans titre',
+        subtitle: ad.description || '',
+        price: `${ad.currency || 'MAD'} ${ad.price || 0}`,
+        rating: 0,
         ratingCount: 0,
-        imageUrl: ad.image_urls?.[0] || '/placeholder-ad.jpg',
-        sellerName: ad.profiles?.full_name || 'Vendeur inconnu',
-        href: `/ads/${ad.id}`, // Fixed href to match ad detail route
+        imageUrl: ad.image_urls?.[0] || ad.images?.[0] || '/placeholder-ad.jpg',
+        sellerName: profile?.full_name || 'Vendeur Jootiya',
+        href: ad.slug ? `/ads/${ad.slug}` : `/ads/${ad.id}`,
     };
 }
 
