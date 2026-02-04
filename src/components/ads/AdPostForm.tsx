@@ -168,7 +168,9 @@ export default function AdPostForm() {
                     category: data.category,
                     image_urls: uploadedUrls,
                     status: 'pending'
-                });
+                })
+                .select('id')
+                .single();
 
             if (insertError) throw insertError;
             setIsSuccess(true);
