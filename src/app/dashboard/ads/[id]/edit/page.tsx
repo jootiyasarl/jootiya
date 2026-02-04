@@ -9,7 +9,7 @@ interface EditAdPageProps {
 }
 
 export default async function EditAdPage({ params }: EditAdPageProps) {
-    const { id } = params;
+    const { id } = await params;
     const user = await getServerUser();
 
     if (!user) {
