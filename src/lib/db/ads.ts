@@ -9,14 +9,19 @@ export type AdFilters = {
     sort?: 'newest' | 'price_asc' | 'price_desc';
 };
 
+const IS_UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
 export async function getAds({ query, category, sellerId, minPrice, maxPrice, sort = 'newest' }: AdFilters) {
     let dbQuery = supabase
         .from('ads')
-        .select('*, profiles(full_name, avatar_url)', { count: 'exact' })
+        .select('*, profiles!seller_id(full_name, avatar_url)', { count: 'exact' })
         .eq('status', 'approved');
 
-    if (sellerId) {
+    if (sellerId && IS_UUID.test(sellerId)) {
         dbQuery = dbQuery.eq('seller_id', sellerId);
+    } else if (sellerId) {
+        // If sellerId is provided but invalid, return empty to avoid DB error
+        return { ads: [], count: 0 };
     }
 
     // Text Search
@@ -57,8 +62,8 @@ export async function getAds({ query, category, sellerId, minPrice, maxPrice, so
     const { data, error, count } = await dbQuery;
 
     if (error) {
-        console.error('Error fetching ads', error);
-        throw new Error('Failed to fetch ads');
+        console.error('Error fetching ads:', error);
+        return { ads: [], count: 0, error };
     }
 
     return { ads: data, count };

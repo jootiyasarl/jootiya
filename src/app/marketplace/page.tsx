@@ -13,11 +13,23 @@ export default async function MarketplacePage({
   searchParams: Promise<{ q?: string; sort?: string; seller_id?: string }>;
 }) {
   const params = await searchParams; // Await in Next.js 15+
-  const { ads } = await getAds({
+  const { ads, error } = await getAds({
     query: params.q,
     sort: params.sort as any,
     sellerId: params.seller_id
   });
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-zinc-50">
+        <div className="text-center p-8 bg-white rounded-3xl shadow-xl border border-zinc-100 max-w-md">
+          <h2 className="text-xl font-bold text-zinc-900 mb-2">Erreur de chargement</h2>
+          <p className="text-zinc-500 mb-6">Désolé, une erreur est survenue lors de la récupération des annonces.</p>
+          <button onClick={() => window.location.reload()} className="px-6 py-2 bg-blue-600 text-white rounded-xl font-bold">Ressayer</button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-zinc-50 pb-16 pt-8 dark:bg-zinc-950">
