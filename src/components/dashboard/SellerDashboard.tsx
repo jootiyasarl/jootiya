@@ -44,6 +44,10 @@ export default function SellerDashboard({ initialStats, initialAds, initialCount
         }
     };
 
+    const handleEdit = (id: string) => {
+        router.push(`/dashboard/ads/${id}/edit`);
+    };
+
     return (
         <div className="space-y-8 animate-in fade-in duration-500">
 
@@ -90,7 +94,7 @@ export default function SellerDashboard({ initialStats, initialAds, initialCount
             {/* Main Content: Ads Table */}
             <div className="space-y-4">
                 <h2 className="text-xl font-semibold text-gray-800 dark:text-white">Vos annonces</h2>
-                <AdsTable ads={ads} onDelete={handleDelete} />
+                <AdsTable ads={ads} onDelete={handleDelete} onEdit={handleEdit} />
             </div>
 
         </div>
