@@ -130,10 +130,7 @@ function PublicNavbar() {
           {/* Right: User Actions / Info */}
           <div className="flex items-center gap-1 sm:gap-2">
             <div className="hidden lg:flex items-center">
-              <Link href="/dashboard/searches" className="flex flex-col items-center gap-1 px-4 py-1.5 group transition-colors">
-                <NotificationBell />
-                <span className="text-[11px] font-bold text-zinc-600 group-hover:text-blue-600 transition-colors uppercase tracking-tight">Recherches</span>
-              </Link>
+              <NotificationBell label="Notifications" />
 
               <Link href="/dashboard/favorites" className="flex flex-col items-center gap-1 px-4 py-1.5 group transition-colors">
                 <Heart className="w-6 h-6 text-zinc-800 group-hover:text-blue-600 transition-colors" />

@@ -8,7 +8,7 @@ import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
 
-export function NotificationBell() {
+export function NotificationBell({ label }: { label?: string }) {
     const [isOpen, setIsOpen] = useState(false);
     const { notifications, unreadCount, loading, markAsRead, markAllAsRead } = useNotifications();
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -39,13 +39,20 @@ export function NotificationBell() {
         <div className="relative" ref={dropdownRef}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="relative p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                className="flex flex-col items-center gap-1 group transition-colors outline-none"
                 aria-label="Notifications"
             >
-                <Bell className="h-5 w-5 text-zinc-600 dark:text-zinc-400" />
-                {unreadCount > 0 && (
-                    <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white ring-2 ring-white dark:ring-zinc-950">
-                        {unreadCount > 9 ? "+9" : unreadCount}
+                <div className="relative p-2 rounded-full group-hover:bg-zinc-100 transition-colors">
+                    <Bell className="h-6 w-6 text-zinc-800 group-hover:text-blue-600 transition-colors" />
+                    {unreadCount > 0 && (
+                        <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white ring-2 ring-white">
+                            {unreadCount > 9 ? "+9" : unreadCount}
+                        </span>
+                    )}
+                </div>
+                {label && (
+                    <span className="text-[11px] font-bold text-zinc-600 group-hover:text-blue-600 transition-colors uppercase tracking-tight -mt-1">
+                        {label}
                     </span>
                 )}
             </button>
