@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
-import { Conversation, Message, getMessages } from "@/lib/db/messaging";
+import { Conversation, Message } from "@/types/messaging";
 import { Search, Send, MessageSquare, User, MoreVertical, Paperclip, Smile } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -48,8 +48,15 @@ export function MessagingClient({ initialConversations, currentUser }: Messaging
 
         async function loadMessages() {
             setIsLoadingMessages(true);
-            const data = await getMessages(selectedId!);
-            setMessages(data);
+            const { data, error } = await supabase
+                .from('messages')
+                .select('*')
+                .eq('conversation_id', selectedId)
+                .order('created_at', { ascending: true });
+
+            if (!error && data) {
+                setMessages(data as Message[]);
+            }
             setIsLoadingMessages(false);
         }
 
