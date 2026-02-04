@@ -14,7 +14,7 @@ const IS_UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0
 export async function getAds(supabase: any, { query, category, sellerId, minPrice, maxPrice, sort = 'newest' }: AdFilters) {
     let dbQuery = supabase
         .from('ads')
-        .select('*, profiles(full_name, avatar_url)', { count: 'exact' })
+        .select('*, profiles(full_name, avatar_url, username)', { count: 'exact' })
         .eq('status', 'approved');
 
     if (sellerId && IS_UUID.test(sellerId)) {

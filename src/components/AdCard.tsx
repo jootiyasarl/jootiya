@@ -16,6 +16,7 @@ export type PublicAdCardAd = {
   sellerBadge?: string;
   isFeatured?: boolean;
   imageUrl?: string;
+  sellerName?: string;
 };
 
 export interface AdCardProps {
@@ -38,7 +39,7 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete }: 
         <div className="w-6 h-6 rounded-full bg-zinc-200 flex items-center justify-center overflow-hidden">
           <User className="w-4 h-4 text-zinc-400" />
         </div>
-        <span className="text-xs font-bold text-zinc-900 truncate">Vendeur Jootiya</span>
+        <span className="text-xs font-bold text-zinc-900 truncate">{ad.sellerName || "Vendeur Jootiya"}</span>
       </div>
 
       {/* Image Container */}

@@ -20,7 +20,7 @@ function transformAdToCard(ad: any): ListingCardProps {
         rating: 0,
         ratingCount: 0,
         imageUrl: ad.image_urls?.[0] || ad.images?.[0] || '/placeholder-ad.jpg',
-        sellerName: profile?.full_name || 'Vendeur Jootiya',
+        sellerName: profile?.full_name || profile?.username || 'Vendeur Jootiya',
         href: ad.slug ? `/ads/${ad.slug}` : `/ads/${ad.id}`,
     };
 }
