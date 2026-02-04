@@ -1,135 +1,135 @@
 export const MOROCCAN_CITIES = [
     {
-        region: "جهة طنجة – تطوان – الحسيمة",
+        region: "Tanger-Tétouan-Al Hoceïma",
         cities: [
-            "طنجة",
-            "تطوان",
-            "الحسيمة",
-            "شفشاون",
-            "المضيق",
-            "الفنيدق",
-            "العرائش",
-            "وزان",
-            "أصيلة"
+            "Tanger",
+            "Tétouan",
+            "Al Hoceïma",
+            "Chefchaouen",
+            "M'diq",
+            "Fnideq",
+            "Larache",
+            "Ouezzane",
+            "Asilah"
         ]
     },
     {
-        region: "جهة الشرق",
+        region: "L'Oriental",
         cities: [
-            "وجدة",
-            "الناظور",
-            "بركان",
-            "تاوريرت",
-            "جرادة",
-            "فكيك",
-            "الدريوش",
-            "أحفير"
+            "Oujda",
+            "Nador",
+            "Berkane",
+            "Taourirt",
+            "Jerada",
+            "Figuig",
+            "Driouch",
+            "Ahfir"
         ]
     },
     {
-        region: "جهة فاس – مكناس",
+        region: "Fès-Meknès",
         cities: [
-            "فاس",
-            "مكناس",
-            "تازة",
-            "صفرو",
-            "مولاي يعقوب",
-            "بولمان",
-            "الحاجب",
-            "إفران"
+            "Fès",
+            "Meknès",
+            "Taza",
+            "Sefrou",
+            "Moulay Yacoub",
+            "Boulemane",
+            "El Hajeb",
+            "Ifrane"
         ]
     },
     {
-        region: "جهة الرباط – سلا – القنيطرة",
+        region: "Rabat-Salé-Kénitra",
         cities: [
-            "الرباط",
-            "سلا",
-            "القنيطرة",
-            "تمارة",
-            "الصخيرات",
-            "سيدي قاسم",
-            "سيدي سليمان",
-            "الخميسات"
+            "Rabat",
+            "Salé",
+            "Kénitra",
+            "Témara",
+            "Skhirat",
+            "Sidi Kacem",
+            "Sidi Slimane",
+            "Khémisset"
         ]
     },
     {
-        region: "جهة الدار البيضاء – سطات",
+        region: "Casablanca-Settat",
         cities: [
-            "الدار البيضاء",
-            "المحمدية",
-            "سطات",
-            "الجديدة",
-            "برشيد",
-            "بن سليمان",
-            "أزمور",
-            "سيدي بنور"
+            "Casablanca",
+            "Mohammedia",
+            "Settat",
+            "El Jadida",
+            "Berrechid",
+            "Benslimane",
+            "Azemmour",
+            "Sidi Bennour"
         ]
     },
     {
-        region: "جهة بني ملال – خنيفرة",
+        region: "Béni Mellal-Khénifra",
         cities: [
-            "بني ملال",
-            "خنيفرة",
-            "أزيلال",
-            "الفقيه بن صالح"
+            "Béni Mellal",
+            "Khénifra",
+            "Azilal",
+            "Fquih Ben Salah"
         ]
     },
     {
-        region: "جهة مراكش – آسفي",
+        region: "Marrakech-Safi",
         cities: [
-            "مراكش",
-            "آسفي",
-            "الصويرة",
-            "قلعة السراغنة",
-            "شيشاوة",
-            "الرحامنة",
-            "اليوسفية"
+            "Marrakech",
+            "Safi",
+            "Essaouira",
+            "El Kelaâ des Sraghna",
+            "Chichaoua",
+            "Rehamna",
+            "Youssoufia"
         ]
     },
     {
-        region: "جهة درعة – تافيلالت",
+        region: "Drâa-Tafilalet",
         cities: [
-            "الرشيدية",
-            "ورزازات",
-            "زاكورة",
-            "تنغير",
-            "ميدلت"
+            "Errachidia",
+            "Ouarzazate",
+            "Zagora",
+            "Tinghir",
+            "Midelt"
         ]
     },
     {
-        region: "جهة سوس – ماسة",
+        region: "Souss-Massa",
         cities: [
-            "أكادير",
-            "إنزكان",
-            "أيت ملول",
-            "تارودانت",
-            "تيزنيت",
-            "اشتوكة آيت باها"
+            "Agadir",
+            "Inezgane",
+            "Ait Melloul",
+            "Taroudant",
+            "Tiznit",
+            "Chtouka Ait Baha"
         ]
     },
     {
-        region: "جهة كلميم – واد نون",
+        region: "Guelmim-Oued Noun",
         cities: [
-            "كلميم",
-            "طانطان",
-            "سيدي إفني",
-            "أسا الزاك"
+            "Guelmim",
+            "Tan-Tan",
+            "Sidi Ifni",
+            "Assa-Zag"
         ]
     },
     {
-        region: "جهة العيون – الساقية الحمراء",
+        region: "Laâyoune-Sakia El Hamra",
         cities: [
-            "العيون",
-            "بوجدور",
-            "السمارة",
-            "طرفاية"
+            "Laâyoune",
+            "Boujdour",
+            "Es-Semara",
+            "Tarfaya"
         ]
     },
     {
-        region: "جهة الداخلة – وادي الذهب",
+        region: "Dakhla-Oued Ed-Dahab",
         cities: [
-            "الداخلة",
-            "أوسرد"
+            "Dakhla",
+            "Aousserd"
         ]
     }
 ];
