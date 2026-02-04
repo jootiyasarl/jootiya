@@ -28,7 +28,14 @@ export default async function MarketplacePage({
       <div className="min-h-screen flex items-center justify-center bg-zinc-50">
         <div className="text-center p-8 bg-white rounded-3xl shadow-xl border border-zinc-100 max-w-md">
           <h2 className="text-xl font-bold text-zinc-900 mb-2">Erreur de chargement</h2>
-          <p className="text-zinc-500 mb-6">Désolé, une erreur est survenue lors de la récupération des annonces.</p>
+          <p className="text-zinc-500 mb-6">
+            Désolé, une erreur est survenue lors de la récupération des annonces.
+          </p>
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-left overflow-auto max-h-60">
+            <p className="font-mono text-xs text-red-800 font-bold">Message: {error.message}</p>
+            {error.details && <p className="font-mono text-xs text-red-700 mt-1">Details: {error.details}</p>}
+            {error.hint && <p className="font-mono text-xs text-red-700 mt-1">Hint: {error.hint}</p>}
+          </div>
           <Link href="/marketplace" className="inline-block px-6 py-2 bg-blue-600 text-white rounded-xl font-bold">Ressayer</Link>
         </div>
       </div>
