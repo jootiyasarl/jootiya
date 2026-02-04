@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,12 +21,17 @@ interface MyAdsClientProps {
 }
 
 export function MyAdsClient({ initialAds }: MyAdsClientProps) {
+    const router = useRouter();
     const [ads, setAds] = useState<DashboardAd[]>(initialAds);
     const [adToDelete, setAdToDelete] = useState<DashboardAd | null>(null);
     const [deleteLoading, setDeleteLoading] = useState(false);
     const [lastDeletedAd, setLastDeletedAd] = useState<DashboardAd | null>(null);
     const [undoLoading, setUndoLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    function handleEdit(ad: DashboardAd) {
+        router.push(`/dashboard/ads/${ad.id}/edit`);
+    }
 
     function handleRequestDelete(ad: DashboardAd) {
         setAdToDelete(ad);
@@ -176,6 +182,7 @@ export function MyAdsClient({ initialAds }: MyAdsClientProps) {
                             <AdCard
                                 key={ad.id}
                                 ad={ad}
+                                onEdit={() => handleEdit(ad)}
                                 onDelete={() => handleRequestDelete(ad)}
                             />
                         ))}
@@ -205,6 +212,7 @@ export function MyAdsClient({ initialAds }: MyAdsClientProps) {
                                         key={ad.id}
                                         ad={ad}
                                         canBoost={canBoost}
+                                        onEdit={() => handleEdit(ad)}
                                         onDelete={() => handleRequestDelete(ad)}
                                     />
                                 ))}

@@ -49,10 +49,16 @@ const STEPS = [
     { id: 'final', label: 'Prix & Lieu', icon: MapPin },
 ];
 
-export default function AdPostForm() {
+interface AdPostFormProps {
+    mode?: 'create' | 'edit';
+    initialData?: Partial<AdFormValues> & { id?: string; image_urls?: string[] };
+    onSuccess?: () => void;
+}
+
+export default function AdPostForm({ mode = 'create', initialData, onSuccess }: AdPostFormProps) {
     const [currentStep, setCurrentStep] = useState(0);
     const [images, setImages] = useState<File[]>([]);
-    const [previews, setPreviews] = useState<string[]>([]);
+    const [previews, setPreviews] = useState<string[]>(initialData?.image_urls || []);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -60,11 +66,11 @@ export default function AdPostForm() {
     const { register, handleSubmit, setValue, watch, trigger, formState: { errors } } = useForm<AdFormValues>({
         resolver: zodResolver(adSchema) as any,
         defaultValues: {
-            category: '',
-            title: '',
-            description: '',
-            location: '',
-            price: ''
+            category: initialData?.category || '',
+            title: initialData?.title || '',
+            description: initialData?.description || '',
+            location: initialData?.location || '',
+            price: initialData?.price || ''
         }
     });
 
@@ -101,7 +107,16 @@ export default function AdPostForm() {
     };
 
     const removeImage = (index: number) => {
-        setImages(prev => prev.filter((_, i) => i !== index));
+        const previewToRemove = previews[index];
+
+        // If it's a new image (blob URL), we should find its index in the 'images' array and remove it
+        if (previewToRemove.startsWith('blob:')) {
+            // This is a bit tricky if multiple blobs are added. 
+            // Better: find how many blobs are before this one in the previews array.
+            const blobIndex = previews.slice(0, index).filter(p => p.startsWith('blob:')).length;
+            setImages(prev => prev.filter((_, i) => i !== blobIndex));
+        }
+
         setPreviews(prev => prev.filter((_, i) => i !== index));
     };
 
@@ -111,10 +126,10 @@ export default function AdPostForm() {
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) throw new Error("Vous devez être connecté pour publier une annonce.");
 
-            // 1. Upload Images
-            const uploadedUrls = [];
+            // 1. Upload New Images
+            const newUploadedUrls = [];
             for (const file of images) {
-                // Sanitize filename: remove special chars and spaces
+                // Sanitize filename
                 const cleanName = file.name.replace(/[^\w.-]/g, '_');
                 const fileName = `${user.id}/${Date.now()}-${cleanName}`;
 
@@ -122,58 +137,80 @@ export default function AdPostForm() {
                     .from('ad-images')
                     .upload(fileName, file);
 
-                if (uploadError) {
-                    // Check if bucket exists error or permission
-                    if (uploadError.message.includes('bucket not found')) {
-                        throw new Error("Le compartiment de stockage 'ad-images' n'existe pas. Veuillez le créer dans le tableau de bord Supabase.");
-                    }
-                    throw uploadError;
-                }
+                if (uploadError) throw uploadError;
 
                 const { data: { publicUrl } } = supabase.storage
                     .from('ad-images')
                     .getPublicUrl(fileName);
 
-                uploadedUrls.push(publicUrl);
+                newUploadedUrls.push(publicUrl);
             }
 
-            // 2. Generate Slug (to match our database unique constraint)
-            const baseSlug = data.title
-                .toLowerCase()
-                .trim()
-                .replace(/[^\w\s-]/g, '')
-                .replace(/[\s_-]+/g, '-')
-                .replace(/^-+|-+$/g, '');
-            const uniqueId = Math.random().toString(36).substring(2, 7);
-            const slug = `${baseSlug}-${uniqueId}`;
+            // Combine existing images (that weren't removed) with new uploads
+            // For simplicity in this logic, we assume previews contains only valid URLs (old public ones or new blobs)
+            // But actually we have 'images' (File[]) for new ones and initialData?.image_urls for old ones.
+            // Let's filter initialData?.image_urls to only those still in previews.
+            const existingUrls = (initialData?.image_urls || []).filter(url => previews.includes(url));
+            const finalImageUrls = [...existingUrls, ...newUploadedUrls];
 
-            // 3. Map Location
-            // We'll split location into city and neighborhood if possible
+            // 2. Map Location
             const locParts = data.location.split(',').map(s => s.trim());
             const city = locParts[0] || data.location;
             const neighborhood = locParts[1] || null;
 
-            // 4. Insert Ad Record
-            const { error: insertError } = await supabase
-                .from('ads')
-                .insert({
-                    seller_id: user.id,
-                    title: data.title,
-                    slug: slug,
-                    description: data.description,
-                    price: data.price,
-                    currency: 'MAD',
-                    city: city,
-                    neighborhood: neighborhood,
-                    category: data.category,
-                    image_urls: uploadedUrls,
-                    status: 'pending'
-                })
-                .select('id')
-                .single();
+            if (mode === 'edit' && initialData?.id) {
+                // UPDATE
+                const { error: updateError } = await supabase
+                    .from('ads')
+                    .update({
+                        title: data.title,
+                        description: data.description,
+                        price: data.price,
+                        city: city,
+                        neighborhood: neighborhood,
+                        category: data.category,
+                        image_urls: finalImageUrls,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', initialData.id)
+                    .eq('seller_id', user.id);
 
-            if (insertError) throw insertError;
+                if (updateError) throw updateError;
+            } else {
+                // INSERT
+                // Generate Slug only on creation
+                const baseSlug = data.title
+                    .toLowerCase()
+                    .trim()
+                    .replace(/[^\w\s-]/g, '')
+                    .replace(/[\s_-]+/g, '-')
+                    .replace(/^-+|-+$/g, '');
+                const uniqueId = Math.random().toString(36).substring(2, 7);
+                const slug = `${baseSlug}-${uniqueId}`;
+
+                const { error: insertError } = await supabase
+                    .from('ads')
+                    .insert({
+                        seller_id: user.id,
+                        title: data.title,
+                        slug: slug,
+                        description: data.description,
+                        price: data.price,
+                        currency: 'MAD',
+                        city: city,
+                        neighborhood: neighborhood,
+                        category: data.category,
+                        image_urls: finalImageUrls,
+                        status: 'pending'
+                    })
+                    .select('id')
+                    .single();
+
+                if (insertError) throw insertError;
+            }
+
             setIsSuccess(true);
+            if (onSuccess) onSuccess();
         } catch (error: any) {
             console.error("Ad Publication Error:", error);
             alert(`Échec: ${error.message || "Une erreur inconnue est survenue"}`);

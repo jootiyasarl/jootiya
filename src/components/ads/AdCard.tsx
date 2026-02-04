@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { Clock, MapPin } from 'lucide-react';
+import { Clock, MapPin, Pencil, Trash2, Sparkles, Eye } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export interface Ad {
   id: string;
@@ -12,7 +13,7 @@ export interface Ad {
   created_at: string;
 }
 
-export function AdCard({ ad, canBoost, onDelete }: { ad: Ad; canBoost?: boolean; onDelete?: (ad: any) => void }) {
+export function AdCard({ ad, canBoost, onEdit, onDelete }: { ad: Ad; canBoost?: boolean; onEdit?: (ad: Ad) => void; onDelete?: (ad: any) => void }) {
   // Use first image or placeholder
   const mainImage = ad.images?.[0] || '/placeholder-ad.jpg';
   const priceDisplay = ad.price != null ? ad.price.toLocaleString() : 'N/A';
@@ -54,6 +55,42 @@ export function AdCard({ ad, canBoost, onDelete }: { ad: Ad; canBoost?: boolean;
             <span>{new Date(ad.created_at).toLocaleDateString()}</span>
           </div>
         </div>
+
+        {(onEdit || onDelete) && (
+          <div className="mt-4 flex items-center gap-2 pt-4 border-t border-gray-100 dark:border-white/10">
+            {onEdit && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="flex-1 h-9 rounded-xl gap-2 text-xs font-bold uppercase tracking-wider"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onEdit(ad);
+                }}
+              >
+                <Pencil className="h-3.5 w-3.5" />
+                Modifier
+              </Button>
+            )}
+            {onDelete && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-9 w-9 p-0 rounded-xl border-red-50 text-red-600 hover:bg-red-50"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onDelete(ad);
+                }}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
+        )}
       </div>
     </Link>
   );
