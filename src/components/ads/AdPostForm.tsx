@@ -16,13 +16,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/lib/supabaseClient';
+import { MOROCCAN_CITIES } from '@/lib/constants/cities';
 
 const adSchema = z.object({
     title: z.string().min(5, "Le titre doit contenir au moins 5 caractères"),
     price: z.coerce.number().min(1, "Le prix doit être supérieur à 0"),
     category: z.string().min(1, "Veuillez sélectionner une catégorie"),
     description: z.string().min(20, "La description doit être détaillée (min 20 caractères)"),
-    location: z.string().min(3, "La localisation est requise"),
+    city: z.string().min(1, "La ville est requise"),
+    neighborhood: z.string().optional(),
 });
 
 type AdFormValues = {
@@ -30,7 +32,8 @@ type AdFormValues = {
     price: number | string;
     category: string;
     description: string;
-    location: string;
+    city: string;
+    neighborhood?: string;
 };
 
 const CATEGORIES = [
@@ -73,7 +76,8 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
             category: initialData?.category || '',
             title: initialData?.title || '',
             description: initialData?.description || '',
-            location: initialData?.location || '',
+            city: (initialData as any)?.city || '', // Use explicit city if available
+            neighborhood: (initialData as any)?.neighborhood || '',
             price: initialData?.price || ''
         }
     });
@@ -85,7 +89,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
 
         if (currentStep === 0) fieldsToValidate = ['category'];
         if (currentStep === 1) fieldsToValidate = ['title', 'description'];
-        if (currentStep === 3) fieldsToValidate = ['price', 'location'];
+        if (currentStep === 3) fieldsToValidate = ['price', 'city'];
 
         const isValid = await trigger(fieldsToValidate);
 
@@ -157,10 +161,9 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
             const existingUrls = (initialData?.image_urls || []).filter(url => previews.includes(url));
             const finalImageUrls = [...existingUrls, ...newUploadedUrls];
 
-            // 2. Map Location
-            const locParts = data.location.split(',').map(s => s.trim());
-            const city = locParts[0] || data.location;
-            const neighborhood = locParts[1] || null;
+            // 2. Map Location (Directly from form now)
+            const city = data.city;
+            const neighborhood = data.neighborhood || null;
 
             if (mode === 'edit' && initialData?.id) {
                 // UPDATE
@@ -518,17 +521,38 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                 </div>
 
                                 <div className="space-y-4">
-                                    <label className="text-[11px] font-black uppercase tracking-[0.2em] text-zinc-400 ml-1">Ville & Quartier</label>
+                                    <label className="text-[11px] font-black uppercase tracking-[0.2em] text-zinc-400 ml-1">Ville</label>
                                     <div className="relative group">
-                                        <MapPin className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400 group-focus-within:text-blue-600 transition-colors" />
+                                        <MapPin className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400 group-focus-within:text-blue-600 transition-colors pointer-events-none" />
+                                        <select
+                                            {...register('city')}
+                                            className="h-16 md:h-20 w-full pl-16 pr-8 text-lg font-bold rounded-3xl border-zinc-100 bg-white focus:ring-4 focus:ring-blue-50 focus:border-blue-600 transition-all appearance-none cursor-pointer"
+                                        >
+                                            <option value="">Sélectionnez votre ville</option>
+                                            {MOROCCAN_CITIES.map((region) => (
+                                                <optgroup key={region.region} label={region.region}>
+                                                    {region.cities.map((city) => (
+                                                        <option key={city} value={city}>
+                                                            {city}
+                                                        </option>
+                                                    ))}
+                                                </optgroup>
+                                            ))}
+                                        </select>
+                                        <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none">
+                                            <ChevronRight className="w-5 h-5 text-zinc-400 rotate-90" />
+                                        </div>
+                                    </div>
+                                    {errors.city && <p className="text-red-500 text-xs font-bold uppercase tracking-widest ml-1">{errors.city.message}</p>}
+
+                                    <div className="mt-4">
+                                        <label className="text-[11px] font-black uppercase tracking-[0.2em] text-zinc-400 ml-1">Quartier (Optionnel)</label>
                                         <Input
-                                            {...register('location')}
-                                            placeholder="ex: Casablanca, Maarif"
-                                            className="h-16 md:h-20 pl-16 pr-8 text-lg font-bold rounded-3xl border-zinc-100 bg-white focus:ring-4 focus:ring-blue-50 focus:border-blue-600 transition-all"
+                                            {...register('neighborhood')}
+                                            placeholder="ex: Maarif, Agdal, Guéliz..."
+                                            className="h-14 mt-2 px-6 text-base font-medium rounded-2xl border-zinc-100 bg-white focus:ring-4 focus:ring-blue-50 focus:border-blue-600 transition-all"
                                         />
                                     </div>
-                                    <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest ml-1">Précisez le quartier pour plus de pertinence</p>
-                                    {errors.location && <p className="text-red-500 text-xs font-bold uppercase tracking-widest ml-1">{errors.location.message}</p>}
                                 </div>
                             </div>
 
