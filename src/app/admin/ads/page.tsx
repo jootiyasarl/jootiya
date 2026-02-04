@@ -25,7 +25,7 @@ export default function AdminAdsPage() {
     try {
       const { data, error } = await supabase
         .from("ads")
-        .select("*")
+        .select("id, title, city, neighborhood, category, status, price, currency, created_at")
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -34,7 +34,7 @@ export default function AdminAdsPage() {
       const mappedAds: AdminAd[] = (data || []).map((ad: any) => ({
         id: ad.id,
         title: ad.title,
-        location: ad.location,
+        location: ad.neighborhood ? `${ad.neighborhood}, ${ad.city}` : ad.city || "Maroc",
         category: ad.category, // Ensure your DB has this or you mocked it
         status: ad.status,
         price: ad.price,

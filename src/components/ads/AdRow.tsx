@@ -12,7 +12,7 @@ export interface DashboardAd {
   currency: string | null;
   status: DashboardAdStatus;
   images: string[] | null;
-  location: string | null;
+  location: string | null; // This is now a formatted string from city/neighborhood
   created_at: string;
   views_count?: number | null;
 }

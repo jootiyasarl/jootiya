@@ -17,7 +17,7 @@ export default async function MyAdsPage() {
   const { data, error } = await supabase
     .from("ads")
     .select(
-      "id, title, price, currency, status, image_urls, location, created_at, views_count"
+      "id, title, price, currency, status, image_urls, city, neighborhood, created_at, views_count"
     )
     .eq("seller_id", user.id)
     .neq("status", "deleted")
@@ -34,7 +34,7 @@ export default async function MyAdsPage() {
     price: ad.price,
     currency: ad.currency,
     status: ad.status,
-    location: ad.location,
+    location: ad.neighborhood ? `${ad.neighborhood}, ${ad.city}` : ad.city || "Maroc",
     created_at: ad.created_at,
     views_count: ad.views_count,
     images: ad.image_urls || [],
