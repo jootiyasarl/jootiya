@@ -3,7 +3,7 @@
 import { supabase } from "@/lib/supabaseClient";
 import { DEFAULT_SEARCH_RADIUS_KM } from "@/lib/adLocation";
 
-export type AdStatus = "pending" | "active" | "rejected";
+export type AdStatus = "pending" | "active" | "approved" | "rejected";
 
 export interface CreateFreeAdInput {
   title: string;
@@ -93,7 +93,7 @@ export interface AdStatusMeta {
  * to show clearly to the seller in dashboards and success screens.
  */
 export function getAdStatusMeta(status: AdStatus): AdStatusMeta {
-  if (status === "active") {
+  if (status === "active" || status === "approved") {
     return {
       label: "Live",
       description:

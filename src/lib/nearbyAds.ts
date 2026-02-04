@@ -47,9 +47,9 @@ export function haversineDistanceKm(
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos(rLat1) *
-      Math.cos(rLat2) *
-      Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
+    Math.cos(rLat2) *
+    Math.sin(dLon / 2) *
+    Math.sin(dLon / 2);
 
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
@@ -82,7 +82,7 @@ export async function fetchNearbyAds(
     .select(
       "id, title, price, currency, city, neighborhood, latitude, longitude, image_urls, created_at, status",
     )
-    .eq("status", "active")
+    .or("status.eq.active,status.eq.approved")
     .not("latitude", "is", null)
     .not("longitude", "is", null)
     .gte("latitude", minLat)

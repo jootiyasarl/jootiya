@@ -46,7 +46,7 @@ function getStatusMeta(status: DashboardAdStatus) {
     };
   }
 
-  if (normalized === "active" || normalized === "published") {
+  if (normalized === "active" || normalized === "published" || normalized === "approved") {
     return {
       label: "Published",
       badgeClass:
