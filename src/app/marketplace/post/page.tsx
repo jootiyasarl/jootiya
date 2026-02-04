@@ -11,30 +11,29 @@ export default function PostAdPage() {
 
             <div className="container relative mx-auto px-4 pt-16 md:pt-24">
                 {/* Header Section */}
-                <div className="mb-16 text-center max-w-3xl mx-auto space-y-6">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white shadow-xl shadow-zinc-200/50 border border-zinc-50 mb-2">
-                        <Sparkles className="w-4 h-4 text-blue-600" />
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-900">Vendez plus rapidement sur Jootiya</span>
+                <div className="mb-10 text-center max-w-2xl mx-auto space-y-4">
+                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white shadow-sm border border-zinc-100 mb-2">
+                        <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-900">Vendez sur Jootiya</span>
                     </div>
 
-                    <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-zinc-900 dark:text-white uppercase leading-[0.9]">
-                        Donnez une seconde <br />
-                        <span className="text-blue-600">vie à vos objets</span>
+                    <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-zinc-900 dark:text-white leading-tight">
+                        Donnez une seconde <span className="text-blue-600">vie à vos objets</span>
                     </h1>
 
-                    <p className="text-zinc-500 text-lg md:text-xl font-medium max-w-xl mx-auto leading-relaxed">
-                        Rejoignez des milliers de vendeurs et touchez des acheteurs partout au Maroc en quelques minutes.
+                    <p className="text-zinc-500 text-base md:text-lg font-medium max-w-lg mx-auto leading-relaxed">
+                        Rejoignez des milliers de vendeurs et touchez des acheteurs partout au Maroc.
                     </p>
 
                     {/* Trust Badges */}
-                    <div className="flex flex-wrap justify-center gap-8 pt-4">
-                        <div className="flex items-center gap-2">
-                            <ShieldCheck className="w-5 h-5 text-emerald-500" />
-                            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Paiement Sécurisé</span>
+                    <div className="flex flex-wrap justify-center gap-6 pt-2">
+                        <div className="flex items-center gap-1.5">
+                            <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Paiement Sécurisé</span>
                         </div>
-                        <div className="flex items-center gap-2">
-                            <Zap className="w-5 h-5 text-amber-500" />
-                            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Vente Rapide</span>
+                        <div className="flex items-center gap-1.5">
+                            <Zap className="w-4 h-4 text-amber-500" />
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">Vente Rapide</span>
                         </div>
                     </div>
                 </div>
