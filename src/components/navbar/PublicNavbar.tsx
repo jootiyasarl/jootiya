@@ -94,12 +94,14 @@ function PublicNavbar() {
         <div className="flex h-16 md:h-20 items-center justify-between gap-4 py-2">
           {/* Left: Logo & Post Ad */}
           <div className="flex items-center gap-4 lg:gap-8">
+            {/* Mobile Menu Button - REMOVED for Bottom Nav
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="lg:hidden p-2 text-zinc-600 hover:bg-zinc-100 rounded-xl transition-colors"
             >
               <Menu className="w-6 h-6" />
             </button>
+            */}
 
             <Link href="/" className="flex items-center shrink-0">
               <span className="text-2xl md:text-3xl font-black tracking-tighter text-blue-600">
@@ -174,22 +176,16 @@ function PublicNavbar() {
               </div>
             </div>
 
-            {/* Mobile Icons */}
+            {/* Mobile Icons - Simplified 
             <div className="lg:hidden flex items-center gap-0.5">
-              <Link href="/marketplace" className="p-2 text-zinc-600 hover:bg-zinc-100 rounded-xl transition-colors">
-                <Search className="w-5 h-5" />
-              </Link>
-              <Link href="/marketplace/post">
-                <Button size="icon" className="w-9 h-9 rounded-xl bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-100/50 transition-all active:scale-95">
-                  <PlusCircle className="w-5 h-5" />
-                </Button>
-              </Link>
+               <NotificationBell label="" iconOnly />
             </div>
+            */}
           </div>
         </div>
 
-        {/* Categories Row (Bottom Nav) */}
-        <div className="flex overflow-x-auto no-scrollbar py-2 border-t border-zinc-100 lg:border-none scroll-smooth">
+        {/* Categories Row (Desktop Only) */}
+        <div className="hidden lg:flex overflow-x-auto no-scrollbar py-2 border-t border-zinc-100 lg:border-none scroll-smooth">
           <nav className="flex items-center gap-8 whitespace-nowrap min-w-full">
             {navLinks.map((link) => (
               <Link

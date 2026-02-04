@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import PublicNavbar from "./PublicNavbar";
+import { MobileBottomNav } from "./MobileBottomNav";
 
 interface RootNavbarShellProps {
   children: ReactNode;
@@ -18,7 +19,12 @@ export function RootNavbarShell({ children }: RootNavbarShellProps) {
 
   return (
     <>
-      {!hideNavbar && <PublicNavbar />}
+      {!hideNavbar && (
+        <>
+          <PublicNavbar />
+          <MobileBottomNav />
+        </>
+      )}
       {children}
     </>
   );
