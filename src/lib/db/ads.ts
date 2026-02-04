@@ -6,12 +6,13 @@ export type AdFilters = {
     sellerId?: string;
     minPrice?: number;
     maxPrice?: number;
+    city?: string;
     sort?: 'newest' | 'price_asc' | 'price_desc';
 };
 
 const IS_UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
-export async function getAds(supabase: any, { query, category, sellerId, minPrice, maxPrice, sort = 'newest' }: AdFilters) {
+export async function getAds(supabase: any, { query, category, sellerId, minPrice, maxPrice, city, sort = 'newest' }: AdFilters) {
     let dbQuery = supabase
         .from('ads')
         .select('*, profiles(full_name, avatar_url, username)', { count: 'exact' })
@@ -29,6 +30,10 @@ export async function getAds(supabase: any, { query, category, sellerId, minPric
 
     if (category) {
         dbQuery = dbQuery.eq('category', category);
+    }
+
+    if (city) {
+        dbQuery = dbQuery.eq('city', city);
     }
 
     if (minPrice !== undefined) dbQuery = dbQuery.gte('price', minPrice);

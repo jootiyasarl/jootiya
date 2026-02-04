@@ -12,15 +12,24 @@ export const metadata = {
 export default async function MarketplacePage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; sort?: string; seller_id?: string; category?: string }>;
+  searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  const params = await searchParams; // Await in Next.js 15+
   const supabase = createSupabaseServerClient();
-  const { ads, error } = await getAds(supabase, {
-    query: params.q,
-    sort: params.sort as any,
-    sellerId: params.seller_id,
-    category: params.category
+
+  const query = typeof searchParams.q === 'string' ? searchParams.q : undefined;
+  const category = typeof searchParams.category === 'string' ? searchParams.category : undefined;
+  const minPrice = typeof searchParams.minPrice === 'string' ? Number(searchParams.minPrice) : undefined;
+  const maxPrice = typeof searchParams.maxPrice === 'string' ? Number(searchParams.maxPrice) : undefined;
+  const sort = typeof searchParams.sort === 'string' ? (searchParams.sort as any) : 'newest';
+  const city = typeof searchParams.city === 'string' ? searchParams.city : undefined;
+
+  const { ads, count, error } = await getAds(supabase, {
+    query,
+    category,
+    minPrice,
+    maxPrice,
+    sort,
+    city
   });
 
   if (error) {

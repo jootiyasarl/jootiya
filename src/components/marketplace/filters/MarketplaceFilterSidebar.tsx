@@ -1,10 +1,36 @@
 "use client";
 
 import type { MarketplaceFilterSidebarProps } from "@/types/components/marketplace";
+import { MOROCCAN_CITIES } from "@/lib/constants/cities";
+import { MapPin } from "lucide-react";
 
-export function MarketplaceFilterSidebar({ filters, onChange }: MarketplaceFilterSidebarProps) {
+export function MarketplaceFilterSidebar({ filters, onChange, selectedCity, onCityChange }: MarketplaceFilterSidebarProps) {
   return (
     <aside className="hidden w-64 shrink-0 space-y-6 rounded-2xl border bg-white p-4 text-sm shadow-sm lg:block">
+      {/* City Filter */}
+      <div className="space-y-3 pb-6 border-b border-zinc-100">
+        <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wide text-zinc-500">
+          <MapPin className="w-3.5 h-3.5" />
+          Localisation
+        </div>
+        <div className="relative">
+          <select
+            value={selectedCity || ""}
+            onChange={(e) => onCityChange?.(e.target.value)}
+            className="w-full p-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-xs font-bold text-zinc-700 outline-none focus:ring-2 focus:ring-blue-100 transition-all appearance-none cursor-pointer"
+          >
+            <option value="">Toute le Maroc</option>
+            {MOROCCAN_CITIES.map((region) => (
+              <optgroup key={region.region} label={region.region}>
+                {region.cities.map((city) => (
+                  <option key={city} value={city}>{city}</option>
+                ))}
+              </optgroup>
+            ))}
+          </select>
+        </div>
+      </div>
+
       {filters.map((filter) => (
         <div key={filter.id} className="space-y-2">
           <div className="text-xs font-semibold uppercase tracking-wide text-zinc-500">

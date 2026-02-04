@@ -32,6 +32,8 @@ export interface MarketplaceFilterSidebarProps {
     value: string[];
   }[];
   onChange: (filterId: string, value: string[]) => void;
+  selectedCity?: string;
+  onCityChange?: (city: string) => void;
 }
 
 export interface SortDropdownProps {

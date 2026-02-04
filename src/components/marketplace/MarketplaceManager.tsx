@@ -30,6 +30,7 @@ export default function MarketplaceManager({ ads }: { ads: any[] }) {
     const searchParams = useSearchParams();
 
     const initialQuery = searchParams.get("q") || "";
+    const activeCity = searchParams.get("city") || "";
     const [query, setQuery] = useState(initialQuery);
 
     const handleSearch = () => {
@@ -38,6 +39,16 @@ export default function MarketplaceManager({ ads }: { ads: any[] }) {
             params.set("q", query);
         } else {
             params.delete("q");
+        }
+        router.push(`/marketplace?${params.toString()}`);
+    };
+
+    const handleCityChange = (city: string) => {
+        const params = new URLSearchParams(searchParams.toString());
+        if (city) {
+            params.set("city", city);
+        } else {
+            params.delete("city");
         }
         router.push(`/marketplace?${params.toString()}`);
     };
@@ -54,6 +65,8 @@ export default function MarketplaceManager({ ads }: { ads: any[] }) {
             filterSidebarProps={{
                 filters: [], // Add real filters later
                 onChange: () => { },
+                selectedCity: activeCity,
+                onCityChange: handleCityChange
             }}
             sortDropdownProps={{
                 value: searchParams.get("sort") || "featured",
