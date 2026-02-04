@@ -261,12 +261,12 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                         return (
                             <div key={idx} className="relative z-10 flex flex-col items-center gap-3">
                                 <div className={cn(
-                                    "w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500 border-4",
+                                    "w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-500 border-[3px]",
                                     isCompleted ? "bg-blue-600 border-blue-50 text-white" :
                                         isActive ? "bg-white border-blue-600 text-blue-600 shadow-xl shadow-blue-100" :
                                             "bg-white border-zinc-100 text-zinc-300"
                                 )}>
-                                    {isCompleted ? <CheckCircle2 className="w-6 h-6" /> : <StepIcon className="w-5 h-5" />}
+                                    {isCompleted ? <CheckCircle2 className="w-5 h-5" /> : <StepIcon className="w-4 h-4" />}
                                 </div>
                                 <span className={cn(
                                     "text-[10px] font-black uppercase tracking-widest transition-colors duration-300",
@@ -285,8 +285,8 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                 {currentStep === 0 && (
                     <div className="animate-in slide-in-from-right-8 fade-in duration-500">
                         <div className="bg-white/80 backdrop-blur-2xl border border-white shadow-2xl shadow-zinc-200/50 rounded-[2.5rem] p-8 md:p-12 text-center">
-                            <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 mx-auto mb-6">
-                                <Tag className="w-8 h-8" />
+                            <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 mx-auto mb-6">
+                                <Tag className="w-6 h-6" />
                             </div>
                             <h2 className="text-3xl font-black text-zinc-900 mb-2 uppercase tracking-tight">Choisissez une catégorie</h2>
                             <p className="text-zinc-500 mb-10 font-medium">Sélectionnez le type d'article que vous souhaitez vendre</p>
@@ -308,7 +308,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                             )}
                                         >
                                             <div className={cn("p-4 rounded-2xl transition-all duration-300 group-hover:scale-110", cat.bg)}>
-                                                <Icon className={cn("h-8 w-8", cat.color)} />
+                                                <Icon className={cn("h-6 w-6", cat.color)} />
                                             </div>
                                             <span className={cn("text-xs font-black uppercase tracking-widest", isSelected ? "text-blue-700" : "text-zinc-500 group-hover:text-zinc-900")}>
                                                 {cat.label}
@@ -343,8 +343,8 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                     <div className="animate-in slide-in-from-right-8 fade-in duration-500">
                         <div className="bg-white/80 backdrop-blur-2xl border border-white shadow-2xl shadow-zinc-200/50 rounded-[2.5rem] p-8 md:p-12">
                             <div className="flex items-center gap-6 mb-10">
-                                <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 shrink-0">
-                                    <FileText className="w-7 h-7" />
+                                <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 shrink-0">
+                                    <FileText className="w-5 h-5" />
                                 </div>
                                 <div>
                                     <h2 className="text-3xl font-black text-zinc-900 uppercase tracking-tight">Détails de l'article</h2>
@@ -402,8 +402,8 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                         <div className="bg-white/80 backdrop-blur-2xl border border-white shadow-2xl shadow-zinc-200/50 rounded-[2.5rem] p-8 md:p-12">
                             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
                                 <div className="flex items-center gap-6">
-                                    <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 shrink-0">
-                                        <ImageIcon className="w-7 h-7" />
+                                    <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 shrink-0">
+                                        <ImageIcon className="w-5 h-5" />
                                     </div>
                                     <div>
                                         <h2 className="text-3xl font-black text-zinc-900 uppercase tracking-tight">Ajoutez des photos</h2>
@@ -422,8 +422,8 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                     className="group relative flex flex-col items-center justify-center w-full min-h-[300px] rounded-[2.5rem] border-4 border-dashed border-zinc-100 bg-white cursor-pointer hover:border-blue-200 hover:bg-blue-50/20 transition-all duration-500 overflow-hidden"
                                 >
                                     <div className="flex flex-col items-center justify-center p-12 text-center transition-transform group-hover:scale-105 duration-500">
-                                        <div className="w-20 h-20 rounded-3xl bg-blue-50 flex items-center justify-center mb-6 shadow-lg shadow-blue-100/50 group-hover:bg-blue-600 group-hover:text-white transition-all duration-500">
-                                            <Upload className="w-10 h-10" />
+                                        <div className="w-16 h-16 rounded-3xl bg-blue-50 flex items-center justify-center mb-6 shadow-lg shadow-blue-100/50 group-hover:bg-blue-600 group-hover:text-white transition-all duration-500">
+                                            <Upload className="w-8 h-8" />
                                         </div>
                                         <p className="text-xl font-black text-zinc-900 uppercase tracking-tight">Cliquez ou déposez vos images</p>
                                         <p className="text-sm text-zinc-400 mt-2 font-medium">Optimisation automatique des images HD</p>
@@ -486,8 +486,8 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                     <div className="animate-in slide-in-from-right-8 fade-in duration-500">
                         <div className="bg-white/80 backdrop-blur-2xl border border-white shadow-2xl shadow-zinc-200/50 rounded-[2.5rem] p-8 md:p-12">
                             <div className="flex items-center gap-6 mb-12 text-center md:text-left">
-                                <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 shrink-0 mx-auto md:mx-0">
-                                    <MapPin className="w-7 h-7" />
+                                <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 shrink-0 mx-auto md:mx-0">
+                                    <MapPin className="w-5 h-5" />
                                 </div>
                                 <div>
                                     <h2 className="text-3xl font-black text-zinc-900 uppercase tracking-tight">Prix & Localisation</h2>
@@ -516,7 +516,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                 <div className="space-y-4">
                                     <label className="text-[11px] font-black uppercase tracking-[0.2em] text-zinc-400 ml-1">Ville & Quartier</label>
                                     <div className="relative group">
-                                        <MapPin className="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-zinc-400 group-focus-within:text-blue-600 transition-colors" />
+                                        <MapPin className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-400 group-focus-within:text-blue-600 transition-colors" />
                                         <Input
                                             {...register('location')}
                                             placeholder="ex: Casablanca, Maarif"
