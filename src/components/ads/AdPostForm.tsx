@@ -6,9 +6,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import {
     Upload, X, Loader2, Smartphone, Car, Shirt,
-    Home, CheckCircle2, ChevronRight, ChevronLeft,
+    CheckCircle2, ChevronRight, ChevronLeft,
     Image as ImageIcon, MapPin, Tag, FileText,
-    Sparkles, Info, Star, Laptop, Package
+    Sparkles, Info, Star, Laptop, Package, Armchair, Hammer, Gamepad2, PawPrint, BookOpen
 } from 'lucide-react';
 import Image from 'next/image';
 
@@ -34,11 +34,15 @@ type AdFormValues = {
 };
 
 const CATEGORIES = [
-    { id: 'electronics', label: 'Électronique', icon: Laptop, color: 'text-blue-500', bg: 'bg-blue-50/50', border: 'border-blue-100' },
-    { id: 'vehicles', label: 'Véhicules', icon: Car, color: 'text-orange-500', bg: 'bg-orange-50/50', border: 'border-orange-100' },
-    { id: 'home', label: 'Maison', icon: Home, color: 'text-emerald-500', bg: 'bg-emerald-50/50', border: 'border-emerald-100' },
-    { id: 'fashion', label: 'Mode', icon: Shirt, color: 'text-pink-500', bg: 'bg-pink-50/50', border: 'border-pink-100' },
-    { id: 'luxury', label: 'Luxe', icon: Star, color: 'text-amber-500', bg: 'bg-amber-50/50', border: 'border-amber-100' },
+    { id: 'electronics', label: 'Électronique', icon: Smartphone, color: 'text-blue-500', bg: 'bg-blue-50/50', border: 'border-blue-100' },
+    { id: 'home-furniture', label: 'Maison & Ameublement', icon: Armchair, color: 'text-green-500', bg: 'bg-green-50/50', border: 'border-green-100' },
+    { id: 'vehicles', label: 'Véhicules & Transport', icon: Car, color: 'text-orange-500', bg: 'bg-orange-50/50', border: 'border-orange-100' },
+    { id: 'fashion', label: 'Mode & Chaussures', icon: Shirt, color: 'text-pink-500', bg: 'bg-pink-50/50', border: 'border-pink-100' },
+    { id: 'tools-equipment', label: 'Outils & Équipement', icon: Hammer, color: 'text-stone-500', bg: 'bg-stone-50/50', border: 'border-stone-100' },
+    { id: 'hobbies', label: 'Loisirs & Divertissement', icon: Gamepad2, color: 'text-purple-500', bg: 'bg-purple-50/50', border: 'border-purple-100' },
+    { id: 'animals', label: 'Animaux', icon: PawPrint, color: 'text-amber-500', bg: 'bg-amber-50/50', border: 'border-amber-100' },
+    { id: 'books', label: 'Livres & Études', icon: BookOpen, color: 'text-sky-500', bg: 'bg-sky-50/50', border: 'border-sky-100' },
+    { id: 'used-clearance', label: 'Occasions / Vide-grenier', icon: Tag, color: 'text-red-500', bg: 'bg-red-50/50', border: 'border-red-100' },
     { id: 'other', label: 'Autres', icon: Package, color: 'text-zinc-500', bg: 'bg-zinc-50/50', border: 'border-zinc-100' },
 ];
 

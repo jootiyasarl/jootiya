@@ -2,21 +2,19 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Smartphone, Home, Car, Shirt, Club, Baby, Package, Monitor, Watch, Camera, Headphones, Armchair } from "lucide-react";
+import { Smartphone, Car, Shirt, Package, Armchair, Hammer, Gamepad2, PawPrint, BookOpen, Tag } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const CATEGORIES = [
     { id: "electronics", label: "إلكترونيات", icon: Smartphone },
-    { id: "vehicles", label: "سيارات", icon: Car },
-    { id: "home", label: "منزل وأثاث", icon: Home },
-    { id: "fashion", label: "أزياء", icon: Shirt },
-    { id: "sports", label: "رياضة", icon: Club },
-    { id: "kids", label: "أطفال", icon: Baby },
-    { id: "computers", label: "كمبيوتر", icon: Monitor },
-    { id: "accessories", label: "اكسسوارات", icon: Watch },
-    { id: "cameras", label: "كاميرات", icon: Camera },
-    { id: "audio", label: "صوتيات", icon: Headphones },
-    { id: "decor", label: "ديكور", icon: Armchair },
+    { id: "home-furniture", label: "المنزل و الأثاث", icon: Armchair },
+    { id: "vehicles", label: "سيارات و نقل", icon: Car },
+    { id: "fashion", label: "ملابس و أحذية", icon: Shirt },
+    { id: "tools-equipment", label: "أدوات و معدات", icon: Hammer },
+    { id: "hobbies", label: "ترفيه و هوايات", icon: Gamepad2 },
+    { id: "animals", label: "حيوانات", icon: PawPrint },
+    { id: "books", label: "كتب و دراسة", icon: BookOpen },
+    { id: "used-clearance", label: "مستعمل / تصفية", icon: Tag },
     { id: "other", label: "أخرى", icon: Package },
 ];
 

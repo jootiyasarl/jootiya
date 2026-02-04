@@ -1,13 +1,16 @@
 import Link from "next/link";
-import { Smartphone, Home, Car, Shirt, Club, Baby, Package, ArrowRight } from "lucide-react";
+import { Smartphone, Car, Shirt, Package, ArrowRight, Armchair, Hammer, Gamepad2, PawPrint, BookOpen, Tag } from "lucide-react";
 
 const CATEGORIES = [
     { id: "electronics", label: "Électronique", icon: Smartphone, color: "bg-blue-100 text-blue-600", href: "/marketplace?category=electronics" },
-    { id: "vehicles", label: "Véhicules", icon: Car, color: "bg-orange-100 text-orange-600", href: "/marketplace?category=vehicles" },
-    { id: "home", label: "Maison", icon: Home, color: "bg-green-100 text-green-600", href: "/marketplace?category=home" },
-    { id: "fashion", label: "Mode", icon: Shirt, color: "bg-pink-100 text-pink-600", href: "/marketplace?category=fashion" },
-    { id: "sports", label: "Sports", icon: Club, color: "bg-purple-100 text-purple-600", href: "/marketplace?category=sports" },
-    { id: "kids", label: "Enfants", icon: Baby, color: "bg-yellow-100 text-yellow-600", href: "/marketplace?category=kids" },
+    { id: "home-furniture", label: "Maison & Ameublement", icon: Armchair, color: "bg-green-100 text-green-600", href: "/marketplace?category=home-furniture" },
+    { id: "vehicles", label: "Véhicules & Transport", icon: Car, color: "bg-orange-100 text-orange-600", href: "/marketplace?category=vehicles" },
+    { id: "fashion", label: "Mode & Chaussures", icon: Shirt, color: "bg-pink-100 text-pink-600", href: "/marketplace?category=fashion" },
+    { id: "tools-equipment", label: "Outils & Équipement", icon: Hammer, color: "bg-stone-100 text-stone-600", href: "/marketplace?category=tools-equipment" },
+    { id: "hobbies", label: "Loisirs & Divertissement", icon: Gamepad2, color: "bg-purple-100 text-purple-600", href: "/marketplace?category=hobbies" },
+    { id: "animals", label: "Animaux", icon: PawPrint, color: "bg-amber-100 text-amber-600", href: "/marketplace?category=animals" },
+    { id: "books", label: "Livres & Études", icon: BookOpen, color: "bg-sky-100 text-sky-600", href: "/marketplace?category=books" },
+    { id: "used-clearance", label: "Occasions / Vide-grenier", icon: Tag, color: "bg-red-100 text-red-600", href: "/marketplace?category=used-clearance" },
     { id: "other", label: "Autres", icon: Package, color: "bg-zinc-100 text-zinc-600", href: "/marketplace?category=other" },
 ];
 
@@ -22,7 +25,7 @@ export function CategoryGrid() {
                     </Link>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7">
+                <div className="grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5">
                     {CATEGORIES.map((category) => (
                         <Link
                             key={category.id}
@@ -32,7 +35,7 @@ export function CategoryGrid() {
                             <div className={`mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full ${category.color} transition-transform group-hover:scale-110`}>
                                 <category.icon className="h-6 w-6" />
                             </div>
-                            <span className="text-sm font-medium text-zinc-900 group-hover:text-blue-600">
+                            <span className="text-sm font-medium text-zinc-900 group-hover:text-blue-600 text-center">
                                 {category.label}
                             </span>
                         </Link>
