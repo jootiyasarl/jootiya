@@ -254,7 +254,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
     }
 
     return (
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-2xl mx-auto">
             {/* Progress Bar */}
             <div className="mb-12 px-4">
                 <div className="flex justify-between items-center relative">
@@ -313,14 +313,14 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                             type="button"
                                             onClick={() => setValue('category', cat.id, { shouldValidate: true })}
                                             className={cn(
-                                                "relative flex flex-col items-center justify-center gap-4 p-6 rounded-3xl border-2 transition-all duration-300 group hover:scale-[1.03]",
+                                                "relative flex flex-col items-center justify-center gap-3 p-4 rounded-2xl border-2 transition-all duration-300 group hover:scale-[1.03]",
                                                 isSelected
                                                     ? "border-blue-600 bg-blue-50/50 shadow-xl shadow-blue-100/50"
                                                     : "border-zinc-50 bg-zinc-50/50 hover:bg-white hover:border-blue-100 hover:shadow-xl hover:shadow-zinc-100"
                                             )}
                                         >
-                                            <div className={cn("p-4 rounded-2xl transition-all duration-300 group-hover:scale-110", cat.bg)}>
-                                                <Icon className={cn("h-6 w-6", cat.color)} />
+                                            <div className={cn("p-3 rounded-xl transition-all duration-300 group-hover:scale-110", cat.bg)}>
+                                                <Icon className={cn("h-5 w-5", cat.color)} />
                                             </div>
                                             <span className={cn("text-xs font-black uppercase tracking-widest", isSelected ? "text-blue-700" : "text-zinc-500 group-hover:text-zinc-900")}>
                                                 {cat.label}
@@ -340,7 +340,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                 <Button
                                     type="button"
                                     onClick={handleNext}
-                                    className="h-14 px-12 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-lg shadow-xl shadow-blue-200 active:scale-95 transition-all flex items-center gap-3"
+                                    className="h-11 px-8 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-sm shadow-xl shadow-blue-200 active:scale-95 transition-all flex items-center gap-3"
                                 >
                                     Suivant
                                     <ChevronRight className="w-5 h-5" />
@@ -353,13 +353,13 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                 {/* Step 2: Details */}
                 {currentStep === 1 && (
                     <div className="animate-in slide-in-from-right-8 fade-in duration-500">
-                        <div className="bg-white/80 backdrop-blur-2xl border border-white shadow-2xl shadow-zinc-200/50 rounded-[2.5rem] p-8 md:p-12">
+                        <div className="bg-white/80 backdrop-blur-2xl border border-white shadow-xl shadow-zinc-200/50 rounded-3xl p-6 md:p-8">
                             <div className="flex items-center gap-6 mb-10">
                                 <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 shrink-0">
                                     <FileText className="w-5 h-5" />
                                 </div>
                                 <div>
-                                    <h2 className="text-3xl font-black text-zinc-900 uppercase tracking-tight">Détails de l'article</h2>
+                                    <h2 className="text-xl font-black text-zinc-900 uppercase tracking-tight">Détails de l'article</h2>
                                     <p className="text-zinc-500 font-medium">Décrivez votre produit pour attirer plus d'acheteurs</p>
                                 </div>
                             </div>
@@ -370,7 +370,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                     <Input
                                         {...register('title')}
                                         placeholder="ex: iPhone 15 Pro Max - Comme neuf"
-                                        className="h-14 md:h-16 px-6 text-lg rounded-2xl border-zinc-100 bg-white focus:ring-4 focus:ring-blue-50 focus:border-blue-600 transition-all"
+                                        className="h-12 px-6 text-base rounded-xl border-zinc-100 bg-white focus:ring-4 focus:ring-blue-50 focus:border-blue-600 transition-all"
                                     />
                                     {errors.title && <p className="text-red-500 text-xs font-bold uppercase tracking-widest ml-1">{errors.title.message}</p>}
                                 </div>
@@ -391,14 +391,14 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                             </div>
 
                             <div className="mt-12 flex items-center justify-between">
-                                <Button type="button" variant="ghost" onClick={handleBack} className="h-14 px-8 rounded-2xl font-black text-zinc-400 hover:text-zinc-900 transition-all flex items-center gap-2">
+                                <Button type="button" variant="ghost" onClick={handleBack} className="h-11 px-6 rounded-xl font-black text-zinc-400 hover:text-zinc-900 transition-all flex items-center gap-2">
                                     <ChevronLeft className="w-5 h-5" />
                                     Retour
                                 </Button>
                                 <Button
                                     type="button"
                                     onClick={handleNext}
-                                    className="h-14 px-12 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-lg shadow-xl shadow-blue-200 active:scale-95 transition-all flex items-center gap-3"
+                                    className="h-11 px-8 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-sm shadow-xl shadow-blue-200 active:scale-95 transition-all flex items-center gap-3"
                                 >
                                     Suivant
                                     <ChevronRight className="w-5 h-5" />
@@ -411,14 +411,14 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                 {/* Step 3: Media */}
                 {currentStep === 2 && (
                     <div className="animate-in slide-in-from-right-8 fade-in duration-500">
-                        <div className="bg-white/80 backdrop-blur-2xl border border-white shadow-2xl shadow-zinc-200/50 rounded-[2.5rem] p-8 md:p-12">
+                        <div className="bg-white/80 backdrop-blur-2xl border border-white shadow-xl shadow-zinc-200/50 rounded-3xl p-6 md:p-8">
                             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
                                 <div className="flex items-center gap-6">
                                     <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 shrink-0">
                                         <ImageIcon className="w-5 h-5" />
                                     </div>
                                     <div>
-                                        <h2 className="text-3xl font-black text-zinc-900 uppercase tracking-tight">Ajoutez des photos</h2>
+                                        <h2 className="text-xl font-black text-zinc-900 uppercase tracking-tight">Ajoutez des photos</h2>
                                         <p className="text-zinc-500 font-medium">Glissez vos plus belles photos ici (max 10)</p>
                                     </div>
                                 </div>
@@ -476,14 +476,14 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                             </div>
 
                             <div className="mt-12 flex items-center justify-between">
-                                <Button type="button" variant="ghost" onClick={handleBack} className="h-14 px-8 rounded-2xl font-black text-zinc-400 hover:text-zinc-900 transition-all flex items-center gap-2">
+                                <Button type="button" variant="ghost" onClick={handleBack} className="h-11 px-6 rounded-xl font-black text-zinc-400 hover:text-zinc-900 transition-all flex items-center gap-2">
                                     <ChevronLeft className="w-5 h-5" />
                                     Retour
                                 </Button>
                                 <Button
                                     type="button"
                                     onClick={handleNext}
-                                    className="h-14 px-12 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-lg shadow-xl shadow-blue-200 active:scale-95 transition-all flex items-center gap-3"
+                                    className="h-11 px-8 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-sm shadow-xl shadow-blue-200 active:scale-95 transition-all flex items-center gap-3"
                                 >
                                     Suivant
                                     <ChevronRight className="w-5 h-5" />
@@ -496,13 +496,13 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                 {/* Step 4: Final */}
                 {currentStep === 3 && (
                     <div className="animate-in slide-in-from-right-8 fade-in duration-500">
-                        <div className="bg-white/80 backdrop-blur-2xl border border-white shadow-2xl shadow-zinc-200/50 rounded-[2.5rem] p-8 md:p-12">
+                        <div className="bg-white/80 backdrop-blur-2xl border border-white shadow-xl shadow-zinc-200/50 rounded-3xl p-6 md:p-8">
                             <div className="flex items-center gap-6 mb-12 text-center md:text-left">
                                 <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 shrink-0 mx-auto md:mx-0">
                                     <MapPin className="w-5 h-5" />
                                 </div>
                                 <div>
-                                    <h2 className="text-3xl font-black text-zinc-900 uppercase tracking-tight">Prix & Localisation</h2>
+                                    <h2 className="text-xl font-black text-zinc-900 uppercase tracking-tight">Prix & Localisation</h2>
                                     <p className="text-zinc-500 font-medium">Dernière étape avant de publier</p>
                                 </div>
                             </div>
@@ -516,7 +516,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                         <Input
                                             type="number"
                                             {...register('price')}
-                                            className="h-16 md:h-20 pl-20 pr-8 text-2xl font-black rounded-3xl border-zinc-100 bg-zinc-50/50 focus:bg-white focus:ring-4 focus:ring-blue-50 focus:border-blue-600 transition-all shadow-sm"
+                                            className="h-12 md:h-14 pl-20 pr-8 text-xl font-black rounded-xl border-zinc-100 bg-zinc-50/50 focus:bg-white focus:ring-4 focus:ring-blue-50 focus:border-blue-600 transition-all shadow-sm"
                                             placeholder="0.00"
                                         />
                                     </div>
@@ -531,7 +531,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                             <MapPin className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-300 group-focus-within:text-blue-600 transition-colors pointer-events-none" />
                                             <select
                                                 {...register('city')}
-                                                className="h-16 w-full pl-16 pr-12 text-lg font-bold rounded-3xl border-zinc-100 bg-zinc-50/50 focus:bg-white focus:ring-4 focus:ring-blue-50 focus:border-blue-600 transition-all appearance-none cursor-pointer shadow-sm"
+                                                className="h-12 w-full pl-16 pr-12 text-base font-bold rounded-xl border-zinc-100 bg-zinc-50/50 focus:bg-white focus:ring-4 focus:ring-blue-50 focus:border-blue-600 transition-all appearance-none cursor-pointer shadow-sm"
                                             >
                                                 <option value="">Sélectionnez votre ville</option>
                                                 {MOROCCAN_CITIES.map((region) => (
@@ -557,7 +557,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                             <Input
                                                 {...register('neighborhood')}
                                                 placeholder="ex: Maarif, Agdal, Guéliz..."
-                                                className="h-16 px-6 text-lg font-bold rounded-3xl border-zinc-100 bg-zinc-50/50 focus:bg-white focus:ring-4 focus:ring-blue-50 focus:border-blue-600 transition-all shadow-sm"
+                                                className="h-12 px-6 text-base font-bold rounded-xl border-zinc-100 bg-zinc-50/50 focus:bg-white focus:ring-4 focus:ring-blue-50 focus:border-blue-600 transition-all shadow-sm"
                                             />
                                         </div>
                                     </div>
@@ -590,14 +590,14 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                 </div>
 
                                 <div className="mt-12 flex items-center justify-between">
-                                    <Button type="button" variant="ghost" onClick={handleBack} className="h-14 px-8 rounded-2xl font-black text-zinc-400 hover:text-zinc-900 transition-all flex items-center gap-2">
+                                    <Button type="button" variant="ghost" onClick={handleBack} className="h-11 px-6 rounded-xl font-black text-zinc-400 hover:text-zinc-900 transition-all flex items-center gap-2">
                                         <ChevronLeft className="w-5 h-5" />
                                         Retour
                                     </Button>
                                     <Button
                                         type="submit"
                                         disabled={isSubmitting}
-                                        className="h-16 px-16 rounded-[1.8rem] bg-blue-600 hover:bg-blue-700 text-white font-black text-xl shadow-2xl shadow-blue-200 active:scale-95 transition-all flex items-center gap-4"
+                                        className="h-12 px-12 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-base shadow-2xl shadow-blue-200 active:scale-95 transition-all flex items-center gap-4"
                                     >
                                         {isSubmitting ? (
                                             <>
