@@ -5,6 +5,7 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { MOROCCAN_CITIES } from "@/lib/constants/cities";
+import { useRouter } from "next/navigation";
 
 const CATEGORIES = [
     { id: "all", label: "Toutes les catégories" },
@@ -23,6 +24,7 @@ const CATEGORIES = [
 const ALL_CITIES = MOROCCAN_CITIES.flatMap(region => region.cities).sort();
 
 export function UnifiedSearchBar() {
+    const router = useRouter();
     const [query, setQuery] = useState("");
     const [category, setCategory] = useState(CATEGORIES[0]);
     const [location, setLocation] = useState("Choisir ville - secteur");
@@ -32,6 +34,23 @@ export function UnifiedSearchBar() {
 
     const categoryRef = useRef<HTMLDivElement>(null);
     const locationRef = useRef<HTMLDivElement>(null);
+
+    const handleSearch = () => {
+        const params = new URLSearchParams();
+        if (query) params.set("q", query);
+        if (category.id !== "all") params.set("category", category.id);
+        if (location !== "Choisir ville - secteur" && location !== "Toutes les villes") {
+            params.set("city", location);
+        }
+
+        router.push(`/marketplace?${params.toString()}`);
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === "Enter") {
+            handleSearch();
+        }
+    };
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
@@ -57,6 +76,7 @@ export function UnifiedSearchBar() {
                         type="text"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
+                        onKeyDown={handleKeyDown}
                         placeholder="Que recherchez-vous ?"
                         className="w-full bg-transparent outline-none text-[15px] font-medium placeholder:text-zinc-400"
                     />
@@ -151,7 +171,10 @@ export function UnifiedSearchBar() {
                 </div>
 
                 {/* Search Button */}
-                <Button className="h-full rounded-full bg-blue-600 hover:bg-blue-700 text-white font-black px-10 shadow-lg shadow-blue-200/50 flex items-center gap-2 text-base transition-all hover:scale-[1.02] active:scale-[0.98] shrink-0">
+                <Button
+                    onClick={handleSearch}
+                    className="h-full rounded-full bg-blue-600 hover:bg-blue-700 text-white font-black px-10 shadow-lg shadow-blue-200/50 flex items-center gap-2 text-base transition-all hover:scale-[1.02] active:scale-[0.98] shrink-0"
+                >
                     <Search className="w-5 h-5" />
                     Rechercher
                 </Button>
@@ -166,6 +189,7 @@ export function UnifiedSearchBar() {
                         type="text"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
+                        onKeyDown={handleKeyDown}
                         placeholder="Que recherchez-vous ?"
                         className="flex-1 bg-transparent outline-none text-[15px] font-medium placeholder:text-zinc-400"
                     />
@@ -173,7 +197,7 @@ export function UnifiedSearchBar() {
 
                 {/* Selects Grid */}
                 <div className="grid grid-cols-2 gap-2">
-                    {/* Category Dropdown Mobile (Simulated for now, keeping it simple as per screenshot layout) */}
+                    {/* Category Dropdown Mobile */}
                     <div className="relative" ref={categoryRef}>
                         <button
                             onClick={() => setIsCategoryOpen(!isCategoryOpen)}
@@ -235,7 +259,10 @@ export function UnifiedSearchBar() {
                 </div>
 
                 {/* Mobile Search Button */}
-                <Button className="w-full h-14 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black shadow-lg shadow-blue-100 flex items-center justify-center gap-2 text-base active:scale-[0.98] transition-all">
+                <Button
+                    onClick={handleSearch}
+                    className="w-full h-14 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black shadow-lg shadow-blue-100 flex items-center justify-center gap-2 text-base active:scale-[0.98] transition-all"
+                >
                     <Search className="w-6 h-6" />
                     Rechercher
                 </Button>
