@@ -3,6 +3,7 @@
 import { Search, MapPin, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { UnifiedSearchBar } from "@/components/search/UnifiedSearchBar";
 
 export function HeroSection() {
     return (
@@ -24,21 +25,9 @@ export function HeroSection() {
                         Le meilleur marché en ligne pour acheter et vendre au Maroc. Électronique, immobilier, voitures, et plus encore. Vendez et achetez en toute sécurité et simplicité.
                     </p>
 
-                    {/* Search Bar */}
-                    <div className="mt-10 flex flex-col gap-2 sm:flex-row sm:justify-center">
-                        <div className="relative w-full max-w-lg">
-                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-zinc-400">
-                                <Search className="h-5 w-5" />
-                            </div>
-                            <input
-                                type="text"
-                                placeholder="Rechercher un téléphone, une voiture, un appartement..."
-                                className="block w-full rounded-full border-0 bg-white/10 py-4 pl-10 pr-4 text-white placeholder:text-zinc-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6 backdrop-blur-md"
-                            />
-                        </div>
-                        <Button size="lg" className="rounded-full bg-blue-600 hover:bg-blue-500 text-white px-8 py-6 text-base shadow-lg shadow-blue-500/25 transition-all hover:scale-105">
-                            Rechercher maintenant
-                        </Button>
+                    {/* Unified Search Bar */}
+                    <div className="mt-10">
+                        <UnifiedSearchBar />
                     </div>
 
                     <div className="mt-8 flex items-center justify-center gap-x-6 text-sm">

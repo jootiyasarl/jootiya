@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
+import { UnifiedSearchBar } from "@/components/search/UnifiedSearchBar";
 
 function PublicNavbar() {
   const router = useRouter();
@@ -117,17 +118,9 @@ function PublicNavbar() {
             </Link>
           </div>
 
-          {/* Center: Search Bar (Leboncoin style) */}
-          <div className="hidden md:flex flex-1 max-w-xl relative group">
-            <input
-              type="text"
-              placeholder="Rechercher sur Jootiya..."
-              className="w-full bg-zinc-100 border-2 border-transparent focus:border-blue-100 focus:bg-white focus:ring-4 focus:ring-blue-50/50 rounded-xl py-3 pr-14 pl-5 text-[15px] transition-all outline-none placeholder:text-zinc-500"
-            />
-            <button className="absolute inset-y-1.5 right-1.5 px-3 bg-blue-600 rounded-lg text-white hover:bg-blue-700 transition-colors shadow-sm">
-              <Search className="h-5 w-5" />
-            </button>
-          </div>
+          {/* Center: Search Bar - Removed in favor of UnifiedSearchBar below */}
+          <div className="hidden md:flex flex-1 max-w-xl" />
+
 
           {/* Right: User Actions / Info */}
           <div className="flex items-center gap-1 sm:gap-2">
@@ -184,26 +177,12 @@ function PublicNavbar() {
           </div>
         </div>
 
-        {/* Categories Row (Desktop Only) */}
-        <div className="hidden lg:flex overflow-x-auto no-scrollbar py-2 border-t border-zinc-100 lg:border-none scroll-smooth">
-          <nav className="flex items-center gap-8 whitespace-nowrap min-w-full">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                className="text-[13px] font-bold text-zinc-600 hover:text-blue-600 transition-all border-b-2 border-transparent hover:border-blue-600 py-1.5 flex items-center gap-1.5 group"
-              >
-                <link.icon className="w-4 h-4 text-zinc-400 group-hover:text-blue-600 transition-colors" />
-                {link.name}
-              </Link>
-            ))}
-            <div className="h-4 w-px bg-zinc-200 mx-2 hidden lg:block" />
-            <Link href="/marketplace" className="text-[13px] font-black text-zinc-900 hover:text-blue-600 py-1.5 flex items-center gap-1.5 group">
-              <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-              Bons plans
-            </Link>
-          </nav>
+        {/* Unified Search Bar Row */}
+        <div className="pb-5 pt-1 lg:pt-0">
+          <UnifiedSearchBar />
         </div>
+
+
       </div>
 
       {/* Mobile Drawer Overlay */}
