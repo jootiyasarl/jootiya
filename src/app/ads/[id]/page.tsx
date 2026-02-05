@@ -4,6 +4,7 @@ import { createSupabaseServerClient, getServerUser } from "@/lib/supabase";
 import { Button } from "@/components/ui/button";
 import { AdImageGallery } from "@/components/ads/AdImageGallery";
 import { ContactActions } from "@/components/ads/ContactActions";
+import { MobileAdActions } from "@/components/ads/MobileAdActions";
 import {
   MapPin,
   Calendar,
@@ -266,19 +267,12 @@ export default async function AdPage({ params }: AdPageProps) {
       </main>
 
       {/* Mobile Sticky Bar */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-t border-zinc-100 p-4 pb-safe-bottom shadow-[0_-10px_20px_rgba(0,0,0,0.05)]">
-        <div className="mx-auto max-w-7xl flex gap-3">
-          <Button className="flex-1 h-14 rounded-2xl bg-zinc-900 text-white font-bold shadow-lg shadow-zinc-900/10">
-            Appeler maintenant
-          </Button>
-          <Button variant="outline" size="icon" className="h-14 w-14 rounded-2xl border-zinc-200">
-            <MessageCircle className="h-6 w-6 text-zinc-700" />
-          </Button>
-          <Button variant="outline" size="icon" className="h-14 w-14 rounded-2xl border-zinc-200">
-            <Heart className="h-6 w-6 text-zinc-700" />
-          </Button>
-        </div>
-      </div>
+      <MobileAdActions
+        adId={ad.id}
+        sellerId={ad.seller_id}
+        sellerPhone={ad.phone} // Assuming phone might be available in ad/profile, checking ad query
+        currentUser={user}
+      />
 
     </div>
   );
