@@ -92,6 +92,8 @@ export default async function Home() {
         </h1>
       </div>
 
+      <CategoryGrid />
+
       <main className="mx-auto max-w-7xl px-4 space-y-16">
 
         {fetchError ? (

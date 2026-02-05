@@ -3,10 +3,11 @@
 import type { MarketplaceFilterSidebarProps } from "@/types/components/marketplace";
 import { MOROCCAN_CITIES } from "@/lib/constants/cities";
 import { MapPin } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-export function MarketplaceFilterSidebar({ filters, onChange, selectedCity, onCityChange }: MarketplaceFilterSidebarProps) {
+export function MarketplaceFilterSidebar({ filters, onChange, selectedCity, onCityChange, className }: MarketplaceFilterSidebarProps & { className?: string }) {
   return (
-    <aside className="hidden w-64 shrink-0 space-y-6 rounded-2xl border bg-white p-4 text-sm shadow-sm lg:block">
+    <aside className={cn("hidden w-64 shrink-0 space-y-6 rounded-2xl border bg-white p-4 text-sm shadow-sm lg:block", className)}>
       {/* City Filter */}
       <div className="space-y-3 pb-6 border-b border-zinc-100">
         <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wide text-zinc-500">
