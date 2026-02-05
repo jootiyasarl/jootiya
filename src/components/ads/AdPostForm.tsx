@@ -614,8 +614,9 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                 </div>
                             </div>
                         </div>
+                    </div>
                 )}
-                    </form>
+            </form>
         </div>
     );
 }
