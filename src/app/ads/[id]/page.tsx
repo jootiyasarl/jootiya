@@ -270,7 +270,7 @@ export default async function AdPage({ params }: AdPageProps) {
       <MobileAdActions
         adId={ad.id}
         sellerId={ad.seller_id}
-        sellerPhone={ad.phone} // Assuming phone might be available in ad/profile, checking ad query
+        sellerPhone={undefined} // Phone not yet in schema
         currentUser={user}
       />
 
