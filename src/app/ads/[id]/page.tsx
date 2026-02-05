@@ -39,7 +39,7 @@ export default async function AdPage({ params }: AdPageProps) {
   let query = supabase
     .from("ads")
     .select(
-      "id, title, description, price, currency, city, neighborhood, created_at, image_urls, category, status, views_count, seller_id, slug"
+      "id, title, description, price, currency, city, neighborhood, created_at, image_urls, category, status, views_count, seller_id, slug, profiles(phone)"
     );
 
   if (isUuid) {
@@ -48,7 +48,8 @@ export default async function AdPage({ params }: AdPageProps) {
     query = query.eq("slug", identifier);
   }
 
-  const { data: ad, error } = await query.single();
+  const { data: adData, error } = await query.single();
+  const ad = adData as any; // Cast to any to handle joined profile fields dynamically
 
   if (error || !ad) {
     if (error?.code !== "PGRST116") {
@@ -220,6 +221,7 @@ export default async function AdPage({ params }: AdPageProps) {
                     adId={ad.id}
                     sellerId={ad.seller_id}
                     currentUser={user}
+                    sellerPhone={Array.isArray(ad.profiles) ? ad.profiles[0]?.phone : ad.profiles?.phone}
                   />
                 </div>
               </div>
@@ -270,7 +272,7 @@ export default async function AdPage({ params }: AdPageProps) {
       <MobileAdActions
         adId={ad.id}
         sellerId={ad.seller_id}
-        sellerPhone={undefined} // Phone not yet in schema
+        sellerPhone={Array.isArray(ad.profiles) ? ad.profiles[0]?.phone : ad.profiles?.phone}
         currentUser={user}
       />
 
