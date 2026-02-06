@@ -26,7 +26,7 @@ const adSchema = z.object({
     city: z.string().min(1, "La ville est requise"),
     neighborhood: z.string().optional(),
     phone: z.string().min(10, "Le numéro de téléphone est requis (min 10 chiffres)"),
-    condition: z.enum(['new', 'used'], { errorMap: () => ({ message: "L'état du produit est requis" }) }),
+    condition: z.enum(['new', 'used'], { message: "L'état du produit est requis" }),
 });
 
 type AdFormValues = {
