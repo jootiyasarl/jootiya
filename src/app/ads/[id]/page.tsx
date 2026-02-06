@@ -116,7 +116,7 @@ export default async function AdPage({ params }: AdPageProps) {
             <div className="lg:hidden space-y-4">
               <div className="flex flex-col gap-2">
                 <h1 className="text-2xl font-bold leading-tight sm:text-3xl">{ad.title}</h1>
-                <div className="text-3xl font-extrabold text-blue-600">{formattedPrice}</div>
+                <div className="text-3xl font-extrabold text-orange-500">{formattedPrice}</div>
               </div>
               <div className="flex flex-wrap gap-4 text-sm text-zinc-500">
                 <div className="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-full border border-zinc-200 shadow-sm">
@@ -227,7 +227,7 @@ export default async function AdPage({ params }: AdPageProps) {
                 </div>
 
                 <div className="space-y-6">
-                  <div className="text-3xl font-black text-blue-600">{formattedPrice}</div>
+                  <div className="text-3xl font-black text-orange-500">{formattedPrice}</div>
 
                   <ContactActions
                     adId={ad.id}
@@ -255,7 +255,7 @@ export default async function AdPage({ params }: AdPageProps) {
                 </div>
 
                 <div className="mt-6 pt-6 border-t border-zinc-50">
-                  <Link href={`/marketplace?seller_id=${ad.seller_id}`} className="text-sm font-bold text-blue-600 hover:text-blue-700 transition-colors flex items-center gap-1">
+                  <Link href={`/marketplace?seller_id=${ad.seller_id}`} className="text-sm font-bold text-orange-500 hover:text-orange-600 transition-colors flex items-center gap-1">
                     Voir toutes les annonces de ce vendeur
                     <ChevronRight className="h-4 w-4" />
                   </Link>

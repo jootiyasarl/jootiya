@@ -92,7 +92,7 @@ export function UnifiedSearchBar() {
                         className="flex items-center justify-between w-full h-full px-6 gap-3 text-zinc-700 hover:text-blue-600 transition-colors"
                     >
                         <div className="flex items-center gap-2 overflow-hidden">
-                            <LayoutGrid className="w-5 h-5 text-blue-500 shrink-0" />
+                            <LayoutGrid className="w-5 h-5 text-orange-500 shrink-0" />
                             <span className="text-[14px] font-bold truncate">{category.label}</span>
                         </div>
                         <ChevronDown className={cn("w-4 h-4 text-zinc-400 transition-transform duration-300", isCategoryOpen && "rotate-180")} />
@@ -108,8 +108,8 @@ export function UnifiedSearchBar() {
                                         setIsCategoryOpen(false);
                                     }}
                                     className={cn(
-                                        "w-full text-left px-4 py-2.5 text-[14px] font-medium transition-colors hover:bg-blue-50 hover:text-blue-600",
-                                        category.id === cat.id ? "text-blue-600 bg-blue-50/50" : "text-zinc-600"
+                                        "w-full text-left px-4 py-2.5 text-[14px] font-medium transition-colors hover:bg-orange-50 hover:text-orange-600",
+                                        category.id === cat.id ? "text-orange-600 bg-orange-50/50" : "text-zinc-600"
                                     )}
                                 >
                                     {cat.label}
@@ -147,7 +147,7 @@ export function UnifiedSearchBar() {
                                     setLocation("Toutes les villes");
                                     setIsLocationOpen(false);
                                 }}
-                                className="w-full text-left px-4 py-2.5 text-[14px] font-bold text-blue-600 hover:bg-blue-50"
+                                className="w-full text-left px-4 py-2.5 text-[14px] font-bold text-orange-600 hover:bg-orange-50"
                             >
                                 Toutes les villes
                             </button>
@@ -159,8 +159,8 @@ export function UnifiedSearchBar() {
                                         setIsLocationOpen(false);
                                     }}
                                     className={cn(
-                                        "w-full text-left px-4 py-2.5 text-[14px] font-medium transition-colors hover:bg-blue-50 hover:text-blue-600",
-                                        location === city ? "text-blue-600 bg-blue-50/50" : "text-zinc-600"
+                                        "w-full text-left px-4 py-2.5 text-[14px] font-medium transition-colors hover:bg-orange-50 hover:text-orange-600",
+                                        location === city ? "text-orange-600 bg-orange-50/50" : "text-zinc-600"
                                     )}
                                 >
                                     {city}
@@ -173,7 +173,7 @@ export function UnifiedSearchBar() {
                 {/* Search Button */}
                 <Button
                     onClick={handleSearch}
-                    className="h-full rounded-full bg-blue-600 hover:bg-blue-700 text-white font-black px-10 shadow-lg shadow-blue-200/50 flex items-center gap-2 text-base transition-all hover:scale-[1.02] active:scale-[0.98] shrink-0"
+                    className="h-full rounded-full bg-orange-500 hover:bg-orange-600 text-white font-black px-10 shadow-lg shadow-orange-200/50 flex items-center gap-2 text-base transition-all hover:scale-[1.02] active:scale-[0.98] shrink-0"
                 >
                     <Search className="w-5 h-5" />
                     Rechercher
@@ -204,7 +204,7 @@ export function UnifiedSearchBar() {
                             className="flex items-center justify-between w-full bg-white border border-zinc-200 rounded-xl px-3 h-12 text-zinc-700"
                         >
                             <div className="flex items-center gap-2 min-w-0">
-                                <LayoutGrid className="w-4 h-4 text-blue-500 shrink-0" />
+                                <LayoutGrid className="w-4 h-4 text-orange-500 shrink-0" />
                                 <span className="text-[13px] font-bold truncate">{category.label}</span>
                             </div>
                             <ChevronDown className={cn("w-4 h-4 text-zinc-400 shrink-0 transition-transform", isCategoryOpen && "rotate-180")} />
@@ -261,7 +261,7 @@ export function UnifiedSearchBar() {
                 {/* Mobile Search Button */}
                 <Button
                     onClick={handleSearch}
-                    className="w-full h-14 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black shadow-lg shadow-blue-100 flex items-center justify-center gap-2 text-base active:scale-[0.98] transition-all"
+                    className="w-full h-14 rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-black shadow-lg shadow-orange-100 flex items-center justify-center gap-2 text-base active:scale-[0.98] transition-all"
                 >
                     <Search className="w-6 h-6" />
                     Rechercher

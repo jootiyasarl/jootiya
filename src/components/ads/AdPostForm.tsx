@@ -264,7 +264,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                     {/* Line behind steps */}
                     <div className="absolute top-1/2 left-0 w-full h-0.5 bg-zinc-100 -translate-y-1/2 z-0" />
                     <div
-                        className="absolute top-1/2 left-0 h-0.5 bg-blue-600 -translate-y-1/2 z-0 transition-all duration-500 ease-in-out"
+                        className="absolute top-1/2 left-0 h-0.5 bg-orange-500 -translate-y-1/2 z-0 transition-all duration-500 ease-in-out"
                         style={{ width: `${(currentStep / (STEPS.length - 1)) * 100}%` }}
                     />
 
@@ -277,15 +277,15 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                             <div key={idx} className="relative z-10 flex flex-col items-center gap-3">
                                 <div className={cn(
                                     "w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-500 border-[3px]",
-                                    isCompleted ? "bg-blue-600 border-blue-50 text-white" :
-                                        isActive ? "bg-white border-blue-600 text-blue-600 shadow-xl shadow-blue-100" :
+                                    isCompleted ? "bg-orange-500 border-orange-50 text-white" :
+                                        isActive ? "bg-white border-orange-500 text-orange-500 shadow-xl shadow-orange-100" :
                                             "bg-white border-zinc-100 text-zinc-300"
                                 )}>
                                     {isCompleted ? <CheckCircle2 className="w-5 h-5" /> : <StepIcon className="w-4 h-4" />}
                                 </div>
                                 <span className={cn(
                                     "text-[10px] font-black uppercase tracking-widest transition-colors duration-300",
-                                    isActive ? "text-blue-600" : "text-zinc-400"
+                                    isActive ? "text-orange-500" : "text-zinc-400"
                                 )}>
                                     {step.label}
                                 </span>
@@ -318,18 +318,18 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                             className={cn(
                                                 "relative flex flex-col items-center justify-center gap-3 p-4 rounded-2xl border-2 transition-all duration-300 group hover:scale-[1.03]",
                                                 isSelected
-                                                    ? "border-blue-600 bg-blue-50/50 shadow-xl shadow-blue-100/50"
-                                                    : "border-zinc-50 bg-zinc-50/50 hover:bg-white hover:border-blue-100 hover:shadow-xl hover:shadow-zinc-100"
+                                                    ? "border-orange-500 bg-orange-50/50 shadow-xl shadow-orange-100/50"
+                                                    : "border-zinc-50 bg-zinc-50/50 hover:bg-white hover:border-orange-100 hover:shadow-xl hover:shadow-zinc-100"
                                             )}
                                         >
                                             <div className={cn("p-3 rounded-xl transition-all duration-300 group-hover:scale-110", cat.bg)}>
                                                 <Icon className={cn("h-5 w-5", cat.color)} />
                                             </div>
-                                            <span className={cn("text-xs font-black uppercase tracking-widest", isSelected ? "text-blue-700" : "text-zinc-500 group-hover:text-zinc-900")}>
+                                            <span className={cn("text-xs font-black uppercase tracking-widest", isSelected ? "text-orange-700" : "text-zinc-500 group-hover:text-zinc-900")}>
                                                 {cat.label}
                                             </span>
                                             {isSelected && (
-                                                <div className="absolute top-4 right-4 text-blue-600">
+                                                <div className="absolute top-4 right-4 text-orange-500">
                                                     <CheckCircle2 className="h-5 w-5" />
                                                 </div>
                                             )}
@@ -343,7 +343,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                 <Button
                                     type="button"
                                     onClick={handleNext}
-                                    className="h-11 px-8 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-sm shadow-xl shadow-blue-200 active:scale-95 transition-all flex items-center gap-3"
+                                    className="h-11 px-8 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-black text-sm shadow-xl shadow-orange-200 active:scale-95 transition-all flex items-center gap-3"
                                 >
                                     Suivant
                                     <ChevronRight className="w-5 h-5" />
@@ -373,7 +373,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                     <Input
                                         {...register('title')}
                                         placeholder="ex: iPhone 15 Pro Max - Comme neuf"
-                                        className="h-12 px-6 text-base rounded-xl border-zinc-100 bg-white focus:ring-4 focus:ring-blue-50 focus:border-blue-600 transition-all"
+                                        className="h-12 px-6 text-base rounded-xl border-zinc-100 bg-white focus:ring-4 focus:ring-orange-50 focus:border-orange-500 transition-all"
                                     />
                                     {errors.title && <p className="text-red-500 text-xs font-bold uppercase tracking-widest ml-1">{errors.title.message}</p>}
                                 </div>
@@ -409,7 +409,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                     <label className="text-[11px] font-black uppercase tracking-[0.2em] text-zinc-400 ml-1">Description détaillée</label>
                                     <textarea
                                         {...register('description')}
-                                        className="w-full min-h-[220px] p-6 text-lg rounded-[2rem] border border-zinc-100 bg-white focus:ring-4 focus:ring-blue-50 focus:border-blue-600 outline-none transition-all placeholder:text-zinc-300"
+                                        className="w-full min-h-[220px] p-6 text-lg rounded-[2rem] border border-zinc-100 bg-white focus:ring-4 focus:ring-orange-50 focus:border-orange-500 outline-none transition-all placeholder:text-zinc-300"
                                         placeholder="Décrivez l'état de l'objet, ses fonctionnalités, les accessoires fournis, la raison de la vente..."
                                     />
                                     <div className="flex items-center gap-2 text-zinc-400 bg-zinc-50 p-3 rounded-xl">
@@ -428,7 +428,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                 <Button
                                     type="button"
                                     onClick={handleNext}
-                                    className="h-11 px-8 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-sm shadow-xl shadow-blue-200 active:scale-95 transition-all flex items-center gap-3"
+                                    className="h-11 px-8 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-black text-sm shadow-xl shadow-orange-200 active:scale-95 transition-all flex items-center gap-3"
                                 >
                                     Suivant
                                     <ChevronRight className="w-5 h-5" />
@@ -464,7 +464,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                     className="group relative flex flex-col items-center justify-center w-full min-h-[300px] rounded-[2.5rem] border-4 border-dashed border-zinc-100 bg-white cursor-pointer hover:border-blue-200 hover:bg-blue-50/20 transition-all duration-500 overflow-hidden"
                                 >
                                     <div className="flex flex-col items-center justify-center p-12 text-center transition-transform group-hover:scale-105 duration-500">
-                                        <div className="w-16 h-16 rounded-3xl bg-blue-50 flex items-center justify-center mb-6 shadow-lg shadow-blue-100/50 group-hover:bg-blue-600 group-hover:text-white transition-all duration-500">
+                                        <div className="w-16 h-16 rounded-3xl bg-orange-50 flex items-center justify-center mb-6 shadow-lg shadow-orange-100/50 group-hover:bg-orange-500 group-hover:text-white transition-all duration-500">
                                             <Upload className="w-8 h-8" />
                                         </div>
                                         <p className="text-xl font-black text-zinc-900 uppercase tracking-tight">Cliquez ou déposez vos images</p>
@@ -513,7 +513,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                 <Button
                                     type="button"
                                     onClick={handleNext}
-                                    className="h-11 px-8 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-sm shadow-xl shadow-blue-200 active:scale-95 transition-all flex items-center gap-3"
+                                    className="h-11 px-8 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-black text-sm shadow-xl shadow-orange-200 active:scale-95 transition-all flex items-center gap-3"
                                 >
                                     Suivant
                                     <ChevronRight className="w-5 h-5" />
@@ -542,11 +542,11 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                 <div className="space-y-4">
                                     <label className="text-[11px] font-black uppercase tracking-[0.2em] text-zinc-400 ml-1">Prix de vente (MAD)</label>
                                     <div className="relative group">
-                                        <div className="absolute left-6 top-1/2 -translate-y-1/2 text-xl font-black text-zinc-300 group-focus-within:text-blue-600 transition-colors">MAD</div>
+                                        <div className="absolute left-6 top-1/2 -translate-y-1/2 text-xl font-black text-zinc-300 group-focus-within:text-orange-500 transition-colors">MAD</div>
                                         <Input
                                             type="number"
                                             {...register('price')}
-                                            className="h-12 md:h-14 pl-20 pr-8 text-xl font-black rounded-xl border-zinc-100 bg-zinc-50/50 focus:bg-white focus:ring-4 focus:ring-blue-50 focus:border-blue-600 transition-all shadow-sm"
+                                            className="h-12 md:h-14 pl-20 pr-8 text-xl font-black rounded-xl border-zinc-100 bg-zinc-50/50 focus:bg-white focus:ring-4 focus:ring-orange-50 focus:border-orange-500 transition-all shadow-sm"
                                             placeholder="0.00"
                                         />
                                     </div>
@@ -627,7 +627,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                     <Button
                                         type="submit"
                                         disabled={isSubmitting}
-                                        className="h-12 px-12 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-base shadow-2xl shadow-blue-200 active:scale-95 transition-all flex items-center gap-4"
+                                        className="h-12 px-12 rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-black text-base shadow-2xl shadow-orange-200 active:scale-95 transition-all flex items-center gap-4"
                                     >
                                         {isSubmitting ? (
                                             <>

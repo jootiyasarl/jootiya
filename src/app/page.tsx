@@ -107,7 +107,7 @@ export default async function Home() {
             </div>
             <h3 className="text-xl font-bold text-zinc-900">Aucune annonce pour le moment</h3>
             <p className="text-zinc-500 mt-2 max-w-xs">Soyez le premier à publier une annonce sur notre nouvelle plateforme !</p>
-            <Link href="/marketplace/post" className="mt-6 px-8 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-100">
+            <Link href="/marketplace/post" className="mt-6 px-8 py-3 bg-orange-500 text-white rounded-xl font-bold hover:bg-orange-600 transition-all shadow-lg shadow-orange-100">
               Déposer une annonce
             </Link>
           </div>
@@ -128,7 +128,7 @@ export default async function Home() {
                     <h2 className="text-xl font-bold text-zinc-900">{cat.label}</h2>
                     <Link
                       href={`/marketplace?category=${cat.id}`}
-                      className="text-sm font-bold text-zinc-900 hover:text-blue-600 flex items-center gap-1 group"
+                      className="text-sm font-bold text-zinc-900 hover:text-orange-500 flex items-center gap-1 group"
                     >
                       Voir plus d'annonces
                       <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -149,7 +149,7 @@ export default async function Home() {
                 <h2 className="text-xl font-bold text-zinc-900">Toutes les annonces</h2>
                 <Link
                   href="/marketplace"
-                  className="text-sm font-bold text-zinc-900 hover:text-blue-600 flex items-center gap-1 group"
+                  className="text-sm font-bold text-zinc-900 hover:text-orange-500 flex items-center gap-1 group"
                 >
                   Tout parcourir
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
