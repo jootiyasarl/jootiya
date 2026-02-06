@@ -129,16 +129,16 @@ function PublicNavbar() {
 
               <Link href="/dashboard/favorites" className="flex flex-col items-center gap-0 px-4 py-1 group transition-colors">
                 <div className="p-1.5 rounded-full group-hover:bg-orange-50 transition-colors">
-                  <Heart className="w-5 h-5 text-zinc-800 group-hover:text-orange-500 transition-colors" />
+                  <Heart className="w-5 h-5 text-zinc-800 group-hover:text-orange-600 transition-colors" />
                 </div>
-                <span className="text-[11px] font-bold text-zinc-600 group-hover:text-orange-500 transition-colors uppercase tracking-tight -mt-1">Favoris</span>
+                <span className="text-[11px] font-bold text-zinc-600 group-hover:text-orange-600 transition-colors uppercase tracking-tight -mt-1">Favoris</span>
               </Link>
 
               <Link href="/dashboard/messages" className="flex flex-col items-center gap-0 px-4 py-1 group transition-colors">
                 <div className="p-1.5 rounded-full group-hover:bg-orange-50 transition-colors">
-                  <MessageCircle className="w-5 h-5 text-zinc-800 group-hover:text-orange-500 transition-colors" />
+                  <MessageCircle className="w-5 h-5 text-zinc-800 group-hover:text-orange-600 transition-colors" />
                 </div>
-                <span className="text-[11px] font-bold text-zinc-600 group-hover:text-orange-500 transition-colors uppercase tracking-tight -mt-1">Messages</span>
+                <span className="text-[11px] font-bold text-zinc-600 group-hover:text-orange-600 transition-colors uppercase tracking-tight -mt-1">Messages</span>
               </Link>
 
               <div className="ml-4 pl-4 border-l border-zinc-200">
@@ -161,9 +161,9 @@ function PublicNavbar() {
                 ) : (
                   <Link href="/login" className="flex flex-col items-center gap-0 px-4 py-1 group transition-colors">
                     <div className="p-1.5 rounded-full group-hover:bg-orange-50 transition-colors">
-                      <User className="w-5 h-5 text-zinc-800 group-hover:text-orange-500 transition-colors" />
+                      <User className="w-5 h-5 text-zinc-800 group-hover:text-orange-600 transition-colors" />
                     </div>
-                    <span className="text-[11px] font-bold text-zinc-600 group-hover:text-orange-500 transition-colors uppercase tracking-tight -mt-1">Connexion</span>
+                    <span className="text-[11px] font-bold text-zinc-600 group-hover:text-orange-600 transition-colors uppercase tracking-tight -mt-1">Connexion</span>
                   </Link>
                 )}
               </div>

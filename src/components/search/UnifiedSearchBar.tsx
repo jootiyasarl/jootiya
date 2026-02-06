@@ -89,7 +89,7 @@ export function UnifiedSearchBar() {
                             setIsCategoryOpen(!isCategoryOpen);
                             setIsLocationOpen(false);
                         }}
-                        className="flex items-center justify-between w-full h-full px-6 gap-3 text-zinc-700 hover:text-blue-600 transition-colors"
+                        className="flex items-center justify-between w-full h-full px-6 gap-3 text-zinc-700 hover:text-orange-600 transition-colors"
                     >
                         <div className="flex items-center gap-2 overflow-hidden">
                             <LayoutGrid className="w-5 h-5 text-orange-500 shrink-0" />
@@ -126,7 +126,7 @@ export function UnifiedSearchBar() {
                             setIsLocationOpen(!isLocationOpen);
                             setIsCategoryOpen(false);
                         }}
-                        className="flex items-center justify-between w-full h-full px-6 gap-3 text-zinc-700 hover:text-blue-600 transition-colors"
+                        className="flex items-center justify-between w-full h-full px-6 gap-3 text-zinc-700 hover:text-orange-600 transition-colors"
                     >
                         <div className="flex items-center gap-2 overflow-hidden">
                             <div className="w-8 h-8 bg-zinc-50 rounded-full flex items-center justify-center shrink-0">
@@ -218,7 +218,7 @@ export function UnifiedSearchBar() {
                                             setCategory(cat);
                                             setIsCategoryOpen(false);
                                         }}
-                                        className="w-full text-left px-4 py-2.5 text-[13px] font-medium text-zinc-600 active:bg-blue-50"
+                                        className="w-full text-left px-4 py-2.5 text-[13px] font-medium text-zinc-600 active:bg-orange-50"
                                     >
                                         {cat.label}
                                     </button>
@@ -248,7 +248,7 @@ export function UnifiedSearchBar() {
                                             setLocation(city);
                                             setIsLocationOpen(false);
                                         }}
-                                        className="w-full text-left px-4 py-2.5 text-[13px] font-medium text-zinc-600 active:bg-blue-50"
+                                        className="w-full text-left px-4 py-2.5 text-[13px] font-medium text-zinc-600 active:bg-orange-50"
                                     >
                                         {city}
                                     </button>
