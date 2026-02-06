@@ -105,13 +105,13 @@ function PublicNavbar() {
             */}
 
             <Link href="/" className="flex items-center shrink-0">
-              <span className="text-2xl md:text-3xl font-black tracking-tighter text-blue-600">
-                JOOTIYA
+              <span className="text-2xl md:text-3xl font-black tracking-tighter text-[#0F172A]">
+                JOOTIYA <span className="text-orange-500">.</span>
               </span>
             </Link>
 
             <Link href="/marketplace/post" className="hidden lg:block">
-              <Button className="rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold h-11 px-5 shadow-lg shadow-blue-200/50 transition-all hover:translate-y-[-1px] active:translate-y-[0px] active:scale-[0.98] flex items-center gap-2">
+              <Button className="rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-bold h-11 px-5 shadow-lg shadow-orange-200/50 transition-all hover:translate-y-[-1px] active:translate-y-[0px] active:scale-[0.98] flex items-center gap-2">
                 <PlusCircle className="w-5 h-5" />
                 <span>Déposer une annonce</span>
               </Button>
@@ -128,17 +128,17 @@ function PublicNavbar() {
               <NotificationBell label="Notifications" />
 
               <Link href="/dashboard/favorites" className="flex flex-col items-center gap-0 px-4 py-1 group transition-colors">
-                <div className="p-1.5 rounded-full group-hover:bg-zinc-100 transition-colors">
-                  <Heart className="w-5 h-5 text-zinc-800 group-hover:text-blue-600 transition-colors" />
+                <div className="p-1.5 rounded-full group-hover:bg-orange-50 transition-colors">
+                  <Heart className="w-5 h-5 text-zinc-800 group-hover:text-orange-500 transition-colors" />
                 </div>
-                <span className="text-[11px] font-bold text-zinc-600 group-hover:text-blue-600 transition-colors uppercase tracking-tight -mt-1">Favoris</span>
+                <span className="text-[11px] font-bold text-zinc-600 group-hover:text-orange-500 transition-colors uppercase tracking-tight -mt-1">Favoris</span>
               </Link>
 
               <Link href="/dashboard/messages" className="flex flex-col items-center gap-0 px-4 py-1 group transition-colors">
-                <div className="p-1.5 rounded-full group-hover:bg-zinc-100 transition-colors">
-                  <MessageCircle className="w-5 h-5 text-zinc-800 group-hover:text-blue-600 transition-colors" />
+                <div className="p-1.5 rounded-full group-hover:bg-orange-50 transition-colors">
+                  <MessageCircle className="w-5 h-5 text-zinc-800 group-hover:text-orange-500 transition-colors" />
                 </div>
-                <span className="text-[11px] font-bold text-zinc-600 group-hover:text-blue-600 transition-colors uppercase tracking-tight -mt-1">Messages</span>
+                <span className="text-[11px] font-bold text-zinc-600 group-hover:text-orange-500 transition-colors uppercase tracking-tight -mt-1">Messages</span>
               </Link>
 
               <div className="ml-4 pl-4 border-l border-zinc-200">
@@ -160,10 +160,10 @@ function PublicNavbar() {
                   </div>
                 ) : (
                   <Link href="/login" className="flex flex-col items-center gap-0 px-4 py-1 group transition-colors">
-                    <div className="p-1.5 rounded-full group-hover:bg-zinc-100 transition-colors">
-                      <User className="w-5 h-5 text-zinc-800 group-hover:text-blue-600 transition-colors" />
+                    <div className="p-1.5 rounded-full group-hover:bg-orange-50 transition-colors">
+                      <User className="w-5 h-5 text-zinc-800 group-hover:text-orange-500 transition-colors" />
                     </div>
-                    <span className="text-[11px] font-bold text-zinc-600 group-hover:text-blue-600 transition-colors uppercase tracking-tight -mt-1">Connexion</span>
+                    <span className="text-[11px] font-bold text-zinc-600 group-hover:text-orange-500 transition-colors uppercase tracking-tight -mt-1">Connexion</span>
                   </Link>
                 )}
               </div>

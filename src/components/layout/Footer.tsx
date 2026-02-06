@@ -6,7 +6,7 @@ export default function Footer() {
     const currentYear = new Date().getFullYear();
 
     return (
-        <footer className="bg-zinc-900 text-zinc-400 py-16 border-t border-zinc-800" dir="ltr">
+        <footer className="bg-[#0F172A] text-zinc-300 py-16 border-t border-white/5" dir="ltr">
             <div className="container mx-auto px-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
                     {/* Brand Section */}
@@ -18,13 +18,13 @@ export default function Footer() {
                             La plateforme n°1 au Maroc pour acheter et vendre tout ce dont vous avez besoin. Simplicité, sécurité et rapidité en un seul endroit.
                         </p>
                         <div className="flex gap-4">
-                            <a href="#" className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center hover:bg-orange-600 hover:text-white transition-all duration-300">
+                            <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-orange-500 hover:text-white transition-all duration-300">
                                 <Facebook size={20} />
                             </a>
-                            <a href="#" className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center hover:bg-orange-600 hover:text-white transition-all duration-300">
+                            <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-orange-500 hover:text-white transition-all duration-300">
                                 <Instagram size={20} />
                             </a>
-                            <a href="#" className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center hover:bg-orange-600 hover:text-white transition-all duration-300">
+                            <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-orange-500 hover:text-white transition-all duration-300">
                                 <Twitter size={20} />
                             </a>
                         </div>

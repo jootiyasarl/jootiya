@@ -7,7 +7,7 @@ import { UnifiedSearchBar } from "@/components/search/UnifiedSearchBar";
 
 export function HeroSection() {
     return (
-        <div className="relative overflow-hidden bg-zinc-900 pb-16 pt-20 sm:pb-24 sm:pt-32 lg:pb-32 lg:pt-40">
+        <div className="relative overflow-hidden bg-[#0F172A] pb-16 pt-20 sm:pb-24 sm:pt-32 lg:pb-32 lg:pt-40">
             {/* Background Gradients */}
             <div className="absolute inset-0 z-0">
                 <div className="absolute top-0 -left-4 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
@@ -18,8 +18,8 @@ export function HeroSection() {
 
             <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8 text-center text-white">
                 <div className="mx-auto max-w-2xl">
-                    <h1 className="text-4xl font-bold tracking-tight sm:text-6xl bg-gradient-to-r from-blue-200 via-white to-purple-200 bg-clip-text text-transparent">
-                        Tout ce dont vous avez besoin, <br /> en un seul endroit.
+                    <h1 className="text-4xl font-bold tracking-tight sm:text-6xl text-white">
+                        Tout ce dont vous avez besoin, <br /> <span className="text-orange-500">en un seul endroit.</span>
                     </h1>
                     <p className="mt-6 text-lg leading-8 text-zinc-300">
                         Le meilleur marché en ligne pour acheter et vendre au Maroc. Électronique, immobilier, voitures, et plus encore. Vendez et achetez en toute sécurité et simplicité.

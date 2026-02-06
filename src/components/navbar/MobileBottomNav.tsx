@@ -29,10 +29,10 @@ export function MobileBottomNav() {
                                 href={link.href}
                                 className="relative -top-3 flex flex-col items-center"
                             >
-                                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-lg shadow-blue-200 ring-4 ring-white transition-transform active:scale-90">
+                                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-500 text-white shadow-lg shadow-orange-200 ring-4 ring-white transition-transform active:scale-90">
                                     <link.icon className="h-7 w-7" />
                                 </div>
-                                <span className="mt-1 text-[10px] font-bold text-blue-600">{link.label}</span>
+                                <span className="mt-1 text-[10px] font-bold text-orange-500">{link.label}</span>
                             </Link>
                         );
                     }
@@ -43,7 +43,7 @@ export function MobileBottomNav() {
                             href={link.href}
                             className={cn(
                                 "flex flex-1 flex-col items-center justify-center gap-1 transition-all active:scale-90",
-                                isActive ? "text-blue-600" : "text-zinc-400"
+                                isActive ? "text-orange-500" : "text-zinc-400"
                             )}
                         >
                             <link.icon className={cn("h-6 w-6", isActive && "fill-current/10")} />
