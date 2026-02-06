@@ -83,15 +83,14 @@ export default function Footer() {
                 </div>
 
                 {/* Bottom Bar */}
-                <div className="mt-16 pt-8 border-t border-zinc-800 text-center md:flex md:justify-between md:items-center">
+                <div className="mt-16 pt-8 border-t border-zinc-800 text-center md:flex md:justify-between md:items-center animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
                     <p className="text-zinc-600 text-sm">
                         © {currentYear} <span className="text-white font-medium">Jootiya.com</span>. جميع الحقوق محفوظة.
                     </p>
-                    <div className="mt-4 md:mt-0 flex justify-center gap-6">
-                        {/* Payment Methods Icons or similar */}
-                        <div className="w-12 h-8 bg-zinc-800 rounded opacity-50"></div>
-                        <div className="w-12 h-8 bg-zinc-800 rounded opacity-50"></div>
-                        <div className="w-12 h-8 bg-zinc-800 rounded opacity-50"></div>
+                    <div className="mt-4 md:mt-0 flex justify-center gap-6 opacity-70 hover:opacity-100 transition-opacity">
+                        <div className="h-8 bg-white/5 border border-white/10 rounded px-3 flex items-center text-xs font-bold text-zinc-400">VISA</div>
+                        <div className="h-8 bg-white/5 border border-white/10 rounded px-3 flex items-center text-xs font-bold text-zinc-400">MasterCard</div>
+                        <div className="h-8 bg-white/5 border border-white/10 rounded px-3 flex items-center text-xs font-bold text-zinc-400">PayPal</div>
                     </div>
                 </div>
             </div>

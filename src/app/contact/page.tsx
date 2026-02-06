@@ -26,7 +26,7 @@ export default function ContactUsPage() {
                 </div>
             </div>
 
-            <div className="container mx-auto px-4 py-24 max-w-6xl">
+            <div className="container mx-auto px-4 py-24 max-w-6xl animate-fade-in-up">
                 <div className="grid lg:grid-cols-2 gap-20 items-stretch">
                     {/* Contact Information */}
                     <div className="space-y-12 text-right flex flex-col justify-center">

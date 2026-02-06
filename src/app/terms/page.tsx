@@ -23,7 +23,7 @@ export default function TermsOfServicePage() {
                 </div>
             </div>
 
-            <div className="container mx-auto px-4 py-20 max-w-4xl">
+            <div className="container mx-auto px-4 py-20 max-w-4xl animate-fade-in-up">
                 <div className="prose prose-zinc max-w-none space-y-12 text-zinc-700 leading-relaxed text-lg">
                     <div className="p-10 bg-blue-50/30 rounded-[2.5rem] border border-blue-100/50 shadow-sm text-center">
                         <p className="text-xl md:text-2xl font-semibold text-zinc-800">

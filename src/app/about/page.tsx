@@ -26,7 +26,7 @@ export default function AboutUsPage() {
                 </div>
             </div>
 
-            <div className="container mx-auto px-4 py-24 max-w-5xl">
+            <div className="container mx-auto px-4 py-24 max-w-5xl animate-fade-in-up">
                 <div className="grid lg:grid-cols-2 gap-20 items-center mb-32">
                     <div className="space-y-8 text-lg text-zinc-600 leading-loose text-right">
                         <h2 className="text-4xl font-black text-zinc-900 mb-4 leading-tight">
