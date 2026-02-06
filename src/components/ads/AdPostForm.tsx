@@ -26,6 +26,7 @@ const adSchema = z.object({
     city: z.string().min(1, "La ville est requise"),
     neighborhood: z.string().optional(),
     phone: z.string().min(10, "Le numéro de téléphone est requis (min 10 chiffres)"),
+    condition: z.enum(['new', 'used'], { errorMap: () => ({ message: "L'état du produit est requis" }) }),
 });
 
 type AdFormValues = {
@@ -36,6 +37,7 @@ type AdFormValues = {
     city: string;
     neighborhood?: string;
     phone: string;
+    condition: 'new' | 'used';
 };
 
 const CATEGORIES = [
@@ -81,7 +83,8 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
             city: (initialData as any)?.city || '', // Use explicit city if available
             neighborhood: (initialData as any)?.neighborhood || '',
             phone: (initialData as any)?.phone || '',
-            price: initialData?.price || ''
+            price: initialData?.price || '',
+            condition: (initialData as any)?.condition || 'used'
         }
     });
 
@@ -91,7 +94,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
         let fieldsToValidate: (keyof AdFormValues)[] = [];
 
         if (currentStep === 0) fieldsToValidate = ['category'];
-        if (currentStep === 1) fieldsToValidate = ['title', 'description'];
+        if (currentStep === 1) fieldsToValidate = ['title', 'description', 'condition'];
         if (currentStep === 3) fieldsToValidate = ['price', 'city', 'phone'];
 
         const isValid = await trigger(fieldsToValidate);
@@ -373,6 +376,33 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                         className="h-12 px-6 text-base rounded-xl border-zinc-100 bg-white focus:ring-4 focus:ring-blue-50 focus:border-blue-600 transition-all"
                                     />
                                     {errors.title && <p className="text-red-500 text-xs font-bold uppercase tracking-widest ml-1">{errors.title.message}</p>}
+                                </div>
+
+                                <div className="space-y-3">
+                                    <label className="text-[11px] font-black uppercase tracking-[0.2em] text-zinc-400 ml-1">État du produit</label>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <label className={cn(
+                                            "flex items-center justify-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all",
+                                            watch('condition') === 'new'
+                                                ? "border-blue-600 bg-blue-50 text-blue-700 font-bold"
+                                                : "border-zinc-100 bg-white text-zinc-600 hover:border-blue-200"
+                                        )}>
+                                            <input type="radio" value="new" {...register('condition')} className="hidden" />
+                                            <Sparkles className={cn("w-5 h-5", watch('condition') === 'new' ? "text-blue-600 fill-blue-600/20" : "text-zinc-400")} />
+                                            <span>Neuf</span>
+                                        </label>
+                                        <label className={cn(
+                                            "flex items-center justify-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all",
+                                            watch('condition') === 'used'
+                                                ? "border-amber-500 bg-amber-50 text-amber-700 font-bold"
+                                                : "border-zinc-100 bg-white text-zinc-600 hover:border-amber-200"
+                                        )}>
+                                            <input type="radio" value="used" {...register('condition')} className="hidden" />
+                                            <Tag className={cn("w-5 h-5", watch('condition') === 'used' ? "text-amber-500 fill-amber-500/20" : "text-zinc-400")} />
+                                            <span>Occasion</span>
+                                        </label>
+                                    </div>
+                                    {errors.condition && <p className="text-red-500 text-xs font-bold uppercase tracking-widest ml-1">{errors.condition.message}</p>}
                                 </div>
 
                                 <div className="space-y-3">

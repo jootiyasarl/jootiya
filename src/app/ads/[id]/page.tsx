@@ -39,7 +39,7 @@ export default async function AdPage({ params }: AdPageProps) {
   let query = supabase
     .from("ads")
     .select(
-      "id, title, description, price, currency, city, neighborhood, created_at, image_urls, category, status, views_count, seller_id, slug, profiles(phone)"
+      "id, title, description, price, currency, city, neighborhood, created_at, image_urls, category, status, views_count, seller_id, slug, condition, profiles(phone)"
     );
 
   if (isUuid) {
@@ -154,7 +154,19 @@ export default async function AdPage({ params }: AdPageProps) {
                   </div>
                   <div className="space-y-1">
                     <span className="text-xs uppercase tracking-wider text-zinc-400 font-bold">État</span>
-                    <p className="font-semibold text-zinc-900">Occasion</p>
+                    <p className="font-semibold text-zinc-900">
+                      {ad.condition === 'new' ? (
+                        <span className="flex items-center gap-1.5 text-blue-600">
+                          <span className="w-2 h-2 rounded-full bg-blue-600" />
+                          Neuf
+                        </span>
+                      ) : (
+                        <span className="flex items-center gap-1.5 text-amber-600">
+                          <span className="w-2 h-2 rounded-full bg-amber-600" />
+                          Occasion
+                        </span>
+                      )}
+                    </p>
                   </div>
                   <div className="space-y-1">
                     <span className="text-xs uppercase tracking-wider text-zinc-400 font-bold">Quartier</span>
