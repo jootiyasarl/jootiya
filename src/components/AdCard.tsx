@@ -60,7 +60,7 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete }: 
 
         {/* Favorite Heart Icon Overlay */}
         <button
-          className="absolute right-3 top-3 z-10 p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm text-zinc-800 hover:text-blue-600 transition-colors"
+          className="absolute right-3 top-3 z-10 p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm text-zinc-800 hover:text-orange-600 transition-colors"
           onClick={(e) => {
             e.preventDefault();
             // Wishlist logic
@@ -70,7 +70,7 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete }: 
         </button>
 
         {isFeatured && (
-          <div className="absolute left-3 top-3 rounded-lg bg-blue-600 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
+          <div className="absolute left-3 top-3 rounded-lg bg-orange-500 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
             À la une
           </div>
         )}

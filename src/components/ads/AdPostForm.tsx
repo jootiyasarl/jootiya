@@ -237,7 +237,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
     if (isSuccess) {
         return (
             <div className="max-w-2xl mx-auto text-center py-20 px-4 animate-in fade-in zoom-in duration-500">
-                <div className="w-24 h-24 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-blue-200">
+                <div className="w-24 h-24 bg-orange-600 rounded-full flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-orange-200">
                     <CheckCircle2 className="w-12 h-12 text-white" />
                 </div>
                 <h2 className="text-4xl font-black text-zinc-900 mb-4 tracking-tight uppercase">Annonce publiée !</h2>
@@ -248,7 +248,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                     <Button onClick={() => window.location.href = '/dashboard/ads'} variant="outline" className="h-12 px-8 rounded-xl font-bold">
                         Gérer mes annonces
                     </Button>
-                    <Button onClick={() => window.location.href = '/'} className="h-12 px-8 rounded-xl font-bold bg-blue-600">
+                    <Button onClick={() => window.location.href = '/'} className="h-12 px-8 rounded-xl font-bold bg-orange-600 hover:bg-orange-700">
                         Retour à l'accueil
                     </Button>
                 </div>
@@ -300,7 +300,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                 {currentStep === 0 && (
                     <div className="animate-in slide-in-from-right-8 fade-in duration-500">
                         <div className="bg-white/80 backdrop-blur-2xl border border-white shadow-2xl shadow-zinc-200/50 rounded-[2.5rem] p-8 md:p-12 text-center">
-                            <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 mx-auto mb-6">
+                            <div className="w-14 h-14 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-600 mx-auto mb-6">
                                 <Tag className="w-6 h-6" />
                             </div>
                             <h2 className="text-3xl font-black text-zinc-900 mb-2 uppercase tracking-tight">Choisissez une catégorie</h2>
@@ -358,7 +358,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                     <div className="animate-in slide-in-from-right-8 fade-in duration-500">
                         <div className="bg-white/80 backdrop-blur-2xl border border-white shadow-xl shadow-zinc-200/50 rounded-3xl p-6 md:p-8">
                             <div className="flex items-center gap-6 mb-10">
-                                <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 shrink-0">
+                                <div className="w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-600 shrink-0">
                                     <FileText className="w-5 h-5" />
                                 </div>
                                 <div>
@@ -384,11 +384,11 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                         <label className={cn(
                                             "flex items-center justify-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all",
                                             watch('condition') === 'new'
-                                                ? "border-blue-600 bg-blue-50 text-blue-700 font-bold"
-                                                : "border-zinc-100 bg-white text-zinc-600 hover:border-blue-200"
+                                                ? "border-orange-600 bg-orange-50 text-orange-700 font-bold"
+                                                : "border-zinc-100 bg-white text-zinc-600 hover:border-orange-200"
                                         )}>
                                             <input type="radio" value="new" {...register('condition')} className="hidden" />
-                                            <Sparkles className={cn("w-5 h-5", watch('condition') === 'new' ? "text-blue-600 fill-blue-600/20" : "text-zinc-400")} />
+                                            <Sparkles className={cn("w-5 h-5", watch('condition') === 'new' ? "text-orange-600 fill-orange-600/20" : "text-zinc-400")} />
                                             <span>Neuf</span>
                                         </label>
                                         <label className={cn(
@@ -413,7 +413,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                         placeholder="Décrivez l'état de l'objet, ses fonctionnalités, les accessoires fournis, la raison de la vente..."
                                     />
                                     <div className="flex items-center gap-2 text-zinc-400 bg-zinc-50 p-3 rounded-xl">
-                                        <Info size={14} className="text-blue-500" />
+                                        <Info size={14} className="text-orange-500" />
                                         <p className="text-[10px] font-bold uppercase tracking-widest">Une description riche augmente vos chances de vente de 40%</p>
                                     </div>
                                     {errors.description && <p className="text-red-500 text-xs font-bold uppercase tracking-widest ml-1">{errors.description.message}</p>}
@@ -444,7 +444,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                         <div className="bg-white/80 backdrop-blur-2xl border border-white shadow-xl shadow-zinc-200/50 rounded-3xl p-6 md:p-8">
                             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
                                 <div className="flex items-center gap-6">
-                                    <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 shrink-0">
+                                    <div className="w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-600 shrink-0">
                                         <ImageIcon className="w-5 h-5" />
                                     </div>
                                     <div>
@@ -461,7 +461,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                             <div className="space-y-8">
                                 <div
                                     onClick={() => fileInputRef.current?.click()}
-                                    className="group relative flex flex-col items-center justify-center w-full min-h-[300px] rounded-[2.5rem] border-4 border-dashed border-zinc-100 bg-white cursor-pointer hover:border-blue-200 hover:bg-blue-50/20 transition-all duration-500 overflow-hidden"
+                                    className="group relative flex flex-col items-center justify-center w-full min-h-[300px] rounded-[2.5rem] border-4 border-dashed border-zinc-100 bg-white cursor-pointer hover:border-orange-200 hover:bg-orange-50/20 transition-all duration-500 overflow-hidden"
                                 >
                                     <div className="flex flex-col items-center justify-center p-12 text-center transition-transform group-hover:scale-105 duration-500">
                                         <div className="w-16 h-16 rounded-3xl bg-orange-50 flex items-center justify-center mb-6 shadow-lg shadow-orange-100/50 group-hover:bg-orange-500 group-hover:text-white transition-all duration-500">
@@ -495,7 +495,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                                     </button>
                                                 </div>
                                                 {idx === 0 && (
-                                                    <div className="absolute bottom-2 left-2 right-2 bg-blue-600 text-white text-[8px] font-black uppercase text-center py-1 rounded-lg tracking-widest">
+                                                    <div className="absolute bottom-2 left-2 right-2 bg-orange-600 text-white text-[8px] font-black uppercase text-center py-1 rounded-lg tracking-widest">
                                                         Photo principale
                                                     </div>
                                                 )}
@@ -528,7 +528,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                     <div className="animate-in slide-in-from-right-8 fade-in duration-500">
                         <div className="bg-white/80 backdrop-blur-2xl border border-white shadow-xl shadow-zinc-200/50 rounded-3xl p-6 md:p-8">
                             <div className="flex items-center gap-6 mb-12 text-center md:text-left">
-                                <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 shrink-0 mx-auto md:mx-0">
+                                <div className="w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-600 shrink-0 mx-auto md:mx-0">
                                     <MapPin className="w-5 h-5" />
                                 </div>
                                 <div>
@@ -558,10 +558,10 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                     <div className="space-y-4">
                                         <label className="text-[11px] font-black uppercase tracking-[0.2em] text-zinc-400 ml-1">Ville</label>
                                         <div className="relative group">
-                                            <MapPin className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-300 group-focus-within:text-blue-600 transition-colors pointer-events-none" />
+                                            <MapPin className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-300 group-focus-within:text-orange-600 transition-colors pointer-events-none" />
                                             <select
                                                 {...register('city')}
-                                                className="h-12 w-full pl-16 pr-12 text-base font-bold rounded-xl border-zinc-100 bg-zinc-50/50 focus:bg-white focus:ring-4 focus:ring-blue-50 focus:border-blue-600 transition-all appearance-none cursor-pointer shadow-sm"
+                                                className="h-12 w-full pl-16 pr-12 text-base font-bold rounded-xl border-zinc-100 bg-zinc-50/50 focus:bg-white focus:ring-4 focus:ring-orange-50 focus:border-orange-600 transition-all appearance-none cursor-pointer shadow-sm"
                                             >
                                                 <option value="">Sélectionnez votre ville</option>
                                                 {MOROCCAN_CITIES.map((region) => (
@@ -587,7 +587,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                             <Input
                                                 {...register('neighborhood')}
                                                 placeholder="ex: Maarif, Agdal, Guéliz..."
-                                                className="h-12 px-6 text-base font-bold rounded-xl border-zinc-100 bg-zinc-50/50 focus:bg-white focus:ring-4 focus:ring-blue-50 focus:border-blue-600 transition-all shadow-sm"
+                                                className="h-12 px-6 text-base font-bold rounded-xl border-zinc-100 bg-zinc-50/50 focus:bg-white focus:ring-4 focus:ring-orange-50 focus:border-orange-600 transition-all shadow-sm"
                                             />
                                         </div>
                                     </div>
@@ -603,18 +603,18 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                         <Input
                                             {...register('phone')}
                                             placeholder="ex: 0612345678"
-                                            className="h-16 pl-16 pr-6 text-xl font-bold rounded-3xl border-zinc-100 bg-zinc-50/50 focus:bg-white focus:ring-4 focus:ring-blue-50 focus:border-blue-600 transition-all shadow-sm"
+                                            className="h-16 pl-16 pr-6 text-xl font-bold rounded-3xl border-zinc-100 bg-zinc-50/50 focus:bg-white focus:ring-4 focus:ring-orange-50 focus:border-orange-600 transition-all shadow-sm"
                                         />
                                     </div>
                                     {errors.phone && <p className="text-red-500 text-xs font-bold uppercase tracking-widest ml-1">{errors.phone.message}</p>}
                                 </div>
 
-                                <div className="mt-16 bg-blue-50 p-8 rounded-[2rem] border border-blue-100">
+                                <div className="mt-16 bg-orange-50 p-8 rounded-[2rem] border border-orange-100">
                                     <div className="flex items-start gap-4">
-                                        <CheckCircle2 className="w-6 h-6 text-blue-600 mt-1" />
+                                        <CheckCircle2 className="w-6 h-6 text-orange-600 mt-1" />
                                         <div>
-                                            <h4 className="font-black text-blue-900 uppercase tracking-tight">Récapitulatif & Confirmation</h4>
-                                            <p className="text-sm text-blue-700 mt-1">En cliquant sur publier, vous acceptez nos conditions générales de vente. Votre annonce sera vérifiée sous 2h.</p>
+                                            <h4 className="font-black text-orange-900 uppercase tracking-tight">Récapitulatif & Confirmation</h4>
+                                            <p className="text-sm text-orange-700 mt-1">En cliquant sur publier, vous acceptez nos conditions générales de vente. Votre annonce sera vérifiée sous 2h.</p>
                                         </div>
                                     </div>
                                 </div>

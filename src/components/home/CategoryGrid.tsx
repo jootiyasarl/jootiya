@@ -20,7 +20,7 @@ export function CategoryGrid() {
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between mb-8">
                     <h2 className="text-2xl font-bold tracking-tight text-zinc-900">Parcourir les catégories</h2>
-                    <Link href="/marketplace" className="text-sm font-medium text-blue-600 hover:text-blue-500 flex items-center gap-1">
+                    <Link href="/marketplace" className="text-sm font-medium text-orange-500 hover:text-orange-600 flex items-center gap-1">
                         Tout voir <ArrowRight className="h-4 w-4" />
                     </Link>
                 </div>
@@ -30,12 +30,12 @@ export function CategoryGrid() {
                         <Link
                             key={category.id}
                             href={category.href}
-                            className="group relative flex flex-col items-center justify-center rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm transition-all hover:border-blue-200 hover:shadow-md hover:-translate-y-1"
+                            className="group relative flex flex-col items-center justify-center rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm transition-all hover:border-orange-200 hover:shadow-md hover:-translate-y-1"
                         >
                             <div className={`mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full ${category.color} transition-transform group-hover:scale-110`}>
                                 <category.icon className="h-6 w-6" />
                             </div>
-                            <span className="text-sm font-medium text-zinc-900 group-hover:text-blue-600 text-center">
+                            <span className="text-sm font-medium text-zinc-900 group-hover:text-orange-600 text-center">
                                 {category.label}
                             </span>
                         </Link>
