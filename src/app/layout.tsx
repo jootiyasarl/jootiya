@@ -30,7 +30,6 @@ export default function RootLayout({
         className={`${geistSans.variable} font-sans antialiased bg-white text-zinc-900`}
       >
         <RootNavbarShell>{children}</RootNavbarShell>
-        <Footer />
       </body>
     </html>
   );
