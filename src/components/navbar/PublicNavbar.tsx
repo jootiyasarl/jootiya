@@ -280,14 +280,14 @@ function PublicNavbar() {
               </div>
               {/* Info Pages Section */}
               <div className="space-y-4">
-                <h3 className="text-[11px] font-black uppercase tracking-wider text-zinc-400 px-1">معلومات الإستخدام</h3>
+                <h3 className="text-[11px] font-black uppercase tracking-wider text-zinc-400 px-1">INFORMATIONS</h3>
                 <div className="grid grid-cols-1 gap-2">
                   <Link
                     href="/about"
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="flex items-center justify-between p-3.5 rounded-2xl hover:bg-zinc-50 group transition-all"
                   >
-                    <span className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors">من نحن</span>
+                    <span className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors">À propos</span>
                     <ChevronRight className="w-4 h-4 text-zinc-300" />
                   </Link>
                   <Link
@@ -295,7 +295,7 @@ function PublicNavbar() {
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="flex items-center justify-between p-3.5 rounded-2xl hover:bg-zinc-50 group transition-all"
                   >
-                    <span className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors">اتصل بنا</span>
+                    <span className="font-bold text-zinc-900 group-hover:text-blue-600 transition-colors">Contact</span>
                     <ChevronRight className="w-4 h-4 text-zinc-300" />
                   </Link>
                 </div>

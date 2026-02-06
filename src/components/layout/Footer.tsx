@@ -6,7 +6,7 @@ export default function Footer() {
     const currentYear = new Date().getFullYear();
 
     return (
-        <footer className="bg-zinc-900 text-zinc-400 py-16 border-t border-zinc-800" dir="rtl">
+        <footer className="bg-zinc-900 text-zinc-400 py-16 border-t border-zinc-800" dir="ltr">
             <div className="container mx-auto px-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
                     {/* Brand Section */}
@@ -15,7 +15,7 @@ export default function Footer() {
                             <span className="text-orange-500 text-3xl">J</span>ootiya
                         </Link>
                         <p className="text-zinc-500 leading-relaxed">
-                            المنصة رقم 1 في المغرب لبيع وشراء كل ما يخطر ببالك. سهولة، أمان، وسرعة في مكان واحد.
+                            La plateforme n°1 au Maroc pour acheter et vendre tout ce dont vous avez besoin. Simplicité, sécurité et rapidité en un seul endroit.
                         </p>
                         <div className="flex gap-4">
                             <a href="#" className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center hover:bg-orange-600 hover:text-white transition-all duration-300">
@@ -32,39 +32,39 @@ export default function Footer() {
 
                     {/* Quick Links */}
                     <div className="space-y-6">
-                        <h3 className="text-white text-lg font-bold">روابط سريعة</h3>
+                        <h3 className="text-white text-lg font-bold">Liens Rapides</h3>
                         <ul className="space-y-4">
                             <li>
-                                <Link href="/about" className="hover:text-orange-500 transition-colors">من نحن</Link>
+                                <Link href="/about" className="hover:text-orange-500 transition-colors">À propos</Link>
                             </li>
                             <li>
-                                <Link href="/contact" className="hover:text-orange-500 transition-colors">اتصل بنا</Link>
+                                <Link href="/contact" className="hover:text-orange-500 transition-colors">Contact</Link>
                             </li>
                             <li>
-                                <Link href="/marketplace" className="hover:text-orange-500 transition-colors">السوق</Link>
+                                <Link href="/marketplace" className="hover:text-orange-500 transition-colors">Marché</Link>
                             </li>
                             <li>
-                                <Link href="/dashboard" className="hover:text-orange-500 transition-colors">لوحة التحكم</Link>
+                                <Link href="/dashboard" className="hover:text-orange-500 transition-colors">Tableau de bord</Link>
                             </li>
                         </ul>
                     </div>
 
                     {/* Legal Pages */}
                     <div className="space-y-6">
-                        <h3 className="text-white text-lg font-bold">قانوني</h3>
+                        <h3 className="text-white text-lg font-bold">Légal</h3>
                         <ul className="space-y-4">
                             <li>
-                                <Link href="/privacy-policy" className="hover:text-orange-500 transition-colors">سياسة الخصوصية</Link>
+                                <Link href="/privacy-policy" className="hover:text-orange-500 transition-colors">Confidentialité</Link>
                             </li>
                             <li>
-                                <Link href="/terms" className="hover:text-orange-500 transition-colors">اتفاقية الاستخدام</Link>
+                                <Link href="/terms" className="hover:text-orange-500 transition-colors">Conditions</Link>
                             </li>
                         </ul>
                     </div>
 
                     {/* Contact Info */}
                     <div className="space-y-6">
-                        <h3 className="text-white text-lg font-bold">تواصل معنا</h3>
+                        <h3 className="text-white text-lg font-bold">Nous Contacter</h3>
                         <ul className="space-y-4">
                             <li className="flex items-center gap-3">
                                 <div className="text-orange-500"><Mail size={18} /></div>
@@ -76,7 +76,7 @@ export default function Footer() {
                             </li>
                             <li className="flex items-center gap-3">
                                 <div className="text-orange-500"><MapPin size={18} /></div>
-                                <span>الدار البيضاء، المغرب</span>
+                                <span>Casablanca, Maroc</span>
                             </li>
                         </ul>
                     </div>
@@ -85,7 +85,7 @@ export default function Footer() {
                 {/* Bottom Bar */}
                 <div className="mt-16 pt-8 border-t border-zinc-800 text-center md:flex md:justify-between md:items-center animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
                     <p className="text-zinc-600 text-sm">
-                        © {currentYear} <span className="text-white font-medium">Jootiya.com</span>. جميع الحقوق محفوظة.
+                        © {currentYear} <span className="text-white font-medium">Jootiya.com</span>. Tous droits réservés.
                     </p>
                     <div className="mt-4 md:mt-0 flex justify-center gap-6 opacity-70 hover:opacity-100 transition-opacity">
                         <div className="h-8 bg-white/5 border border-white/10 rounded px-3 flex items-center text-xs font-bold text-zinc-400">VISA</div>
