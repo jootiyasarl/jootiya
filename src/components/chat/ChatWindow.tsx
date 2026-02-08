@@ -121,30 +121,30 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
     return (
         <div className="flex flex-col h-full bg-[#FAFAFA]">
             {/* Header */}
-            <div className="bg-white border-b border-zinc-100 p-4 flex items-center justify-between shadow-sm z-10">
-                <div className="flex items-center gap-3">
+            <div className="bg-white border-b border-zinc-100 p-3 md:p-4 flex items-center justify-between shadow-sm z-10 sticky top-0">
+                <div className="flex items-center gap-2 md:gap-3">
                     {/* Back Button for Mobile */}
                     <Button
                         variant="ghost"
                         size="icon"
                         onClick={onBack}
-                        className="md:hidden -ml-2 text-zinc-500"
+                        className="md:hidden -ml-2 text-zinc-500 h-9 w-9"
                     >
                         <ChevronLeft className="h-6 w-6" />
                     </Button>
-
-                    <Avatar className="h-10 w-10 border border-zinc-100">
+                    -
+                    <Avatar className="h-9 w-9 md:h-10 md:w-10 border border-zinc-100">
                         <AvatarImage src={conversation.other_party?.avatar_url || ""} />
                         <AvatarFallback>{conversation.other_party?.full_name?.charAt(0) || "U"}</AvatarFallback>
                     </Avatar>
-                    <div>
-                        <h3 className="font-bold text-zinc-900 leading-none">
+                    <div className="flex flex-col">
+                        <h3 className="font-bold text-zinc-900 leading-none text-sm md:text-base">
                             {conversation.other_party?.full_name || "Utilisateur Jootiya"}
                         </h3>
                         {/* Online Indicator simulation */}
-                        <div className="flex items-center gap-1.5 mt-1">
-                            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                            <span className="text-xs text-zinc-400 font-medium">En ligne</span>
+                        <div className="flex items-center gap-1 mt-1 md:mt-1.5">
+                            <span className="w-1.5 h-1.5 bg-green-500 rounded-full" />
+                            <span className="text-[10px] md:text-xs text-zinc-400 font-medium">En ligne</span>
                         </div>
                     </div>
                 </div>
@@ -198,9 +198,9 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
 
                             return (
                                 <div key={msg.id} className={cn("flex w-full", isMe ? "justify-end" : "justify-start")}>
-                                    <div className={cn("flex flex-col max-w-[85%] sm:max-w-[70%]", isMe ? "items-end" : "items-start")}>
+                                    <div className={cn("flex flex-col max-w-[90%] md:max-w-[70%]", isMe ? "items-end" : "items-start")}>
                                         <div className={cn(
-                                            "px-4 py-2.5 shadow-sm text-[15px] leading-relaxed break-words",
+                                            "px-3 py-2 md:px-4 md:py-2.5 shadow-sm text-sm md:text-[15px] leading-relaxed break-words",
                                             isMe
                                                 ? "bg-orange-500 text-white rounded-2xl rounded-tr-sm"
                                                 : "bg-white border border-zinc-100 text-zinc-800 rounded-2xl rounded-tl-sm"
@@ -208,7 +208,7 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                                             {msg.content}
                                         </div>
                                         <div className="flex items-center gap-1.5 mt-1 px-1">
-                                            <span className="text-[10px] text-zinc-400 font-medium">
+                                            <span className="text-[9px] md:text-[10px] text-zinc-400 font-medium">
                                                 {format(new Date(msg.created_at), "HH:mm")}
                                             </span>
                                             {isMe && (
@@ -225,13 +225,13 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
             </ScrollArea>
 
             {/* Smart Suggestions / Quick Replies */}
-            <div className="px-4 pb-2 flex gap-2 overflow-x-auto no-scrollbar mask-gradient-right">
+            <div className="px-3 md:px-4 pb-2 flex gap-2 overflow-x-auto no-scrollbar mask-gradient-right">
                 {/* Buyer Quick Replies */}
                 {currentUser.id !== conversation.seller_id && QUICK_REPLIES.map((reply) => (
                     <button
                         key={reply}
                         onClick={() => handleSendMessage(undefined, reply)}
-                        className="whitespace-nowrap px-3 py-1.5 bg-white border border-zinc-200 hover:border-orange-200 hover:bg-orange-50 text-zinc-600 hover:text-orange-600 rounded-full text-xs font-bold transition-all shadow-sm active:scale-95"
+                        className="whitespace-nowrap px-3 py-1.5 bg-white border border-zinc-200 hover:border-orange-200 hover:bg-orange-50 text-zinc-600 hover:text-orange-600 rounded-full text-[11px] md:text-xs font-bold transition-all shadow-sm active:scale-95"
                     >
                         {reply}
                     </button>
@@ -243,7 +243,7 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                         <button
                             key={reply}
                             onClick={() => handleSendMessage(undefined, reply)}
-                            className="whitespace-nowrap px-3 py-1.5 bg-orange-50 border border-orange-200 hover:bg-orange-100 text-orange-700 rounded-full text-xs font-bold transition-all shadow-sm active:scale-95 flex items-center gap-1"
+                            className="whitespace-nowrap px-3 py-1.5 bg-orange-50 border border-orange-200 hover:bg-orange-100 text-orange-700 rounded-full text-[11px] md:text-xs font-bold transition-all shadow-sm active:scale-95 flex items-center gap-1"
                         >
                             <span className="text-orange-500">✨</span> {reply}
                         </button>
@@ -251,36 +251,32 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
             </div>
 
             {/* Input Area */}
-            <div className="p-4 bg-white border-t border-zinc-100">
-                <form onSubmit={(e) => handleSendMessage(e)} className="flex items-end gap-2 bg-zinc-50 p-2 rounded-3xl border border-zinc-200 focus-within:border-orange-500 focus-within:ring-4 focus-within:ring-orange-500/10 transition-all">
-                    <Button type="button" size="icon" variant="ghost" className="h-10 w-10 rounded-full text-zinc-400 hover:text-zinc-600 hover:bg-white shrink-0">
+            <div className="p-3 md:p-4 bg-white border-t border-zinc-100 sticky bottom-0">
+                <form onSubmit={(e) => handleSendMessage(e)} className="flex items-end gap-2 bg-zinc-50 p-1.5 md:p-2 rounded-3xl border border-zinc-200 focus-within:border-orange-500 transition-all">
+                    <Button type="button" size="icon" variant="ghost" className="h-9 w-9 md:h-10 md:w-10 rounded-full text-zinc-400 hover:text-zinc-600 hover:bg-white shrink-0">
                         <Paperclip className="h-5 w-5" />
                     </Button>
 
                     <Input
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
-                        placeholder="Écrivez un message..."
-                        className="flex-1 bg-transparent border-none focus-visible:ring-0 px-2 min-h-[40px] max-h-[120px] py-2.5 font-medium placeholder:text-zinc-400"
+                        placeholder="Message..."
+                        className="flex-1 bg-transparent border-none focus-visible:ring-0 px-1 py-2 font-medium placeholder:text-zinc-400 text-sm md:text-base"
                     />
-
-                    <Button type="button" size="icon" variant="ghost" className="h-10 w-10 rounded-full text-zinc-400 hover:text-zinc-600 hover:bg-white shrink-0">
-                        <Smile className="h-5 w-5" />
-                    </Button>
 
                     <Button
                         type="submit"
                         size="icon"
                         disabled={!newMessage.trim() || isSending}
                         className={cn(
-                            "h-10 w-10 rounded-full shrink-0 transition-all shadow-lg shadow-orange-500/20",
-                            newMessage.trim() ? "bg-orange-500 hover:bg-orange-600 text-white scale-100" : "bg-zinc-200 text-zinc-400 scale-90"
+                            "h-9 w-9 md:h-10 md:w-10 rounded-full shrink-0 transition-all",
+                            newMessage.trim() ? "bg-orange-500 text-white" : "bg-zinc-200 text-zinc-400"
                         )}
                     >
-                        {isSending ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5 ml-0.5" />}
+                        {isSending ? <Loader2 className="h-4 w-4 md:h-5 md:w-5 animate-spin" /> : <Send className="h-4 w-4 md:h-5 md:w-5 ml-0.5" />}
                     </Button>
                 </form>
-                <div className="text-center mt-2">
+                <div className="text-center mt-1 hidden md:block">
                     <p className="text-[10px] text-zinc-400">Appuyez sur Entrée pour envoyer</p>
                 </div>
             </div>
