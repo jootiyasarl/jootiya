@@ -16,6 +16,7 @@ import Image from "next/image";
 import { generateSmartReplies } from "@/lib/smartReplies";
 import { ChatAudioRecorder } from "./ChatAudioRecorder";
 import { ChatAudioPlayer } from "./ChatAudioPlayer";
+import { toast } from "sonner";
 
 interface ChatWindowProps {
     conversation: Conversation;
@@ -114,7 +115,7 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
 
         if (error) {
             console.error("Error sending message:", error);
-            alert("Erreur lors de l'envoi.");
+            toast.error("Erreur lors de l'envoi de la message.");
         } else if (data) {
             setNewMessage("");
             setShowAudioRecorder(false);

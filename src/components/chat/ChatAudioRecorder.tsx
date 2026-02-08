@@ -5,6 +5,7 @@ import { Mic, X, Trash2, Send, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabaseClient";
+import { toast } from "sonner";
 
 interface ChatAudioRecorderProps {
     onSend: (fileUrl: string) => void;
@@ -25,7 +26,12 @@ export function ChatAudioRecorder({ onSend, onCancel }: ChatAudioRecorderProps) 
     const startRecording = async () => {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            const mediaRecorder = new MediaRecorder(stream);
+
+            // Detect supported MIME type
+            const MIME_TYPES = ["audio/webm", "audio/mp4", "audio/mpeg", "audio/ogg", "audio/wav", "audio/aac"];
+            const mimeType = MIME_TYPES.find(type => MediaRecorder.isTypeSupported(type)) || "";
+
+            const mediaRecorder = new MediaRecorder(stream, { mimeType });
             mediaRecorderRef.current = mediaRecorder;
             chunksRef.current = [];
 
@@ -39,10 +45,11 @@ export function ChatAudioRecorder({ onSend, onCancel }: ChatAudioRecorderProps) 
                     return;
                 }
 
-                const audioBlob = new Blob(chunksRef.current, { type: "audio/webm" });
+                const mimeType = mediaRecorderRef.current?.mimeType || "audio/webm";
+                const audioBlob = new Blob(chunksRef.current, { type: mimeType });
                 if (audioBlob.size < 1000) return; // Too short
 
-                await uploadAudio(audioBlob);
+                await uploadAudio(audioBlob, mimeType);
             };
 
             mediaRecorder.start();
@@ -53,7 +60,7 @@ export function ChatAudioRecorder({ onSend, onCancel }: ChatAudioRecorderProps) 
             }, 1000);
         } catch (err) {
             console.error("Microphone access denied:", err);
-            alert("Accès au microphone refusé.");
+            toast.error("Accès au microphone refusé.");
         }
     };
 
@@ -67,9 +74,20 @@ export function ChatAudioRecorder({ onSend, onCancel }: ChatAudioRecorderProps) 
         if (shouldCleanup) onCancel();
     };
 
-    const uploadAudio = async (blob: Blob) => {
+    const uploadAudio = async (blob: Blob, mimeType: string) => {
         setIsUploading(true);
-        const fileName = `${Date.now()}.webm`;
+
+        // Map MIME type to extension
+        const extensions: Record<string, string> = {
+            'audio/webm': 'webm',
+            'audio/mp4': 'mp4',
+            'audio/mpeg': 'mp3',
+            'audio/ogg': 'ogg',
+            'audio/wav': 'wav',
+            'audio/aac': 'aac'
+        };
+        const ext = extensions[mimeType.split(';')[0]] || 'webm';
+        const fileName = `${Date.now()}.${ext}`;
         const filePath = `chat-audios/${fileName}`;
 
         const { data, error } = await supabase.storage
@@ -78,7 +96,14 @@ export function ChatAudioRecorder({ onSend, onCancel }: ChatAudioRecorderProps) 
 
         if (error) {
             console.error("Upload error:", error);
-            alert("Erreur lors de l'envoi du vocal.");
+            // Check for specific error types if possible, or provide general guidance
+            if (error.message.includes("403")) {
+                toast.error("Erreur de permission (403) : Vérifiez les RLS de Supabase.");
+            } else if (error.message.includes("413")) {
+                toast.error("Fichier trop volumineux.");
+            } else {
+                toast.error("Erreur lors de l'envoi du vocal.");
+            }
         } else {
             const { data: { publicUrl } } = supabase.storage
                 .from("chat-audios")
