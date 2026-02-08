@@ -29,11 +29,8 @@ export function UnifiedSearchBar() {
     const [category, setCategory] = useState(CATEGORIES[0]);
     const [location, setLocation] = useState("Choisir ville - secteur");
 
-    const [isCategoryOpen, setIsCategoryOpen] = useState(false);
-    const [isLocationOpen, setIsLocationOpen] = useState(false);
-
-    const categoryRef = useRef<HTMLDivElement>(null);
-    const locationRef = useRef<HTMLDivElement>(null);
+    const [activeMenu, setActiveMenu] = useState<'category' | 'location' | null>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
 
     const handleSearch = () => {
         const params = new URLSearchParams();
@@ -54,11 +51,8 @@ export function UnifiedSearchBar() {
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
-            if (categoryRef.current && !categoryRef.current.contains(event.target as Node)) {
-                setIsCategoryOpen(false);
-            }
-            if (locationRef.current && !locationRef.current.contains(event.target as Node)) {
-                setIsLocationOpen(false);
+            if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+                setActiveMenu(null);
             }
         }
         document.addEventListener("mousedown", handleClickOutside);
@@ -66,7 +60,7 @@ export function UnifiedSearchBar() {
     }, []);
 
     return (
-        <div className="w-full max-w-6xl mx-auto px-4">
+        <div className="w-full max-w-6xl mx-auto px-4" ref={containerRef}>
             {/* Desktop Version */}
             <div className="hidden lg:flex items-center bg-white border border-zinc-200 rounded-full shadow-lg shadow-zinc-200/50 p-1.5 h-16">
                 {/* Keyword Search */}
@@ -83,30 +77,34 @@ export function UnifiedSearchBar() {
                 </div>
 
                 {/* Category Select */}
-                <div className="relative border-r border-zinc-100 h-full flex items-center min-w-[220px]" ref={categoryRef}>
+                <div className="relative border-r border-zinc-100 h-full flex items-center min-w-[220px]">
                     <button
                         type="button"
-                        onClick={() => {
-                            setIsCategoryOpen(!isCategoryOpen);
-                            setIsLocationOpen(false);
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setActiveMenu(prev => prev === 'category' ? null : 'category');
                         }}
-                        className="flex items-center justify-between w-full h-full px-6 gap-3 text-zinc-700 hover:text-orange-600 transition-colors"
+                        className="flex items-center justify-between w-full h-full px-6 gap-3 text-zinc-700 hover:text-orange-600 transition-colors z-10"
                     >
-                        <div className="flex items-center gap-2 overflow-hidden">
+                        <div className="flex items-center gap-2 overflow-hidden pointer-events-none">
                             <LayoutGrid className="w-5 h-5 text-orange-500 shrink-0" />
                             <span className="text-[14px] font-bold truncate">{category.label}</span>
                         </div>
-                        <ChevronDown className={cn("w-4 h-4 text-zinc-400 transition-transform duration-300", isCategoryOpen && "rotate-180")} />
+                        <ChevronDown className={cn("w-4 h-4 text-zinc-400 transition-transform duration-300 pointer-events-none", activeMenu === 'category' && "rotate-180")} />
                     </button>
 
-                    {isCategoryOpen && (
-                        <div className="absolute top-full left-0 mt-2 w-64 bg-white border border-zinc-100 rounded-2xl shadow-2xl py-2 z-50 max-h-[400px] overflow-y-auto no-scrollbar animate-in fade-in zoom-in-95 duration-200">
+                    {activeMenu === 'category' && (
+                        <div
+                            className="absolute top-full left-0 mt-2 w-64 bg-white border border-zinc-100 rounded-2xl shadow-2xl py-2 z-50 max-h-[400px] overflow-y-auto no-scrollbar animate-in fade-in zoom-in-95 duration-200"
+                            onClick={(e) => e.stopPropagation()}
+                        >
                             {CATEGORIES.map((cat) => (
                                 <button
                                     key={cat.id}
-                                    onClick={() => {
+                                    onClick={(e) => {
+                                        e.stopPropagation();
                                         setCategory(cat);
-                                        setIsCategoryOpen(false);
+                                        setActiveMenu(null);
                                     }}
                                     className={cn(
                                         "w-full text-left px-4 py-2.5 text-[14px] font-medium transition-colors hover:bg-orange-50 hover:text-orange-600",
@@ -121,33 +119,37 @@ export function UnifiedSearchBar() {
                 </div>
 
                 {/* Location Select */}
-                <div className="relative h-full flex items-center min-w-[240px]" ref={locationRef}>
+                <div className="relative h-full flex items-center min-w-[240px]">
                     <button
                         type="button"
-                        onClick={() => {
-                            setIsLocationOpen(!isLocationOpen);
-                            setIsCategoryOpen(false);
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setActiveMenu(prev => prev === 'location' ? null : 'location');
                         }}
-                        className="flex items-center justify-between w-full h-full px-6 gap-3 text-zinc-700 hover:text-orange-600 transition-colors"
+                        className="flex items-center justify-between w-full h-full px-6 gap-3 text-zinc-700 hover:text-orange-600 transition-colors z-10"
                     >
-                        <div className="flex items-center gap-2 overflow-hidden">
+                        <div className="flex items-center gap-2 overflow-hidden pointer-events-none">
                             <div className="w-8 h-8 bg-zinc-50 rounded-full flex items-center justify-center shrink-0">
                                 <MapPin className="w-4.5 h-4.5 text-zinc-900" />
                             </div>
                             <span className="text-[14px] font-bold truncate">{location}</span>
                         </div>
-                        <ChevronDown className={cn("w-4 h-4 text-zinc-400 transition-transform duration-300", isLocationOpen && "rotate-180")} />
+                        <ChevronDown className={cn("w-4 h-4 text-zinc-400 transition-transform duration-300 pointer-events-none", activeMenu === 'location' && "rotate-180")} />
                     </button>
 
-                    {isLocationOpen && (
-                        <div className="absolute top-full right-0 mt-2 w-72 bg-white border border-zinc-100 rounded-2xl shadow-2xl py-2 z-50 max-h-[400px] overflow-y-auto no-scrollbar animate-in fade-in zoom-in-95 duration-200">
+                    {activeMenu === 'location' && (
+                        <div
+                            className="absolute top-full right-0 mt-2 w-72 bg-white border border-zinc-100 rounded-2xl shadow-2xl py-2 z-50 max-h-[400px] overflow-y-auto no-scrollbar animate-in fade-in zoom-in-95 duration-200"
+                            onClick={(e) => e.stopPropagation()}
+                        >
                             <div className="px-4 py-2 border-b border-zinc-50 mb-1">
                                 <p className="text-[11px] font-black uppercase tracking-wider text-zinc-400">Villes du Maroc</p>
                             </div>
                             <button
-                                onClick={() => {
+                                onClick={(e) => {
+                                    e.stopPropagation();
                                     setLocation("Toutes les villes");
-                                    setIsLocationOpen(false);
+                                    setActiveMenu(null);
                                 }}
                                 className="w-full text-left px-4 py-2.5 text-[14px] font-bold text-orange-600 hover:bg-orange-50"
                             >
@@ -156,9 +158,10 @@ export function UnifiedSearchBar() {
                             {ALL_CITIES.map((city) => (
                                 <button
                                     key={city}
-                                    onClick={() => {
+                                    onClick={(e) => {
+                                        e.stopPropagation();
                                         setLocation(city);
-                                        setIsLocationOpen(false);
+                                        setActiveMenu(null);
                                     }}
                                     className={cn(
                                         "w-full text-left px-4 py-2.5 text-[14px] font-medium transition-colors hover:bg-orange-50 hover:text-orange-600",
@@ -200,29 +203,33 @@ export function UnifiedSearchBar() {
                 {/* Selects Grid */}
                 <div className="grid grid-cols-2 gap-2">
                     {/* Category Dropdown Mobile */}
-                    <div className="relative" ref={categoryRef}>
+                    <div className="relative">
                         <button
                             type="button"
-                            onClick={() => {
-                                setIsCategoryOpen(!isCategoryOpen);
-                                setIsLocationOpen(false);
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setActiveMenu(prev => prev === 'category' ? null : 'category');
                             }}
-                            className="flex items-center justify-between w-full bg-white border border-zinc-200 rounded-xl px-3 h-10 text-zinc-700"
+                            className="flex items-center justify-between w-full bg-white border border-zinc-200 rounded-xl px-3 h-10 text-zinc-700 z-10"
                         >
-                            <div className="flex items-center gap-2 min-w-0">
+                            <div className="flex items-center gap-2 min-w-0 pointer-events-none">
                                 <LayoutGrid className="w-3.5 h-3.5 text-orange-500 shrink-0" />
                                 <span className="text-[11px] font-black uppercase tracking-tight truncate">{category.label}</span>
                             </div>
-                            <ChevronDown className={cn("w-3 h-3 text-zinc-400 shrink-0 transition-transform", isCategoryOpen && "rotate-180")} />
+                            <ChevronDown className={cn("w-3 h-3 text-zinc-400 shrink-0 transition-transform pointer-events-none", activeMenu === 'category' && "rotate-180")} />
                         </button>
-                        {isCategoryOpen && (
-                            <div className="absolute top-full left-0 mt-1 w-[calc(200%+8px)] bg-white border border-zinc-100 rounded-xl shadow-xl py-2 z-[60] max-h-64 overflow-y-auto">
+                        {activeMenu === 'category' && (
+                            <div
+                                className="absolute top-full left-0 mt-1 w-[calc(200%+8px)] bg-white border border-zinc-100 rounded-xl shadow-xl py-2 z-[60] max-h-64 overflow-y-auto"
+                                onClick={(e) => e.stopPropagation()}
+                            >
                                 {CATEGORIES.map((cat) => (
                                     <button
                                         key={cat.id}
-                                        onClick={() => {
+                                        onClick={(e) => {
+                                            e.stopPropagation();
                                             setCategory(cat);
-                                            setIsCategoryOpen(false);
+                                            setActiveMenu(null);
                                         }}
                                         className="w-full text-left px-4 py-2.5 text-[12px] font-bold text-zinc-600 active:bg-orange-50 uppercase tracking-tight"
                                     >
@@ -234,29 +241,33 @@ export function UnifiedSearchBar() {
                     </div>
 
                     {/* Location Dropdown Mobile */}
-                    <div className="relative" ref={locationRef}>
+                    <div className="relative">
                         <button
                             type="button"
-                            onClick={() => {
-                                setIsLocationOpen(!isLocationOpen);
-                                setIsCategoryOpen(false);
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setActiveMenu(prev => prev === 'location' ? null : 'location');
                             }}
-                            className="flex items-center justify-between w-full bg-white border border-zinc-200 rounded-xl px-3 h-10 text-zinc-700"
+                            className="flex items-center justify-between w-full bg-white border border-zinc-200 rounded-xl px-3 h-10 text-zinc-700 z-10"
                         >
-                            <div className="flex items-center gap-2 min-w-0">
+                            <div className="flex items-center gap-2 min-w-0 pointer-events-none">
                                 <MapPin className="w-3.5 h-3.5 text-zinc-900 shrink-0" />
                                 <span className="text-[11px] font-black uppercase tracking-tight truncate">{location === "Choisir ville - secteur" ? "Ma ville" : location}</span>
                             </div>
-                            <ChevronDown className={cn("w-3 h-3 text-zinc-400 shrink-0 transition-transform", isLocationOpen && "rotate-180")} />
+                            <ChevronDown className={cn("w-3 h-3 text-zinc-400 shrink-0 transition-transform pointer-events-none", activeMenu === 'location' && "rotate-180")} />
                         </button>
-                        {isLocationOpen && (
-                            <div className="absolute top-full right-0 mt-1 w-[calc(200%+8px)] bg-white border border-zinc-100 rounded-xl shadow-xl py-2 z-[60] max-h-64 overflow-y-auto">
+                        {activeMenu === 'location' && (
+                            <div
+                                className="absolute top-full right-0 mt-1 w-[calc(200%+8px)] bg-white border border-zinc-100 rounded-xl shadow-xl py-2 z-[60] max-h-64 overflow-y-auto"
+                                onClick={(e) => e.stopPropagation()}
+                            >
                                 {ALL_CITIES.map((city) => (
                                     <button
                                         key={city}
-                                        onClick={() => {
+                                        onClick={(e) => {
+                                            e.stopPropagation();
                                             setLocation(city);
-                                            setIsLocationOpen(false);
+                                            setActiveMenu(null);
                                         }}
                                         className="w-full text-left px-4 py-2.5 text-[12px] font-bold text-zinc-600 active:bg-orange-50 uppercase tracking-tight"
                                     >
