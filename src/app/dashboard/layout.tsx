@@ -63,7 +63,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             onClick={() => setSidebarOpen(false)}
           />
           <div className="fixed inset-y-0 left-0 z-[70] w-[85%] max-w-sm bg-white lg:hidden animate-in slide-in-from-left duration-300 ease-out flex flex-col shadow-2xl">
-            <DashboardSidebar />
+            <DashboardSidebar onItemClick={() => setSidebarOpen(false)} />
           </div>
         </>
       )}

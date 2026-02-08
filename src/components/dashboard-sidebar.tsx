@@ -20,7 +20,11 @@ import {
 import { cn } from "@/lib/utils";
 import { useNotifications } from "@/hooks/useNotifications";
 
-export function DashboardSidebar() {
+interface DashboardSidebarProps {
+  onItemClick?: () => void;
+}
+
+export function DashboardSidebar({ onItemClick }: DashboardSidebarProps) {
   const pathname = usePathname();
   const { unreadCount: notificationsCount } = useNotifications();
 
@@ -111,6 +115,7 @@ export function DashboardSidebar() {
                   <Link
                     key={item.href}
                     href={item.href}
+                    onClick={onItemClick}
                     className={cn(
                       "flex items-center justify-between group rounded-xl px-3 py-2.5 text-sm font-bold transition-all duration-200 select-none active:scale-[0.97]",
                       isActive
@@ -155,7 +160,10 @@ export function DashboardSidebar() {
             <p className="text-[11px] text-zinc-400 leading-relaxed mb-4">
               Boostez vos ventes avec des analyses détaillées et une visibilité prioritaire.
             </p>
-            <button className="w-full rounded-xl bg-orange-600 py-2.5 text-xs font-black shadow-lg shadow-orange-900/40 hover:bg-orange-700 transition-all active:scale-[0.98]">
+            <button
+              onClick={onItemClick}
+              className="w-full rounded-xl bg-orange-600 py-2.5 text-xs font-black shadow-lg shadow-orange-900/40 hover:bg-orange-700 transition-all active:scale-[0.98]"
+            >
               En savoir plus
             </button>
           </div>
