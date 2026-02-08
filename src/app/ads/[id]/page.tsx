@@ -39,7 +39,7 @@ export default async function AdPage({ params }: AdPageProps) {
   let query = supabase
     .from("ads")
     .select(
-      "id, title, description, price, currency, city, neighborhood, created_at, image_urls, category, status, views_count, seller_id, slug, condition, profiles(phone)"
+      "id, title, description, price, currency, city, neighborhood, created_at, image_urls, category, status, views_count, seller_id, slug, condition, phone, profiles(phone)"
     );
 
   if (isUuid) {
@@ -242,7 +242,7 @@ export default async function AdPage({ params }: AdPageProps) {
                     adId={ad.id}
                     sellerId={ad.seller_id}
                     currentUser={user}
-                    sellerPhone={Array.isArray(ad.profiles) ? ad.profiles[0]?.phone : ad.profiles?.phone}
+                    sellerPhone={ad.phone || (Array.isArray(ad.profiles) ? ad.profiles[0]?.phone : ad.profiles?.phone)}
                   />
                 </div>
               </div>
@@ -293,7 +293,7 @@ export default async function AdPage({ params }: AdPageProps) {
       <MobileAdActions
         adId={ad.id}
         sellerId={ad.seller_id}
-        sellerPhone={Array.isArray(ad.profiles) ? ad.profiles[0]?.phone : ad.profiles?.phone}
+        sellerPhone={ad.phone || (Array.isArray(ad.profiles) ? ad.profiles[0]?.phone : ad.profiles?.phone)}
         currentUser={user}
       />
 

@@ -36,8 +36,13 @@ export function ContactActions({ adId, sellerId, sellerPhone, currentUser }: Con
             alert("Numéro de téléphone non disponible.");
             return;
         }
-        const cleanPhone = sellerPhone.replace(/[\s\-\(\)]/g, '');
-        const formatPhone = cleanPhone.startsWith('0') ? '212' + cleanPhone.substring(1) : cleanPhone;
+        // Keep only digits
+        const cleanPhone = sellerPhone.replace(/\D/g, '');
+        // Format for WhatsApp: if it's a local Moroccan number (06... or 07...), prepend 212
+        const formatPhone = (cleanPhone.startsWith('0') && cleanPhone.length === 10)
+            ? '212' + cleanPhone.substring(1)
+            : cleanPhone;
+
         window.open(`https://wa.me/${formatPhone}`, '_blank');
     };
 
