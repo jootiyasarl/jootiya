@@ -108,7 +108,7 @@ export function ChatAudioRecorder({ onSend, onCancel }: ChatAudioRecorderProps) 
             } else if (error.message.includes("413")) {
                 toast.error("Fichier trop volumineux.");
             } else {
-                toast.error("Erreur lors de l'envoi du vocal.");
+                toast.error(`Erreur: ${error.message || "Echec de l'envoi"}`);
             }
         } else {
             const { data: { publicUrl } } = supabase.storage
