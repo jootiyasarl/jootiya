@@ -84,7 +84,7 @@ export default function SellerDashboard({ initialStats, initialAds, initialCount
                         <p className="mt-2 text-sm text-orange-800 dark:text-orange-300">
                             Les annonces avec 3 images ou plus reçoivent 2,5x plus de vues. Modifiez vos annonces pour ajouter plus de photos !
                         </p>
-                        <Button variant="outline" size="sm" className="mt-4 border-orange-200 text-orange-700 hover:bg-orange-100 dark:border-orange-800 dark:text-orange-300 dark:hover:bg-orange-900/50">
+                        <Button variant="outline" size="sm" className="mt-4 border-orange-200 text-orange-700 hover:bg-orange-100 dark:border-orange-800 dark:text-orange-300 dark:hover:bg-orange-900/50 shadow-none active:scale-95">
                             Vérifier la qualité
                         </Button>
                     </div>

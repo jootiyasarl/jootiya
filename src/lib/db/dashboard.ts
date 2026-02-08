@@ -5,12 +5,13 @@ export interface DashboardStats {
     approvedAds: number;
     pendingAds: number;
     revenue: number;
+    totalViews: number;
 }
 
 export async function getSellerStats(supabase: SupabaseClient, userId: string): Promise<DashboardStats> {
     const { data, error } = await supabase
         .from('ads')
-        .select('price, status')
+        .select('price, status, views_count')
         .eq('seller_id', userId);
 
     if (error) {
@@ -25,6 +26,7 @@ export async function getSellerStats(supabase: SupabaseClient, userId: string): 
         revenue: data
             .filter((ad) => ad.status === 'approved')
             .reduce((sum, ad) => sum + (Number(ad.price) || 0), 0),
+        totalViews: data.reduce((sum, ad) => sum + (Number(ad.views_count) || 0), 0),
     };
 
     return stats;

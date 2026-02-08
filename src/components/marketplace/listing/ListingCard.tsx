@@ -18,7 +18,7 @@ export function ListingCard(props: ListingCardProps) {
   } = props;
 
   return (
-    <article className="group cursor-pointer flex flex-col gap-3 bg-white hover:bg-zinc-50/50 transition-colors duration-200">
+    <article className="group cursor-pointer flex flex-col gap-3 bg-white hover:bg-zinc-50/50 transition-all duration-200 active:scale-[0.98] select-none">
       <Link href={href} className="flex flex-col gap-3">
         {/* Seller Info */}
         <div className="flex items-center gap-2 px-1">

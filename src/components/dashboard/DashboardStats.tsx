@@ -8,6 +8,7 @@ interface StatsProps {
         approvedAds: number;
         pendingAds: number;
         revenue: number;
+        totalViews: number;
     };
 }
 
@@ -42,7 +43,7 @@ export function DashboardStats({ stats }: StatsProps) {
         },
         {
             label: "Vues totales",
-            value: "2,4k",
+            value: stats.totalViews.toLocaleString(),
             sub: "+12% cette semaine",
             icon: Eye,
             color: "text-amber-600",

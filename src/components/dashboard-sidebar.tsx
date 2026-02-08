@@ -108,7 +108,7 @@ export function DashboardSidebar() {
                     key={item.href}
                     href={item.href}
                     className={cn(
-                      "flex items-center justify-between group rounded-xl px-3 py-2.5 text-sm font-bold transition-all duration-200",
+                      "flex items-center justify-between group rounded-xl px-3 py-2.5 text-sm font-bold transition-all duration-200 select-none active:scale-[0.97]",
                       isActive
                         ? "bg-orange-600 text-white shadow-lg shadow-orange-100 dark:shadow-none"
                         : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-100"
