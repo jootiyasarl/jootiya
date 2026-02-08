@@ -23,4 +23,6 @@ export type Message = {
     content: string;
     is_read: boolean;
     created_at: string;
+    message_type: 'text' | 'audio';
+    file_url?: string;
 };

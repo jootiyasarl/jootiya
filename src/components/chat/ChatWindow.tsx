@@ -7,13 +7,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Send, Paperclip, Smile, MoreVertical, CheckCheck, Loader2, ChevronLeft } from "lucide-react";
+import { Send, Paperclip, Smile, MoreVertical, CheckCheck, Loader2, ChevronLeft, Mic } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import Image from "next/image";
 import { generateSmartReplies } from "@/lib/smartReplies";
+import { ChatAudioRecorder } from "./ChatAudioRecorder";
+import { ChatAudioPlayer } from "./ChatAudioPlayer";
 
 interface ChatWindowProps {
     conversation: Conversation;
@@ -36,6 +38,7 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
     const [isSending, setIsSending] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
     const [isTyping, setIsTyping] = useState(false); // Simulator for now
+    const [showAudioRecorder, setShowAudioRecorder] = useState(false);
 
     // Fetch messages
     useEffect(() => {
@@ -89,13 +92,12 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
         }
     }, [messages, isLoading]);
 
-    const handleSendMessage = async (e?: React.FormEvent, contentOverride?: string) => {
+    const handleSendMessage = async (e?: React.FormEvent, contentOverride?: string, audioUrl?: string) => {
         e?.preventDefault();
         const content = contentOverride || newMessage.trim();
-        if (!content) return;
+        const messageType = audioUrl ? 'audio' : 'text';
 
-        // Optimistic Update (optional, but good for UX)
-        // For now, we wait for DB to be safe.
+        if (!content && !audioUrl) return;
 
         setIsSending(true);
         const { data, error } = await supabase
@@ -103,7 +105,9 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
             .insert({
                 conversation_id: conversation.id,
                 sender_id: currentUser.id,
-                content: content,
+                content: audioUrl ? "Audio message" : content,
+                message_type: messageType,
+                file_url: audioUrl || null
             })
             .select()
             .single();
@@ -113,6 +117,7 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
             alert("Erreur lors de l'envoi.");
         } else if (data) {
             setNewMessage("");
+            setShowAudioRecorder(false);
             onMessageSent(data as Message);
         }
         setIsSending(false);
@@ -205,7 +210,11 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                                                 ? "bg-orange-500 text-white rounded-2xl rounded-tr-sm"
                                                 : "bg-white border border-zinc-100 text-zinc-800 rounded-2xl rounded-tl-sm"
                                         )}>
-                                            {msg.content}
+                                            {msg.message_type === 'audio' ? (
+                                                <ChatAudioPlayer url={msg.file_url || ""} isMe={isMe} />
+                                            ) : (
+                                                msg.content
+                                            )}
                                         </div>
                                         <div className="flex items-center gap-1.5 mt-1 px-1">
                                             <span className="text-[9px] md:text-[10px] text-zinc-400 font-medium">
@@ -252,32 +261,53 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
 
             {/* Input Area */}
             <div className="p-3 md:p-4 bg-white border-t border-zinc-100 sticky bottom-0">
-                <form onSubmit={(e) => handleSendMessage(e)} className="flex items-end gap-2 bg-zinc-50 p-1.5 md:p-2 rounded-3xl border border-zinc-200 focus-within:border-orange-500 transition-all">
-                    <Button type="button" size="icon" variant="ghost" className="h-9 w-9 md:h-10 md:w-10 rounded-full text-zinc-400 hover:text-zinc-600 hover:bg-white shrink-0">
-                        <Paperclip className="h-5 w-5" />
-                    </Button>
+                <div className="flex items-end gap-2">
+                    {showAudioRecorder ? (
+                        <ChatAudioRecorder
+                            onSend={(url) => handleSendMessage(undefined, undefined, url)}
+                            onCancel={() => setShowAudioRecorder(false)}
+                        />
+                    ) : (
+                        <form onSubmit={(e) => handleSendMessage(e)} className="flex-1 flex items-end gap-2 bg-zinc-50 p-1.5 md:p-2 rounded-3xl border border-zinc-200 focus-within:border-orange-500 transition-all">
+                            <Button type="button" size="icon" variant="ghost" className="h-9 w-9 md:h-10 md:w-10 rounded-full text-zinc-400 hover:text-zinc-600 hover:bg-white shrink-0">
+                                <Paperclip className="h-5 w-5" />
+                            </Button>
 
-                    <Input
-                        value={newMessage}
-                        onChange={(e) => setNewMessage(e.target.value)}
-                        placeholder="Message..."
-                        className="flex-1 bg-transparent border-none focus-visible:ring-0 px-1 py-2 font-medium placeholder:text-zinc-400 text-sm md:text-base"
-                    />
+                            <Input
+                                value={newMessage}
+                                onChange={(e) => setNewMessage(e.target.value)}
+                                placeholder="Message..."
+                                className="flex-1 bg-transparent border-none focus-visible:ring-0 px-1 py-2 font-medium placeholder:text-zinc-400 text-sm md:text-base"
+                                onFocus={() => setShowAudioRecorder(false)}
+                            />
 
-                    <Button
-                        type="submit"
-                        size="icon"
-                        disabled={!newMessage.trim() || isSending}
-                        className={cn(
-                            "h-9 w-9 md:h-10 md:w-10 rounded-full shrink-0 transition-all",
-                            newMessage.trim() ? "bg-orange-500 text-white" : "bg-zinc-200 text-zinc-400"
-                        )}
-                    >
-                        {isSending ? <Loader2 className="h-4 w-4 md:h-5 md:w-5 animate-spin" /> : <Send className="h-4 w-4 md:h-5 md:w-5 ml-0.5" />}
-                    </Button>
-                </form>
+                            {newMessage.trim() ? (
+                                <Button
+                                    type="submit"
+                                    size="icon"
+                                    disabled={isSending}
+                                    className="h-9 w-9 md:h-10 md:w-10 rounded-full shrink-0 bg-orange-500 text-white transition-all"
+                                >
+                                    {isSending ? <Loader2 className="h-4 w-4 md:h-5 md:w-5 animate-spin" /> : <Send className="h-4 w-4 md:h-5 md:w-5 ml-0.5" />}
+                                </Button>
+                            ) : (
+                                <Button
+                                    type="button"
+                                    size="icon"
+                                    variant="ghost"
+                                    onClick={() => setShowAudioRecorder(true)}
+                                    className="h-9 w-9 md:h-10 md:w-10 rounded-full text-zinc-400 hover:text-orange-500 hover:bg-orange-50 shrink-0"
+                                >
+                                    <Mic className="h-5 w-5" />
+                                </Button>
+                            )}
+                        </form>
+                    )}
+                </div>
                 <div className="text-center mt-1 hidden md:block">
-                    <p className="text-[10px] text-zinc-400">Appuyez sur Entrée pour envoyer</p>
+                    <p className="text-[10px] text-zinc-400">
+                        {showAudioRecorder ? "Lâchez pour envoyer, glissez pour annuler" : "Appuyez sur Entrée pour envoyer"}
+                    </p>
                 </div>
             </div>
         </div>
