@@ -31,7 +31,8 @@ interface AdsTableProps {
 export function AdsTable({ ads, onDelete, onEdit }: AdsTableProps) {
     return (
         <div className="rounded-3xl border border-zinc-100 bg-white shadow-xl shadow-zinc-200/40 overflow-hidden dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-none">
-            <div className="overflow-x-auto">
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
                 <table className="w-full text-sm text-left border-collapse">
                     <thead>
                         <tr className="border-b border-zinc-50 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/30">
@@ -133,6 +134,71 @@ export function AdsTable({ ads, onDelete, onEdit }: AdsTableProps) {
                         )}
                     </tbody>
                 </table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden">
+                {ads.length === 0 ? (
+                    <div className="p-8 text-center bg-zinc-50/50">
+                        <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center mx-auto text-zinc-300 mb-4 shadow-sm border border-zinc-100">
+                            <TrendingUp className="w-8 h-8" />
+                        </div>
+                        <p className="text-zinc-500 font-bold mb-1">Aucune annonce</p>
+                        <p className="text-[10px] text-zinc-400 uppercase tracking-widest font-black">Créez votre première annonce !</p>
+                    </div>
+                ) : (
+                    <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
+                        {ads.map((ad) => (
+                            <div key={ad.id} className="p-4 flex gap-4 items-start active:bg-zinc-50 transition-colors">
+                                <div className="w-20 h-20 rounded-xl bg-zinc-100 overflow-hidden shrink-0 shadow-sm border border-zinc-200/50 flex items-center justify-center text-zinc-300">
+                                    <ShoppingBag size={24} />
+                                </div>
+                                <div className="flex-1 min-w-0 pt-1">
+                                    <div className="flex justify-between items-start gap-2 mb-1">
+                                        <h3 className="font-black text-zinc-900 dark:text-white text-sm line-clamp-2 leading-tight">
+                                            {ad.title}
+                                        </h3>
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger className="h-8 w-8 -mt-2 -mr-2 rounded-full text-zinc-300 hover:text-zinc-600 transition-colors flex items-center justify-center">
+                                                <MoreHorizontal size={16} />
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent className="w-48 rounded-2xl p-2 border-zinc-100 shadow-xl z-50">
+                                                <DropdownMenuItem onClick={() => onEdit(ad.id)} className="rounded-xl font-bold">
+                                                    <Pencil size={14} className="mr-2 opacity-50" /> Modifier
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem onClick={() => onDelete(ad.id)} className="rounded-xl font-bold text-red-600 focus:text-red-600 focus:bg-red-50">
+                                                    <Trash2 size={14} className="mr-2 opacity-50" /> Supprimer
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </div>
+
+                                    <div className="flex items-center gap-2 mb-2">
+                                        <span className={cn(
+                                            "inline-flex items-center px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-widest",
+                                            ad.status === 'approved' ? 'bg-emerald-50 text-emerald-600' :
+                                                ad.status === 'pending' ? 'bg-amber-50 text-amber-600' :
+                                                    'bg-zinc-100 text-zinc-500'
+                                        )}>
+                                            {ad.status === 'approved' ? 'Approuvé' : ad.status === 'pending' ? 'En attente' : ad.status}
+                                        </span>
+                                        <p className="text-[10px] text-zinc-400 font-bold truncate">#{ad.id.slice(0, 8)}</p>
+                                    </div>
+
+                                    <div className="flex items-center justify-between">
+                                        <p className="text-sm font-black text-orange-600">
+                                            {ad.price.toLocaleString()} <span className="text-[10px] text-orange-400">MAD</span>
+                                        </p>
+                                        <span className="text-[10px] font-bold text-zinc-400 flex items-center gap-1">
+                                            <Calendar size={10} />
+                                            {new Date(ad.created_at).toLocaleDateString("fr-FR")}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
         </div>
     );

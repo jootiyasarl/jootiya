@@ -62,7 +62,7 @@ export default function SellerDashboard({ initialStats, initialAds, initialCount
                     </p>
                 </div>
                 <Link href="/marketplace/post">
-                    <Button size="lg" className="rounded-2xl shadow-lg hover:shadow-xl transition-all">
+                    <Button size="lg" className="w-full sm:w-auto rounded-2xl shadow-lg hover:shadow-xl transition-all">
                         <Plus className="mr-2 h-5 w-5" /> Publier une annonce
                     </Button>
                 </Link>
