@@ -65,7 +65,7 @@ export function AdsTable({ ads, onDelete, onEdit }: AdsTableProps) {
                                                 <ShoppingBag size={20} />
                                             </div>
                                             <div>
-                                                <p className="font-black text-zinc-900 dark:text-white mb-0.5 line-clamp-1 group-hover:text-blue-600 transition-colors uppercase tracking-tight">
+                                                <p className="font-black text-zinc-900 dark:text-white mb-0.5 line-clamp-1 group-hover:text-orange-600 transition-colors uppercase tracking-tight">
                                                     {ad.title}
                                                 </p>
                                                 <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
@@ -98,7 +98,7 @@ export function AdsTable({ ads, onDelete, onEdit }: AdsTableProps) {
                                     <td className="px-6 py-5 text-right">
                                         <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                             <Link href={`/marketplace/${ad.id}`}>
-                                                <Button size="icon" variant="ghost" className="h-9 w-9 rounded-xl text-zinc-400 hover:text-blue-600 hover:bg-blue-50 transition-all">
+                                                <Button size="icon" variant="ghost" className="h-9 w-9 rounded-xl text-zinc-400 hover:text-orange-600 hover:bg-orange-50 transition-all">
                                                     <Eye size={16} />
                                                 </Button>
                                             </Link>

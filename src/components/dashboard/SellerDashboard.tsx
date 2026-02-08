@@ -79,12 +79,12 @@ export default function SellerDashboard({ initialStats, initialAds, initialCount
 
                 {/* Quick Actions / Activity Feed or just a placeholder for now to balance grid */}
                 <div className="lg:col-span-3 space-y-4">
-                    <div className="rounded-2xl border border-blue-100 bg-blue-50/50 p-6 dark:border-blue-900/30 dark:bg-blue-900/10">
-                        <h3 className="font-semibold text-blue-900 dark:text-blue-100">Astuce Pro</h3>
-                        <p className="mt-2 text-sm text-blue-700 dark:text-blue-300">
+                    <div className="rounded-2xl border border-orange-100 bg-orange-50/50 p-6 dark:border-orange-900/30 dark:bg-orange-900/10">
+                        <h3 className="font-semibold text-orange-900 dark:text-orange-100">Astuce Pro</h3>
+                        <p className="mt-2 text-sm text-orange-800 dark:text-orange-300">
                             Les annonces avec 3 images ou plus reçoivent 2,5x plus de vues. Modifiez vos annonces pour ajouter plus de photos !
                         </p>
-                        <Button variant="outline" size="sm" className="mt-4 border-blue-200 text-blue-700 hover:bg-blue-100 dark:border-blue-800 dark:text-blue-300 dark:hover:bg-blue-900/50">
+                        <Button variant="outline" size="sm" className="mt-4 border-orange-200 text-orange-700 hover:bg-orange-100 dark:border-orange-800 dark:text-orange-300 dark:hover:bg-orange-900/50">
                             Vérifier la qualité
                         </Button>
                     </div>

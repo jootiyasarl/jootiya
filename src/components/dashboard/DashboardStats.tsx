@@ -27,9 +27,9 @@ export function DashboardStats({ stats }: StatsProps) {
             value: stats.totalAds,
             sub: "Toutes périodes",
             icon: ShoppingBag,
-            color: "text-blue-600",
-            bg: "bg-blue-50",
-            border: "border-blue-100"
+            color: "text-orange-600",
+            bg: "bg-orange-50",
+            border: "border-orange-100"
         },
         {
             label: "Annonces actives",

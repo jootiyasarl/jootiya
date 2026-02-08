@@ -24,8 +24,8 @@ export function DashboardCharts() {
                         <AreaChart data={data}>
                             <defs>
                                 <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
-                                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                                    <stop offset="5%" stopColor="#f97316" stopOpacity={0.3} />
+                                    <stop offset="95%" stopColor="#f97316" stopOpacity={0} />
                                 </linearGradient>
                             </defs>
                             <XAxis
@@ -53,7 +53,7 @@ export function DashboardCharts() {
                             <Area
                                 type="monotone"
                                 dataKey="total"
-                                stroke="#3b82f6"
+                                stroke="#f97316"
                                 strokeWidth={2}
                                 fillOpacity={1}
                                 fill="url(#colorTotal)"
