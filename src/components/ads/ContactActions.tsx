@@ -1,3 +1,5 @@
+"use client";
+
 // Imports updated
 import { useState } from "react";
 import { useRouter } from "next/navigation";
