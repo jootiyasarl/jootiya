@@ -19,7 +19,7 @@ export default function TermsOfServicePage() {
                 <div className="container mx-auto max-w-4xl text-center relative z-10">
                     <h1 className="text-4xl md:text-6xl font-black text-white mb-6 tracking-tight">Conditions d'Utilisation</h1>
                     <p className="text-zinc-400 text-lg md:text-xl font-medium">Gérez vos interactions avec nous en toute transparence</p>
-                    <div className="w-24 h-2 bg-blue-500 mx-auto mt-10 rounded-full shadow-lg shadow-blue-500/20"></div>
+                    <div className="w-24 h-2 bg-orange-500 mx-auto mt-10 rounded-full shadow-lg shadow-orange-500/20"></div>
                 </div>
             </div>
 
@@ -27,7 +27,7 @@ export default function TermsOfServicePage() {
                 <div className="prose prose-zinc max-w-none space-y-12 text-zinc-700 leading-relaxed text-lg text-left">
                     <div className="p-10 bg-blue-50/30 rounded-[2.5rem] border border-blue-100/50 shadow-sm text-center">
                         <p className="text-xl md:text-2xl font-semibold text-zinc-800">
-                            En utilisant notre site <span className="text-blue-600 font-black">jootiya.com</span>, vous acceptez de respecter les conditions générales suivantes pour une expérience sécurisée.
+                            En utilisant notre site <span className="text-orange-600 font-black">jootiya.com</span>, vous acceptez de respecter les conditions générales suivantes pour une expérience sécurisée.
                         </p>
                     </div>
 
@@ -46,12 +46,12 @@ export default function TermsOfServicePage() {
 
                         <section className="group">
                             <div className="flex items-center gap-4 mb-6">
-                                <div className="p-3 bg-blue-100 text-blue-600 rounded-xl group-hover:bg-blue-600 group-hover:text-white transition-all">
+                                <div className="p-3 bg-orange-100 text-orange-600 rounded-xl group-hover:bg-orange-600 group-hover:text-white transition-all">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>
                                 </div>
                                 <h2 className="text-3xl font-black text-zinc-900">Avis de non-responsabilité</h2>
                             </div>
-                            <p className="text-zinc-600 text-lg leading-loose pl-6 border-l-4 border-blue-500 ml-2">
+                            <p className="text-zinc-600 text-lg leading-loose pl-6 border-l-4 border-orange-500 ml-2">
                                 Les informations fournies sont à titre informatif. Nous nous efforçons d'être précis mais ne sommes pas responsables de toute mauvaise utilisation des informations.
                             </p>
                         </section>
@@ -70,10 +70,10 @@ export default function TermsOfServicePage() {
                     </article>
 
                     <div className="mt-20 p-8 md:p-12 bg-zinc-900 rounded-[3rem] text-center text-white shadow-2xl overflow-hidden relative">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"></div>
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl"></div>
                         <h3 className="text-2xl font-bold mb-4">Besoin de plus d'informations ?</h3>
                         <p className="text-zinc-400 mb-8">Si vous avez des questions concernant les conditions, n'hésitez pas à nous contacter.</p>
-                        <a href="mailto:contact@jootiya.com" className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-2xl font-black transition-all shadow-lg shadow-blue-500/20">
+                        <a href="mailto:contact@jootiya.com" className="bg-orange-600 hover:bg-orange-700 text-white px-10 py-4 rounded-2xl font-black transition-all shadow-lg shadow-orange-500/20">
                             Contactez-nous
                         </a>
                     </div>

@@ -94,7 +94,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               type="button"
               variant="ghost"
               size="sm"
-              className="h-10 px-4 rounded-xl text-sm font-bold text-blue-600 hover:bg-blue-50 transition-all flex items-center gap-2 group"
+              className="h-10 px-4 rounded-xl text-sm font-bold text-orange-600 hover:bg-orange-50 transition-all flex items-center gap-2 group"
               onClick={handleBackToHome}
             >
               <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
@@ -110,7 +110,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               className="h-10 w-10 rounded-xl border-zinc-200 text-zinc-600 hover:bg-zinc-50 relative"
             >
               <Bell className="h-5 w-5" />
-              <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-blue-600 rounded-full border-2 border-white" />
+              <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-orange-600 rounded-full border-2 border-white" />
             </Button>
 
             <DropdownMenu>

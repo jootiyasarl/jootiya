@@ -146,7 +146,7 @@ export function MobileAdActions({ adId, sellerId, sellerPhone, currentUser }: Mo
                     size="icon"
                     onClick={handleMessageClick}
                     disabled={isCreatingChat}
-                    className="h-14 w-14 rounded-2xl border-zinc-200 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 transition-colors"
+                    className="h-14 w-14 rounded-2xl border-zinc-200 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-200 transition-colors"
                 >
                     <MessageCircle className={cn("h-6 w-6", isCreatingChat && "animate-pulse")} />
                 </Button>

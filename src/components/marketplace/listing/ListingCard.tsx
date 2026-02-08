@@ -46,7 +46,7 @@ export function ListingCard(props: ListingCardProps) {
 
           {/* Heart Overlay */}
           <button
-            className="absolute right-3 top-3 z-10 p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm text-zinc-800 hover:text-blue-600 transition-colors"
+            className="absolute right-3 top-3 z-10 p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm text-zinc-800 hover:text-orange-600 transition-colors"
             onClick={(e) => {
               e.preventDefault();
             }}
@@ -55,7 +55,7 @@ export function ListingCard(props: ListingCardProps) {
           </button>
 
           {badgeLabel && (
-            <div className="absolute left-3 top-3 rounded-lg bg-blue-600 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
+            <div className="absolute left-3 top-3 rounded-lg bg-orange-600 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
               {badgeLabel === "Featured" ? "À la une" : badgeLabel}
             </div>
           )}

@@ -45,7 +45,7 @@ export default async function MarketplacePage({
             {error.details && <p className="font-mono text-xs text-red-700 mt-1">Details: {error.details}</p>}
             {error.hint && <p className="font-mono text-xs text-red-700 mt-1">Hint: {error.hint}</p>}
           </div>
-          <Link href="/marketplace" className="inline-block px-6 py-2 bg-blue-600 text-white rounded-xl font-bold">Ressayer</Link>
+          <Link href="/marketplace" className="inline-block px-6 py-2 bg-orange-600 text-white rounded-xl font-bold">Ressayer</Link>
         </div>
       </div>
     );

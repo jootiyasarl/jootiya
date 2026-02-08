@@ -11,9 +11,9 @@ export default function AboutUsPage() {
         <div className="bg-white min-h-screen" dir="ltr">
             {/* Dynamic Header */}
             <div className="bg-zinc-900 py-32 px-4 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-orange-600/20 to-blue-600/10"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-orange-600/20 to-orange-600/10"></div>
                 <div className="absolute -top-24 -left-24 w-96 h-96 bg-orange-500/20 rounded-full blur-[120px]"></div>
-                <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px]"></div>
+                <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-orange-500/10 rounded-full blur-[120px]"></div>
 
                 <div className="container mx-auto max-w-5xl text-center relative z-10">
                     <h1 className="text-5xl md:text-7xl font-black text-white mb-8 tracking-tighter">
@@ -44,7 +44,7 @@ export default function AboutUsPage() {
                         </p>
                     </div>
                     <div className="relative group">
-                        <div className="absolute -inset-4 bg-gradient-to-tr from-orange-500 to-blue-600 rounded-[3rem] blur-2xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
+                        <div className="absolute -inset-4 bg-gradient-to-tr from-orange-500 to-orange-600 rounded-[3rem] blur-2xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
                         <div className="relative aspect-square rounded-[3rem] overflow-hidden shadow-2xl bg-zinc-900 flex flex-col items-center justify-center p-12 text-center text-white">
                             <div className="w-32 h-32 bg-white/10 rounded-full flex items-center justify-center mb-10 group-hover:scale-110 transition-transform duration-500 ring-4 ring-white/5">
                                 <span className="text-6xl">🚀</span>
@@ -70,7 +70,7 @@ export default function AboutUsPage() {
                             <div className="text-zinc-500 font-bold text-xl">Annonces Publiées</div>
                         </div>
                         <div className="space-y-4">
-                            <div className="text-6xl font-black text-blue-600 tracking-tighter">24/7</div>
+                            <div className="text-6xl font-black text-orange-600 tracking-tighter">24/7</div>
                             <div className="text-zinc-500 font-bold text-xl">Support Client</div>
                         </div>
                     </div>

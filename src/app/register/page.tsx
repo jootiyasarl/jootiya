@@ -96,7 +96,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
     <div className="min-h-screen relative overflow-hidden bg-zinc-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       {/* Background Ambience */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-blue-500/5 blur-[120px]" />
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-orange-500/5 blur-[120px]" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-purple-500/5 blur-[120px]" />
       </div>
 
@@ -105,7 +105,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
           <ChevronLeft className="w-4 h-4 rotate-180 group-hover:-translate-x-1 transition-transform" />
           <span className="text-sm font-bold">العودة للرئيسية</span>
         </Link>
-        <h1 className="text-3xl font-black tracking-tighter text-blue-600 mb-2">JOOTIYA</h1>
+        <h1 className="text-3xl font-black tracking-tighter text-orange-600 mb-2">JOOTIYA</h1>
         <h2 className="text-3xl font-bold text-zinc-900">إنشاء حساب جديد</h2>
         <p className="mt-2 text-zinc-500 text-sm">ابدأ البيع والشراء في أكبر سوق مغربي</p>
       </div>
@@ -131,7 +131,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
                 <Label htmlFor="email" className="text-sm font-bold text-zinc-700 mr-1">البريد الإلكتروني</Label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                    <Mail className="h-4 w-4 text-zinc-400 group-focus-within:text-blue-500 transition-colors" />
+                    <Mail className="h-4 w-4 text-zinc-400 group-focus-within:text-orange-500 transition-colors" />
                   </div>
                   <Input
                     id="email"
@@ -148,7 +148,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
                 <Label htmlFor="password" className="text-sm font-bold text-zinc-700 mr-1">كلمة المرور</Label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                    <Lock className="h-4 w-4 text-zinc-400 group-focus-within:text-blue-500 transition-colors" />
+                    <Lock className="h-4 w-4 text-zinc-400 group-focus-within:text-orange-500 transition-colors" />
                   </div>
                   <Input
                     id="password"
@@ -166,14 +166,14 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
               <SubmitButton
                 label="إنشاء الحساب"
                 loadingLabel="جاري الإنشاء..."
-                className="w-full h-12 text-sm font-bold rounded-2xl bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-200 transition-all active:scale-[0.98] mt-2"
+                className="w-full h-12 text-sm font-bold rounded-2xl bg-orange-600 hover:bg-orange-700 text-white shadow-lg shadow-orange-200 transition-all active:scale-[0.98] mt-2"
               />
             </form>
 
             <div className="mt-8 pt-8 border-t border-zinc-100 text-center">
               <p className="text-sm text-zinc-500">
                 لديك حساب بالفعل؟{' '}
-                <Link href="/login" className="font-bold text-blue-600 hover:text-blue-700 transition-colors">
+                <Link href="/login" className="font-bold text-orange-600 hover:text-orange-700 transition-colors">
                   سجل الدخول الآن
                 </Link>
               </p>

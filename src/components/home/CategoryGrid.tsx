@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Smartphone, Car, Shirt, Package, ArrowRight, Armchair, Hammer, Gamepad2, PawPrint, BookOpen, Tag } from "lucide-react";
 
 const CATEGORIES = [
-    { id: "electronics", label: "Électronique", icon: Smartphone, color: "bg-blue-100 text-blue-600", href: "/marketplace?category=electronics" },
+    { id: "electronics", label: "Électronique", icon: Smartphone, color: "bg-orange-100 text-orange-600", href: "/marketplace?category=electronics" },
     { id: "home-furniture", label: "Maison & Ameublement", icon: Armchair, color: "bg-green-100 text-green-600", href: "/marketplace?category=home-furniture" },
     { id: "vehicles", label: "Véhicules & Transport", icon: Car, color: "bg-orange-100 text-orange-600", href: "/marketplace?category=vehicles" },
     { id: "fashion", label: "Mode & Chaussures", icon: Shirt, color: "bg-pink-100 text-pink-600", href: "/marketplace?category=fashion" },

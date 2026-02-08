@@ -29,7 +29,7 @@ export function MarketplaceSearchBar({
       <button
         type="button"
         onClick={onSubmit}
-        className="absolute right-2 p-2 bg-blue-600 rounded-lg text-white hover:bg-blue-700 transition-colors"
+        className="absolute right-2 p-2 bg-orange-600 rounded-lg text-white hover:bg-orange-700 transition-colors"
       >
         <Search className="h-4 w-4" />
       </button>

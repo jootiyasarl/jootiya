@@ -71,7 +71,7 @@ export default function SettingsPage() {
                     </Card>
 
                     <div className="flex justify-end">
-                        <Button className="bg-blue-600 hover:bg-blue-700">
+                        <Button className="bg-orange-600 hover:bg-orange-700">
                             Enregistrer les modifications
                         </Button>
                     </div>

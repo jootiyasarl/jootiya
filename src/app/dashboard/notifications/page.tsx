@@ -36,12 +36,12 @@ export default function NotificationsPage() {
                     <div
                         key={notif.id}
                         className={`p-6 rounded-3xl border transition-all hover:shadow-lg hover:shadow-zinc-200/50 hover:scale-[1.01] duration-300 ${notif.read
-                                ? "bg-white border-zinc-100 dark:bg-zinc-900 dark:border-zinc-800"
-                                : "bg-white border-blue-200 shadow-md shadow-blue-100/50 dark:bg-blue-900/10 dark:border-blue-800"
+                            ? "bg-white border-zinc-100 dark:bg-zinc-900 dark:border-zinc-800"
+                            : "bg-white border-orange-200 shadow-md shadow-orange-100/50 dark:bg-orange-900/10 dark:border-orange-800"
                             }`}
                     >
                         <div className="flex gap-5">
-                            <div className={`mt-1 w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-sm ${notif.read ? "bg-zinc-50 text-zinc-400" : "bg-blue-600 text-white shadow-blue-200"
+                            <div className={`mt-1 w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-sm ${notif.read ? "bg-zinc-50 text-zinc-400" : "bg-orange-600 text-white shadow-orange-200"
                                 }`}>
                                 <Bell size={20} />
                             </div>
@@ -54,7 +54,7 @@ export default function NotificationsPage() {
                                 </div>
                                 <p className="text-sm text-zinc-500 mt-2 font-medium leading-relaxed">{notif.message}</p>
                                 {!notif.read && (
-                                    <div className="mt-3 inline-flex items-center gap-2 text-xs font-bold text-blue-600 cursor-pointer hover:underline">
+                                    <div className="mt-3 inline-flex items-center gap-2 text-xs font-bold text-orange-600 cursor-pointer hover:underline">
                                         Marquer comme lu
                                     </div>
                                 )}

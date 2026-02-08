@@ -41,7 +41,7 @@ export default function FeaturedAds() {
                     <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
                         Fresh Recommendations
                     </h2>
-                    <a href="/marketplace" className="text-sm font-semibold text-blue-600 hover:underline dark:text-blue-400">
+                    <a href="/marketplace" className="text-sm font-semibold text-orange-600 hover:underline dark:text-orange-400">
                         View All &rarr;
                     </a>
                 </div>

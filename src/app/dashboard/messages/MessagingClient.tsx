@@ -127,7 +127,7 @@ export function MessagingClient({ initialConversations, currentUser }: Messaging
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
                         <Input
                             placeholder="Rechercher..."
-                            className="pl-10 h-10 md:h-11 rounded-xl bg-zinc-50 border-none ring-offset-transparent focus-visible:ring-blue-600 focus-visible:ring-1 text-sm"
+                            className="pl-10 h-10 md:h-11 rounded-xl bg-zinc-50 border-none ring-offset-transparent focus-visible:ring-orange-600 focus-visible:ring-1 text-sm"
                         />
                     </div>
                 </div>
@@ -146,7 +146,7 @@ export function MessagingClient({ initialConversations, currentUser }: Messaging
                                 className={cn(
                                     "w-full flex items-center gap-4 p-4 transition-all border-l-4 hover:bg-zinc-50 outline-none",
                                     selectedId === conv.id
-                                        ? "bg-blue-50/50 border-blue-600"
+                                        ? "bg-orange-50/50 border-orange-600"
                                         : "border-transparent"
                                 )}
                             >
@@ -178,7 +178,7 @@ export function MessagingClient({ initialConversations, currentUser }: Messaging
                                             {format(new Date(conv.last_message_at), 'HH:mm', { locale: fr })}
                                         </span>
                                     </div>
-                                    <p className="text-xs font-bold text-blue-600 truncate mb-1">
+                                    <p className="text-xs font-bold text-orange-600 truncate mb-1">
                                         {conv.ad?.title || "Annonce supprimée"}
                                     </p>
                                     <p className="text-[11px] font-medium text-zinc-400 truncate">

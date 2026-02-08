@@ -37,10 +37,10 @@ export function AdCard({ ad, canBoost, onEdit, onDelete }: { ad: Ad; canBoost?: 
 
       <div className="p-4">
         <div className="flex items-start justify-between gap-2">
-          <h3 className="line-clamp-2 text-lg font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 transition-colors">
+          <h3 className="line-clamp-2 text-lg font-semibold text-gray-900 dark:text-white group-hover:text-orange-600 transition-colors">
             {ad.title}
           </h3>
-          <span className="shrink-0 rounded-full bg-blue-100 px-3 py-1 text-sm font-bold text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+          <span className="shrink-0 rounded-full bg-orange-100 px-3 py-1 text-sm font-bold text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">
             {currencyDisplay} {priceDisplay}
           </span>
         </div>

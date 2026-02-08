@@ -29,7 +29,7 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
     <div className="min-h-screen relative overflow-hidden bg-zinc-50 dark:bg-zinc-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       {/* Background Ambience */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-blue-500/10 blur-[120px]" />
+        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-orange-500/10 blur-[120px]" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-purple-500/10 blur-[120px]" />
       </div>
 
@@ -40,7 +40,7 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
       <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10">
         <Link href="/" className="flex justify-center mb-6">
           {/* Logo could go here, text for now */}
-          <span className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+          <span className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-indigo-600 bg-clip-text text-transparent">
             JOOTIYA
           </span>
         </Link>
@@ -60,7 +60,7 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
             <div className="mb-6 rounded-xl bg-blue-50/80 p-4 border border-blue-100 dark:bg-blue-900/20 dark:border-blue-800">
               <div className="flex">
                 <div className="flex-shrink-0">
-                  <svg className="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                  <svg className="h-5 w-5 text-orange-400" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                   </svg>
                 </div>
@@ -99,7 +99,7 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
 
         <p className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
           Don't have an account?{' '}
-          <Link href="/register" className="font-semibold text-blue-600 hover:text-blue-500 dark:text-blue-400">
+          <Link href="/register" className="font-semibold text-orange-600 hover:text-orange-500 dark:text-orange-400">
             Create one for free
           </Link>
         </p>

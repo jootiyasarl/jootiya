@@ -41,7 +41,7 @@ type AdFormValues = {
 };
 
 const CATEGORIES = [
-    { id: 'electronics', label: 'Électronique', icon: Smartphone, color: 'text-blue-500', bg: 'bg-blue-50/50', border: 'border-blue-100' },
+    { id: 'electronics', label: 'Électronique', icon: Smartphone, color: 'text-orange-500', bg: 'bg-orange-50/50', border: 'border-orange-100' },
     { id: 'home-furniture', label: 'Maison & Ameublement', icon: Armchair, color: 'text-green-500', bg: 'bg-green-50/50', border: 'border-green-100' },
     { id: 'vehicles', label: 'Véhicules & Transport', icon: Car, color: 'text-orange-500', bg: 'bg-orange-50/50', border: 'border-orange-100' },
     { id: 'fashion', label: 'Mode & Chaussures', icon: Shirt, color: 'text-pink-500', bg: 'bg-pink-50/50', border: 'border-pink-100' },

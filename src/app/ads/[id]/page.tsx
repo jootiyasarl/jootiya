@@ -139,7 +139,7 @@ export default async function AdPage({ params }: AdPageProps) {
               {/* Description Card */}
               <div className="rounded-3xl bg-white p-6 shadow-md shadow-zinc-200/50 border border-zinc-100 sm:p-8">
                 <h2 className="mb-6 text-xl font-bold flex items-center gap-2">
-                  <span className="h-8 w-1.5 rounded-full bg-blue-600" />
+                  <span className="h-8 w-1.5 rounded-full bg-orange-600" />
                   Détails de l'annonce
                 </h2>
                 <div className="prose prose-zinc max-w-none text-[16px] leading-relaxed text-zinc-700 whitespace-pre-wrap">
@@ -156,8 +156,8 @@ export default async function AdPage({ params }: AdPageProps) {
                     <span className="text-xs uppercase tracking-wider text-zinc-400 font-bold">État</span>
                     <p className="font-semibold text-zinc-900">
                       {ad.condition === 'new' ? (
-                        <span className="flex items-center gap-1.5 text-blue-600">
-                          <span className="w-2 h-2 rounded-full bg-blue-600" />
+                        <span className="flex items-center gap-1.5 text-orange-600">
+                          <span className="w-2 h-2 rounded-full bg-orange-600" />
                           Neuf
                         </span>
                       ) : (
@@ -248,7 +248,7 @@ export default async function AdPage({ params }: AdPageProps) {
                   <div className="space-y-0.5">
                     <div className="flex items-center gap-1.5 font-bold text-zinc-900">
                       Utilisateur Jootiya
-                      <CheckCircle2 className="h-4 w-4 text-blue-500" />
+                      <CheckCircle2 className="h-4 w-4 text-orange-500" />
                     </div>
                     <div className="text-sm text-zinc-500">Membre actif depuis 1 an</div>
                   </div>

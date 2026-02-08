@@ -45,7 +45,7 @@ export function MobileFilterTrigger(props: MarketplaceFilterSidebarProps) {
 
                     <div className="border-t p-4">
                         <Button
-                            className="w-full h-14 rounded-2xl bg-blue-600 text-white font-bold text-lg shadow-lg shadow-blue-100"
+                            className="w-full h-14 rounded-2xl bg-orange-600 text-white font-bold text-lg shadow-lg shadow-orange-100"
                             onClick={() => setIsOpen(false)}
                         >
                             Voir les résultats

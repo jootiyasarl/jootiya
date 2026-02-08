@@ -5,20 +5,20 @@ export default function PostAdPage() {
     return (
         <div className="min-h-screen bg-[#fafafa] dark:bg-zinc-950 relative overflow-hidden pb-20">
             {/* Dynamic Background Elements */}
-            <div className="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-blue-50/50 to-transparent dark:from-blue-900/10 dark:to-transparent pointer-events-none" />
-            <div className="absolute top-[10%] -left-[10%] w-[40%] h-[40%] bg-blue-400/5 rounded-full blur-[120px] pointer-events-none animate-pulse" />
+            <div className="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-orange-50/50 to-transparent dark:from-orange-900/10 dark:to-transparent pointer-events-none" />
+            <div className="absolute top-[10%] -left-[10%] w-[40%] h-[40%] bg-orange-400/5 rounded-full blur-[120px] pointer-events-none animate-pulse" />
             <div className="absolute top-[20%] -right-[10%] w-[30%] h-[30%] bg-purple-400/5 rounded-full blur-[100px] pointer-events-none" />
 
             <div className="container relative mx-auto px-4 pt-16 md:pt-24">
                 {/* Header Section */}
                 <div className="mb-10 text-center max-w-2xl mx-auto space-y-4">
                     <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white shadow-sm border border-zinc-100 mb-2">
-                        <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+                        <Sparkles className="w-3.5 h-3.5 text-orange-600" />
                         <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-900">Vendez sur Jootiya</span>
                     </div>
 
                     <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-zinc-900 dark:text-white leading-tight">
-                        Donnez une seconde <span className="text-blue-600">vie à vos objets</span>
+                        Donnez une seconde <span className="text-orange-600">vie à vos objets</span>
                     </h1>
 
                     <p className="text-zinc-500 text-base md:text-lg font-medium max-w-lg mx-auto leading-relaxed">

@@ -84,7 +84,7 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
                             className={cn(
                                 "relative h-20 w-28 flex-shrink-0 overflow-hidden rounded-xl border-2 transition-all",
                                 currentIndex === index
-                                    ? "border-blue-600 ring-2 ring-blue-600/20"
+                                    ? "border-orange-600 ring-2 ring-orange-600/20"
                                     : "border-transparent hover:border-zinc-300"
                             )}
                         >
