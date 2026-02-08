@@ -115,7 +115,7 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
 
         if (error) {
             console.error("Error sending message:", error);
-            toast.error("Erreur lors de l'envoi de la message.");
+            toast.error("Erreur lors de l'envoi du message.");
         } else if (data) {
             setNewMessage("");
             setShowAudioRecorder(false);

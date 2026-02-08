@@ -24,6 +24,11 @@ export function ChatAudioRecorder({ onSend, onCancel }: ChatAudioRecorderProps) 
     const startXRef = useRef<number | null>(null);
 
     const startRecording = async () => {
+        if (typeof window === 'undefined' || !navigator.mediaDevices || !window.MediaRecorder) {
+            toast.error("Votre navigateur ne supporte pas l'enregistrement audio.");
+            return;
+        }
+
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
@@ -31,7 +36,8 @@ export function ChatAudioRecorder({ onSend, onCancel }: ChatAudioRecorderProps) 
             const MIME_TYPES = ["audio/webm", "audio/mp4", "audio/mpeg", "audio/ogg", "audio/wav", "audio/aac"];
             const mimeType = MIME_TYPES.find(type => MediaRecorder.isTypeSupported(type)) || "";
 
-            const mediaRecorder = new MediaRecorder(stream, { mimeType });
+            const options = mimeType ? { mimeType } : {};
+            const mediaRecorder = new MediaRecorder(stream, options);
             mediaRecorderRef.current = mediaRecorder;
             chunksRef.current = [];
 
