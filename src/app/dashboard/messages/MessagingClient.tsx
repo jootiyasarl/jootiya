@@ -13,6 +13,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import { toast } from "sonner";
 
 interface MessagingClientProps {
     initialConversations: Conversation[];
@@ -105,12 +106,13 @@ export function MessagingClient({ initialConversations, currentUser }: Messaging
             .insert({
                 conversation_id: selectedId,
                 sender_id: currentUser.id,
-                content: content
+                content: content,
+                message_type: 'text'
             });
 
         if (error) {
             console.error("Error sending message:", error);
-            alert("Erreur lors de l'envoi du message");
+            toast.error("Erreur lors de l'envoi du message");
         }
     };
 
