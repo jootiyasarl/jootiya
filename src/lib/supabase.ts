@@ -21,6 +21,27 @@ export function createSupabaseServerClient() {
   });
 }
 
+export async function getAuthenticatedServerClient() {
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get("sb-access-token")?.value;
+
+  const options: any = {
+    auth: {
+      persistSession: false,
+    },
+  };
+
+  if (accessToken) {
+    options.global = {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
+  }
+
+  return createClient(supabaseUrl as string, supabaseAnonKey as string, options);
+}
+
 export async function setAuthSession(session: Session) {
   const cookieStore = await cookies();
   const secure = process.env.NODE_ENV === "production";

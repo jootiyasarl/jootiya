@@ -1,8 +1,8 @@
-import { createSupabaseServerClient } from "../supabase";
+import { getAuthenticatedServerClient } from "../supabase";
 import { Conversation } from "@/types/messaging";
 
 export async function getConversations() {
-    const supabase = createSupabaseServerClient();
+    const supabase = await getAuthenticatedServerClient();
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) return [];

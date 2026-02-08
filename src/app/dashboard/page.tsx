@@ -1,4 +1,4 @@
-import { createSupabaseServerClient, getServerUser } from "@/lib/supabase";
+import { createSupabaseServerClient, getServerUser, getAuthenticatedServerClient } from "@/lib/supabase";
 import { getSellerAds, getSellerStats } from "@/lib/db/dashboard";
 import SellerDashboard from "@/components/dashboard/SellerDashboard";
 import { redirect } from "next/navigation";
@@ -10,7 +10,7 @@ export default async function DashboardPage() {
     redirect("/login?redirectTo=/dashboard");
   }
 
-  const supabase = createSupabaseServerClient();
+  const supabase = await getAuthenticatedServerClient();
 
   // Fetch data in parallel using the server client
   const [stats, { ads, count }] = await Promise.all([
