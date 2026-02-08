@@ -35,6 +35,7 @@ function PublicNavbar() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
 
   const isAdminEmail = (email: string) => email === "jootiyasarl@gmail.com";
 
@@ -49,6 +50,15 @@ function PublicNavbar() {
       if (session?.user?.email) {
         setUserEmail(session.user.email);
         setIsAdmin(isAdminEmail(session.user.email));
+
+        // Check for unread messages
+        const { count } = await supabase
+          .from('messages')
+          .select('*', { count: 'exact', head: true })
+          .eq('is_read', false)
+          .neq('sender_id', session.user.id);
+
+        setHasUnreadMessages(count !== null && count > 0);
       }
     };
 
@@ -58,9 +68,20 @@ function PublicNavbar() {
       if (event === "SIGNED_IN") {
         setUserEmail(session?.user?.email ?? null);
         setIsAdmin(session?.user?.email ? isAdminEmail(session.user.email) : false);
+
+        // Re-check unread on sign in
+        if (session?.user) {
+          supabase
+            .from('messages')
+            .select('*', { count: 'exact', head: true })
+            .eq('is_read', false)
+            .neq('sender_id', session.user.id)
+            .then(({ count }) => setHasUnreadMessages(count !== null && count > 0));
+        }
       } else if (event === "SIGNED_OUT") {
         setUserEmail(null);
         setIsAdmin(false);
+        setHasUnreadMessages(false);
       }
     });
 
@@ -134,9 +155,12 @@ function PublicNavbar() {
                 <span className="text-[11px] font-bold text-zinc-600 group-hover:text-orange-600 transition-colors uppercase tracking-tight -mt-1">Favoris</span>
               </Link>
 
-              <Link href="/dashboard/messages" className="flex flex-col items-center gap-0 px-4 py-1 group transition-colors">
-                <div className="p-1.5 rounded-full group-hover:bg-orange-50 transition-colors">
+              <Link href="/dashboard/messages" className="flex flex-col items-center gap-0 px-4 py-1 group transition-colors relative">
+                <div className="p-1.5 rounded-full group-hover:bg-orange-50 transition-colors relative">
                   <MessageCircle className="w-5 h-5 text-zinc-800 group-hover:text-orange-600 transition-colors" />
+                  {hasUnreadMessages && (
+                    <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white" />
+                  )}
                 </div>
                 <span className="text-[11px] font-bold text-zinc-600 group-hover:text-orange-600 transition-colors uppercase tracking-tight -mt-1">Messages</span>
               </Link>

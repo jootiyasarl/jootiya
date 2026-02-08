@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import { Conversation, Message } from "@/types/messaging";
+import { ChatWindow } from "@/components/chat/ChatWindow";
 import { Search, Send, MessageSquare, User, MoreVertical, Paperclip, Smile } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -190,130 +191,18 @@ export function MessagingClient({ initialConversations, currentUser }: Messaging
             {/* Main Chat Area */}
             <div className="hidden md:flex flex-1 flex-col bg-zinc-50/30">
                 {activeConversation ? (
-                    <>
-                        {/* Chat Header */}
-                        <div className="p-4 bg-white border-b border-zinc-100 flex items-center justify-between shadow-sm relative z-10">
-                            <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-zinc-100 overflow-hidden shadow-sm">
-                                    {activeConversation.other_party?.avatar_url ? (
-                                        <Image
-                                            src={activeConversation.other_party.avatar_url}
-                                            alt={activeConversation.other_party.full_name}
-                                            width={40}
-                                            height={40}
-                                            className="object-cover"
-                                        />
-                                    ) : (
-                                        <div className="w-full h-full flex items-center justify-center text-zinc-400">
-                                            <User className="w-5 h-5" />
-                                        </div>
-                                    )}
-                                </div>
-                                <div>
-                                    <h3 className="font-black text-zinc-900 text-sm uppercase leading-tight">
-                                        {activeConversation.other_party?.full_name || "Utilisateur"}
-                                    </h3>
-                                    <div className="flex items-center gap-1.5 mt-0.5">
-                                        <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
-                                        <p className="text-[10px] font-black uppercase text-zinc-400 tracking-wider">En ligne</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="flex items-center gap-2">
-                                <Link
-                                    href={`/ads/${activeConversation.ad_id}`}
-                                    className="hidden lg:flex items-center gap-2 bg-zinc-50 px-3 py-1.5 rounded-lg border border-zinc-100 group transition-all hover:bg-zinc-100"
-                                >
-                                    <div className="w-6 h-6 rounded bg-white overflow-hidden border border-zinc-100 relative shadow-sm">
-                                        {activeConversation.ad?.image_urls?.[0] && (
-                                            <Image
-                                                src={activeConversation.ad.image_urls[0]}
-                                                alt={activeConversation.ad.title}
-                                                fill
-                                                className="object-cover"
-                                            />
-                                        )}
-                                    </div>
-                                    <span className="text-[11px] font-bold text-zinc-600 truncate max-w-[150px]">
-                                        {activeConversation.ad?.title}
-                                    </span>
-                                </Link>
-                                <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg text-zinc-400 transition-all hover:bg-zinc-50 hover:text-zinc-900">
-                                    <MoreVertical className="w-5 h-5" />
-                                </Button>
-                            </div>
-                        </div>
-
-                        {/* Messages Area */}
-                        <div className="flex-1 overflow-y-auto p-6 space-y-4 no-scrollbar">
-                            {isLoadingMessages ? (
-                                <div className="flex items-center justify-center h-full text-zinc-400 animate-pulse text-sm font-bold">
-                                    Chargement des messages...
-                                </div>
-                            ) : messages.length === 0 ? (
-                                <div className="flex flex-col items-center justify-center h-full p-8 text-center text-zinc-400 opacity-50">
-                                    <MessageSquare className="w-8 h-8 mb-2" />
-                                    <p className="text-xs font-bold">Dites bonjour ! Commencez la discussion.</p>
-                                </div>
-                            ) : (
-                                messages.map((msg, idx) => {
-                                    const isMe = msg.sender_id === currentUser.id;
-                                    return (
-                                        <div
-                                            key={msg.id}
-                                            className={cn("flex flex-col", isMe ? "items-end" : "items-start")}
-                                        >
-                                            <div className={cn(
-                                                "max-w-[80%] rounded-2xl px-4 py-3 shadow-sm transition-all",
-                                                isMe
-                                                    ? "bg-zinc-900 text-white rounded-tr-none"
-                                                    : "bg-white text-zinc-800 border border-zinc-100 rounded-tl-none"
-                                            )}>
-                                                <p className="text-sm font-medium leading-relaxed">{msg.content}</p>
-                                            </div>
-                                            <span className="text-[10px] font-bold text-zinc-400 mt-1.5 px-1 uppercase tracking-wider">
-                                                {format(new Date(msg.created_at), 'HH:mm', { locale: fr })}
-                                            </span>
-                                        </div>
-                                    );
-                                })
-                            )}
-                            <div ref={messagesEndRef} />
-                        </div>
-
-                        {/* Input Area */}
-                        <div className="p-4 bg-white border-t border-zinc-100">
-                            <form
-                                onSubmit={handleSendMessage}
-                                className="relative flex items-center gap-2"
-                            >
-                                <div className="flex-1 relative">
-                                    <Input
-                                        value={newMessage}
-                                        onChange={(e) => setNewMessage(e.target.value)}
-                                        placeholder="Votre message..."
-                                        className="h-12 pl-4 pr-24 rounded-2xl bg-zinc-50 border-none ring-offset-transparent focus-visible:ring-blue-600 focus-visible:ring-1 font-medium"
-                                    />
-                                    <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-                                        <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-zinc-400 hover:text-zinc-600 hover:bg-transparent">
-                                            <Smile className="w-5 h-5" />
-                                        </Button>
-                                        <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-zinc-400 hover:text-zinc-600 hover:bg-transparent">
-                                            <Paperclip className="w-5 h-5" />
-                                        </Button>
-                                    </div>
-                                </div>
-                                <Button
-                                    type="submit"
-                                    disabled={!newMessage.trim()}
-                                    className="h-12 w-12 rounded-2xl bg-blue-600 shadow-lg shadow-blue-100 hover:bg-blue-700 hover:scale-105 active:scale-95 transition-all p-0 disabled:opacity-50 disabled:scale-100"
-                                >
-                                    <Send className="w-5 h-5 fill-white" />
-                                </Button>
-                            </form>
-                        </div>
-                    </>
+                    <ChatWindow
+                        conversation={activeConversation}
+                        currentUser={currentUser}
+                        onMessageSent={(msg) => {
+                            // Update conversation list last_message_at
+                            setConversations(prev => prev.map(c =>
+                                c.id === activeConversation.id
+                                    ? { ...c, last_message_at: msg.created_at }
+                                    : c
+                            ).sort((a, b) => new Date(b.last_message_at).getTime() - new Date(a.last_message_at).getTime()));
+                        }}
+                    />
                 ) : (
                     <div className="flex flex-col items-center justify-center h-full p-8 text-center text-zinc-400">
                         <div className="w-20 h-20 rounded-3xl bg-zinc-100 flex items-center justify-center mb-6 shadow-sm">

@@ -1,11 +1,20 @@
-"use client";
-
+// Imports updated
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Phone, MessageCircle, AlertCircle } from "lucide-react";
+import { Phone, MessageCircle, AlertCircle, Send, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 import { cn } from "@/lib/utils";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+    DialogFooter,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 
 interface ContactActionsProps {
     adId: string;
@@ -16,7 +25,9 @@ interface ContactActionsProps {
 
 export function ContactActions({ adId, sellerId, sellerPhone, currentUser }: ContactActionsProps) {
     const router = useRouter();
-    const [isCreatingChat, setIsCreatingChat] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+    const [message, setMessage] = useState("");
+    const [isSending, setIsSending] = useState(false);
 
     const handleWhatsAppClick = () => {
         if (!sellerPhone) {
@@ -28,22 +39,27 @@ export function ContactActions({ adId, sellerId, sellerPhone, currentUser }: Con
         window.open(`https://wa.me/${formatPhone}`, '_blank');
     };
 
-    const handleMessageClick = async () => {
+    const handleQuickMessage = async () => {
         if (!currentUser) {
             router.push(`/login?redirectTo=/ads/${adId}`);
             return;
         }
 
+        // Prevent messaging self
         if (currentUser.id === sellerId) {
             alert("Vous ne pouvez pas vous envoyer un message à vous-même.");
+            setIsOpen(false);
             return;
         }
 
-        setIsCreatingChat(true);
+        if (!message.trim()) return;
+
+        setIsSending(true);
 
         try {
-            // 1. Check if conversation already exists
-            const { data: existingConv, error: fetchError } = await supabase
+            // 1. Get or Create Conversation
+            let conversationId;
+            const { data: existingConv } = await supabase
                 .from('conversations')
                 .select('id')
                 .eq('ad_id', adId)
@@ -51,34 +67,46 @@ export function ContactActions({ adId, sellerId, sellerPhone, currentUser }: Con
                 .eq('seller_id', sellerId)
                 .single();
 
-            if (fetchError && fetchError.code !== 'PGRST116') { // PGRST116 is 'no rows found'
-                throw fetchError;
-            }
-
             if (existingConv) {
-                router.push(`/dashboard/messages?id=${existingConv.id}`);
-                return;
+                conversationId = existingConv.id;
+            } else {
+                const { data: newConv, error: insertConvError } = await supabase
+                    .from('conversations')
+                    .insert({
+                        ad_id: adId,
+                        buyer_id: currentUser.id,
+                        seller_id: sellerId
+                    })
+                    .select('id')
+                    .single();
+
+                if (insertConvError) throw insertConvError;
+                conversationId = newConv.id;
             }
 
-            // 2. Create new conversation
-            const { data: newConv, error: insertError } = await supabase
-                .from('conversations')
+            // 2. Send Message
+            const { error: msgError } = await supabase
+                .from('messages')
                 .insert({
-                    ad_id: adId,
-                    buyer_id: currentUser.id,
-                    seller_id: sellerId
-                })
-                .select('id')
-                .single();
+                    conversation_id: conversationId,
+                    sender_id: currentUser.id,
+                    content: message.trim()
+                });
 
-            if (insertError) throw insertError;
+            if (msgError) throw msgError;
 
-            router.push(`/dashboard/messages?id=${newConv.id}`);
-        } catch (error: any) {
-            console.error("Error creating conversation:", error);
-            alert("Impossible de démarrer la discussion. Veuillez réessayer.");
+            // Success feedback
+            setIsOpen(false);
+            setMessage("");
+            // Optional: Redirect to chat or show toast
+            // For now, we redirect to full chat to continue conversation
+            router.push(`/dashboard/messages?id=${conversationId}`);
+
+        } catch (error) {
+            console.error("Error sending message:", error);
+            alert("Erreur lors de l'envoi du message.");
         } finally {
-            setIsCreatingChat(false);
+            setIsSending(false);
         }
     };
 
@@ -92,15 +120,60 @@ export function ContactActions({ adId, sellerId, sellerPhone, currentUser }: Con
                 WhatsApp
             </Button>
 
-            <Button
-                variant="outline"
-                onClick={handleMessageClick}
-                disabled={isCreatingChat}
-                className="w-full h-14 text-lg font-semibold rounded-2xl border-zinc-200 hover:bg-zinc-50 transition-all active:scale-[0.98] gap-3"
-            >
-                <MessageCircle className={cn("h-5 w-5", isCreatingChat && "animate-pulse")} />
-                {isCreatingChat ? "Ouverture..." : "Envoyer un message"}
-            </Button>
+            <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                <DialogTrigger className="w-full h-14 text-lg font-semibold rounded-2xl border border-zinc-200 hover:bg-zinc-50 transition-all active:scale-[0.98] gap-3 flex items-center justify-center text-zinc-900 bg-white shadow-sm">
+                    <MessageCircle className="h-5 w-5" />
+                    Envoyer un message
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md bg-white rounded-3xl border-zinc-100 shadow-2xl p-0 overflow-hidden gap-0">
+                    <DialogHeader className="p-6 pb-2">
+                        <DialogTitle className="text-xl font-bold flex items-center gap-2">
+                            <span className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-600">
+                                <MessageCircle className="h-5 w-5" />
+                            </span>
+                            Envoyer un message rapide
+                        </DialogTitle>
+                        <DialogDescription className="text-zinc-500">
+                            Écrivez votre message au vendeur. Il le recevra instantanément.
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    <div className="p-6 pt-2 space-y-4">
+                        <Textarea
+                            placeholder="Bonjour, je suis intéressé par votre annonce..."
+                            className="min-h-[120px] resize-none rounded-xl bg-zinc-50 border-zinc-200 focus:border-orange-500 text-[16px]"
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                        />
+
+                        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2">
+                            {["Est-ce toujours disponible ?", "Quel est votre dernier prix ?", "Quand peut-on se voir ?"].map(quick => (
+                                <button
+                                    key={quick}
+                                    onClick={() => setMessage(quick)}
+                                    className="whitespace-nowrap px-3 py-1.5 bg-zinc-100 hover:bg-zinc-200 text-zinc-600 rounded-full text-xs font-medium transition-colors"
+                                >
+                                    {quick}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    <DialogFooter className="p-4 bg-zinc-50 border-t border-zinc-100 sm:justify-between flex-row items-center gap-2">
+                        <span className="text-[10px] text-zinc-400 pl-2 hidden sm:block">
+                            Appuyez sur Envoyer pour démarrer la discussion
+                        </span>
+                        <Button
+                            onClick={handleQuickMessage}
+                            disabled={!message.trim() || isSending}
+                            className="rounded-xl bg-orange-500 hover:bg-orange-600 text-white gap-2 font-bold px-6"
+                        >
+                            {isSending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                            Envoyer
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }
