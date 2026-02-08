@@ -115,19 +115,26 @@ export function MessagingClient({ initialConversations, currentUser }: Messaging
     };
 
     return (
-        <div className="flex h-[calc(100vh-80px)] md:h-[600px] w-full overflow-hidden md:rounded-3xl md:border md:border-zinc-200 bg-white md:shadow-2xl">
+        <div className={cn(
+            "flex w-full overflow-hidden bg-white transition-all duration-300",
+            // Mobile: Full viewport height, negative margins to escape dashboard padding
+            "h-[calc(100vh-64px)] -mx-4 -mt-8 -mb-20 md:m-0",
+            // Desktop: Fixed height, borders, and rounding
+            "md:h-[600px] md:rounded-3xl md:border md:border-zinc-200 md:shadow-2xl"
+        )}>
             {/* Sidebar: Conversation List */}
             <div className={cn(
-                "w-full md:w-80 lg:w-96 flex flex-col border-r border-zinc-100 bg-white",
-                selectedId ? "hidden md:flex" : "flex"
+                "h-full flex-col border-r border-zinc-100 bg-white shrink-0",
+                // Mobile: Hide if chat selected, else full width
+                selectedId ? "hidden md:flex md:w-80 lg:w-96" : "flex w-full md:w-80 lg:w-96"
             )}>
-                <div className="p-6 border-b border-zinc-100">
-                    <h2 className="text-xl font-black text-zinc-900 uppercase tracking-tight mb-4">Messages</h2>
+                <div className="p-4 md:p-6 border-b border-zinc-100">
+                    <h2 className="text-lg md:text-xl font-black text-zinc-900 uppercase tracking-tight mb-4">Messages</h2>
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
                         <Input
-                            placeholder="Rechercher une discussion..."
-                            className="pl-10 h-11 rounded-xl bg-zinc-50 border-none ring-offset-transparent focus-visible:ring-blue-600 focus-visible:ring-1"
+                            placeholder="Rechercher..."
+                            className="pl-10 h-10 md:h-11 rounded-xl bg-zinc-50 border-none ring-offset-transparent focus-visible:ring-blue-600 focus-visible:ring-1"
                         />
                     </div>
                 </div>
@@ -193,8 +200,9 @@ export function MessagingClient({ initialConversations, currentUser }: Messaging
 
             {/* Main Chat Area */}
             <div className={cn(
-                "flex-1 flex-col bg-zinc-50/30",
-                selectedId ? "flex fixed inset-0 z-50 md:static bg-white" : "hidden md:flex"
+                "flex-1 flex-col bg-white md:bg-zinc-50/30",
+                // Mobile: Only show if selected, and cover screen
+                selectedId ? "flex w-full absolute inset-0 z-[60] md:static" : "hidden md:flex"
             )}>
                 {activeConversation ? (
                     <ChatWindow
