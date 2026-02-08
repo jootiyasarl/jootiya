@@ -10,9 +10,10 @@ import { cn } from "@/lib/utils";
 interface AnalyticsClientProps {
     stats: any;
     ads: any[];
+    chartData?: any[];
 }
 
-export function AnalyticsClient({ stats, ads }: AnalyticsClientProps) {
+export function AnalyticsClient({ stats, ads, chartData }: AnalyticsClientProps) {
     // Sort ads by views_count for "Top Performing Ads"
     const topAds = [...ads].sort((a, b) => (b.views_count || 0) - (a.views_count || 0)).slice(0, 5);
 
@@ -34,7 +35,7 @@ export function AnalyticsClient({ stats, ads }: AnalyticsClientProps) {
             <div className="grid gap-6 lg:grid-cols-7">
                 {/* Evolution Chart */}
                 <div className="lg:col-span-4 space-y-6">
-                    <DashboardCharts />
+                    <DashboardCharts data={chartData} title="Historique des publications" />
 
                     {/* Additional insights card */}
                     <Card className="border-zinc-100 shadow-xl shadow-zinc-200/50 rounded-[2rem] overflow-hidden bg-white">
@@ -45,19 +46,19 @@ export function AnalyticsClient({ stats, ads }: AnalyticsClientProps) {
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-100">
                                     <div className="flex items-center gap-2 mb-2 text-emerald-600">
-                                        <TrendingUp size={16} />
-                                        <span className="text-xs font-black uppercase">+24%</span>
+                                        <ShoppingBag size={16} />
+                                        <span className="text-xs font-black uppercase">Actif</span>
                                     </div>
-                                    <p className="text-[10px] font-bold text-emerald-700 truncate">Sensation d'engagement</p>
-                                    <p className="text-lg font-black text-emerald-900 mt-1">Excellent</p>
+                                    <p className="text-[10px] font-bold text-emerald-700 truncate">Statut du compte</p>
+                                    <p className="text-lg font-black text-emerald-900 mt-1">Vérifié</p>
                                 </div>
                                 <div className="p-4 rounded-2xl bg-orange-50 border border-orange-100">
                                     <div className="flex items-center gap-2 mb-2 text-orange-600">
                                         <Eye size={16} />
                                         <span className="text-xs font-black uppercase">Réel</span>
                                     </div>
-                                    <p className="text-[10px] font-bold text-orange-700 truncate">Vues uniques estimées</p>
-                                    <p className="text-lg font-black text-orange-900 mt-1">~{Math.round(stats.totalViews * 0.8)}</p>
+                                    <p className="text-[10px] font-bold text-orange-700 truncate">Vues totales</p>
+                                    <p className="text-lg font-black text-orange-900 mt-1">{stats.totalViews}</p>
                                 </div>
                             </div>
                         </CardContent>
@@ -85,9 +86,6 @@ export function AnalyticsClient({ stats, ads }: AnalyticsClientProps) {
                                             <div className="flex items-center gap-3 mt-0.5">
                                                 <span className="text-[10px] font-bold text-zinc-400 flex items-center gap-1">
                                                     <Eye size={10} /> {ad.views_count || 0} vues
-                                                </span>
-                                                <span className="text-[10px] font-bold text-emerald-500 flex items-center gap-0.5">
-                                                    <TrendingUp size={10} /> +{Math.floor(Math.random() * 10)}%
                                                 </span>
                                             </div>
                                         </div>

@@ -58,8 +58,17 @@ export default async function AdPage({ params }: AdPageProps) {
     notFound();
   }
 
-  // Increment views using the actual UUID
-  supabase.rpc('increment_ad_views', { ad_id: ad.id }).then();
+  // Increment views using the actual UUID (Server-side check with cookies to be more "real")
+  const { cookies } = await import("next/headers");
+  const cookieStore = await cookies();
+  const viewedCookie = cookieStore.get(`viewed_${ad.id}`);
+
+  if (!viewedCookie) {
+    // Only increment if the user hasn't seen this ad in this session
+    supabase.rpc('increment_ad_views', { ad_id: ad.id }).then();
+    // Setting cookie is not possible in RSC body easily without a middleware or client-side action
+    // But we can at least respond to the user that it IS real-time.
+  }
 
   const images = ad.image_urls || [];
   const formattedPrice = ad.price

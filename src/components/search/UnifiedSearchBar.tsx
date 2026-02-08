@@ -181,17 +181,17 @@ export function UnifiedSearchBar() {
             </div>
 
             {/* Mobile Version */}
-            <div className="lg:hidden flex flex-col gap-3">
+            <div className="lg:hidden flex flex-col gap-2.5">
                 {/* Search Input */}
-                <div className="flex items-center bg-white border border-zinc-200 rounded-2xl shadow-md px-4 h-14">
-                    <Search className="w-5 h-5 text-zinc-400 mr-3 shrink-0" />
+                <div className="flex items-center bg-white border border-zinc-200 rounded-2xl shadow-sm px-4 h-12">
+                    <Search className="w-4 h-4 text-zinc-400 mr-3 shrink-0" />
                     <input
                         type="text"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                         onKeyDown={handleKeyDown}
                         placeholder="Que recherchez-vous ?"
-                        className="flex-1 bg-transparent outline-none text-[15px] font-medium placeholder:text-zinc-400"
+                        className="flex-1 bg-transparent outline-none text-[13px] font-bold placeholder:text-zinc-400"
                     />
                 </div>
 
@@ -201,13 +201,13 @@ export function UnifiedSearchBar() {
                     <div className="relative" ref={categoryRef}>
                         <button
                             onClick={() => setIsCategoryOpen(!isCategoryOpen)}
-                            className="flex items-center justify-between w-full bg-white border border-zinc-200 rounded-xl px-3 h-12 text-zinc-700"
+                            className="flex items-center justify-between w-full bg-white border border-zinc-200 rounded-xl px-3 h-10 text-zinc-700"
                         >
                             <div className="flex items-center gap-2 min-w-0">
-                                <LayoutGrid className="w-4 h-4 text-orange-500 shrink-0" />
-                                <span className="text-[13px] font-bold truncate">{category.label}</span>
+                                <LayoutGrid className="w-3.5 h-3.5 text-orange-500 shrink-0" />
+                                <span className="text-[11px] font-black uppercase tracking-tight truncate">{category.label}</span>
                             </div>
-                            <ChevronDown className={cn("w-4 h-4 text-zinc-400 shrink-0 transition-transform", isCategoryOpen && "rotate-180")} />
+                            <ChevronDown className={cn("w-3 h-3 text-zinc-400 shrink-0 transition-transform", isCategoryOpen && "rotate-180")} />
                         </button>
                         {isCategoryOpen && (
                             <div className="absolute top-full left-0 mt-1 w-screen max-w-[calc(100vw-32px)] bg-white border border-zinc-100 rounded-xl shadow-xl py-2 z-[60] max-h-64 overflow-y-auto">
@@ -218,7 +218,7 @@ export function UnifiedSearchBar() {
                                             setCategory(cat);
                                             setIsCategoryOpen(false);
                                         }}
-                                        className="w-full text-left px-4 py-2.5 text-[13px] font-medium text-zinc-600 active:bg-orange-50"
+                                        className="w-full text-left px-4 py-2.5 text-[12px] font-bold text-zinc-600 active:bg-orange-50 uppercase tracking-tight"
                                     >
                                         {cat.label}
                                     </button>
@@ -231,13 +231,13 @@ export function UnifiedSearchBar() {
                     <div className="relative" ref={locationRef}>
                         <button
                             onClick={() => setIsLocationOpen(!isLocationOpen)}
-                            className="flex items-center justify-between w-full bg-white border border-zinc-200 rounded-xl px-3 h-12 text-zinc-700"
+                            className="flex items-center justify-between w-full bg-white border border-zinc-200 rounded-xl px-3 h-10 text-zinc-700"
                         >
                             <div className="flex items-center gap-2 min-w-0">
-                                <MapPin className="w-4 h-4 text-zinc-900 shrink-0" />
-                                <span className="text-[13px] font-bold truncate">{location === "Choisir ville - secteur" ? "Ma ville" : location}</span>
+                                <MapPin className="w-3.5 h-3.5 text-zinc-900 shrink-0" />
+                                <span className="text-[11px] font-black uppercase tracking-tight truncate">{location === "Choisir ville - secteur" ? "Ma ville" : location}</span>
                             </div>
-                            <ChevronDown className={cn("w-4 h-4 text-zinc-400 shrink-0 transition-transform", isLocationOpen && "rotate-180")} />
+                            <ChevronDown className={cn("w-3 h-3 text-zinc-400 shrink-0 transition-transform", isLocationOpen && "rotate-180")} />
                         </button>
                         {isLocationOpen && (
                             <div className="absolute top-full right-0 mt-1 w-screen max-w-[calc(100vw-32px)] bg-white border border-zinc-100 rounded-xl shadow-xl py-2 z-[60] max-h-64 overflow-y-auto">
@@ -248,7 +248,7 @@ export function UnifiedSearchBar() {
                                             setLocation(city);
                                             setIsLocationOpen(false);
                                         }}
-                                        className="w-full text-left px-4 py-2.5 text-[13px] font-medium text-zinc-600 active:bg-orange-50"
+                                        className="w-full text-left px-4 py-2.5 text-[12px] font-bold text-zinc-600 active:bg-orange-50 uppercase tracking-tight"
                                     >
                                         {city}
                                     </button>
@@ -261,9 +261,9 @@ export function UnifiedSearchBar() {
                 {/* Mobile Search Button */}
                 <Button
                     onClick={handleSearch}
-                    className="w-full h-14 rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-black shadow-lg shadow-orange-100 flex items-center justify-center gap-2 text-base active:scale-[0.98] transition-all"
+                    className="w-full h-11 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-black shadow-lg shadow-orange-100 flex items-center justify-center gap-2 text-sm active:scale-[0.98] transition-all uppercase italic tracking-wider"
                 >
-                    <Search className="w-6 h-6" />
+                    <Search className="w-4 h-4" />
                     Rechercher
                 </Button>
             </div>

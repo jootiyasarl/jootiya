@@ -16,26 +16,26 @@ const CATEGORIES = [
 
 export function CategoryGrid() {
     return (
-        <section className="py-16 bg-zinc-50">
+        <section className="py-8 sm:py-16 bg-zinc-50">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div className="flex items-center justify-between mb-8">
-                    <h2 className="text-2xl font-bold tracking-tight text-zinc-900">Parcourir les catégories</h2>
-                    <Link href="/marketplace" className="text-sm font-medium text-orange-500 hover:text-orange-600 flex items-center gap-1">
-                        Tout voir <ArrowRight className="h-4 w-4" />
+                <div className="flex items-center justify-between mb-6 sm:mb-8">
+                    <h2 className="text-lg sm:text-2xl font-black tracking-tight text-zinc-900 uppercase">Catégories</h2>
+                    <Link href="/marketplace" className="text-xs sm:text-sm font-bold text-orange-500 hover:text-orange-600 flex items-center gap-1 uppercase tracking-tight">
+                        Tout <ArrowRight className="h-3 w-3 sm:h-4 sm:w-4" />
                     </Link>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 sm:gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5">
+                <div className="grid grid-cols-4 gap-2 sm:gap-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5">
                     {CATEGORIES.map((category) => (
                         <Link
                             key={category.id}
                             href={category.href}
-                            className="group relative flex flex-col items-center justify-center rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm transition-all hover:border-orange-200 hover:shadow-md hover:-translate-y-1"
+                            className="group relative flex flex-col items-center justify-center rounded-2xl border border-zinc-200 bg-white p-3 sm:p-6 shadow-sm transition-all hover:border-orange-200 hover:shadow-md active:scale-95"
                         >
-                            <div className={`mb-4 inline-flex h-12 w-12 items-center justify-center rounded-full ${category.color} transition-transform group-hover:scale-110`}>
-                                <category.icon className="h-6 w-6" />
+                            <div className={`mb-2 sm:mb-4 inline-flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full ${category.color} transition-transform group-hover:scale-110`}>
+                                <category.icon className="h-5 w-5 sm:h-6 sm:w-6" />
                             </div>
-                            <span className="text-sm font-medium text-zinc-900 group-hover:text-orange-600 text-center">
+                            <span className="text-[10px] sm:text-sm font-bold text-zinc-900 group-hover:text-orange-600 text-center line-clamp-1">
                                 {category.label}
                             </span>
                         </Link>
