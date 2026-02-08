@@ -14,70 +14,74 @@ import {
   CreditCard,
   MessageCircle,
   Bell,
-  Home
+  Home,
+  Star
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-const sections = [
-  {
-    title: "Marketplace",
-    items: [
-      {
-        label: "Vue d'ensemble",
-        href: "/dashboard",
-        icon: LayoutDashboard,
-      },
-      {
-        label: "Mes annonces",
-        href: "/dashboard/ads",
-        icon: List,
-      },
-      {
-        label: "Publier une annonce",
-        href: "/marketplace/post",
-        icon: PlusCircle,
-      },
-      {
-        label: "Statistiques",
-        href: "/dashboard/analytics",
-        icon: BarChart3,
-      },
-      {
-        label: "Messages",
-        href: "/dashboard/messages",
-        icon: MessageCircle,
-      },
-    ]
-  },
-  {
-    title: "Gestion",
-    items: [
-      {
-        label: "Mon Profil",
-        href: "/dashboard/profile",
-        icon: User2,
-      },
-      {
-        label: "Abonnement",
-        href: "/dashboard/subscription",
-        icon: CreditCard,
-      },
-      {
-        label: "Notifications",
-        href: "/dashboard/notifications",
-        icon: Bell,
-      },
-      {
-        label: "Paramètres",
-        href: "/dashboard/settings",
-        icon: Settings,
-      },
-    ]
-  }
-];
+import { useNotifications } from "@/hooks/useNotifications";
 
 export function DashboardSidebar() {
   const pathname = usePathname();
+  const { unreadCount: notificationsCount } = useNotifications();
+
+  const sections = [
+    {
+      title: "Marketplace",
+      items: [
+        {
+          label: "Vue d'ensemble",
+          href: "/dashboard",
+          icon: LayoutDashboard,
+        },
+        {
+          label: "Mes annonces",
+          href: "/dashboard/ads",
+          icon: List,
+        },
+        {
+          label: "Publier une annonce",
+          href: "/marketplace/post",
+          icon: PlusCircle,
+        },
+        {
+          label: "Statistiques",
+          href: "/dashboard/analytics",
+          icon: BarChart3,
+        },
+        {
+          label: "Messages",
+          href: "/dashboard/messages",
+          icon: MessageCircle,
+        },
+      ]
+    },
+    {
+      title: "Gestion",
+      items: [
+        {
+          label: "Mon Profil",
+          href: "/dashboard/profile",
+          icon: User2,
+        },
+        {
+          label: "Abonnement",
+          href: "/dashboard/subscription",
+          icon: CreditCard,
+        },
+        {
+          label: "Notifications",
+          href: "/dashboard/notifications",
+          icon: Bell,
+          count: notificationsCount
+        },
+        {
+          label: "Paramètres",
+          href: "/dashboard/settings",
+          icon: Settings,
+        },
+      ]
+    }
+  ];
 
   return (
     <aside className="h-full border-r bg-white flex flex-col dark:bg-zinc-950 dark:border-zinc-800">
@@ -118,7 +122,17 @@ export function DashboardSidebar() {
                       <Icon className={cn("h-5 w-5 shrink-0 transition-colors", isActive ? "text-white" : "text-zinc-400 group-hover:text-zinc-900 dark:group-hover:text-zinc-100")} />
                       <span>{item.label}</span>
                     </div>
-                    {isActive && <ChevronRight className="h-4 w-4 text-white/70" />}
+                    <div className="flex items-center gap-2">
+                      {item.count ? item.count > 0 && (
+                        <span className={cn(
+                          "flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-[10px] font-black",
+                          isActive ? "bg-white text-orange-600" : "bg-orange-600 text-white shadow-lg shadow-orange-100"
+                        )}>
+                          {item.count}
+                        </span>
+                      ) : null}
+                      {isActive && <ChevronRight className="h-4 w-4 text-white/70" />}
+                    </div>
                   </Link>
                 );
               })}
@@ -151,5 +165,3 @@ export function DashboardSidebar() {
   );
 }
 
-// Add Star icon to lucide imports
-import { Star } from "lucide-react";

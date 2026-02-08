@@ -2,8 +2,9 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { Menu, Bell, ChevronDown, ArrowLeft, ExternalLink, User } from "lucide-react";
+import { Menu, ChevronDown, ArrowLeft, ExternalLink, User } from "lucide-react";
 import { DashboardSidebar } from "@/components/dashboard-sidebar";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -103,15 +104,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           </div>
 
           <div className="flex items-center gap-3">
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              className="h-10 w-10 rounded-xl border-zinc-200 text-zinc-600 hover:bg-zinc-50 relative"
-            >
-              <Bell className="h-5 w-5" />
-              <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-orange-600 rounded-full border-2 border-white" />
-            </Button>
+            <NotificationBell />
 
             <DropdownMenu>
               <DropdownMenuTrigger className="flex items-center gap-3 rounded-2xl border border-zinc-100 bg-white p-1 pr-4 text-left shadow-sm transition hover:bg-zinc-50 outline-none hover:ring-4 hover:ring-zinc-100">
