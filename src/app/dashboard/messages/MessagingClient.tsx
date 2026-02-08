@@ -115,9 +115,12 @@ export function MessagingClient({ initialConversations, currentUser }: Messaging
     };
 
     return (
-        <div className="flex h-full w-full overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-2xl">
+        <div className="flex h-[calc(100vh-80px)] md:h-[600px] w-full overflow-hidden md:rounded-3xl md:border md:border-zinc-200 bg-white md:shadow-2xl">
             {/* Sidebar: Conversation List */}
-            <div className="w-full md:w-80 lg:w-96 flex flex-col border-r border-zinc-100">
+            <div className={cn(
+                "w-full md:w-80 lg:w-96 flex flex-col border-r border-zinc-100 bg-white",
+                selectedId ? "hidden md:flex" : "flex"
+            )}>
                 <div className="p-6 border-b border-zinc-100">
                     <h2 className="text-xl font-black text-zinc-900 uppercase tracking-tight mb-4">Messages</h2>
                     <div className="relative">
@@ -191,7 +194,7 @@ export function MessagingClient({ initialConversations, currentUser }: Messaging
             {/* Main Chat Area */}
             <div className={cn(
                 "flex-1 flex-col bg-zinc-50/30",
-                activeConversation ? "flex" : "hidden md:flex"
+                selectedId ? "flex fixed inset-0 z-50 md:static bg-white" : "hidden md:flex"
             )}>
                 {activeConversation ? (
                     <ChatWindow
