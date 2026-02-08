@@ -85,6 +85,7 @@ export function UnifiedSearchBar() {
                 {/* Category Select */}
                 <div className="relative border-r border-zinc-100 h-full flex items-center min-w-[220px]" ref={categoryRef}>
                     <button
+                        type="button"
                         onClick={() => {
                             setIsCategoryOpen(!isCategoryOpen);
                             setIsLocationOpen(false);
@@ -122,6 +123,7 @@ export function UnifiedSearchBar() {
                 {/* Location Select */}
                 <div className="relative h-full flex items-center min-w-[240px]" ref={locationRef}>
                     <button
+                        type="button"
                         onClick={() => {
                             setIsLocationOpen(!isLocationOpen);
                             setIsCategoryOpen(false);
@@ -200,7 +202,11 @@ export function UnifiedSearchBar() {
                     {/* Category Dropdown Mobile */}
                     <div className="relative" ref={categoryRef}>
                         <button
-                            onClick={() => setIsCategoryOpen(!isCategoryOpen)}
+                            type="button"
+                            onClick={() => {
+                                setIsCategoryOpen(!isCategoryOpen);
+                                setIsLocationOpen(false);
+                            }}
                             className="flex items-center justify-between w-full bg-white border border-zinc-200 rounded-xl px-3 h-10 text-zinc-700"
                         >
                             <div className="flex items-center gap-2 min-w-0">
@@ -210,7 +216,7 @@ export function UnifiedSearchBar() {
                             <ChevronDown className={cn("w-3 h-3 text-zinc-400 shrink-0 transition-transform", isCategoryOpen && "rotate-180")} />
                         </button>
                         {isCategoryOpen && (
-                            <div className="absolute top-full left-0 mt-1 w-screen max-w-[calc(100vw-32px)] bg-white border border-zinc-100 rounded-xl shadow-xl py-2 z-[60] max-h-64 overflow-y-auto">
+                            <div className="absolute top-full left-0 mt-1 w-[calc(200%+8px)] bg-white border border-zinc-100 rounded-xl shadow-xl py-2 z-[60] max-h-64 overflow-y-auto">
                                 {CATEGORIES.map((cat) => (
                                     <button
                                         key={cat.id}
@@ -230,7 +236,11 @@ export function UnifiedSearchBar() {
                     {/* Location Dropdown Mobile */}
                     <div className="relative" ref={locationRef}>
                         <button
-                            onClick={() => setIsLocationOpen(!isLocationOpen)}
+                            type="button"
+                            onClick={() => {
+                                setIsLocationOpen(!isLocationOpen);
+                                setIsCategoryOpen(false);
+                            }}
                             className="flex items-center justify-between w-full bg-white border border-zinc-200 rounded-xl px-3 h-10 text-zinc-700"
                         >
                             <div className="flex items-center gap-2 min-w-0">
@@ -240,7 +250,7 @@ export function UnifiedSearchBar() {
                             <ChevronDown className={cn("w-3 h-3 text-zinc-400 shrink-0 transition-transform", isLocationOpen && "rotate-180")} />
                         </button>
                         {isLocationOpen && (
-                            <div className="absolute top-full right-0 mt-1 w-screen max-w-[calc(100vw-32px)] bg-white border border-zinc-100 rounded-xl shadow-xl py-2 z-[60] max-h-64 overflow-y-auto">
+                            <div className="absolute top-full right-0 mt-1 w-[calc(200%+8px)] bg-white border border-zinc-100 rounded-xl shadow-xl py-2 z-[60] max-h-64 overflow-y-auto">
                                 {ALL_CITIES.map((city) => (
                                     <button
                                         key={city}
