@@ -262,7 +262,7 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
             </div>
 
             {/* Input Area */}
-            <div className="p-3 md:p-4 bg-white border-t border-zinc-200 z-50">
+            <div className="p-3 md:p-4 bg-white border-t border-zinc-200 z-50 sticky bottom-0">
                 <div className="flex items-center gap-2 w-full max-w-full">
                     {showAudioRecorder ? (
                         <ChatAudioRecorder
@@ -277,7 +277,7 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                             onSubmit={(e) => handleSendMessage(e)}
                             className="flex-1 flex items-center gap-1 bg-zinc-50 p-1 md:p-2 rounded-2xl md:rounded-3xl border border-zinc-200 focus-within:border-orange-500 transition-all w-full overflow-hidden"
                         >
-                            <Button type="button" size="icon" variant="ghost" className="h-8 w-8 md:h-10 md:w-10 rounded-full text-zinc-400 hover:text-zinc-600 hover:bg-white shrink-0">
+                            <Button type="button" size="icon" variant="ghost" className="h-9 w-9 md:h-10 md:w-10 rounded-full text-zinc-400 hover:text-zinc-600 hover:bg-white shrink-0">
                                 <Paperclip className="h-5 w-5" />
                             </Button>
 
@@ -285,7 +285,7 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                                 value={newMessage}
                                 onChange={(e) => setNewMessage(e.target.value)}
                                 placeholder="Message..."
-                                className="flex-1 bg-transparent border-none focus-visible:ring-0 px-1 py-2 font-medium placeholder:text-zinc-400 text-sm md:text-base min-w-0"
+                                className="flex-1 bg-transparent border-none focus-visible:ring-0 px-1 py-2 font-black placeholder:text-zinc-400 text-sm md:text-base min-w-0"
                                 onFocus={() => setShowAudioRecorder(false)}
                             />
 
@@ -295,7 +295,7 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                                         type="submit"
                                         size="icon"
                                         disabled={isSending}
-                                        className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-orange-500 text-white transition-all shadow-md active:scale-95"
+                                        className="h-9 w-9 md:h-10 md:w-10 rounded-full bg-orange-600 text-white transition-all shadow-[0_2px_10px_rgba(234,88,12,0.3)] active:scale-95"
                                     >
                                         {isSending ? <Loader2 className="h-4 w-4 md:h-5 md:w-5 animate-spin" /> : <Send className="h-4 w-4 md:h-5 md:w-5 ml-0.5" />}
                                     </Button>
@@ -305,7 +305,7 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                                         size="icon"
                                         variant="ghost"
                                         onClick={() => setShowAudioRecorder(true)}
-                                        className="h-8 w-8 md:h-10 md:w-10 rounded-full text-zinc-400 hover:text-orange-500 hover:bg-orange-50 transition-colors"
+                                        className="h-9 w-9 md:h-10 md:w-10 rounded-full text-zinc-400 hover:text-orange-600 hover:bg-orange-50 transition-colors"
                                     >
                                         <Mic className="h-5 w-5" />
                                     </Button>

@@ -92,9 +92,12 @@ export function AdImageUploader({
       const uploaded = await uploadAdImages(adId, files);
 
       onUploadComplete?.(uploaded);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setError("Failed to upload images. Please try again.");
+      const msg = err.message || "Failed to upload images. Please try again.";
+      setError(msg);
+      // Also show a toast for consistency
+      import("sonner").then(({ toast }) => toast.error(`Upload error: ${msg}`));
     } finally {
       setUploading(false);
     }

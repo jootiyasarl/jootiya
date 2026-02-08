@@ -153,32 +153,59 @@ export function ChatAudioRecorder({ onSend, onCancel }: ChatAudioRecorderProps) 
     };
 
     return (
-        <div className="flex items-center gap-3 flex-1 bg-zinc-50 rounded-full px-4 py-2 border border-orange-200">
-            <div className="flex items-center gap-2 flex-1">
-                <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                <span className="text-sm font-bold text-zinc-700">{formatDuration(duration)}</span>
+        <div className="flex items-center gap-3 flex-1 bg-white rounded-full px-1.5 py-1.5 border border-zinc-200 shadow-inner relative overflow-hidden">
+            <div className="flex items-center gap-3 flex-1 pl-3">
+                {/* Status Indicator */}
+                <div className="relative flex items-center justify-center w-5 h-5">
+                    <div className="absolute inset-0 bg-red-500 rounded-full animate-ping opacity-20" />
+                    <div className="w-2.5 h-2.5 bg-red-600 rounded-full shadow-[0_0_8px_rgba(220,38,38,0.5)]" />
+                </div>
 
-                {/* Visual feedback for swipe */}
-                <div className="flex-1 flex justify-center">
-                    <span
-                        className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest transition-opacity"
-                        style={{ opacity: 1 - cancelDistance / 50 }}
+                <span className="text-sm font-black text-zinc-900 tabular-nums min-w-[40px]">
+                    {formatDuration(duration)}
+                </span>
+
+                {/* Sliding Cancel Area */}
+                <div className="flex-1 relative flex items-center justify-center h-8">
+                    <div
+                        className="flex items-center gap-2 transition-transform duration-75"
+                        style={{ transform: `translateX(-${cancelDistance}px)` }}
                     >
-                        ← Glisser pour annuler
-                    </span>
+                        <span className="text-[11px] font-black text-zinc-400 uppercase tracking-widest whitespace-nowrap flex items-center gap-2">
+                            <span className="animate-pulse">←</span> Glisser pour annuler
+                        </span>
+                    </div>
+
+                    {/* Gradient Fade for text when sliding */}
+                    <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-white to-transparent pointer-events-none" />
                 </div>
             </div>
 
-            <div className="relative group">
-                {cancelDistance > 50 ? (
-                    <Trash2 className="w-5 h-5 text-red-500 animate-bounce" />
-                ) : (
-                    <Mic className="w-5 h-5 text-orange-500" />
-                )}
+            {/* Action Icon / Feedback */}
+            <div className="relative w-10 h-10 flex items-center justify-center rounded-full bg-orange-50 shrink-0 border border-orange-100 shadow-sm transition-all overflow-hidden">
+                <div
+                    className="absolute inset-0 flex items-center justify-center transition-all duration-300"
+                    style={{
+                        transform: cancelDistance > 50 ? 'translateY(0)' : 'translateY(100%)',
+                        opacity: cancelDistance > 50 ? 1 : 0
+                    }}
+                >
+                    <Trash2 className="w-5 h-5 text-red-600" />
+                </div>
+                <div
+                    className="absolute inset-0 flex items-center justify-center transition-all duration-300"
+                    style={{
+                        transform: cancelDistance > 50 ? 'translateY(-100%)' : 'translateY(0)',
+                        opacity: cancelDistance > 50 ? 0 : 1
+                    }}
+                >
+                    <Mic className="w-5 h-5 text-orange-600" />
+                </div>
             </div>
 
+            {/* Invisible touch/mouse layer */}
             <div
-                className="absolute inset-0 z-20 cursor-pointer"
+                className="absolute inset-0 z-20 cursor-pointer touch-none"
                 onMouseDown={handleTouchStart}
                 onMouseMove={handleTouchMove}
                 onMouseUp={handleTouchEnd}
@@ -189,8 +216,11 @@ export function ChatAudioRecorder({ onSend, onCancel }: ChatAudioRecorderProps) 
             />
 
             {isUploading && (
-                <div className="absolute inset-0 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center z-30">
-                    <Loader2 className="w-5 h-5 animate-spin text-orange-500" />
+                <div className="absolute inset-0 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center z-30 animate-in fade-in">
+                    <div className="flex items-center gap-2 bg-zinc-900 text-white px-4 py-2 rounded-full shadow-xl">
+                        <Loader2 className="w-4 h-4 animate-spin text-orange-500" />
+                        <span className="text-xs font-black uppercase tracking-wider">Envoi...</span>
+                    </div>
                 </div>
             )}
         </div>
