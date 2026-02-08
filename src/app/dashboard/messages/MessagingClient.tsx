@@ -189,11 +189,15 @@ export function MessagingClient({ initialConversations, currentUser }: Messaging
             </div>
 
             {/* Main Chat Area */}
-            <div className="hidden md:flex flex-1 flex-col bg-zinc-50/30">
+            <div className={cn(
+                "flex-1 flex-col bg-zinc-50/30",
+                activeConversation ? "flex" : "hidden md:flex"
+            )}>
                 {activeConversation ? (
                     <ChatWindow
                         conversation={activeConversation}
                         currentUser={currentUser}
+                        onBack={() => setSelectedId(null)}
                         onMessageSent={(msg) => {
                             // Update conversation list last_message_at
                             setConversations(prev => prev.map(c =>

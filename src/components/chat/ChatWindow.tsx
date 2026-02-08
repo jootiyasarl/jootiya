@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Send, Paperclip, Smile, MoreVertical, CheckCheck, Loader2 } from "lucide-react";
+import { Send, Paperclip, Smile, MoreVertical, CheckCheck, Loader2, ChevronLeft } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { cn } from "@/lib/utils";
@@ -19,6 +19,7 @@ interface ChatWindowProps {
     conversation: Conversation;
     currentUser: any;
     onMessageSent: (message: Message) => void;
+    onBack: () => void;
 }
 
 const QUICK_REPLIES = [
@@ -28,7 +29,7 @@ const QUICK_REPLIES = [
     "Je suis intéressé !"
 ];
 
-export function ChatWindow({ conversation, currentUser, onMessageSent }: ChatWindowProps) {
+export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }: ChatWindowProps) {
     const [messages, setMessages] = useState<Message[]>([]);
     const [newMessage, setNewMessage] = useState("");
     const [isLoading, setIsLoading] = useState(true);
@@ -61,8 +62,8 @@ export function ChatWindow({ conversation, currentUser, onMessageSent }: ChatWin
                 "postgres_changes",
                 {
                     event: "INSERT",
-                    schema: "public",
-                    table: "messages",
+                    schema: 'public',
+                    table: 'messages',
                     filter: `conversation_id=eq.${conversation.id}`,
                 },
                 (payload) => {
@@ -122,6 +123,16 @@ export function ChatWindow({ conversation, currentUser, onMessageSent }: ChatWin
             {/* Header */}
             <div className="bg-white border-b border-zinc-100 p-4 flex items-center justify-between shadow-sm z-10">
                 <div className="flex items-center gap-3">
+                    {/* Back Button for Mobile */}
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={onBack}
+                        className="md:hidden -ml-2 text-zinc-500"
+                    >
+                        <ChevronLeft className="h-6 w-6" />
+                    </Button>
+
                     <Avatar className="h-10 w-10 border border-zinc-100">
                         <AvatarImage src={conversation.other_party?.avatar_url || ""} />
                         <AvatarFallback>{conversation.other_party?.full_name?.charAt(0) || "U"}</AvatarFallback>
