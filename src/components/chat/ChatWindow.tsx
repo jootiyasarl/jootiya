@@ -430,43 +430,15 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                                 </label>
 
                                 {!newMessage.trim() && (
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger className="h-10 w-10 text-zinc-500 rounded-full shrink-0 flex items-center justify-center hover:bg-zinc-100 transition-colors outline-none">
-                                            <Camera className="h-6 w-6" />
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent className="rounded-2xl p-2 min-w-[200px] border-zinc-100 shadow-xl z-[60] bottom-full mb-2 right-0">
-                                            <DropdownMenuItem
-                                                onSelect={(e) => {
-                                                    e.preventDefault(); // Prevent closing immediately to allow click to propagate? Actually standard behavior usually works, but explicit click is better.
-                                                    cameraInputRef.current?.click();
-                                                }}
-                                                className="flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-zinc-50 focus:bg-zinc-50"
-                                            >
-                                                <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
-                                                    <Camera className="h-5 w-5 text-orange-600" />
-                                                </div>
-                                                <div className="flex flex-col text-right w-full">
-                                                    <span className="text-sm font-bold text-zinc-900">التقاط صورة</span>
-                                                    <span className="text-[10px] text-zinc-400">فتح الكاميرا مباشرة</span>
-                                                </div>
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem
-                                                onSelect={(e) => {
-                                                    e.preventDefault();
-                                                    fileInputRef.current?.click();
-                                                }}
-                                                className="flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-zinc-50 focus:bg-zinc-50"
-                                            >
-                                                <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
-                                                    <ImageIcon className="h-5 w-5 text-blue-600" />
-                                                </div>
-                                                <div className="flex flex-col text-right w-full">
-                                                    <span className="text-sm font-bold text-zinc-900">من المعرض</span>
-                                                    <span className="text-[10px] text-zinc-400">اختر صورة مخزنة</span>
-                                                </div>
-                                            </DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
+                                    <Button
+                                        type="button"
+                                        size="icon"
+                                        variant="ghost"
+                                        onClick={() => cameraInputRef.current?.click()}
+                                        className="h-10 w-10 text-zinc-500 rounded-full shrink-0 hover:bg-zinc-100 transition-colors"
+                                    >
+                                        <Camera className="h-6 w-6" />
+                                    </Button>
                                 )}
                             </>
                         )}
