@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Navigation, MapPin, Building2 } from "lucide-react";
 import {
@@ -38,11 +38,41 @@ export function MobileLocationFilter() {
     const [radius, setRadius] = useState([initialRadius]);
 
     const [isLocating, setIsLocating] = useState(false);
-    const [permissionDenied, setPermissionDenied] = useState(false);
+    const [permissionState, setPermissionState] = useState<PermissionState>('prompt');
+
+    // Check permissions when drawer opens
+    useEffect(() => {
+        if (isOpen) {
+            checkLocationPermission();
+        }
+    }, [isOpen]);
+
+    const checkLocationPermission = async () => {
+        if (!navigator.permissions || !navigator.permissions.query) return;
+
+        try {
+            const result = await navigator.permissions.query({ name: 'geolocation' });
+            setPermissionState(result.state);
+
+            if (result.state === 'granted') {
+                // If already granted, just get location quietly
+                if (!searchParams.get("lat")) {
+                    handleLocateAndFilter();
+                }
+            } else if (result.state === 'denied') {
+                // Show instructional UI
+            }
+
+            result.onchange = () => {
+                setPermissionState(result.state);
+            };
+        } catch (error) {
+            console.error("Permission check error:", error);
+        }
+    };
 
     const handleLocateAndFilter = async () => {
         setIsLocating(true);
-        setPermissionDenied(false); // Reset
         try {
             const pos = await getBrowserGeolocation();
 
@@ -60,7 +90,7 @@ export function MobileLocationFilter() {
             toast.error(msg);
 
             if (msg.toLowerCase().includes("refusé") || msg.toLowerCase().includes("denied") || msg.toLowerCase().includes("access")) {
-                setPermissionDenied(true);
+                setPermissionState('denied');
             }
         } finally {
             setIsLocating(false);
@@ -148,7 +178,7 @@ export function MobileLocationFilter() {
                         </div>
 
                         {/* Permission Help Text - Only if Denied */}
-                        {permissionDenied && (
+                        {permissionState === 'denied' && (
                             <div className="bg-red-50 border border-red-100 rounded-xl p-3 text-sm text-red-600 space-y-2 animate-in fade-in slide-in-from-bottom-2">
                                 <p className="font-bold flex items-center gap-2">
                                     <span className="text-lg">🔒</span> Accès bloqué ?
@@ -172,8 +202,8 @@ export function MobileLocationFilter() {
                                 </Button>
                             ) : (
                                 <>
-                                    {/* Primary Action depends on permission state */}
-                                    {!permissionDenied && (
+                                    {/* Primary Action - Hide if denied to avoid frustration */}
+                                    {permissionState !== 'denied' && (
                                         <Button
                                             onClick={handleLocateAndFilter}
                                             disabled={isLocating}
@@ -188,7 +218,7 @@ export function MobileLocationFilter() {
                                         </Button>
                                     )}
 
-                                    {!permissionDenied && (
+                                    {permissionState !== 'denied' && (
                                         <div className="relative flex py-1 items-center">
                                             <div className="flex-grow border-t border-zinc-200"></div>
                                             <span className="flex-shrink-0 mx-4 text-zinc-400 text-xs font-bold uppercase">OU</span>
@@ -196,10 +226,10 @@ export function MobileLocationFilter() {
                                         </div>
                                     )}
 
-                                    {/* City Fallback */}
+                                    {/* City Fallback - Always visible if location inactive */}
                                     <div className="space-y-2">
                                         <label className="text-xs font-bold text-zinc-500 ml-1">
-                                            {permissionDenied ? "📍 Choisissez votre ville manuellement :" : "🏙️ Ou choisissez une ville :"}
+                                            {permissionState === 'denied' ? "📍 Choisissez votre ville manuellement :" : "🏙️ Ou choisissez une ville :"}
                                         </label>
                                         <Select onValueChange={handleCitySelect}>
                                             <SelectTrigger className="w-full h-12 rounded-xl border-zinc-200 bg-white shadow-sm">
