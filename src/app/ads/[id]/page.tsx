@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { AdImageGallery } from "@/components/ads/AdImageGallery";
 import { ContactActions } from "@/components/ads/ContactActions";
 import { MobileAdActions } from "@/components/ads/MobileAdActions";
+import { AdLocationMap } from "@/components/ads/AdLocationMap";
 import {
   MapPin,
   Calendar,
@@ -39,7 +40,7 @@ export default async function AdPage({ params }: AdPageProps) {
   let query = supabase
     .from("ads")
     .select(
-      "id, title, description, price, currency, city, neighborhood, created_at, image_urls, category, status, views_count, seller_id, slug, condition, phone, profiles(phone)"
+      "id, title, description, price, currency, city, neighborhood, created_at, image_urls, category, status, views_count, seller_id, slug, condition, phone, latitude, longitude, profiles(phone)"
     );
 
   if (isUuid) {
@@ -215,6 +216,18 @@ export default async function AdPage({ params }: AdPageProps) {
                     </ul>
                   </div>
                 </div>
+
+                {/* Location Map Section */}
+                {ad.latitude && ad.longitude && (
+                  <section>
+                    <AdLocationMap
+                      lat={ad.latitude}
+                      lng={ad.longitude}
+                      city={ad.city}
+                      neighborhood={ad.neighborhood}
+                    />
+                  </section>
+                )}
               </div>
             </div>
           </div>
