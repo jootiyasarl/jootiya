@@ -4,53 +4,67 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Search, PlusCircle, MessageCircle, User } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { MobileLocationFilter } from "@/components/home/MobileLocationFilter";
 
 export function MobileBottomNav() {
     const pathname = usePathname();
 
-    const links = [
-        { label: "Accueil", icon: Home, href: "/" },
-        { label: "Explorer", icon: Search, href: "/marketplace" },
-        { label: "Vendre", icon: PlusCircle, href: "/marketplace/post", isAction: true },
-        { label: "Messages", icon: MessageCircle, href: "/dashboard/messages" },
-        { label: "Profil", icon: User, href: "/dashboard" },
-    ];
-
     return (
         <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-t border-zinc-100 px-2 pb-safe-bottom shadow-[0_-10px_20px_rgba(0,0,0,0.02)]">
-            <div className="mx-auto flex h-16 max-w-md items-center justify-between">
-                {links.map((link) => {
-                    const isActive = pathname === link.href || (link.href !== "/" && pathname.startsWith(link.href));
+            <div className="grid h-16 grid-cols-5 mx-auto max-w-md items-center">
+                <Link
+                    href="/"
+                    className={cn(
+                        "inline-flex flex-col items-center justify-center px-2 hover:bg-gray-50 group gap-1",
+                        pathname === "/" ? "text-orange-600" : "text-zinc-400"
+                    )}
+                >
+                    <Home className="w-6 h-6 group-hover:text-orange-600" />
+                    <span className="text-[10px] font-bold uppercase tracking-tighter group-hover:text-orange-600">
+                        Accueil
+                    </span>
+                </Link>
 
-                    if (link.isAction) {
-                        return (
-                            <Link
-                                key={link.label}
-                                href={link.href}
-                                className="relative -top-3 flex flex-col items-center"
-                            >
-                                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-500 text-white shadow-lg shadow-orange-200 ring-4 ring-white transition-transform active:scale-90">
-                                    <link.icon className="h-7 w-7" />
-                                </div>
-                                <span className="mt-1 text-[10px] font-bold text-orange-500">{link.label}</span>
-                            </Link>
-                        );
-                    }
+                {/* Radar / Location Filter - Replaces Search icon since Search is in top bar */}
+                <div className="flex items-center justify-center">
+                    <MobileLocationFilter />
+                </div>
 
-                    return (
-                        <Link
-                            key={link.label}
-                            href={link.href}
-                            className={cn(
-                                "flex flex-1 flex-col items-center justify-center gap-1 transition-all active:scale-90",
-                                isActive ? "text-orange-500" : "text-zinc-400"
-                            )}
-                        >
-                            <link.icon className={cn("h-6 w-6", isActive && "fill-current/10")} />
-                            <span className="text-[10px] font-bold uppercase tracking-tighter">{link.label}</span>
-                        </Link>
-                    );
-                })}
+                <Link
+                    href="/marketplace/post"
+                    className="inline-flex flex-col items-center justify-center px-2 group relative -top-5"
+                >
+                    <div className="p-3 bg-orange-500 rounded-full shadow-lg shadow-orange-200 group-hover:bg-orange-600 transition-all border-4 border-white active:scale-95">
+                        <PlusCircle className="w-6 h-6 text-white" />
+                    </div>
+                    <span className="text-[10px] font-bold text-orange-500 mt-1">Vendre</span>
+                </Link>
+
+                <Link
+                    href="/dashboard/messages"
+                    className={cn(
+                        "inline-flex flex-col items-center justify-center px-2 hover:bg-gray-50 group gap-1",
+                        pathname === "/dashboard/messages" ? "text-orange-600" : "text-zinc-400"
+                    )}
+                >
+                    <MessageCircle className="w-6 h-6 group-hover:text-orange-600" />
+                    <span className="text-[10px] font-bold uppercase tracking-tighter group-hover:text-orange-600">
+                        Messages
+                    </span>
+                </Link>
+
+                <Link
+                    href="/dashboard"
+                    className={cn(
+                        "inline-flex flex-col items-center justify-center px-2 hover:bg-gray-50 group gap-1",
+                        pathname === "/dashboard" ? "text-orange-600" : "text-zinc-400"
+                    )}
+                >
+                    <User className="w-6 h-6 group-hover:text-orange-600" />
+                    <span className="text-[10px] font-bold uppercase tracking-tighter group-hover:text-orange-600">
+                        Profil
+                    </span>
+                </Link>
             </div>
         </div>
     );
