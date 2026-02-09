@@ -13,9 +13,18 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import Image from "next/image";
 import { generateSmartReplies } from "@/lib/smartReplies";
-import { ChatAudioRecorder } from "./ChatAudioRecorder";
-import { ChatAudioPlayer } from "./ChatAudioPlayer";
 import { toast } from "sonner";
+import dynamic from "next/dynamic";
+
+const ChatAudioRecorder = dynamic(() => import("./ChatAudioRecorder").then(mod => mod.ChatAudioRecorder), {
+    loading: () => <div className="h-10 w-10 flex items-center justify-center"><Loader2 className="h-5 w-5 animate-spin text-orange-500" /></div>,
+    ssr: false
+});
+
+const ChatAudioPlayer = dynamic(() => import("./ChatAudioPlayer").then(mod => mod.ChatAudioPlayer), {
+    loading: () => <div className="h-8 w-32 bg-zinc-100 animate-pulse rounded-lg" />,
+    ssr: false
+});
 
 interface ChatWindowProps {
     conversation: Conversation;

@@ -45,9 +45,22 @@ export function ChatAudioRecorder({ onSend, onCancel, initialX, initialY }: Chat
 
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            const MIME_TYPES = ["audio/webm", "audio/mp4", "audio/mpeg", "audio/ogg", "audio/wav", "audio/aac"];
+
+            // Professional Prioritized MIME Types: MP4/AAC for max compatibility
+            const MIME_TYPES = [
+                "audio/mp4;codecs=mp4a",
+                "audio/webm;codecs=opus",
+                "audio/webm",
+                "audio/mp4",
+                "audio/ogg;codecs=opus",
+                "audio/wav",
+                "audio/aac"
+            ];
+
             const mimeType = MIME_TYPES.find(type => MediaRecorder.isTypeSupported(type)) || "";
             const options = mimeType ? { mimeType } : {};
+
+            console.log("Senior Engineer: Using MIME Type", mimeType);
 
             const mediaRecorder = new MediaRecorder(stream, options);
             mediaRecorderRef.current = mediaRecorder;

@@ -4,8 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import { Conversation, Message } from "@/types/messaging";
-import { ChatWindow } from "@/components/chat/ChatWindow";
-import { Search, Send, MessageSquare, User, MoreVertical, Paperclip, Smile } from "lucide-react";
+import { Search, Send, MessageSquare, User, MoreVertical, Paperclip, Smile, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -14,6 +13,14 @@ import Link from "next/link";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { toast } from "sonner";
+import dynamic from "next/dynamic";
+
+const ChatWindow = dynamic(() => import("@/components/chat/ChatWindow").then(mod => mod.ChatWindow), {
+    loading: () => <div className="flex-1 flex items-center justify-center bg-zinc-50/30">
+        <Loader2 className="h-8 w-8 animate-spin text-orange-500" />
+    </div>,
+    ssr: false
+});
 
 interface MessagingClientProps {
     initialConversations: Conversation[];
