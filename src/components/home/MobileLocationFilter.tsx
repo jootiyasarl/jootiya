@@ -30,9 +30,11 @@ export function MobileLocationFilter() {
     const [radius, setRadius] = useState([initialRadius]);
 
     const [isLocating, setIsLocating] = useState(false);
+    const [permissionDenied, setPermissionDenied] = useState(false);
 
     const handleLocateAndFilter = async () => {
         setIsLocating(true);
+        setPermissionDenied(false); // Reset
         try {
             const pos = await getBrowserGeolocation();
 
@@ -46,7 +48,12 @@ export function MobileLocationFilter() {
             setIsOpen(false);
         } catch (err: any) {
             console.error("Geolocation error:", err);
-            toast.error(err.message || "Impossible de récupérer votre position.");
+            const msg = err.message || "Impossible de récupérer votre position.";
+            toast.error(msg);
+
+            if (msg.toLowerCase().includes("refusé") || msg.toLowerCase().includes("denied")) {
+                setPermissionDenied(true);
+            }
         } finally {
             setIsLocating(false);
         }
@@ -113,6 +120,21 @@ export function MobileLocationFilter() {
                                 Annonces à moins de <span className="font-bold text-zinc-900">{radius[0]} km</span> de votre position.
                             </p>
                         </div>
+
+                        {/* Permission Help Text */}
+                        {permissionDenied && (
+                            <div className="bg-red-50 border border-red-100 rounded-xl p-3 text-sm text-red-600 space-y-2 animate-in fade-in slide-in-from-bottom-2">
+                                <p className="font-bold flex items-center gap-2">
+                                    <span className="text-lg">🔒</span> Accès bloqué ?
+                                </p>
+                                <p className="text-xs text-red-500 leading-relaxed">
+                                    Votre navigateur bloque la localisation. <br />
+                                    1. Cliquez sur le <strong>cadenas (🔒)</strong> ou paramètres dans la barre d'adresse.<br />
+                                    2. Sélectionnez <strong>"Autorisations"</strong>.<br />
+                                    3. Activez la <strong>Localisation</strong> et réessayez.
+                                </p>
+                            </div>
+                        )}
 
                         {/* Action Buttons */}
                         <div className="flex flex-col gap-3">
