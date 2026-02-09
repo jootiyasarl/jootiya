@@ -4,22 +4,15 @@ import { supabase } from "./supabaseClient";
  * Generates a Supabase Transformation URL for optimized image fetching.
  * Enables ultra-fast 20KB thumbnails for feeds.
  */
-export function getOptimizedImageUrl(url: string, options: { width?: number; height?: number; quality?: number; resize?: 'cover' | 'contain' | 'fill' } = {}) {
+export function getOptimizedImageUrl(url: string, options: { width?: number; height?: number; quality?: number; resize?: 'cover' | 'contain' | 'fill'; format?: 'webp' | 'origin' } = {}) {
     if (!url || !url.includes('/storage/v1/object/public/')) return url;
 
-    const { width = 200, height = 200, quality = 50, resize = 'cover' } = options;
+    const { width = 200, height = 200, quality = 50, resize = 'cover', format = 'webp' } = options;
 
-    // Supabase Transformations are applied via URL parameters or a specific path format
-    // For many setups, it's: render/image/public/bucket/path?width=...
-    // We'll use the official parameter-based approach if supported, or the path transformation
     try {
         const urlObj = new URL(url);
-        // Transform the standard public URL to a transformation URL
-        // From: .../storage/v1/object/public/bucket/path
-        // To:   .../storage/v1/render/image/public/bucket/path?width=200&height=200&quality=50
-
         const path = urlObj.pathname.replace('/object/public/', '/render/image/public/');
-        return `${urlObj.origin}${path}?width=${width}&height=${height}&quality=${quality}&resize=${resize}`;
+        return `${urlObj.origin}${path}?width=${width}&height=${height}&quality=${quality}&resize=${resize}&format=${format}`;
     } catch (e) {
         return url;
     }
