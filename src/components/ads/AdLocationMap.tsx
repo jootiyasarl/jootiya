@@ -65,110 +65,88 @@ export function AdLocationMap({ lat, lng, city, neighborhood }: AdLocationMapPro
     const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
 
     return (
-        <div className="rounded-3xl bg-white p-6 shadow-md shadow-zinc-200/50 border border-zinc-100 sm:p-8 space-y-6">
+        <div className="rounded-3xl bg-white p-6 shadow-md shadow-zinc-200/50 border border-zinc-100 sm:p-8 space-y-5">
             <div className="flex items-center justify-between">
                 <h2 className="text-xl font-bold flex items-center gap-2 text-slate-900">
                     <span className="h-8 w-1.5 rounded-full bg-orange-600" />
                     موقع السلعة
                 </h2>
-                <a
-                    href={googleMapsUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs font-bold text-slate-500 hover:text-orange-600 flex items-center gap-1 transition-colors uppercase tracking-wider"
-                >
-                    Google Maps <ExternalLink className="h-3 w-3" />
-                </a>
+                <div className="flex items-center gap-2 text-xs font-bold text-slate-400 bg-slate-50 px-2.5 py-1 rounded-full border border-slate-100">
+                    <MapPin className="h-3 w-3 text-orange-500" />
+                    {city} {neighborhood ? `• ${neighborhood}` : ''}
+                </div>
             </div>
 
-            <div className="flex items-center gap-2 text-sm text-zinc-500 bg-zinc-50 p-3 rounded-2xl border border-zinc-100">
-                <MapPin className="h-4 w-4 text-orange-500 shrink-0" />
-                <span className="font-medium text-zinc-700">{city}</span>
-                {neighborhood && (
-                    <>
-                        <span className="text-zinc-300">•</span>
-                        <span className="text-zinc-600">{neighborhood}</span>
-                    </>
-                )}
-            </div>
-
-            {/* Map Container */}
-            <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-zinc-100 bg-zinc-50 group">
+            {/* Map Container - Slim & Modern (250px) */}
+            <div className="relative h-[250px] w-full overflow-hidden rounded-2xl border border-zinc-100 bg-zinc-50 group">
                 <LeafletMap
                     center={[lat, lng]}
-                    zoom={13}
-                    radius={800}
+                    zoom={14}
+                    radius={400} // Privacy radius
                 />
 
-                {/* Clickable Overlay for External Link */}
-                <a
-                    href={googleMapsUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="absolute inset-0 z-10 cursor-pointer flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/5"
-                >
-                    <div className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg flex items-center gap-2 text-sm font-bold text-zinc-900 border border-white">
-                        <Navigation className="w-4 h-4 text-orange-500" />
-                        فتح في الخرائط
-                    </div>
-                </a>
+                {/* Overlay Text for "Big Engineer" Context */}
+                <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl shadow-sm border border-white/50 z-[400] max-w-[200px]">
+                    <p className="text-[10px] font-bold text-zinc-600 leading-tight">
+                        <span className="text-orange-600">⚠</span> موقع تقريبي (شعاع 400م)
+                    </p>
+                </div>
             </div>
 
-            {/* Geolocation Section */}
-            <div className="space-y-4">
+            {/* Action Button: Open in Google Maps */}
+            <a
+                href={googleMapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center w-full h-11 bg-zinc-900 hover:bg-zinc-800 text-white rounded-xl font-bold text-sm gap-2 transition-all shadow-lg shadow-zinc-200 active:scale-[0.98]"
+            >
+                <img src="https://www.google.com/images/branding/product/ico/maps15_bnuw3a_32dp.ico" alt="Google Maps" className="w-5 h-5" />
+                فتح في Google Maps
+            </a>
+
+            {/* Permission / Distance Calculation Section */}
+            <div className="bg-orange-50/50 border border-orange-100 rounded-2xl p-4">
                 {!distance ? (
-                    <div className="space-y-3">
-                        {showExplanation ? (
-                            <div className="bg-orange-50 border border-orange-100 rounded-2xl p-4 animate-in fade-in slide-in-from-top-2 duration-300">
-                                <div className="flex gap-3">
-                                    <Info className="w-5 h-5 text-orange-600 shrink-0" />
-                                    <div className="space-y-2">
-                                        <p className="text-sm font-medium text-orange-900 leading-relaxed">
-                                            سوف نستخدم موقعك الحالي فقط لحساب المسافة بينك وبين البائع. لن يتم حفظ موقعك أو مشاركته مع أي شخص.
-                                        </p>
-                                        <Button
-                                            onClick={handleCalculateDistance}
-                                            disabled={isRequesting}
-                                            className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl shadow-lg shadow-orange-100"
-                                        >
-                                            {isRequesting ? "جاري التحديد..." : "موافق، ابدأ الحساب"}
-                                        </Button>
-                                    </div>
-                                </div>
-                            </div>
-                        ) : (
-                            <Button
-                                onClick={handleCalculateDistance}
-                                variant="outline"
-                                className="w-full h-12 rounded-2xl border-dashed border-zinc-200 text-zinc-600 hover:text-orange-600 hover:border-orange-200 transition-all font-bold gap-2"
-                            >
-                                <Navigation className="w-4 h-4" />
-                                شحال بعيدة علي؟
-                            </Button>
-                        )}
+                    <div className="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-right">
+                        <div className="p-2.5 bg-white rounded-full shadow-sm border border-orange-100 shrink-0">
+                            <Navigation className="w-5 h-5 text-orange-600" />
+                        </div>
+                        <div className="flex-1 space-y-1">
+                            <p className="text-xs font-bold text-zinc-900">
+                                شحال بعيدة عليك هاد السلعة؟
+                            </p>
+                            <p className="text-[11px] text-zinc-500 leading-relaxed">
+                                وافق على مشاركة موقعك لنحسب لك المسافة والوقت المتبقي للوصول بدقة.
+                            </p>
+                        </div>
+                        <Button
+                            onClick={handleCalculateDistance}
+                            disabled={isRequesting}
+                            size="sm"
+                            className="w-full sm:w-auto bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl shadow-md shadow-orange-100 whitespace-nowrap px-6"
+                        >
+                            {isRequesting ? "جاري الحساب..." : "حسب المسافة"}
+                        </Button>
                     </div>
                 ) : (
-                    <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-4 flex items-center justify-between animate-in zoom-in-95 duration-300">
+                    <div className="flex items-center justify-between animate-in zoom-in-95 duration-300">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center">
+                            <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center border border-emerald-200">
                                 <Navigation className="w-5 h-5 text-emerald-600" />
                             </div>
                             <div>
-                                <div className="text-[11px] font-bold text-emerald-600 uppercase tracking-widest">المسافة التقريبية</div>
-                                <div className="text-lg font-black text-emerald-900">
-                                    {distance.toFixed(1)} كم <span className="text-sm font-normal text-emerald-700/60">عليك</span>
+                                <div className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">المسافة</div>
+                                <div className="text-base font-black text-emerald-900">
+                                    {distance.toFixed(1)} كم <span className="text-xs font-medium text-emerald-700/60">عليك</span>
                                 </div>
                             </div>
-                        </div>
-                        <div className="text-xs text-emerald-600 font-bold bg-white px-3 py-1 rounded-full shadow-sm">
-                            موقع تقريبي
                         </div>
                     </div>
                 )}
             </div>
 
-            <p className="text-[10px] text-zinc-400 text-center leading-tight">
-                * يتم عرض موقع تقريبي للسلعة في شعاع 800 متر لضمان خصوصية البائع.
+            <p className="text-[10px] text-zinc-400 text-center leading-tight pt-1">
+                نحن نحترم خصوصية البائع، لذلك لا نظهر الموقع الدقيق إلا عند التواصل المباشر.
             </p>
         </div>
     );

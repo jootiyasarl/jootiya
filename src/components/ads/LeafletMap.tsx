@@ -18,6 +18,9 @@ export default function LeafletMap({ center, zoom, radius }: LeafletMapProps) {
             scrollWheelZoom={false}
             className="h-full w-full"
             zoomControl={false}
+            dragging={false}   // Disable dragging for a static, clean look
+            touchZoom={false}  // Disable touch zoom
+            doubleClickZoom={false} // Disable double click zoom
         >
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -28,7 +31,7 @@ export default function LeafletMap({ center, zoom, radius }: LeafletMapProps) {
                 pathOptions={{
                     fillColor: '#ea580c',
                     color: '#ea580c',
-                    fillOpacity: 0.1,
+                    fillOpacity: 0.15,
                     weight: 1
                 }}
                 radius={radius}
