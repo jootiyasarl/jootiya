@@ -16,11 +16,13 @@ CREATE TABLE IF NOT EXISTS public.reviews (
 ALTER TABLE public.reviews ENABLE ROW LEVEL SECURITY;
 
 -- Everyone can read reviews
+DROP POLICY IF EXISTS "Reviews are public" ON public.reviews;
 CREATE POLICY "Reviews are public" ON public.reviews
     FOR SELECT USING (true);
 
 -- Authenticated users can create reviews
-CREATE POLICY "Users can create reviews" ON public.reviews
+DROP POLICY IF EXISTS "Users can create reviews" ON public.reviews;
+CREATE POLICY "Users create reviews" ON public.reviews
     FOR INSERT WITH CHECK (auth.uid() = buyer_id);
 
 -- Helper function to get seller stats

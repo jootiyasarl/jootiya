@@ -6,6 +6,7 @@ import { AdImageGallery } from "@/components/ads/AdImageGallery";
 import { ContactActions } from "@/components/ads/ContactActions";
 import { MobileAdActions } from "@/components/ads/MobileAdActions";
 import { AdLocationMap } from "@/components/ads/AdLocationMap";
+import { AdCard } from "@/components/AdCard";
 import { RecentReviews } from "@/components/ads/RecentReviews";
 import {
   MapPin,
