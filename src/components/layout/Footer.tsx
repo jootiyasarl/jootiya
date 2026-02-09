@@ -113,7 +113,7 @@ export default function Footer() {
                             <FooterLink href="/safety">Conseils de Sécurité</FooterLink>
                             <FooterLink href="/terms">CGU & Conditions</FooterLink>
                             <FooterLink href="/privacy-policy">Confidentialité</FooterLink>
-                            <FooterLink href="/contact">Support Client</FooterLink>
+                            <FooterLink href="/help">Support Client</FooterLink>
                         </ul>
                     </div>
 

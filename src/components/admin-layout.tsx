@@ -17,7 +17,8 @@ import {
   Bell,
   Menu,
   PanelLeft,
-  Star
+  Star,
+  LifeBuoy
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -67,14 +68,14 @@ const adminNavItems: AdminNavItem[] = [
     icon: MapPin,
   },
   {
-    label: "Subscriptions",
-    href: "/admin/subscriptions",
-    icon: CreditCard,
-  },
-  {
     label: "Reports",
     href: "/admin/reports",
     icon: Flag,
+  },
+  {
+    label: "Support Tickets",
+    href: "/admin/support",
+    icon: LifeBuoy,
   },
   {
     label: "Analytics",

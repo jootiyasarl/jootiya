@@ -8,6 +8,8 @@ import { MobileAdActions } from "@/components/ads/MobileAdActions";
 import { AdLocationMap } from "@/components/ads/AdLocationMap";
 import { AdCard } from "@/components/AdCard";
 import { RecentReviews } from "@/components/ads/RecentReviews";
+import { ReportModal } from "@/components/ads/ReportModal";
+import { ReportButton } from "@/components/ads/ReportButton";
 import {
   MapPin,
   Calendar,
@@ -163,6 +165,11 @@ export default async function AdPage({ params }: AdPageProps) {
                 <Heart className="h-4 w-4" />
                 <span className="hidden lg:inline">Enregistrer</span>
               </Button>
+              <ReportButton
+                targetId={ad.id}
+                targetType="ad"
+                reporterId={user?.id}
+              />
             </div>
           </div>
         </div>

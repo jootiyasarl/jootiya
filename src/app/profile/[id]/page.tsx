@@ -12,8 +12,11 @@ import {
     Award,
     MessageCircle,
     ShoppingBag,
-    Users
+    Users,
+    Flag
 } from "lucide-react";
+import { ReportButton } from "@/components/ads/ReportButton";
+import { getServerUser } from "@/lib/supabase";
 
 export const dynamic = "force-dynamic";
 
@@ -25,6 +28,7 @@ interface ProfilePageProps {
 
 export default async function PublicProfilePage({ params }: ProfilePageProps) {
     const { id: sellerId } = await params;
+    const user = await getServerUser();
     const supabase = createSupabaseServerClient();
 
     // 1. Fetch Profile
@@ -117,6 +121,11 @@ export default async function PublicProfilePage({ params }: ProfilePageProps) {
                                 <span className="block text-xl font-black text-zinc-900">{ads?.length || 0}</span>
                                 <span className="text-[10px] text-zinc-400 font-bold uppercase">Annonces</span>
                             </div>
+                            <ReportButton
+                                targetId={sellerId}
+                                targetType="user"
+                                reporterId={user?.id}
+                            />
                         </div>
                     </div>
                 </div>
@@ -133,7 +142,7 @@ export default async function PublicProfilePage({ params }: ProfilePageProps) {
                             </h2>
                             {ads && ads.length > 0 ? (
                                 <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 gap-4">
-                                    {ads.map((ad) => (
+                                    {ads?.map((ad) => (
                                         <AdCard
                                             key={ad.id}
                                             ad={{
@@ -170,7 +179,7 @@ export default async function PublicProfilePage({ params }: ProfilePageProps) {
                                                 <div className="flex items-center gap-2">
                                                     <div className="w-6 h-6 rounded-full bg-zinc-100 flex items-center justify-center overflow-hidden">
                                                         {(() => {
-                                                            const buyer = Array.isArray(review.profiles) ? review.profiles[0] : review.profiles;
+                                                            const buyer = Array.isArray(review.profiles) ? review.profiles[0] : (review.profiles as any);
                                                             return buyer?.avatar_url ? (
                                                                 <Image src={buyer.avatar_url} alt="Buyer" width={24} height={24} className="object-cover" />
                                                             ) : (
@@ -179,7 +188,7 @@ export default async function PublicProfilePage({ params }: ProfilePageProps) {
                                                         })()}
                                                     </div>
                                                     <span className="text-xs font-bold text-zinc-900">
-                                                        {(Array.isArray(review.profiles) ? review.profiles[0] : review.profiles)?.full_name || 'Acheteur'}
+                                                        {(Array.isArray(review.profiles) ? review.profiles[0] : (review.profiles as any))?.full_name || 'Acheteur'}
                                                     </span>
                                                 </div>
                                                 <div className="flex text-yellow-500">
@@ -201,6 +210,6 @@ export default async function PublicProfilePage({ params }: ProfilePageProps) {
                     </div>
                 </div>
             </main>
-        </div>
+        </div >
     );
 }
