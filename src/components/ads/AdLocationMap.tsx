@@ -7,10 +7,11 @@ import { Button } from "@/components/ui/button";
 import { getBrowserGeolocation } from "@/lib/adLocation";
 import { toast } from "sonner";
 
-// Dynamic import for Leaflet to avoid SSR issues
-const MapContainer = dynamic(() => import("react-leaflet").then((mod) => mod.MapContainer), { ssr: false });
-const TileLayer = dynamic(() => import("react-leaflet").then((mod) => mod.TileLayer), { ssr: false });
-const Circle = dynamic(() => import("react-leaflet").then((mod) => mod.Circle), { ssr: false });
+// Dynamically import the entire LeafletMap component to avoid SSR issues
+const LeafletMap = dynamic(() => import("./LeafletMap"), {
+    ssr: false,
+    loading: () => <div className="h-full w-full bg-zinc-100 animate-pulse flex items-center justify-center text-zinc-400 text-xs font-bold">جاري تحميل الخريطة...</div>
+});
 
 interface AdLocationMapProps {
     lat: number;
@@ -39,18 +40,6 @@ export function AdLocationMap({ lat, lng, city, neighborhood }: AdLocationMapPro
     const [distance, setDistance] = useState<number | null>(null);
     const [isRequesting, setIsRequesting] = useState(false);
     const [showExplanation, setShowExplanation] = useState(false);
-    const [isLeafletLoaded, setIsLeafletLoaded] = useState(false);
-
-    useEffect(() => {
-        // Only load Leaflet CSS on the client
-        if (typeof window !== "undefined") {
-            const link = document.createElement("link");
-            link.rel = "stylesheet";
-            link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
-            document.head.appendChild(link);
-            setIsLeafletLoaded(true);
-        }
-    }, []);
 
     const handleCalculateDistance = async () => {
         if (!showExplanation) {
@@ -105,25 +94,11 @@ export function AdLocationMap({ lat, lng, city, neighborhood }: AdLocationMapPro
 
             {/* Map Container */}
             <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-zinc-100 bg-zinc-50 group">
-                {isLeafletLoaded && (
-                    <MapContainer
-                        center={[lat, lng]}
-                        zoom={13}
-                        scrollWheelZoom={false}
-                        className="h-full w-full z-0"
-                    >
-                        <TileLayer
-                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        />
-                        {/* Privacy Circle instead of Marker */}
-                        <Circle
-                            center={[lat, lng]}
-                            pathOptions={{ fillColor: '#ea580c', color: '#ea580c', fillOpacity: 0.1, weight: 1 }}
-                            radius={800} // ~800m radius for privacy
-                        />
-                    </MapContainer>
-                )}
+                <LeafletMap
+                    center={[lat, lng]}
+                    zoom={13}
+                    radius={800}
+                />
 
                 {/* Clickable Overlay for External Link */}
                 <a

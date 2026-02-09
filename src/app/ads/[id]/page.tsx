@@ -216,19 +216,19 @@ export default async function AdPage({ params }: AdPageProps) {
                     </ul>
                   </div>
                 </div>
-
-                {/* Location Map Section */}
-                {ad.latitude && ad.longitude && (
-                  <section>
-                    <AdLocationMap
-                      lat={ad.latitude}
-                      lng={ad.longitude}
-                      city={ad.city}
-                      neighborhood={ad.neighborhood}
-                    />
-                  </section>
-                )}
               </div>
+
+              {/* Location Map Section */}
+              {(ad.latitude !== null && ad.longitude !== null && ad.latitude !== undefined) && (
+                <section>
+                  <AdLocationMap
+                    lat={Number(ad.latitude)}
+                    lng={Number(ad.longitude)}
+                    city={ad.city}
+                    neighborhood={ad.neighborhood}
+                  />
+                </section>
+              )}
             </div>
           </div>
 
