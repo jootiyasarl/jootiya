@@ -1,5 +1,6 @@
 "use client";
 
+import React, { Suspense } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Search, PlusCircle, MessageCircle, User } from "lucide-react";
@@ -27,7 +28,9 @@ export function MobileBottomNav() {
 
                 {/* Radar / Location Filter - Replaces Search icon since Search is in top bar */}
                 <div className="flex items-center justify-center">
-                    <MobileLocationFilter />
+                    <Suspense fallback={<div className="w-8 h-8 rounded-full bg-zinc-50 animate-pulse" />}>
+                        <MobileLocationFilter />
+                    </Suspense>
                 </div>
 
                 <Link

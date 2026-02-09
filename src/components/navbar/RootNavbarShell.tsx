@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { ReactNode, Suspense } from "react";
 import { usePathname } from "next/navigation";
 import PublicNavbar from "./PublicNavbar";
 import { MobileBottomNav } from "./MobileBottomNav";
@@ -26,7 +26,9 @@ export function RootNavbarShell({ children }: RootNavbarShellProps) {
     <>
       {!isSpecialPath && (
         <>
-          <PublicNavbar />
+          <Suspense fallback={<div className="h-16 w-full bg-white border-b border-zinc-200" />}>
+            <PublicNavbar />
+          </Suspense>
           {/* Hide Bottom Nav on Post Ad and Ad Details pages to prevent overlap with sticky actions */}
           {!(pathname?.startsWith('/marketplace/post') || pathname?.startsWith('/ads/')) && (
             <MobileBottomNav />
