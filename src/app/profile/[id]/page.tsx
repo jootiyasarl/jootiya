@@ -168,13 +168,18 @@ export default async function PublicProfilePage({ params }: ProfilePageProps) {
                                             <div className="flex items-center justify-between mb-3">
                                                 <div className="flex items-center gap-2">
                                                     <div className="w-6 h-6 rounded-full bg-zinc-100 flex items-center justify-center overflow-hidden">
-                                                        {review.profiles?.avatar_url ? (
-                                                            <Image src={review.profiles.avatar_url} alt="Buyer" width={24} height={24} className="object-cover" />
-                                                        ) : (
-                                                            <User className="w-3 h-3 text-zinc-300" />
-                                                        )}
+                                                        {(() => {
+                                                            const buyer = Array.isArray(review.profiles) ? review.profiles[0] : review.profiles;
+                                                            return buyer?.avatar_url ? (
+                                                                <Image src={buyer.avatar_url} alt="Buyer" width={24} height={24} className="object-cover" />
+                                                            ) : (
+                                                                <User className="w-3 h-3 text-zinc-300" />
+                                                            );
+                                                        })()}
                                                     </div>
-                                                    <span className="text-xs font-bold text-zinc-900">{review.profiles?.full_name || 'Acheteur'}</span>
+                                                    <span className="text-xs font-bold text-zinc-900">
+                                                        {(Array.isArray(review.profiles) ? review.profiles[0] : review.profiles)?.full_name || 'Acheteur'}
+                                                    </span>
                                                 </div>
                                                 <div className="flex text-yellow-500">
                                                     <Star className="w-3 h-3 fill-current" />
