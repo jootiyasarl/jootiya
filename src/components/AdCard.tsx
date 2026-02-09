@@ -17,6 +17,7 @@ export type PublicAdCardAd = {
   isFeatured?: boolean;
   imageUrl?: string;
   sellerName?: string;
+  currency?: string;
 };
 
 export interface AdCardProps {
