@@ -27,7 +27,7 @@ export function CategoryGrid() {
                     </Link>
                 </div>
 
-                <div className="flex overflow-x-auto no-scrollbar gap-4 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-10 sm:overflow-visible">
+                <div className="flex overflow-x-auto no-scrollbar gap-4 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-10 sm:overflow-visible">
                     {CATEGORIES.map((category) => (
                         <Link
                             key={category.id}
