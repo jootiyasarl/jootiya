@@ -6,7 +6,7 @@ import { AdImageGallery } from "@/components/ads/AdImageGallery";
 import { ContactActions } from "@/components/ads/ContactActions";
 import { MobileAdActions } from "@/components/ads/MobileAdActions";
 import { AdLocationMap } from "@/components/ads/AdLocationMap";
-import { AdCard } from "@/components/AdCard";
+import { RecentReviews } from "@/components/ads/RecentReviews";
 import {
   MapPin,
   Calendar,
@@ -21,7 +21,8 @@ import {
   Phone,
   AlertTriangle,
   Award,
-  Sparkles
+  Sparkles,
+  Star
 } from "lucide-react";
 import Image from "next/image";
 
@@ -71,7 +72,20 @@ export default async function AdPage({ params }: AdPageProps) {
     supabase.rpc('increment_ad_views', { ad_id: ad.id }).then();
   }
 
-  // 3. Fetch Similar Ads
+  // 3. Fetch Seller Stats & Reviews
+  const { data: stats } = await supabase.rpc('get_seller_stats', { target_seller_id: ad.seller_id });
+  const avgRating = stats?.[0]?.avg_rating || 0;
+  const totalReviews = stats?.[0]?.total_reviews || 0;
+  const isTrusted = totalReviews > 10 && avgRating >= 4.5;
+
+  const { data: reviews } = await supabase
+    .from('reviews')
+    .select('id, rating, comment, created_at, profiles(full_name, avatar_url)')
+    .eq('seller_id', ad.seller_id)
+    .order('created_at', { ascending: false })
+    .limit(3);
+
+  // 4. Fetch Similar Ads
   // Strategy: Try Geospatial first (if coords exist), else Category fallback
   let similarAds: any[] = [];
 
@@ -277,7 +291,12 @@ export default async function AdPage({ params }: AdPageProps) {
                 <div>
                   <h3 className="font-bold text-zinc-900 flex items-center gap-1.5">
                     {sellerName}
-                    <Award className="w-4 h-4 text-blue-500 fill-blue-500/10" />
+                    {isTrusted && (
+                      <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-blue-100 text-[10px] text-blue-700 font-extrabold tracking-wide border border-blue-200">
+                        <Award className="w-3 h-3" />
+                        TOP
+                      </span>
+                    )}
                   </h3>
                   <p className="text-xs text-zinc-500 font-medium">Membre depuis {memberSince}</p>
                 </div>
@@ -289,14 +308,17 @@ export default async function AdPage({ params }: AdPageProps) {
                   <span className="text-[10px] text-zinc-400 uppercase font-bold tracking-wider">Réponse</span>
                 </div>
                 <div className="bg-zinc-50 p-3 rounded-2xl text-center border border-zinc-100">
-                  <span className="block text-lg font-black text-zinc-900">4.9</span>
-                  <span className="text-[10px] text-zinc-400 uppercase font-bold tracking-wider">Évaluation</span>
+                  <span className="block text-lg font-black text-zinc-900 flex items-center justify-center gap-1">
+                    {avgRating > 0 ? avgRating : '-'}
+                    <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
+                  </span>
+                  <span className="text-[10px] text-zinc-400 uppercase font-bold tracking-wider">{totalReviews} Avis</span>
                 </div>
               </div>
 
               <div className="mt-6 pt-4 border-t border-zinc-50 text-center">
-                <Link href={`/marketplace?seller_id=${ad.seller_id}`} className="text-xs font-bold text-orange-600 hover:underline flex items-center justify-center gap-1">
-                  Voir les autres annonces
+                <Link href={`/profile/${ad.seller_id}`} className="text-xs font-bold text-orange-600 hover:underline flex items-center justify-center gap-1">
+                  Voir le profil complet
                   <ChevronRight className="w-3 h-3" />
                 </Link>
               </div>
