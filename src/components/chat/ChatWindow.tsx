@@ -386,16 +386,18 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
             <div className="p-2 md:p-3 bg-zinc-100/50 backdrop-blur-sm border-t border-zinc-200 z-50 sticky bottom-0">
                 <input
                     type="file"
+                    id="chat-file-input"
                     ref={fileInputRef}
                     onChange={handleFileSelect}
-                    className="hidden"
+                    className="absolute opacity-0 w-0 h-0 pointer-events-none"
                     accept="image/*,application/pdf,.doc,.docx"
                 />
                 <input
                     type="file"
+                    id="chat-camera-input"
                     ref={cameraInputRef}
                     onChange={handleFileSelect}
-                    className="hidden"
+                    className="absolute opacity-0 w-0 h-0 pointer-events-none"
                     accept="image/*"
                     capture="environment"
                 />
@@ -419,22 +421,27 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                                     placeholder="Message..."
                                     className="flex-1 bg-transparent border-none focus-visible:ring-0 px-2 py-3 font-medium text-[16px] min-w-0"
                                 />
-                                <Button
-                                    type="button"
-                                    size="icon"
-                                    variant="ghost"
-                                    onClick={() => fileInputRef.current?.click()}
-                                    className="h-10 w-10 text-zinc-500 rounded-full shrink-0"
+                                {/* Paperclip: Use label for robust touch target */}
+                                <label
+                                    htmlFor="chat-file-input"
+                                    className="h-10 w-10 text-zinc-500 rounded-full shrink-0 flex items-center justify-center cursor-pointer hover:bg-zinc-100 transition-colors"
                                 >
                                     <Paperclip className="h-5 w-5 rotate-45" />
-                                </Button>
+                                </label>
+
                                 {!newMessage.trim() && (
                                     <DropdownMenu>
-                                        <DropdownMenuTrigger className="h-10 w-10 text-zinc-500 rounded-full shrink-0 flex items-center justify-center hover:bg-zinc-100 transition-colors">
+                                        <DropdownMenuTrigger className="h-10 w-10 text-zinc-500 rounded-full shrink-0 flex items-center justify-center hover:bg-zinc-100 transition-colors outline-none">
                                             <Camera className="h-6 w-6" />
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent className="rounded-2xl p-2 min-w-[200px] border-zinc-100 shadow-xl z-[60] bottom-full mb-2 right-0">
-                                            <DropdownMenuItem onClick={() => cameraInputRef.current?.click()} className="flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-zinc-50 focus:bg-zinc-50">
+                                            <DropdownMenuItem
+                                                onSelect={(e) => {
+                                                    e.preventDefault(); // Prevent closing immediately to allow click to propagate? Actually standard behavior usually works, but explicit click is better.
+                                                    cameraInputRef.current?.click();
+                                                }}
+                                                className="flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-zinc-50 focus:bg-zinc-50"
+                                            >
                                                 <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
                                                     <Camera className="h-5 w-5 text-orange-600" />
                                                 </div>
@@ -443,7 +450,13 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                                                     <span className="text-[10px] text-zinc-400">فتح الكاميرا مباشرة</span>
                                                 </div>
                                             </DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => fileInputRef.current?.click()} className="flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-zinc-50 focus:bg-zinc-50">
+                                            <DropdownMenuItem
+                                                onSelect={(e) => {
+                                                    e.preventDefault();
+                                                    fileInputRef.current?.click();
+                                                }}
+                                                className="flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-zinc-50 focus:bg-zinc-50"
+                                            >
                                                 <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
                                                     <ImageIcon className="h-5 w-5 text-blue-600" />
                                                 </div>
