@@ -153,7 +153,7 @@ export function ChatAudioRecorder({ onSend, onCancel }: ChatAudioRecorderProps) 
     };
 
     return (
-        <div className="flex items-center gap-3 flex-1 bg-white rounded-full px-1.5 py-1.5 border border-zinc-200 shadow-inner relative overflow-hidden">
+        <div className="flex items-center gap-3 flex-1 bg-transparent relative overflow-hidden h-full">
             <div className="flex items-center gap-3 flex-1 pl-3">
                 {/* Status Indicator */}
                 <div className="relative flex items-center justify-center w-5 h-5">

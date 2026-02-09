@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Send, Paperclip, Smile, MoreVertical, CheckCheck, Loader2, ChevronLeft, Mic } from "lucide-react";
+import { Send, Paperclip, Smile, MoreVertical, CheckCheck, Loader2, ChevronLeft, Mic, Camera } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { cn } from "@/lib/utils";
@@ -262,57 +262,77 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
             </div>
 
             {/* Input Area */}
-            <div className="p-3 md:p-4 bg-white border-t border-zinc-200 z-50 sticky bottom-0">
-                <div className="flex items-center gap-2 w-full max-w-full">
+            {/* WhatsApp-style Input Area */}
+            <div className="p-2 md:p-3 bg-zinc-100/50 backdrop-blur-sm border-t border-zinc-200 z-50 sticky bottom-0">
+                <div className="flex items-end gap-2 w-full max-w-full">
                     {showAudioRecorder ? (
-                        <ChatAudioRecorder
-                            onSend={(url) => {
-                                console.log("ChatWindow: Audio URL received", url);
-                                handleSendMessage(undefined, undefined, url);
-                            }}
-                            onCancel={() => setShowAudioRecorder(false)}
-                        />
+                        <div className="flex-1 bg-white rounded-full shadow-sm border border-zinc-200 overflow-hidden min-h-[48px] flex items-center">
+                            <ChatAudioRecorder
+                                onSend={(url) => {
+                                    console.log("ChatWindow: Audio URL received", url);
+                                    handleSendMessage(undefined, undefined, url);
+                                }}
+                                onCancel={() => setShowAudioRecorder(false)}
+                            />
+                        </div>
                     ) : (
-                        <form
-                            onSubmit={(e) => handleSendMessage(e)}
-                            className="flex-1 flex items-center gap-1 bg-zinc-50 p-1 md:p-2 rounded-2xl md:rounded-3xl border border-zinc-200 focus-within:border-orange-500 transition-all w-full overflow-hidden"
-                        >
-                            <Button type="button" size="icon" variant="ghost" className="h-9 w-9 md:h-10 md:w-10 rounded-full text-zinc-400 hover:text-zinc-600 hover:bg-white shrink-0">
-                                <Paperclip className="h-5 w-5" />
+                        <div className="flex-1 flex items-center gap-1 bg-white rounded-[24px] shadow-sm border border-zinc-200 min-h-[48px] px-1">
+                            <Button
+                                type="button"
+                                size="icon"
+                                variant="ghost"
+                                className="h-10 w-10 text-zinc-500 hover:text-zinc-700 hover:bg-zinc-100 rounded-full shrink-0"
+                            >
+                                <Smile className="h-6 w-6" />
                             </Button>
 
                             <Input
                                 value={newMessage}
                                 onChange={(e) => setNewMessage(e.target.value)}
                                 placeholder="Message..."
-                                className="flex-1 bg-transparent border-none focus-visible:ring-0 px-1 py-2 font-black placeholder:text-zinc-400 text-sm md:text-base min-w-0"
+                                className="flex-1 bg-transparent border-none focus-visible:ring-0 px-2 py-3 font-medium placeholder:text-zinc-400 text-[16px] min-w-0"
                                 onFocus={() => setShowAudioRecorder(false)}
                             />
 
-                            <div className="shrink-0 flex items-center pr-1">
-                                {newMessage.trim() ? (
-                                    <Button
-                                        type="submit"
-                                        size="icon"
-                                        disabled={isSending}
-                                        className="h-9 w-9 md:h-10 md:w-10 rounded-full bg-orange-600 text-white transition-all shadow-[0_2px_10px_rgba(234,88,12,0.3)] active:scale-95"
-                                    >
-                                        {isSending ? <Loader2 className="h-4 w-4 md:h-5 md:w-5 animate-spin" /> : <Send className="h-4 w-4 md:h-5 md:w-5 ml-0.5" />}
-                                    </Button>
-                                ) : (
-                                    <Button
-                                        type="button"
-                                        size="icon"
-                                        variant="ghost"
-                                        onClick={() => setShowAudioRecorder(true)}
-                                        className="h-9 w-9 md:h-10 md:w-10 rounded-full text-zinc-400 hover:text-orange-600 hover:bg-orange-50 transition-colors"
-                                    >
-                                        <Mic className="h-5 w-5" />
-                                    </Button>
-                                )}
-                            </div>
-                        </form>
+                            <Button
+                                type="button"
+                                size="icon"
+                                variant="ghost"
+                                className="h-10 w-10 text-zinc-500 hover:text-zinc-700 hover:bg-zinc-100 rounded-full shrink-0"
+                            >
+                                <Paperclip className="h-5 w-5 rotate-45" />
+                            </Button>
+
+                            {!newMessage.trim() && (
+                                <Button
+                                    type="button"
+                                    size="icon"
+                                    variant="ghost"
+                                    className="h-10 w-10 text-zinc-500 hover:text-zinc-700 hover:bg-zinc-100 rounded-full shrink-0"
+                                >
+                                    <Camera className="h-6 w-6" />
+                                </Button>
+                            )}
+                        </div>
                     )}
+
+                    {/* Separate Action Button */}
+                    <div className="shrink-0 flex items-center">
+                        <Button
+                            onClick={newMessage.trim() ? (e) => handleSendMessage(e) : () => setShowAudioRecorder(true)}
+                            disabled={isSending}
+                            className={cn(
+                                "h-12 w-12 rounded-full flex items-center justify-center transition-all shadow-md active:scale-90 p-0",
+                                newMessage.trim() ? "bg-orange-600 text-white" : "bg-[#128C7E] text-white"
+                            )}
+                        >
+                            {newMessage.trim() ? (
+                                isSending ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5 ml-0.5" />
+                            ) : (
+                                <Mic className="h-6 w-6" />
+                            )}
+                        </Button>
+                    </div>
                 </div>
             </div>
         </div>
