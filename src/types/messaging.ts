@@ -25,4 +25,5 @@ export type Message = {
     created_at: string;
     message_type: 'text' | 'audio';
     file_url?: string;
+    is_optimistic?: boolean;
 };

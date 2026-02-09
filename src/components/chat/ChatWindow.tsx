@@ -96,6 +96,23 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
 
         if (!content && !audioUrl) return;
 
+        // Optimistic Update
+        const tempId = `temp-${Date.now()}`;
+        const optimisticMsg: Message = {
+            id: tempId,
+            conversation_id: conversation.id,
+            sender_id: currentUser.id,
+            content: audioUrl ? "Audio message" : content,
+            message_type: messageType,
+            file_url: audioUrl || undefined,
+            is_read: false,
+            created_at: new Date().toISOString(),
+            is_optimistic: true // Custom flag for UI
+        };
+
+        setMessages((prev) => [...prev, optimisticMsg]);
+        if (!audioUrl) setNewMessage("");
+
         setIsSending(true);
         const { data, error } = await supabase
             .from("messages")
@@ -112,8 +129,11 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
         if (error) {
             console.error("Error sending message:", error);
             toast.error("Erreur lors de l'envoi du message.");
+            // Remove optimistic message on error
+            setMessages((prev) => prev.filter(m => m.id !== tempId));
         } else if (data) {
-            setNewMessage("");
+            // Replace optimistic message with real one
+            setMessages((prev) => prev.map(m => m.id === tempId ? data as Message : m));
             setShowAudioRecorder(false);
             onMessageSent(data as Message);
         }
@@ -171,10 +191,10 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                         messages.map((msg, i) => {
                             const isMe = msg.sender_id === currentUser.id;
                             return (
-                                <div key={msg.id} className={cn("flex w-full", isMe ? "justify-end" : "justify-start")}>
+                                <div key={msg.id} className={cn("flex w-full", isMe ? "justify-end" : "justify-start", msg.is_optimistic && "opacity-70")}>
                                     <div className={cn("flex flex-col max-w-[90%] md:max-w-[70%]", isMe ? "items-end" : "items-start")}>
                                         <div className={cn(
-                                            "px-3 py-2 md:px-4 md:py-2 shadow-sm text-sm md:text-[15px] leading-relaxed break-words",
+                                            "px-3 py-2 md:px-4 md:py-2 shadow-sm text-sm md:text-[15px] leading-relaxed break-words relative",
                                             isMe ? "bg-orange-500 text-white rounded-2xl rounded-tr-sm" : "bg-white border border-zinc-100 text-zinc-800 rounded-2xl rounded-tl-sm"
                                         )}>
                                             {msg.message_type === 'audio' ? (
@@ -187,7 +207,13 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                                             <span className="text-[9px] md:text-[10px] text-zinc-400 font-medium">
                                                 {format(new Date(msg.created_at), "HH:mm")}
                                             </span>
-                                            {isMe && <CheckCheck className="h-3 w-3 text-orange-500" />}
+                                            {isMe && (
+                                                msg.is_optimistic ? (
+                                                    <Loader2 className="h-3 w-3 text-zinc-300 animate-spin" />
+                                                ) : (
+                                                    <CheckCheck className="h-3 w-3 text-orange-500" />
+                                                )
+                                            )}
                                         </div>
                                     </div>
                                 </div>

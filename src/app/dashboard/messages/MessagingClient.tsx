@@ -24,10 +24,8 @@ export function MessagingClient({ initialConversations, currentUser }: Messaging
     const searchParams = useSearchParams();
     const [conversations, setConversations] = useState<Conversation[]>(initialConversations);
     const [selectedId, setSelectedId] = useState<string | null>(searchParams.get('id'));
-    const [messages, setMessages] = useState<Message[]>([]);
-    const [newMessage, setNewMessage] = useState("");
-    const [isLoadingMessages, setIsLoadingMessages] = useState(false);
-    const messagesEndRef = useRef<HTMLDivElement>(null);
+    // MessagingClient now only handles conversation list and selection.
+    // Messages and their real-time subscriptions are managed inside ChatWindow.
 
     // Sync selectedId with URL quest param
     useEffect(() => {
@@ -38,83 +36,6 @@ export function MessagingClient({ initialConversations, currentUser }: Messaging
     }, [searchParams]);
 
     const activeConversation = conversations.find(c => c.id === selectedId);
-
-    // Scroll to bottom when messages change
-    useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, [messages]);
-
-    // Fetch messages when selected conversation changes
-    useEffect(() => {
-        if (!selectedId) return;
-
-        async function loadMessages() {
-            setIsLoadingMessages(true);
-            const { data, error } = await supabase
-                .from('messages')
-                .select('*')
-                .eq('conversation_id', selectedId)
-                .order('created_at', { ascending: true });
-
-            if (!error && data) {
-                setMessages(data as Message[]);
-            }
-            setIsLoadingMessages(false);
-        }
-
-        loadMessages();
-
-        // Subscribe to new messages for this conversation
-        const channel = supabase
-            .channel(`room:${selectedId}`)
-            .on(
-                'postgres_changes',
-                {
-                    event: 'INSERT',
-                    schema: 'public',
-                    table: 'messages',
-                    filter: `conversation_id=eq.${selectedId}`
-                },
-                (payload) => {
-                    const newMessage = payload.new as Message;
-                    setMessages(prev => [...prev, newMessage]);
-
-                    // Update conversation last_message_at in list
-                    setConversations(prev => prev.map(c =>
-                        c.id === selectedId
-                            ? { ...c, last_message_at: newMessage.created_at }
-                            : c
-                    ));
-                }
-            )
-            .subscribe();
-
-        return () => {
-            supabase.removeChannel(channel);
-        };
-    }, [selectedId]);
-
-    const handleSendMessage = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!newMessage.trim() || !selectedId) return;
-
-        const content = newMessage.trim();
-        setNewMessage("");
-
-        const { error } = await supabase
-            .from('messages')
-            .insert({
-                conversation_id: selectedId,
-                sender_id: currentUser.id,
-                content: content,
-                message_type: 'text'
-            });
-
-        if (error) {
-            console.error("Error sending message:", error);
-            toast.error("Erreur lors de l'envoi du message");
-        }
-    };
 
     return (
         <div className="flex h-[calc(100vh-64px)] md:h-[600px] w-full overflow-hidden md:rounded-3xl md:border md:border-zinc-200 bg-white md:shadow-2xl -mx-4 -mt-8 -mb-20 md:m-0">
