@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Readex_Pro } from "next/font/google";
 import "./globals.css";
 import { RootNavbarShell } from "@/components/navbar/RootNavbarShell";
