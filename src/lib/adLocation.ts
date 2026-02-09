@@ -36,30 +36,26 @@ export async function getBrowserGeolocation(): Promise<{
       },
       (error) => {
         if (error.code === error.PERMISSION_DENIED) {
-          reject(
-            new Error(
-              "We couldn't access your location. You can still choose your city and neighborhood manually.",
-            ),
-          );
+          reject(new Error("Accès refusé. Veuillez autoriser la localisation dans les paramètres de votre navigateur."));
+          return;
+        }
+        if (error.code === error.TIMEOUT) {
+          reject(new Error("Délai d'attente dépassé. Le signal GPS est faible, veuillez réessayer."));
           return;
         }
 
-        reject(
-          new Error(
-            "We couldn't detect your location. Please try again or enter it manually.",
-          ),
-        );
+        reject(new Error("Erreur de localisation. Vérifiez que votre GPS est activé."));
       },
       {
-        enableHighAccuracy: false,
-        timeout: 8000,
-        maximumAge: 60_000,
+        enableHighAccuracy: true, // Try high accuracy for better results on mobile
+        timeout: 10000, // Increase timeout to 10s
+        maximumAge: 0, // Force fresh location
       },
     );
   });
 }
 
-export interface SaveAdLocationPayload extends AdLocation {}
+export interface SaveAdLocationPayload extends AdLocation { }
 
 /**
  * Example helper to persist location to Supabase along with an existing ad.

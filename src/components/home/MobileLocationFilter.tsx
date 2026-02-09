@@ -45,7 +45,8 @@ export function MobileLocationFilter() {
             toast.success("Position détectée !");
             setIsOpen(false);
         } catch (err: any) {
-            toast.error("Impossible de récupérer votre position.");
+            console.error("Geolocation error:", err);
+            toast.error(err.message || "Impossible de récupérer votre position.");
         } finally {
             setIsLocating(false);
         }
