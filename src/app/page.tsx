@@ -1,3 +1,4 @@
+import React, { Suspense } from "react";
 import Link from "next/link";
 import { createSupabaseServerClient } from "@/lib/supabase";
 import { HeroSection } from "@/components/home/HeroSection";
@@ -122,7 +123,9 @@ export default async function Home({
 
           {/* Sidebar (Desktop Only) */}
           <div className="hidden lg:block lg:col-span-3">
-            <LocationFilterSidebar ads={mapAds} />
+            <Suspense fallback={<div className="h-[400px] w-full bg-zinc-50 animate-pulse rounded-3xl" />}>
+              <LocationFilterSidebar ads={mapAds} />
+            </Suspense>
           </div>
 
           {/* Main Feed */}

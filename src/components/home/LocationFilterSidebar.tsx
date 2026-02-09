@@ -25,18 +25,24 @@ export function LocationFilterSidebar({ ads }: SidebarProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
 
-    const initialRadius = searchParams.get("radius") ? parseInt(searchParams.get("radius")!) : 50;
+    const radiusParam = searchParams.get("radius");
+    const parsedRadius = radiusParam ? parseInt(radiusParam) : 50;
+    const initialRadius = isNaN(parsedRadius) ? 50 : parsedRadius;
     const [radius, setRadius] = useState([initialRadius]);
     const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
     const [isLocating, setIsLocating] = useState(false);
 
     // Initialize location from URL if present
     useEffect(() => {
-        const lat = searchParams.get("lat");
-        const lng = searchParams.get("lng");
+        const latStr = searchParams.get("lat");
+        const lngStr = searchParams.get("lng");
 
-        if (lat && lng) {
-            setUserLocation({ lat: parseFloat(lat), lng: parseFloat(lng) });
+        if (latStr && lngStr) {
+            const lat = parseFloat(latStr);
+            const lng = parseFloat(lngStr);
+            if (!isNaN(lat) && !isNaN(lng)) {
+                setUserLocation({ lat, lng });
+            }
         }
     }, [searchParams]);
 
@@ -85,11 +91,21 @@ export function LocationFilterSidebar({ ads }: SidebarProps) {
         }
     };
 
-    // Center logic: User location > First ad location > Default (Casablanca)
-    const mapCenter: [number, number] = userLocation
-        ? [userLocation.lat, userLocation.lng]
-        : (ads.length > 0 && ads[0].latitude ? [ads[0].latitude, ads[0].longitude] : [33.5731, -7.5898]);
+    // Center logic: User location > First valid ad location > Default (Casablanca)
+    const getSafeCenter = (): [number, number] => {
+        if (userLocation && !isNaN(userLocation.lat) && !isNaN(userLocation.lng)) {
+            return [userLocation.lat, userLocation.lng];
+        }
+        if (ads.length > 0) {
+            const firstWithCoords = ads.find(a => a.latitude && a.longitude);
+            if (firstWithCoords) {
+                return [firstWithCoords.latitude, firstWithCoords.longitude];
+            }
+        }
+        return [33.5731, -7.5898]; // Casablanca
+    };
 
+    const mapCenter = getSafeCenter();
     const mapZoom = userLocation ? 13 : 10;
 
     return (

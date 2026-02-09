@@ -6,35 +6,37 @@ import "leaflet/dist/leaflet.css";
 import Link from "next/link";
 import { useEffect } from "react";
 
-// Fix Leaflet default icon issue
-const iconUrl = "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png";
-const iconRetinaUrl = "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png";
-const shadowUrl = "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png";
+// Helper to get icons after Leaflet is loaded in component
+let defaultIcon: L.Icon;
+let userIcon: L.DivIcon;
 
-const defaultIcon = L.icon({
-    iconUrl: iconUrl,
-    iconRetinaUrl: iconRetinaUrl,
-    shadowUrl: shadowUrl,
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-});
+const initIcons = () => {
+    if (defaultIcon) return;
 
-// Custom icon for user location (Blue dot pulsing)
-const userIconHtml = `
-  <div class="relative flex h-4 w-4">
-    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-    <span class="relative inline-flex rounded-full h-4 w-4 bg-blue-500 border-2 border-white shadow-sm"></span>
-  </div>
-`;
+    defaultIcon = L.icon({
+        iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+        iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+        shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    });
 
-const userIcon = L.divIcon({
-    className: "",
-    html: userIconHtml,
-    iconSize: [16, 16],
-    iconAnchor: [8, 8]
-});
+    const userIconHtml = `
+      <div class="relative flex h-4 w-4">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-4 w-4 bg-blue-500 border-2 border-white shadow-sm"></span>
+      </div>
+    `;
+
+    userIcon = L.divIcon({
+        className: "",
+        html: userIconHtml,
+        iconSize: [16, 16],
+        iconAnchor: [8, 8]
+    });
+};
 
 export interface AdMarker {
     id: string;
@@ -72,6 +74,9 @@ function ChangeView({ center, zoom }: { center: [number, number]; zoom: number }
 }
 
 export default function MultiMarkerMap({ ads, center, zoom, userLocation, radiusKm }: MultiMarkerMapProps) {
+    // Initialize icons on first render
+    initIcons();
+
     return (
         <MapContainer
             center={center}
