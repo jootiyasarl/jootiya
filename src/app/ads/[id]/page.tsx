@@ -83,6 +83,7 @@ export default async function AdPage({ params }: AdPageProps) {
     .from('reviews')
     .select('id, rating, comment, created_at, profiles(full_name, avatar_url)')
     .eq('seller_id', ad.seller_id)
+    .eq('status', 'approved')
     .order('created_at', { ascending: false })
     .limit(3);
 

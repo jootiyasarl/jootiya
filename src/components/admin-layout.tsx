@@ -17,6 +17,7 @@ import {
   Bell,
   Menu,
   PanelLeft,
+  Star
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -81,6 +82,11 @@ const adminNavItems: AdminNavItem[] = [
     icon: BarChart3,
   },
   {
+    label: "Reviews",
+    href: "/admin/reviews",
+    icon: Star,
+  },
+  {
     label: "Settings",
     href: "/admin/settings",
     icon: Settings,
@@ -110,7 +116,7 @@ function AdminSidebarNav({ collapsed, onItemClick }: AdminSidebarNavProps) {
             className={cn(
               "flex items-center gap-2 rounded-lg px-2 py-2.5 text-sm font-medium text-zinc-400 transition-colors hover:bg-zinc-900 hover:text-zinc-50 lg:px-3",
               isActive &&
-                "bg-zinc-50 text-zinc-950 hover:bg-zinc-50 hover:text-zinc-950",
+              "bg-zinc-50 text-zinc-950 hover:bg-zinc-50 hover:text-zinc-950",
               collapsed && "justify-center px-2",
             )}
           >
@@ -200,7 +206,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
         </div>
         <div
           className={cn(
-            "flex-1 bg-black/40 transition-opacity duration-200", 
+            "flex-1 bg-black/40 transition-opacity duration-200",
             mobileOpen ? "opacity-100" : "opacity-0",
           )}
           onClick={() => setMobileOpen(false)}

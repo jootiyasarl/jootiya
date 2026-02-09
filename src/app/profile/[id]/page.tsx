@@ -51,6 +51,7 @@ export default async function PublicProfilePage({ params }: ProfilePageProps) {
         .from("reviews")
         .select("id, rating, comment, created_at, profiles(full_name, avatar_url)")
         .eq("seller_id", sellerId)
+        .eq("status", "approved")
         .order("created_at", { ascending: false });
 
     // 4. Fetch Stats
