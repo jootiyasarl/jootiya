@@ -11,6 +11,12 @@ import {
     Sparkles, Info, Star, Laptop, Package, Armchair, Hammer, Gamepad2, PawPrint, BookOpen
 } from 'lucide-react';
 import Image from 'next/image';
+import dynamic from 'next/dynamic';
+
+const AdLocationPicker = dynamic(
+    () => import('./AdLocationPicker').then((mod) => mod.AdLocationPicker),
+    { ssr: false, loading: () => <div className="h-[300px] w-full bg-zinc-100 animate-pulse rounded-2xl" /> }
+);
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -27,6 +33,8 @@ const adSchema = z.object({
     neighborhood: z.string().optional(),
     phone: z.string().min(10, "Le numéro de téléphone est requis (min 10 chiffres)"),
     condition: z.enum(['new', 'used'], { message: "L'état du produit est requis" }),
+    latitude: z.number().nullable().optional(),
+    longitude: z.number().nullable().optional(),
 });
 
 type AdFormValues = {
@@ -38,6 +46,8 @@ type AdFormValues = {
     neighborhood?: string;
     phone: string;
     condition: 'new' | 'used';
+    latitude?: number | null;
+    longitude?: number | null;
 };
 
 const CATEGORIES = [
@@ -84,7 +94,10 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
             neighborhood: (initialData as any)?.neighborhood || '',
             phone: (initialData as any)?.phone || '',
             price: initialData?.price || '',
-            condition: (initialData as any)?.condition || 'used'
+            price: initialData?.price || '',
+            condition: (initialData as any)?.condition || 'used',
+            latitude: (initialData as any)?.latitude || null,
+            longitude: (initialData as any)?.longitude || null
         }
     });
 
@@ -184,6 +197,8 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                         phone: data.phone,
                         category: data.category,
                         image_urls: finalImageUrls,
+                        latitude: data.latitude,
+                        longitude: data.longitude,
                         updated_at: new Date().toISOString()
                     })
                     .eq('id', initialData.id)
@@ -224,6 +239,8 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                         phone: data.phone,
                         category: data.category,
                         image_urls: finalImageUrls,
+                        latitude: data.latitude,
+                        longitude: data.longitude,
                         status: 'pending'
                     })
                     .select('id')
@@ -619,6 +636,18 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                         />
                                     </div>
                                     {errors.phone && <p className="text-red-500 text-xs font-bold uppercase tracking-widest ml-1">{errors.phone.message}</p>}
+                                </div>
+
+                                {/* Map Location Picker */}
+                                <div className="space-y-4">
+                                    <AdLocationPicker
+                                        latitude={watch('latitude') || null}
+                                        longitude={watch('longitude') || null}
+                                        onChange={(lat, lng) => {
+                                            setValue('latitude', lat);
+                                            setValue('longitude', lng);
+                                        }}
+                                    />
                                 </div>
 
                                 <div className="mt-16 bg-orange-50 p-8 rounded-[2rem] border border-orange-100">
