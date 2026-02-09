@@ -16,11 +16,15 @@ import {
 } from "@/components/ui/dialog";
 import { supabase } from "@/lib/supabaseClient";
 
+import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+
 interface PersonalInfoForm {
   name: string;
   phone: string;
   city: string;
   email?: string;
+  push_enabled: boolean;
 }
 
 interface PasswordForm {
@@ -36,6 +40,7 @@ export function ProfileForm() {
       phone: "",
       city: "",
       email: "",
+      push_enabled: true,
     },
   );
   const [passwordForm, setPasswordForm] = useState<PasswordForm>({
@@ -81,11 +86,12 @@ export function ProfileForm() {
           phone: "",
           city: "",
           email: user.email || "",
+          push_enabled: true,
         };
 
         const { data: profile, error: profileError } = await supabase
           .from("profiles")
-          .select("full_name, phone, city")
+          .select("full_name, phone, city, push_enabled")
           .eq("id", user.id)
           .maybeSingle();
 
@@ -95,6 +101,7 @@ export function ProfileForm() {
             name: profile.full_name ?? "",
             phone: profile.phone ?? "",
             city: profile.city ?? "",
+            push_enabled: profile.push_enabled ?? true,
           };
         }
 
@@ -369,6 +376,55 @@ export function ProfileForm() {
           </Button>
         </div>
       </form>
+
+      {/* Senior/UX: Notification Settings Section */}
+      <div className="rounded-2xl border bg-white p-4 sm:p-6">
+        <div className="flex flex-col gap-1 mb-6">
+          <h2 className="text-sm font-semibold text-zinc-900">
+            إعدادات التنبيهات
+          </h2>
+          <p className="text-xs text-zinc-500">
+            تحكم في كيفية تلقي التنبيهات عند وجود رسائل جديدة أو تفاعل مع إعلاناتك.
+          </p>
+        </div>
+
+        <div className="flex items-center justify-between p-4 rounded-xl bg-zinc-50 border border-zinc-100">
+          <div className="flex flex-col gap-0.5">
+            <span className="text-sm font-bold text-zinc-900">التنبيهات الفورية (Push)</span>
+            <span className="text-[10px] text-zinc-400">استلام إشعارات مباشرة على هاتفك أو متصفحك</span>
+          </div>
+          <button
+            onClick={async () => {
+              const newValue = !personalInfo.push_enabled;
+              setSavingProfile(true);
+              try {
+                const { error } = await supabase
+                  .from('profiles')
+                  .update({ push_enabled: newValue })
+                  .eq('id', userId);
+                if (error) throw error;
+                setPersonalInfo(prev => ({ ...prev, push_enabled: newValue }));
+                toast.success(newValue ? "تم تفعيل التنبيهات" : "تم إلغاء تفعيل التنبيهات");
+              } catch (e) {
+                toast.error("فشل تعديل الإعدادات");
+              } finally {
+                setSavingProfile(false);
+              }
+            }}
+            className={cn(
+              "relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-orange-600 focus:ring-offset-2",
+              personalInfo.push_enabled ? "bg-orange-600" : "bg-zinc-200"
+            )}
+          >
+            <span
+              className={cn(
+                "pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out",
+                personalInfo.push_enabled ? "translate-x-5" : "translate-x-0"
+              )}
+            />
+          </button>
+        </div>
+      </div>
 
       <div className="rounded-2xl border border-red-200 bg-red-50 p-4 sm:p-6">
         <div className="flex flex-col gap-1">

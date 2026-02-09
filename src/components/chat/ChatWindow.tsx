@@ -153,6 +153,9 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
             setMessages((prev) => prev.map(m => m.id === tempId ? data as Message : m));
             setShowAudioRecorder(false);
             onMessageSent(data as Message);
+
+            // Trigger Push Prompt after successful send (Positive Action)
+            window.dispatchEvent(new CustomEvent('trigger-push-prompt'));
         }
         setIsSending(false);
     };
@@ -223,6 +226,9 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
             if (data) {
                 setMessages((prev) => prev.map(m => m.id === tempId ? data as Message : m));
                 onMessageSent(data as Message);
+
+                // Trigger Push Prompt after successful file upload (Positive Action)
+                window.dispatchEvent(new CustomEvent('trigger-push-prompt'));
             } else if (error) {
                 // Zero Waste: If DB insert failed, delete the uploaded file
                 if (publicUrl) {

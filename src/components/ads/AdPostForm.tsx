@@ -233,6 +233,10 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
             }
 
             setIsSuccess(true);
+
+            // Trigger Push Prompt after successful ad post (Positive Action)
+            window.dispatchEvent(new CustomEvent('trigger-push-prompt'));
+
             if (onSuccess) onSuccess();
         } catch (error: any) {
             console.error("Ad Publication Error:", error);

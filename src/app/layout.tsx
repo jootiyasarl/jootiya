@@ -20,6 +20,9 @@ export const metadata: Metadata = {
   },
 };
 
+import { PushPermissionPrompt } from "@/components/notifications/PushPermissionPrompt";
+import { ServiceWorkerRegistration } from "@/components/notifications/ServiceWorkerRegistration";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -30,7 +33,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} font-sans antialiased bg-white text-zinc-900`}
       >
+        <ServiceWorkerRegistration />
         <RootNavbarShell>{children}</RootNavbarShell>
+        <PushPermissionPrompt />
         <Toaster position="top-center" richColors />
       </body>
     </html>
