@@ -180,9 +180,12 @@
     @apply border-border;
   }
 
+  html,
   body {
     @apply bg-background text-foreground;
     padding-bottom: calc(4rem + env(safe-area-inset-bottom));
+    overflow-x: hidden;
+    width: 100%;
   }
 
   @media (min-width: 1024px) {

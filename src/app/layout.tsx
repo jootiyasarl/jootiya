@@ -11,6 +11,13 @@ const readexPro = Readex_Pro({
   display: 'swap',
 });
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
 export const metadata: Metadata = {
   title: "Jootiya - Le n°1 de l'achat et de la vente au Maroc",
   description:
