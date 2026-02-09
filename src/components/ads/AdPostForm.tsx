@@ -190,6 +190,14 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                     .eq('seller_id', user.id);
 
                 if (updateError) throw updateError;
+
+                // Zero Waste: Cleanup removed images from storage
+                const removedUrls = (initialData?.image_urls || []).filter(url => !finalImageUrls.includes(url));
+                if (removedUrls.length > 0) {
+                    console.log(`Senior/ZeroWaste: Cleaning up ${removedUrls.length} removed images...`);
+                    const { deleteFileByUrl } = await import("@/lib/storageUtils");
+                    removedUrls.forEach(url => deleteFileByUrl(url));
+                }
             } else {
                 // INSERT
                 // Generate Slug only on creation

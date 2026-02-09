@@ -1,7 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { Clock, MapPin, Pencil, Trash2, Sparkles, Eye } from 'lucide-react';
+import { Clock, MapPin, Pencil, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { getOptimizedImageUrl } from '@/lib/storageUtils';
 
 export interface Ad {
   id: string;
@@ -14,8 +15,11 @@ export interface Ad {
 }
 
 export function AdCard({ ad, canBoost, onEdit, onDelete }: { ad: Ad; canBoost?: boolean; onEdit?: (ad: Ad) => void; onDelete?: (ad: any) => void }) {
-  // Use first image or placeholder
+  // Senior/Performance: Use first image and generate 20KB smart thumbnails
   const mainImage = ad.images?.[0] || '/placeholder-ad.jpg';
+  const thumbnailUrl = getOptimizedImageUrl(mainImage, { width: 400, height: 400, quality: 60 });
+  const blurUrl = getOptimizedImageUrl(mainImage, { width: 20, height: 20, quality: 10 });
+
   const priceDisplay = ad.price != null ? ad.price.toLocaleString() : 'N/A';
   const currencyDisplay = ad.currency || '';
 
@@ -26,9 +30,11 @@ export function AdCard({ ad, canBoost, onEdit, onDelete }: { ad: Ad; canBoost?: 
     >
       <div className="relative aspect-square w-full overflow-hidden bg-gray-100 dark:bg-zinc-800">
         <Image
-          src={mainImage}
+          src={thumbnailUrl}
           alt={ad.title}
           fill
+          placeholder="blur"
+          blurDataURL={blurUrl}
           className="object-cover transition-transform duration-500 group-hover:scale-110"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />

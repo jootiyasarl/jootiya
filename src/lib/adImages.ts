@@ -10,81 +10,27 @@ export interface UploadedAdImage {
   publicUrl: string | null;
 }
 
-interface CompressOptions {
-  maxWidth?: number;
-  maxHeight?: number;
-  quality?: number; // 0 - 1
-  mimeType?: string;
-}
+import imageCompression from "browser-image-compression";
 
 export async function compressImageFile(
   file: File,
-  options: CompressOptions = {},
+  options: any = {},
 ): Promise<File> {
-  const {
-    maxWidth = 1600,
-    maxHeight = 1600,
-    quality = 0.75,
-    mimeType = "image/jpeg",
-  } = options;
+  const compressionOptions = {
+    maxSizeMB: options.maxSizeMB || 0.5,
+    maxWidthOrHeight: options.maxWidth || 1200,
+    useWebWorker: true,
+  };
 
-  return new Promise((resolve, reject) => {
-    const image = new Image();
-
-    image.onload = () => {
-      const { width, height } = image;
-      const scale = Math.min(maxWidth / width, maxHeight / height, 1);
-      const targetWidth = Math.round(width * scale);
-      const targetHeight = Math.round(height * scale);
-
-      const canvas = document.createElement("canvas");
-      canvas.width = targetWidth;
-      canvas.height = targetHeight;
-
-      const ctx = canvas.getContext("2d");
-      if (!ctx) {
-        reject(new Error("Failed to get canvas context for image compression"));
-        return;
-      }
-
-      ctx.drawImage(image, 0, 0, targetWidth, targetHeight);
-
-      canvas.toBlob(
-        (blob) => {
-          if (!blob) {
-            reject(new Error("Failed to create compressed image blob"));
-            return;
-          }
-
-          const fileName = file.name.replace(/\.[^.]+$/, "") || "image";
-          const extension = mimeType === "image/png" ? "png" : "jpg";
-
-          const compressedFile = new File([blob], `${fileName}.${extension}`, {
-            type: mimeType,
-            lastModified: Date.now(),
-          });
-
-          resolve(compressedFile);
-        },
-        mimeType,
-        quality,
-      );
-    };
-
-    image.onerror = () => {
-      reject(new Error("Failed to load image for compression"));
-    };
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      image.src = reader.result as string;
-    };
-    reader.onerror = () => {
-      reject(new Error("Failed to read file for compression"));
-    };
-
-    reader.readAsDataURL(file);
-  });
+  try {
+    console.log(`Senior/ZeroWaste: Compressing ad image ${file.name}...`);
+    const compressedFile = await imageCompression(file, compressionOptions);
+    console.log(`Senior/ZeroWaste: Compressed ${file.name} to ${compressedFile.size / 1024} KB`);
+    return compressedFile;
+  } catch (error) {
+    console.error("Compression error:", error);
+    return file; // Fallback to original
+  }
 }
 
 export async function uploadAdImages(

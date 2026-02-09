@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Send, Paperclip, Smile, MoreVertical, CheckCheck, Loader2, ChevronLeft, Mic, Camera } from "lucide-react";
+import { Send, Paperclip, Smile, MoreVertical, CheckCheck, Loader2, ChevronLeft, Mic, Camera, Image as ImageIcon } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -15,6 +15,13 @@ import Image from "next/image";
 import { generateSmartReplies } from "@/lib/smartReplies";
 import { toast } from "sonner";
 import dynamic from "next/dynamic";
+import imageCompression from "browser-image-compression";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const ChatAudioRecorder = dynamic(() => import("./ChatAudioRecorder").then(mod => mod.ChatAudioRecorder), {
     loading: () => <div className="h-10 w-10 flex items-center justify-center"><Loader2 className="h-5 w-5 animate-spin text-orange-500" /></div>,
@@ -49,6 +56,7 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
     const [showAudioRecorder, setShowAudioRecorder] = useState(false);
     const [recorderCoords, setRecorderCoords] = useState<{ x: number, y: number } | undefined>(undefined);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const cameraInputRef = useRef<HTMLInputElement>(null);
 
     // Fetch messages
     useEffect(() => {
@@ -131,7 +139,7 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                 sender_id: currentUser.id,
                 content: optimisticMsg.content,
                 message_type: messageType,
-                file_url: fileUrl || null
+                file_url: fileUrl?.startsWith('blob:') ? null : fileUrl // Don't save blob URLs to DB
             })
             .select()
             .single();
@@ -139,7 +147,6 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
         if (error) {
             console.error("Error sending message:", error);
             toast.error("Erreur lors de l'envoi du message.");
-            // Remove optimistic message on error
             setMessages((prev) => prev.filter(m => m.id !== tempId));
         } else if (data) {
             // Replace optimistic message with real one
@@ -151,12 +158,42 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
     };
 
     const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
+        let file = e.target.files?.[0];
         if (!file) return;
+
+        const isImage = file.type.startsWith('image/');
+        const tempUrl = URL.createObjectURL(file);
+        const tempId = `temp-${Date.now()}`;
+
+        // Phase 1: Show Optimistic Preview Immediately
+        const optimisticMsg: Message = {
+            id: tempId,
+            conversation_id: conversation.id,
+            sender_id: currentUser.id,
+            content: isImage ? "Sent a photo" : "Sent a file",
+            message_type: isImage ? 'image' : 'file',
+            file_url: tempUrl,
+            is_read: false,
+            created_at: new Date().toISOString(),
+            is_optimistic: true
+        };
+        setMessages(prev => [...prev, optimisticMsg]);
 
         setIsSending(true);
         try {
-            const fileExt = file.name.split('.').pop();
+            // Phase 2: Professional Compression (if image)
+            if (isImage) {
+                const options = {
+                    maxSizeMB: 0.5,
+                    maxWidthOrHeight: 1200,
+                    useWebWorker: true,
+                };
+                console.log("Senior Engineer: Compressing image...", file.size / 1024, "KB");
+                file = await imageCompression(file, options);
+                console.log("Senior Engineer: Compressed size:", file.size / 1024, "KB");
+            }
+
+            const fileExt = file.name.split('.').pop() || (isImage ? 'webp' : 'bin');
             const fileName = `${Math.random()}.${fileExt}`;
             const filePath = `chat-attachments/${fileName}`;
 
@@ -170,13 +207,40 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                 .from('chat-attachments')
                 .getPublicUrl(filePath);
 
-            const type: 'image' | 'file' = file.type.startsWith('image/') ? 'image' : 'file';
-            await handleSendMessage(undefined, undefined, publicUrl, type);
+            // Phase 3: Update DB and confirm message
+            const { data, error } = await supabase
+                .from("messages")
+                .insert({
+                    conversation_id: conversation.id,
+                    sender_id: currentUser.id,
+                    content: optimisticMsg.content,
+                    message_type: optimisticMsg.message_type,
+                    file_url: publicUrl
+                })
+                .select()
+                .single();
+
+            if (data) {
+                setMessages((prev) => prev.map(m => m.id === tempId ? data as Message : m));
+                onMessageSent(data as Message);
+            } else if (error) {
+                // Zero Waste: If DB insert failed, delete the uploaded file
+                if (publicUrl) {
+                    console.warn("Senior/ZeroWaste: DB Error, deleting orphan file from storage...");
+                    const { deleteFileByUrl } = await import("@/lib/storageUtils");
+                    deleteFileByUrl(publicUrl);
+                }
+                throw error;
+            }
         } catch (error: any) {
-            toast.error(`Erreur d'envoi du fichier: ${error.message}`);
+            toast.error(`Erreur d'envoi: ${error.message}`);
+            setMessages((prev) => prev.filter(m => m.id !== tempId));
         } finally {
             setIsSending(false);
             if (fileInputRef.current) fileInputRef.current.value = '';
+            if (cameraInputRef.current) cameraInputRef.current.value = '';
+            // Cleanup temp URL
+            if (tempUrl) URL.revokeObjectURL(tempUrl);
         }
     };
 
@@ -241,14 +305,21 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                                                 <ChatAudioPlayer url={msg.file_url || ""} isMe={isMe} />
                                             )}
                                             {msg.message_type === 'image' && msg.file_url && (
-                                                <div className="relative w-48 h-48 md:w-64 md:h-64 rounded-lg overflow-hidden my-1 border border-white/20">
+                                                <div className="relative w-48 h-48 md:w-64 md:h-64 rounded-xl overflow-hidden my-1 border border-white/20 bg-zinc-100">
                                                     <Image
                                                         src={msg.file_url}
                                                         alt="Image"
                                                         fill
-                                                        className="object-cover"
-                                                        unoptimized // For immediate display of optimistic/new images
+                                                        className={cn("object-cover transition-opacity duration-300", msg.is_optimistic ? "opacity-50 blur-sm" : "opacity-100")}
+                                                        unoptimized={msg.file_url.startsWith('blob:')} // For immediate display of optimistic/new images
+                                                        priority={i === messages.length - 1} // Priority for the very last message
                                                     />
+                                                    {msg.is_optimistic && (
+                                                        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/10">
+                                                            <Loader2 className="h-6 w-6 animate-spin text-white drop-shadow-md" />
+                                                            <span className="text-[10px] text-white font-bold drop-shadow-md uppercase tracking-wider">ضغط ورفع...</span>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             )}
                                             {msg.message_type === 'file' && msg.file_url && (
@@ -314,7 +385,15 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                     className="hidden"
                     accept="image/*,application/pdf,.doc,.docx"
                 />
-                <div className="flex items-end gap-2 w-full max-w-full">
+                <input
+                    type="file"
+                    ref={cameraInputRef}
+                    onChange={handleFileSelect}
+                    className="hidden"
+                    accept="image/*"
+                    capture="environment"
+                />
+                <div className="flex items-end gap-2 w-full max-full">
                     <div className="flex-1 flex items-center gap-1 bg-white rounded-[24px] shadow-sm border border-zinc-200 min-h-[48px] px-1 relative">
                         {showAudioRecorder ? (
                             <ChatAudioRecorder
@@ -344,20 +423,31 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                                     <Paperclip className="h-5 w-5 rotate-45" />
                                 </Button>
                                 {!newMessage.trim() && (
-                                    <Button
-                                        type="button"
-                                        size="icon"
-                                        variant="ghost"
-                                        onClick={() => {
-                                            if (fileInputRef.current) {
-                                                fileInputRef.current.accept = "image/*";
-                                                fileInputRef.current.click();
-                                            }
-                                        }}
-                                        className="h-10 w-10 text-zinc-500 rounded-full shrink-0"
-                                    >
-                                        <Camera className="h-6 w-6" />
-                                    </Button>
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger className="h-10 w-10 text-zinc-500 rounded-full shrink-0 flex items-center justify-center hover:bg-zinc-100 transition-colors">
+                                            <Camera className="h-6 w-6" />
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent className="rounded-2xl p-2 min-w-[200px] border-zinc-100 shadow-xl z-[60] bottom-full mb-2 right-0">
+                                            <DropdownMenuItem onClick={() => cameraInputRef.current?.click()} className="flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-zinc-50 focus:bg-zinc-50">
+                                                <div className="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center shrink-0">
+                                                    <Camera className="h-5 w-5 text-orange-600" />
+                                                </div>
+                                                <div className="flex flex-col text-right w-full">
+                                                    <span className="text-sm font-bold text-zinc-900">التقاط صورة</span>
+                                                    <span className="text-[10px] text-zinc-400">فتح الكاميرا مباشرة</span>
+                                                </div>
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => fileInputRef.current?.click()} className="flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-zinc-50 focus:bg-zinc-50">
+                                                <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
+                                                    <ImageIcon className="h-5 w-5 text-blue-600" />
+                                                </div>
+                                                <div className="flex flex-col text-right w-full">
+                                                    <span className="text-sm font-bold text-zinc-900">من المعرض</span>
+                                                    <span className="text-[10px] text-zinc-400">اختر صورة مخزنة</span>
+                                                </div>
+                                            </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
                                 )}
                             </>
                         )}

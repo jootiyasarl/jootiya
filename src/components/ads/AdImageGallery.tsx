@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight, Maximize2, X } from "lucide-react";
+import { getOptimizedImageUrl } from "@/lib/storageUtils";
 
 interface AdImageGalleryProps {
     images: string[];
@@ -12,6 +13,7 @@ interface AdImageGalleryProps {
 export function AdImageGallery({ images }: AdImageGalleryProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+    const [isLoaded, setIsLoaded] = useState(false);
 
     if (!images || images.length === 0) {
         return (
@@ -22,22 +24,34 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
     }
 
     const nextImage = () => {
+        setIsLoaded(false);
         setCurrentIndex((prev) => (prev + 1) % images.length);
     };
 
     const prevImage = () => {
+        setIsLoaded(false);
         setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
     };
+
+    // Senior/UX: Ultra-fast 20KB thumbnail for initial blur
+    const currentImageUrl = images[currentIndex];
+    const blurUrl = getOptimizedImageUrl(currentImageUrl, { width: 40, height: 40, quality: 10 });
 
     return (
         <div className="flex flex-col gap-4">
             {/* Main Image Container */}
             <div className="group relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-white shadow-sm border border-zinc-100 sm:aspect-video">
                 <Image
-                    src={images[currentIndex]}
+                    src={currentImageUrl}
                     alt={`Ad image ${currentIndex + 1}`}
                     fill
-                    className="object-contain duration-500 ease-in-out cursor-pointer"
+                    placeholder="blur"
+                    blurDataURL={blurUrl}
+                    onLoadingComplete={() => setIsLoaded(true)}
+                    className={cn(
+                        "object-contain duration-700 ease-in-out cursor-pointer transition-all",
+                        isLoaded ? "opacity-100 scale-100 blur-0" : "opacity-30 scale-105 blur-lg"
+                    )}
                     priority
                     onClick={() => setIsLightboxOpen(true)}
                 />
