@@ -94,7 +94,6 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
             neighborhood: (initialData as any)?.neighborhood || '',
             phone: (initialData as any)?.phone || '',
             price: initialData?.price || '',
-            price: initialData?.price || '',
             condition: (initialData as any)?.condition || 'used',
             latitude: (initialData as any)?.latitude || null,
             longitude: (initialData as any)?.longitude || null
