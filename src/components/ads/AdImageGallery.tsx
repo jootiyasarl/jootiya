@@ -15,19 +15,49 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
     const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, skipSnaps: false });
+    const [lightboxRef, lightboxApi] = useEmblaCarousel({ loop: true });
 
     const onSelect = useCallback(() => {
         if (!emblaApi) return;
         setCurrentIndex(emblaApi.selectedScrollSnap());
     }, [emblaApi]);
 
+    const onLightboxSelect = useCallback(() => {
+        if (!lightboxApi) return;
+        setCurrentIndex(lightboxApi.selectedScrollSnap());
+    }, [lightboxApi]);
+
     useEffect(() => {
         if (!emblaApi) return;
         emblaApi.on("select", onSelect);
+        return () => { emblaApi.off("select", onSelect); };
     }, [emblaApi, onSelect]);
+
+    useEffect(() => {
+        if (!lightboxApi) return;
+        lightboxApi.on("select", onLightboxSelect);
+        return () => { lightboxApi.off("select", onLightboxSelect); };
+    }, [lightboxApi, onLightboxSelect]);
+
+    // Sync Lightbox when opening or when currentIndex changes externally
+    useEffect(() => {
+        if (isLightboxOpen && lightboxApi) {
+            lightboxApi.scrollTo(currentIndex, true);
+        }
+    }, [isLightboxOpen, lightboxApi]);
+
+    // Sync Main Carousel when currentIndex changes (e.g. from Lightbox)
+    useEffect(() => {
+        if (emblaApi && emblaApi.selectedScrollSnap() !== currentIndex) {
+            emblaApi.scrollTo(currentIndex);
+        }
+    }, [currentIndex, emblaApi]);
 
     const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
     const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
+
+    const scrollPrevLightbox = useCallback(() => lightboxApi && lightboxApi.scrollPrev(), [lightboxApi]);
+    const scrollNextLightbox = useCallback(() => lightboxApi && lightboxApi.scrollNext(), [lightboxApi]);
 
     if (!images || images.length === 0) {
         return (
@@ -147,7 +177,7 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
             {/* Lightbox Modal */}
             {isLightboxOpen && (
                 <div className="fixed inset-0 z-[100] flex flex-col bg-black animate-in fade-in duration-300">
-                    <div className="flex items-center justify-between p-4 z-50 bg-gradient-to-b from-black/50 to-transparent">
+                    <div className="flex items-center justify-between p-4 z-50 bg-gradient-to-b from-black/50 to-transparent absolute top-0 left-0 right-0">
                         <span className="text-white text-xs font-black uppercase tracking-[0.3em]">معاينة التفاصيل</span>
                         <button
                             onClick={() => setIsLightboxOpen(false)}
@@ -157,30 +187,51 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
                         </button>
                     </div>
 
-                    <div className="relative flex-1 w-full flex items-center justify-center overflow-hidden">
-                        <Image
-                            src={images[currentIndex]}
-                            alt="Full screen view"
-                            fill
-                            className="object-contain"
-                            quality={100}
-                        />
-
-                        {images.length > 1 && (
-                            <>
-                                <button onClick={() => setCurrentIndex(p => (p - 1 + images.length) % images.length)} className="absolute left-4 p-4 text-white/50 hover:text-white transition-colors">
-                                    <ChevronLeft className="h-10 w-10" />
-                                </button>
-                                <button onClick={() => setCurrentIndex(p => (p + 1) % images.length)} className="absolute right-4 p-4 text-white/50 hover:text-white transition-colors">
-                                    <ChevronRight className="h-10 w-10" />
-                                </button>
-                            </>
-                        )}
+                    <div className="h-full w-full overflow-hidden" ref={lightboxRef}>
+                        <div className="flex h-full touch-pan-y">
+                            {images.map((src, index) => (
+                                <div key={index} className="relative h-full w-full flex-[0_0_100%] min-w-0 flex items-center justify-center">
+                                    <div className="relative h-full w-full">
+                                        <Image
+                                            src={src}
+                                            alt={`Full screen view ${index + 1}`}
+                                            fill
+                                            className="object-contain"
+                                            quality={100}
+                                            priority={index === currentIndex}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
                     </div>
 
-                    <div className="p-10 flex justify-center gap-2 overflow-x-auto bg-gradient-to-t from-black/50 to-transparent">
+                    {images.length > 1 && (
+                        <>
+                            <button
+                                onClick={scrollPrevLightbox}
+                                className="absolute left-4 top-1/2 -translate-y-1/2 p-4 text-white/50 hover:text-white transition-colors z-50"
+                            >
+                                <ChevronLeft className="h-10 w-10" />
+                            </button>
+                            <button
+                                onClick={scrollNextLightbox}
+                                className="absolute right-4 top-1/2 -translate-y-1/2 p-4 text-white/50 hover:text-white transition-colors z-50"
+                            >
+                                <ChevronRight className="h-10 w-10" />
+                            </button>
+                        </>
+                    )}
+
+                    <div className="absolute bottom-10 left-0 right-0 flex justify-center gap-2 z-50">
                         {images.map((_, i) => (
-                            <div key={i} className={cn("h-1 rounded-full transition-all", currentIndex === i ? "w-8 bg-orange-500" : "w-4 bg-white/20")} />
+                            <div
+                                key={i}
+                                className={cn(
+                                    "h-1.5 rounded-full transition-all shadow-sm",
+                                    currentIndex === i ? "w-8 bg-orange-500" : "w-1.5 bg-white/30"
+                                )}
+                            />
                         ))}
                     </div>
                 </div>
