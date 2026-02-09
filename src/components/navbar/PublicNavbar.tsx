@@ -126,10 +126,14 @@ function PublicNavbar() {
             */}
 
             <Link href="/" className="flex items-center shrink-0">
-              <span className="text-2xl md:text-3xl font-black tracking-tighter text-[#0F172A]">
+              <span className="text-xl md:text-2xl font-black tracking-tighter text-[#0F172A]">
                 JOOTIYA <span className="text-orange-500">.</span>
               </span>
             </Link>
+
+            <div className="hidden md:flex flex-1 max-w-2xl px-2">
+              <UnifiedSearchBar />
+            </div>
 
             <Link href="/marketplace/post" className="hidden lg:block">
               <Button className="rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-bold h-11 px-5 shadow-lg shadow-orange-200/50 transition-all hover:translate-y-[-1px] active:translate-y-[0px] active:scale-[0.98] flex items-center gap-2">
@@ -139,8 +143,7 @@ function PublicNavbar() {
             </Link>
           </div>
 
-          {/* Center: Search Bar - Removed in favor of UnifiedSearchBar below */}
-          <div className="hidden md:flex flex-1 max-w-xl" />
+          <div className="hidden lg:flex flex-1 max-w-xl" />
 
 
           {/* Right: User Actions / Info */}
@@ -165,7 +168,7 @@ function PublicNavbar() {
                 <span className="text-[11px] font-bold text-zinc-600 group-hover:text-orange-600 transition-colors uppercase tracking-tight -mt-1">Messages</span>
               </Link>
 
-              <div className="ml-4 pl-4 border-l border-zinc-200">
+              <div className="ml-2 pl-2 border-l border-zinc-200">
                 {userEmail ? (
                   <div className="flex items-center gap-3">
                     <Link href={isAdmin ? "/admin" : "/dashboard"} className="flex flex-col items-center gap-0 px-2 group transition-colors">
@@ -201,8 +204,8 @@ function PublicNavbar() {
           </div>
         </div>
 
-        {/* Unified Search Bar Row */}
-        <div className="pb-5 pt-1 lg:pt-0">
+        {/* Mobile Unified Search Bar - Minimalist Row */}
+        <div className="pb-3 md:hidden">
           <UnifiedSearchBar />
         </div>
 

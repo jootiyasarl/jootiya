@@ -60,56 +60,43 @@ export function UnifiedSearchBar() {
     }, []);
 
     return (
-        <div className="w-full max-w-6xl mx-auto px-4" ref={containerRef}>
-            {/* Desktop Version */}
-            <div className="hidden lg:flex items-center bg-white border border-transparent rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.06)] p-2 h-16 transition-shadow hover:shadow-[0_8px_30px_rgb(0,0,0,0.1)]">
+        <div className="w-full" ref={containerRef}>
+            {/* Desktop Version - Ultra Compact */}
+            <div className="hidden lg:flex items-center bg-zinc-50 border border-zinc-100 rounded-full p-1 h-12 transition-all hover:bg-white hover:shadow-md hover:border-zinc-200">
                 {/* Keyword Search */}
-                <div className="flex-1 flex items-center px-4 gap-3 border-r border-zinc-100 h-full">
-                    <Search className="w-5 h-5 text-zinc-400 shrink-0" />
+                <div className="flex-1 flex items-center px-4 gap-2 border-r border-zinc-200 h-full">
+                    <Search className="w-4 h-4 text-zinc-400 shrink-0" />
                     <input
                         type="text"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                         onKeyDown={handleKeyDown}
-                        placeholder="Que recherchez-vous ?"
-                        className="w-full bg-transparent outline-none text-[15px] font-medium placeholder:text-zinc-400"
+                        placeholder="Rechercher..."
+                        className="w-full bg-transparent outline-none text-[13px] font-medium placeholder:text-zinc-400"
                     />
                 </div>
 
-                {/* Category Select */}
-                <div className="relative border-r border-zinc-100 h-full flex items-center min-w-[220px]">
+                {/* Category Select - Compact */}
+                <div className="relative border-r border-zinc-200 h-full flex items-center min-w-[160px]">
                     <button
                         type="button"
                         onClick={(e) => {
                             e.stopPropagation();
                             setActiveMenu(prev => prev === 'category' ? null : 'category');
                         }}
-                        className="flex items-center justify-between w-full h-full px-6 gap-3 text-zinc-700 hover:text-orange-600 transition-colors z-10"
+                        className="flex items-center justify-between w-full h-full px-4 gap-2 text-zinc-700 hover:text-orange-600 transition-colors z-10"
                     >
-                        <div className="flex items-center gap-2 overflow-hidden pointer-events-none">
-                            <LayoutGrid className="w-5 h-5 text-orange-500 shrink-0" />
-                            <span className="text-[14px] font-bold truncate">{category.label}</span>
+                        <div className="flex items-center gap-2 overflow-hidden pointer-events-none text-xs font-bold">
+                            <LayoutGrid className="w-4 h-4 text-orange-500 shrink-0" />
+                            <span className="truncate">{category.label}</span>
                         </div>
-                        <ChevronDown className={cn("w-4 h-4 text-zinc-400 transition-transform duration-300 pointer-events-none", activeMenu === 'category' && "rotate-180")} />
+                        <ChevronDown className={cn("w-3 h-3 text-zinc-400 transition-transform duration-300 pointer-events-none", activeMenu === 'category' && "rotate-180")} />
                     </button>
-
                     {activeMenu === 'category' && (
-                        <div
-                            className="absolute top-full left-0 mt-2 w-64 bg-white border border-zinc-100 rounded-2xl shadow-2xl py-2 z-50 max-h-[400px] overflow-y-auto no-scrollbar animate-in fade-in zoom-in-95 duration-200"
-                            onClick={(e) => e.stopPropagation()}
-                        >
+                        <div className="absolute top-full left-0 mt-2 w-56 bg-white border border-zinc-100 rounded-xl shadow-xl py-2 z-50 max-h-[400px] overflow-y-auto animate-in fade-in zoom-in-95 duration-200">
                             {CATEGORIES.map((cat) => (
-                                <button
-                                    key={cat.id}
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        setCategory(cat);
-                                        setActiveMenu(null);
-                                    }}
-                                    className={cn(
-                                        "w-full text-left px-4 py-2.5 text-[14px] font-medium transition-colors hover:bg-orange-50 hover:text-orange-600",
-                                        category.id === cat.id ? "text-orange-600 bg-orange-50/50" : "text-zinc-600"
-                                    )}
+                                <button key={cat.id} onClick={(e) => { e.stopPropagation(); setCategory(cat); setActiveMenu(null); }}
+                                    className={cn("w-full text-left px-4 py-2 text-[13px] font-medium transition-colors hover:bg-orange-50 hover:text-orange-600", category.id === cat.id ? "text-orange-600 bg-orange-50/50" : "text-zinc-600")}
                                 >
                                     {cat.label}
                                 </button>
@@ -118,55 +105,27 @@ export function UnifiedSearchBar() {
                     )}
                 </div>
 
-                {/* Location Select */}
-                <div className="relative h-full flex items-center min-w-[240px]">
+                {/* Location Select - Compact */}
+                <div className="relative h-full flex items-center min-w-[160px]">
                     <button
                         type="button"
                         onClick={(e) => {
                             e.stopPropagation();
                             setActiveMenu(prev => prev === 'location' ? null : 'location');
                         }}
-                        className="flex items-center justify-between w-full h-full px-6 gap-3 text-zinc-700 hover:text-orange-600 transition-colors z-10"
+                        className="flex items-center justify-between w-full h-full px-4 gap-2 text-zinc-700 hover:text-orange-600 transition-colors z-10"
                     >
-                        <div className="flex items-center gap-2 overflow-hidden pointer-events-none">
-                            <div className="w-8 h-8 bg-zinc-50 rounded-full flex items-center justify-center shrink-0">
-                                <MapPin className="w-4.5 h-4.5 text-zinc-900" />
-                            </div>
-                            <span className="text-[14px] font-bold truncate">{location}</span>
+                        <div className="flex items-center gap-2 overflow-hidden pointer-events-none text-xs font-bold">
+                            <MapPin className="w-4 h-4 text-zinc-500 shrink-0" />
+                            <span className="truncate">{location === "Choisir ville - secteur" ? "Ma ville" : location}</span>
                         </div>
-                        <ChevronDown className={cn("w-4 h-4 text-zinc-400 transition-transform duration-300 pointer-events-none", activeMenu === 'location' && "rotate-180")} />
+                        <ChevronDown className={cn("w-3 h-3 text-zinc-400 transition-transform duration-300 pointer-events-none", activeMenu === 'location' && "rotate-180")} />
                     </button>
-
                     {activeMenu === 'location' && (
-                        <div
-                            className="absolute top-full right-0 mt-2 w-72 bg-white border border-zinc-100 rounded-2xl shadow-2xl py-2 z-50 max-h-[400px] overflow-y-auto no-scrollbar animate-in fade-in zoom-in-95 duration-200"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            <div className="px-4 py-2 border-b border-zinc-50 mb-1">
-                                <p className="text-[11px] font-black uppercase tracking-wider text-zinc-400">Villes du Maroc</p>
-                            </div>
-                            <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    setLocation("Toutes les villes");
-                                    setActiveMenu(null);
-                                }}
-                                className="w-full text-left px-4 py-2.5 text-[14px] font-bold text-orange-600 hover:bg-orange-50"
-                            >
-                                Toutes les villes
-                            </button>
+                        <div className="absolute top-full right-0 mt-2 w-64 bg-white border border-zinc-100 rounded-xl shadow-xl py-2 z-50 max-h-[400px] overflow-y-auto animate-in fade-in zoom-in-95 duration-200">
                             {ALL_CITIES.map((city) => (
-                                <button
-                                    key={city}
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        setLocation(city);
-                                        setActiveMenu(null);
-                                    }}
-                                    className={cn(
-                                        "w-full text-left px-4 py-2.5 text-[14px] font-medium transition-colors hover:bg-orange-50 hover:text-orange-600",
-                                        location === city ? "text-orange-600 bg-orange-50/50" : "text-zinc-600"
-                                    )}
+                                <button key={city} onClick={(e) => { e.stopPropagation(); setLocation(city); setActiveMenu(null); }}
+                                    className={cn("w-full text-left px-4 py-2 text-[13px] font-medium transition-colors hover:bg-orange-50 hover:text-orange-600", location === city ? "text-orange-600 bg-orange-50/50" : "text-zinc-600")}
                                 >
                                     {city}
                                 </button>
@@ -175,118 +134,62 @@ export function UnifiedSearchBar() {
                     )}
                 </div>
 
-                {/* Search Button */}
+                {/* Compact Search Button */}
                 <Button
                     onClick={handleSearch}
-                    className="h-full rounded-full bg-orange-600 hover:bg-orange-700 text-white font-black px-12 shadow-xl shadow-orange-100 flex items-center gap-2 text-base transition-all active:scale-[0.98] shrink-0"
+                    className="h-10 rounded-full bg-orange-600 hover:bg-orange-700 text-white font-bold px-6 shadow-md shadow-orange-100 flex items-center gap-2 text-sm transition-all active:scale-[0.98] shrink-0 ml-1"
                 >
-                    <Search className="w-5 h-5" />
-                    Rechercher
+                    <Search className="w-4 h-4" />
+                    <span>Chercher</span>
                 </Button>
             </div>
 
-            {/* Mobile Version */}
-            <div className="lg:hidden flex flex-col gap-3">
-                {/* Search Input */}
-                <div className="flex items-center bg-white border border-zinc-100 rounded-full shadow-sm px-5 h-14">
-                    <Search className="w-4 h-4 text-zinc-400 mr-3 shrink-0" />
+            {/* Mobile Version - Sleek & Compact */}
+            <div className="lg:hidden flex flex-col gap-2">
+                <div className="flex items-center bg-zinc-50 border border-zinc-100 rounded-full px-4 h-11 transition-all focus-within:bg-white focus-within:shadow-sm focus-within:border-zinc-200">
+                    <Search className="w-4 h-4 text-zinc-400 mr-2 shrink-0" />
                     <input
                         type="text"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                         onKeyDown={handleKeyDown}
                         placeholder="Que recherchez-vous ?"
-                        className="flex-1 bg-transparent outline-none text-base font-medium placeholder:text-zinc-400"
+                        className="flex-1 bg-transparent outline-none text-[13px] font-medium placeholder:text-zinc-400"
                     />
                 </div>
 
-                {/* Selects Grid */}
-                <div className="grid grid-cols-2 gap-2">
-                    {/* Category Dropdown Mobile */}
-                    <div className="relative">
-                        <button
-                            type="button"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setActiveMenu(prev => prev === 'category' ? null : 'category');
-                            }}
-                            className="flex items-center justify-between w-full bg-white border border-zinc-200 rounded-xl px-3 h-10 text-zinc-700 z-10"
-                        >
-                            <div className="flex items-center gap-2 min-w-0 pointer-events-none">
-                                <LayoutGrid className="w-3.5 h-3.5 text-orange-500 shrink-0" />
-                                <span className="text-[11px] font-black uppercase tracking-tight truncate">{category.label}</span>
-                            </div>
-                            <ChevronDown className={cn("w-3 h-3 text-zinc-400 shrink-0 transition-transform pointer-events-none", activeMenu === 'category' && "rotate-180")} />
-                        </button>
-                        {activeMenu === 'category' && (
-                            <div
-                                className="absolute top-full left-0 mt-1 w-[calc(200%+8px)] bg-white border border-zinc-100 rounded-xl shadow-xl py-2 z-[60] max-h-64 overflow-y-auto"
-                                onClick={(e) => e.stopPropagation()}
-                            >
-                                {CATEGORIES.map((cat) => (
-                                    <button
-                                        key={cat.id}
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setCategory(cat);
-                                            setActiveMenu(null);
-                                        }}
-                                        className="w-full text-left px-4 py-2.5 text-[12px] font-bold text-zinc-600 active:bg-orange-50 uppercase tracking-tight"
-                                    >
-                                        {cat.label}
-                                    </button>
-                                ))}
-                            </div>
-                        )}
-                    </div>
+                <div className="flex items-center gap-2 h-9">
+                    <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); setActiveMenu(prev => prev === 'category' ? null : 'category'); }}
+                        className="flex-1 flex items-center justify-between bg-zinc-50 border border-zinc-100 rounded-lg px-3 h-full text-zinc-700"
+                    >
+                        <div className="flex items-center gap-2 min-w-0">
+                            <LayoutGrid className="w-3.5 h-3.5 text-orange-500 shrink-0" />
+                            <span className="text-[10px] font-bold uppercase tracking-tight truncate">{category.label}</span>
+                        </div>
+                        <ChevronDown className={cn("w-3 h-3 text-zinc-400 shrink-0 transition-transform", activeMenu === 'category' && "rotate-180")} />
+                    </button>
 
-                    {/* Location Dropdown Mobile */}
-                    <div className="relative">
-                        <button
-                            type="button"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setActiveMenu(prev => prev === 'location' ? null : 'location');
-                            }}
-                            className="flex items-center justify-between w-full bg-white border border-zinc-200 rounded-xl px-3 h-10 text-zinc-700 z-10"
-                        >
-                            <div className="flex items-center gap-2 min-w-0 pointer-events-none">
-                                <MapPin className="w-3.5 h-3.5 text-zinc-900 shrink-0" />
-                                <span className="text-[11px] font-black uppercase tracking-tight truncate">{location === "Choisir ville - secteur" ? "Ma ville" : location}</span>
-                            </div>
-                            <ChevronDown className={cn("w-3 h-3 text-zinc-400 shrink-0 transition-transform pointer-events-none", activeMenu === 'location' && "rotate-180")} />
-                        </button>
-                        {activeMenu === 'location' && (
-                            <div
-                                className="absolute top-full right-0 mt-1 w-[calc(200%+8px)] bg-white border border-zinc-100 rounded-xl shadow-xl py-2 z-[60] max-h-64 overflow-y-auto"
-                                onClick={(e) => e.stopPropagation()}
-                            >
-                                {ALL_CITIES.map((city) => (
-                                    <button
-                                        key={city}
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setLocation(city);
-                                            setActiveMenu(null);
-                                        }}
-                                        className="w-full text-left px-4 py-2.5 text-[12px] font-bold text-zinc-600 active:bg-orange-50 uppercase tracking-tight"
-                                    >
-                                        {city}
-                                    </button>
-                                ))}
-                            </div>
-                        )}
-                    </div>
+                    <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); setActiveMenu(prev => prev === 'location' ? null : 'location'); }}
+                        className="flex-1 flex items-center justify-between bg-zinc-50 border border-zinc-100 rounded-lg px-3 h-full text-zinc-700"
+                    >
+                        <div className="flex items-center gap-2 min-w-0">
+                            <MapPin className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
+                            <span className="text-[10px] font-bold uppercase tracking-tight truncate">{location === "Choisir ville - secteur" ? "Ma ville" : location}</span>
+                        </div>
+                        <ChevronDown className={cn("w-3 h-3 text-zinc-400 shrink-0 transition-transform", activeMenu === 'location' && "rotate-180")} />
+                    </button>
+
+                    <Button
+                        onClick={handleSearch}
+                        className="w-12 h-full rounded-lg bg-orange-600 hover:bg-orange-700 text-white flex items-center justify-center p-0"
+                    >
+                        <Search className="w-4 h-4" />
+                    </Button>
                 </div>
-
-                {/* Mobile Search Button */}
-                <Button
-                    onClick={handleSearch}
-                    className="w-full h-11 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-black shadow-lg shadow-orange-100 flex items-center justify-center gap-2 text-sm active:scale-[0.98] transition-all uppercase italic tracking-wider"
-                >
-                    <Search className="w-4 h-4" />
-                    Rechercher
-                </Button>
             </div>
         </div>
     );
