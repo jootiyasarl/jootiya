@@ -1,44 +1,44 @@
 import { supabase } from "./supabaseClient";
-
-// Public VAPID key (should be in env, but providing a way to generate/inject)
-const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || "";
+import { messaging } from "./firebaseClient";
+import { getToken } from "firebase/messaging";
 
 export async function registerServiceWorker() {
     if (!('serviceWorker' in navigator)) return;
 
     try {
-        const registration = await navigator.serviceWorker.register('/sw.js');
-        console.log('SW: Registered', registration);
+        // Register the Firebase Service Worker
+        const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+        console.log('FCM SW: Registered', registration);
         return registration;
     } catch (e) {
-        console.error('SW: Registration failed', e);
+        console.error('FCM SW: Registration failed', e);
     }
 }
 
 export async function subscribeUserToPush() {
     try {
-        const registration = await navigator.serviceWorker.ready;
+        const msg = await messaging();
+        if (!msg) return;
 
-        // Check if already subscribed
-        const existingSubscription = await registration.pushManager.getSubscription();
-        if (existingSubscription) return existingSubscription;
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') return;
 
-        // Subscribe
-        const subscription = await registration.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+        const token = await getToken(msg, {
+            vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY
         });
 
-        // Save to Supabase
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-            await supabase.from('push_subscriptions').upsert({
-                user_id: user.id,
-                subscription: subscription.toJSON()
-            }, { onConflict: 'user_id, subscription' });
+        if (token) {
+            console.log('FCM Token:', token);
+            // Save to Supabase
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                await supabase.from('push_subscriptions').upsert({
+                    user_id: user.id,
+                    subscription: { token }, // Store token instead of raw subscription object
+                }, { onConflict: 'user_id' });
+            }
+            return token;
         }
-
-        return subscription;
     } catch (e) {
         console.error('Push: Subscription failed', e);
         throw e;
@@ -46,21 +46,6 @@ export async function subscribeUserToPush() {
 }
 
 export async function checkPushPermission() {
-    if (!('Notification' in window)) return 'unsupported';
+    if (typeof window === 'undefined' || !('Notification' in window)) return 'unsupported';
     return Notification.permission;
-}
-
-function urlBase64ToUint8Array(base64String: string) {
-    const padding = '='.repeat((4 - base64String.length % 4) % 4);
-    const base64 = (base64String + padding)
-        .replace(/\-/g, '+')
-        .replace(/_/g, '/');
-
-    const rawData = window.atob(base64);
-    const outputArray = new Uint8Array(rawData.length);
-
-    for (let i = 0; i < rawData.length; ++i) {
-        outputArray[i] = rawData.charCodeAt(i);
-    }
-    return outputArray;
 }

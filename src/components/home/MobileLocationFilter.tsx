@@ -23,6 +23,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import { subscribeToTopic } from "@/lib/fcmTopic";
 import { getBrowserGeolocation } from "@/lib/adLocation";
 import { CITY_COORDINATES } from "@/lib/constants/cityCoordinates";
 
@@ -97,17 +98,23 @@ export function MobileLocationFilter() {
         }
     };
 
-    const handleCitySelect = (cityName: string) => {
-        const coords = CITY_COORDINATES[cityName];
-        if (coords) {
+    const handleCitySelect = (value: string) => {
+        // Find coordinates for the city
+        const city = CITY_COORDINATES[value];
+        if (city) {
             const params = new URLSearchParams(searchParams.toString());
-            params.set("lat", coords.lat.toString());
-            params.set("lng", coords.lng.toString());
+            params.set("lat", city.lat.toString());
+            params.set("lng", city.lng.toString());
             params.set("radius", radius[0].toString());
 
+            // Topic Subscription for Active Radar
+            subscribeToTopic(`city_${value}`).then(success => {
+                if (success) console.log(`Active Radar: Subscribed to ${value}`);
+            });
+
             router.push(`/?${params.toString()}`);
+            toast.success(`Radar activé sur ${value} !`);
             setIsOpen(false);
-            toast.success(`Localisation définie sur ${cityName}`);
         }
     };
 
