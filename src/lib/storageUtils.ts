@@ -3,17 +3,25 @@ import { supabase } from "./supabaseClient";
 /**
  * Generates a Supabase Transformation URL for optimized image fetching.
  * Enables ultra-fast 20KB thumbnails for feeds.
+ * NOTE: Requires Supabase Pro/Paid plan for image transformations.
  */
 export function getOptimizedImageUrl(url: string, options: { width?: number; height?: number; quality?: number; resize?: 'cover' | 'contain' | 'fill'; format?: 'webp' | 'origin' } = {}) {
-    if (!url || !url.includes('/storage/v1/object/public/')) return url;
+    // Safety check: Fallback if transformations are disabled or not a Supabase URL
+    const isTransformEnabled = process.env.NEXT_PUBLIC_SUPABASE_TRANSFORMATIONS_ENABLED === 'true';
+
+    if (!url || !url.includes('/storage/v1/object/public/') || !isTransformEnabled) {
+        return url;
+    }
 
     const { width = 200, height = 200, quality = 50, resize = 'cover', format = 'webp' } = options;
 
     try {
         const urlObj = new URL(url);
+        // Supabase Transformation URL replacement
         const path = urlObj.pathname.replace('/object/public/', '/render/image/public/');
         return `${urlObj.origin}${path}?width=${width}&height=${height}&quality=${quality}&resize=${resize}&format=${format}`;
     } catch (e) {
+        console.warn("StorageUtils: Transformation failed, using original URL", e);
         return url;
     }
 }

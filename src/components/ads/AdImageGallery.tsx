@@ -37,24 +37,31 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
         );
     }
 
+    // Senior/UX: Ultra-fast 20KB thumbnail for initial blur
+    // We provide a fallback to the original URL if transformation is disabled
+    const getSafeBlurUrl = (src: string) => {
+        const optimized = getOptimizedImageUrl(src, { width: 40, height: 40, quality: 10 });
+        return optimized === src ? "" : optimized; // If same as src, don't use it as blurDataURL to avoid double-loading high-res
+    };
+
     return (
         <div className="flex flex-col gap-4">
             {/* Main Slider Container */}
-            <div className="group relative aspect-[4/3] w-full overflow-hidden rounded-3xl bg-zinc-50 border border-zinc-100 shadow-sm md:aspect-video">
-                <div className="h-full w-full cursor-grab active:cursor-grabbing" ref={emblaRef}>
+            <div className="group relative aspect-[4/3] w-full rounded-3xl bg-zinc-50 border border-zinc-100 shadow-sm md:aspect-video">
+                {/* Viewport - Must have overflow-hidden for Embla */}
+                <div className="h-full w-full overflow-hidden rounded-3xl cursor-grab active:cursor-grabbing" ref={emblaRef}>
                     <div className="flex h-full">
                         {images.map((src, index) => {
-                            // Smart 20KB Blur Placeholder
-                            const blurUrl = getOptimizedImageUrl(src, { width: 40, height: 40, quality: 10 });
+                            const blurUrl = getSafeBlurUrl(src);
                             return (
                                 <div key={index} className="relative h-full w-full flex-[0_0_100%] min-w-0">
                                     <Image
                                         src={src}
                                         alt={`Product view ${index + 1}`}
                                         fill
-                                        placeholder="blur"
-                                        blurDataURL={blurUrl}
-                                        priority={index === 0} // Airbnb LCP Trick: First image is priority
+                                        placeholder={blurUrl ? "blur" : "empty"}
+                                        blurDataURL={blurUrl || undefined}
+                                        priority={index === 0}
                                         className="object-contain"
                                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 50vw"
                                         onClick={() => setIsLightboxOpen(true)}
