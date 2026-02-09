@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Send, Paperclip, Smile, MoreVertical, CheckCheck, Loader2, ChevronLeft, Mic, Camera, Image as ImageIcon } from "lucide-react";
+import { Send, Paperclip, Smile, MoreVertical, CheckCheck, Loader2, ChevronLeft, Mic, Camera, Image as ImageIcon, Star } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -47,6 +47,8 @@ const QUICK_REPLIES = [
     "Je suis intéressé !"
 ];
 
+import { ReviewModal } from "./ReviewModal";
+
 export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }: ChatWindowProps) {
     const [messages, setMessages] = useState<Message[]>([]);
     const [newMessage, setNewMessage] = useState("");
@@ -58,7 +60,13 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
     const fileInputRef = useRef<HTMLInputElement>(null);
     const cameraInputRef = useRef<HTMLInputElement>(null);
 
-    // Fetch messages
+    const [showReviewModal, setShowReviewModal] = useState(false);
+    const [hasRated, setHasRated] = useState(false);
+
+    const isBuyer = currentUser?.id === conversation.buyer_id;
+    const canRate = isBuyer && (conversation.ad?.status === 'active' || conversation.ad?.status === 'sold');
+
+    // Fetch messages & Check if already rated
     useEffect(() => {
         const fetchMessages = async () => {
             setIsLoading(true);
@@ -74,7 +82,20 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
             setIsLoading(false);
         };
 
+        const checkIfRated = async () => {
+            if (!isBuyer || !conversation.ad_id) return;
+            const { data } = await supabase
+                .from("reviews")
+                .select("id")
+                .eq("buyer_id", currentUser.id)
+                .eq("ad_id", conversation.ad_id)
+                .maybeSingle();
+
+            if (data) setHasRated(true);
+        };
+
         fetchMessages();
+        checkIfRated();
 
         const channel = supabase
             .channel(`room:${conversation.id}`)
@@ -99,7 +120,7 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
         return () => {
             supabase.removeChannel(channel);
         };
-    }, [conversation.id]);
+    }, [conversation.id, conversation.ad_id, currentUser.id, isBuyer]);
 
     useEffect(() => {
         if (scrollRef.current) {
@@ -280,11 +301,34 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
+                    {canRate && !hasRated && (
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setShowReviewModal(true)}
+                            className="text-[10px] md:text-xs font-bold border-orange-200 text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-full h-8 px-3"
+                        >
+                            <Star className="w-3 h-3 md:w-4 md:h-4 mr-1 fill-current" />
+                            Évaluer
+                        </Button>
+                    )}
                     <Button variant="ghost" size="icon" className="text-zinc-400">
                         <MoreVertical className="h-5 w-5" />
                     </Button>
                 </div>
             </div>
+
+            {/* Review Modal */}
+            {conversation.ad_id && (
+                <ReviewModal
+                    isOpen={showReviewModal}
+                    onClose={() => setShowReviewModal(false)}
+                    sellerId={conversation.seller_id}
+                    adId={conversation.ad_id}
+                    buyerId={currentUser.id}
+                    onSuccess={() => setHasRated(true)}
+                />
+            )}
 
             {/* Messages List */}
             <ScrollArea className="flex-1 p-4 sm:p-6">

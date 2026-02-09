@@ -8,6 +8,7 @@ export type Conversation = {
     ad?: {
         title: string;
         image_urls: string[];
+        status: string;
     };
     other_party?: {
         id: string;

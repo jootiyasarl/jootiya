@@ -11,7 +11,7 @@ export async function getConversations() {
         .from('conversations')
         .select(`
             *,
-            ad:ads(title, image_urls),
+            ad:ads(title, image_urls, status),
             buyer:profiles!buyer_id(id, full_name, avatar_url),
             seller:profiles!seller_id(id, full_name, avatar_url)
         `)
