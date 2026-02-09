@@ -85,12 +85,6 @@ export default async function Home() {
   return (
     <div dir="ltr" className="min-h-screen bg-white font-sans text-zinc-900 pb-20">
 
-      {/* Minimal Top Header / Hero replacement */}
-      <div className="mx-auto max-w-7xl px-4 pt-10 pb-6">
-        <h1 className="text-2xl font-bold tracking-tight text-zinc-900">
-          En ce moment sur Jootiya
-        </h1>
-      </div>
 
       <CategoryGrid />
 
