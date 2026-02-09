@@ -159,29 +159,55 @@ export function UnifiedSearchBar() {
                 </div>
 
                 <div className="flex items-center gap-2 h-9">
-                    <button
-                        type="button"
-                        onClick={(e) => { e.stopPropagation(); setActiveMenu(prev => prev === 'category' ? null : 'category'); }}
-                        className="flex-1 flex items-center justify-between bg-zinc-50 border border-zinc-100 rounded-lg px-3 h-full text-zinc-700"
-                    >
-                        <div className="flex items-center gap-2 min-w-0">
-                            <LayoutGrid className="w-3.5 h-3.5 text-orange-500 shrink-0" />
-                            <span className="text-[10px] font-bold uppercase tracking-tight truncate">{category.label}</span>
-                        </div>
-                        <ChevronDown className={cn("w-3 h-3 text-zinc-400 shrink-0 transition-transform", activeMenu === 'category' && "rotate-180")} />
-                    </button>
+                    <div className="relative flex-1 h-full">
+                        <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); setActiveMenu(prev => prev === 'category' ? null : 'category'); }}
+                            className="flex items-center justify-between w-full h-full bg-zinc-50 border border-zinc-100 rounded-lg px-3 text-zinc-700"
+                        >
+                            <div className="flex items-center gap-2 min-w-0">
+                                <LayoutGrid className="w-3.5 h-3.5 text-orange-500 shrink-0" />
+                                <span className="text-[10px] font-bold uppercase tracking-tight truncate">{category.label}</span>
+                            </div>
+                            <ChevronDown className={cn("w-3 h-3 text-zinc-400 shrink-0 transition-transform", activeMenu === 'category' && "rotate-180")} />
+                        </button>
+                        {activeMenu === 'category' && (
+                            <div className="absolute top-full left-0 mt-2 w-[calc(200%+8px)] bg-white border border-zinc-100 rounded-xl shadow-xl py-2 z-50 max-h-[300px] overflow-y-auto animate-in fade-in zoom-in-95 duration-200">
+                                {CATEGORIES.map((cat) => (
+                                    <button key={cat.id} onClick={(e) => { e.stopPropagation(); setCategory(cat); setActiveMenu(null); }}
+                                        className={cn("w-full text-left px-4 py-2.5 text-[12px] font-bold transition-colors hover:bg-orange-50 hover:text-orange-600", category.id === cat.id ? "text-orange-600 bg-orange-50/50" : "text-zinc-600")}
+                                    >
+                                        {cat.label}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
 
-                    <button
-                        type="button"
-                        onClick={(e) => { e.stopPropagation(); setActiveMenu(prev => prev === 'location' ? null : 'location'); }}
-                        className="flex-1 flex items-center justify-between bg-zinc-50 border border-zinc-100 rounded-lg px-3 h-full text-zinc-700"
-                    >
-                        <div className="flex items-center gap-2 min-w-0">
-                            <MapPin className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
-                            <span className="text-[10px] font-bold uppercase tracking-tight truncate">{location === "Choisir ville - secteur" ? "Ma ville" : location}</span>
-                        </div>
-                        <ChevronDown className={cn("w-3 h-3 text-zinc-400 shrink-0 transition-transform", activeMenu === 'location' && "rotate-180")} />
-                    </button>
+                    <div className="relative flex-1 h-full">
+                        <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); setActiveMenu(prev => prev === 'location' ? null : 'location'); }}
+                            className="flex items-center justify-between w-full h-full bg-zinc-50 border border-zinc-100 rounded-lg px-3 text-zinc-700"
+                        >
+                            <div className="flex items-center gap-2 min-w-0">
+                                <MapPin className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
+                                <span className="text-[10px] font-bold uppercase tracking-tight truncate">{location === "Choisir ville - secteur" ? "Ma ville" : location}</span>
+                            </div>
+                            <ChevronDown className={cn("w-3 h-3 text-zinc-400 shrink-0 transition-transform", activeMenu === 'location' && "rotate-180")} />
+                        </button>
+                        {activeMenu === 'location' && (
+                            <div className="absolute top-full right-0 mt-2 w-[calc(200%+8px)] bg-white border border-zinc-100 rounded-xl shadow-xl py-2 z-50 max-h-[300px] overflow-y-auto animate-in fade-in zoom-in-95 duration-200">
+                                {ALL_CITIES.map((city) => (
+                                    <button key={city} onClick={(e) => { e.stopPropagation(); setLocation(city); setActiveMenu(null); }}
+                                        className={cn("w-full text-left px-4 py-2.5 text-[12px] font-bold transition-colors hover:bg-orange-50 hover:text-orange-600", location === city ? "text-orange-600 bg-orange-50/50" : "text-zinc-600")}
+                                    >
+                                        {city}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
 
                     <Button
                         onClick={handleSearch}
