@@ -3,7 +3,7 @@ import { Sparkles, ShieldCheck, Zap } from "lucide-react";
 
 export default function PostAdPage() {
     return (
-        <div className="min-h-screen bg-[#fafafa] dark:bg-zinc-950 relative overflow-hidden pb-20">
+        <div className="min-h-screen bg-[#fafafa] dark:bg-zinc-950 relative overflow-hidden pb-40 lg:pb-20">
             {/* Dynamic Background Elements */}
             <div className="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-orange-50/50 to-transparent dark:from-orange-900/10 dark:to-transparent pointer-events-none" />
             <div className="absolute top-[10%] -left-[10%] w-[40%] h-[40%] bg-orange-400/5 rounded-full blur-[120px] pointer-events-none animate-pulse" />

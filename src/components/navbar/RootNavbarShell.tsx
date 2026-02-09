@@ -27,7 +27,10 @@ export function RootNavbarShell({ children }: RootNavbarShellProps) {
       {!isSpecialPath && (
         <>
           <PublicNavbar />
-          <MobileBottomNav />
+          {/* Hide Bottom Nav on Post Ad and Ad Details pages to prevent overlap with sticky actions */}
+          {!(pathname?.startsWith('/marketplace/post') || pathname?.startsWith('/ads/')) && (
+            <MobileBottomNav />
+          )}
         </>
       )}
       <main className="min-h-screen">
