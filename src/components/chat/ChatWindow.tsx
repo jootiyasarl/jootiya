@@ -258,7 +258,7 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
     };
 
     return (
-        <div className="flex flex-col h-full bg-[#FAFAFA] relative">
+        <div className="flex flex-col h-[100dvh] bg-[#FAFAFA] relative">
             {/* Header */}
             <div className="bg-white border-b border-zinc-100 p-3 md:p-4 flex items-center justify-between shadow-sm z-10 sticky top-0">
                 <div className="flex items-center gap-2 md:gap-3">
@@ -383,7 +383,7 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
             </div>
 
             {/* Input Area */}
-            <div className="p-2 md:p-3 bg-zinc-100/50 backdrop-blur-sm border-t border-zinc-200 z-50 sticky bottom-0">
+            <div className="p-2 md:p-3 bg-zinc-100/50 backdrop-blur-sm border-t border-zinc-200 z-50 sticky bottom-0 pb-safe-bottom">
                 <input
                     type="file"
                     id="chat-file-input"
