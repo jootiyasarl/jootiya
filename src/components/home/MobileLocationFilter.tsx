@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Navigation, MapPin } from "lucide-react";
+import { Navigation, MapPin, Building2 } from "lucide-react";
 import {
     Drawer,
     DrawerClose,
@@ -15,8 +15,16 @@ import {
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
 import { getBrowserGeolocation } from "@/lib/adLocation";
+import { CITY_COORDINATES } from "@/lib/constants/cityCoordinates";
 
 export function MobileLocationFilter() {
     const router = useRouter();
@@ -51,11 +59,25 @@ export function MobileLocationFilter() {
             const msg = err.message || "Impossible de récupérer votre position.";
             toast.error(msg);
 
-            if (msg.toLowerCase().includes("refusé") || msg.toLowerCase().includes("denied")) {
+            if (msg.toLowerCase().includes("refusé") || msg.toLowerCase().includes("denied") || msg.toLowerCase().includes("access")) {
                 setPermissionDenied(true);
             }
         } finally {
             setIsLocating(false);
+        }
+    };
+
+    const handleCitySelect = (cityName: string) => {
+        const coords = CITY_COORDINATES[cityName];
+        if (coords) {
+            const params = new URLSearchParams(searchParams.toString());
+            params.set("lat", coords.lat.toString());
+            params.set("lng", coords.lng.toString());
+            params.set("radius", radius[0].toString());
+
+            router.push(`/?${params.toString()}`);
+            setIsOpen(false);
+            toast.success(`Localisation définie sur ${cityName}`);
         }
     };
 
@@ -70,21 +92,25 @@ export function MobileLocationFilter() {
             setIsOpen(false);
             toast.success(`Rayon de recherche: ${radius[0]} km`);
         } else {
-            // If no location yet, try to locate
             handleLocateAndFilter();
         }
     };
 
     const isLocationActive = !!searchParams.get("lat");
+    const sortedCities = Object.keys(CITY_COORDINATES).sort();
 
     return (
         <Drawer open={isOpen} onOpenChange={setIsOpen}>
             <DrawerTrigger asChild>
-                <button className="flex flex-col items-center justify-center gap-1 min-w-[60px] text-zinc-600 hover:text-orange-600 active:scale-95 transition-all">
-                    <div className={`p-2 rounded-full ${isLocationActive ? 'bg-orange-100 text-orange-600' : 'bg-zinc-100 text-zinc-500'}`}>
+                <button className="flex flex-col items-center justify-center gap-1 min-w-[60px] text-zinc-600 hover:text-orange-600 active:scale-95 transition-all relative group">
+                    <div className={`p-2 rounded-full transition-all ${isLocationActive ? 'bg-orange-100 text-orange-600 ring-2 ring-orange-200' : 'bg-zinc-100 text-zinc-500 group-hover:bg-orange-50'}`}>
                         <MapPin className="w-5 h-5" />
                     </div>
                     <span className="text-[10px] font-bold">Radar</span>
+                    {/* Pulse effect to tempt user if not active */}
+                    {!isLocationActive && (
+                        <span className="absolute top-1 right-2 w-2 h-2 bg-orange-500 rounded-full animate-ping" />
+                    )}
                 </button>
             </DrawerTrigger>
             <DrawerContent>
@@ -100,7 +126,7 @@ export function MobileLocationFilter() {
                     </DrawerHeader>
 
                     <div className="p-4 space-y-6">
-                        {/* Radius Slider */}
+                        {/* Radius Slider - Always visible if location active or as preview */}
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">
                                 <label className="text-sm font-bold text-zinc-700">Rayon de recherche</label>
@@ -121,48 +147,79 @@ export function MobileLocationFilter() {
                             </p>
                         </div>
 
-                        {/* Permission Help Text */}
+                        {/* Permission Help Text - Only if Denied */}
                         {permissionDenied && (
                             <div className="bg-red-50 border border-red-100 rounded-xl p-3 text-sm text-red-600 space-y-2 animate-in fade-in slide-in-from-bottom-2">
                                 <p className="font-bold flex items-center gap-2">
                                     <span className="text-lg">🔒</span> Accès bloqué ?
                                 </p>
                                 <p className="text-xs text-red-500 leading-relaxed">
-                                    Votre navigateur bloque la localisation. <br />
-                                    1. Cliquez sur le <strong>cadenas (🔒)</strong> ou paramètres dans la barre d'adresse.<br />
-                                    2. Sélectionnez <strong>"Autorisations"</strong>.<br />
-                                    3. Activez la <strong>Localisation</strong> et réessayez.
+                                    1. Cliquez sur le cadenas (🔒) en haut.<br />
+                                    2. Activez la <strong>Localisation</strong>.<br />
+                                    3. Ou choisissez une ville ci-dessous 👇
                                 </p>
                             </div>
                         )}
 
-                        {/* Action Buttons */}
+                        {/* Actions */}
                         <div className="flex flex-col gap-3">
-                            {!isLocationActive ? (
-                                <Button
-                                    onClick={handleLocateAndFilter}
-                                    disabled={isLocating}
-                                    className="w-full bg-zinc-900 hover:bg-black text-white h-12 rounded-xl font-bold shadow-lg"
-                                >
-                                    {isLocating ? "Localisation..." : (
-                                        <>
-                                            <Navigation className="w-4 h-4 mr-2" />
-                                            Activer ma position
-                                        </>
-                                    )}
-                                </Button>
-                            ) : (
+                            {isLocationActive ? (
                                 <Button
                                     onClick={handleApply}
                                     className="w-full bg-orange-500 hover:bg-orange-600 text-white h-12 rounded-xl font-bold shadow-lg shadow-orange-200"
                                 >
                                     Appliquer filtre ({radius[0]} km)
                                 </Button>
+                            ) : (
+                                <>
+                                    {/* Primary Action depends on permission state */}
+                                    {!permissionDenied && (
+                                        <Button
+                                            onClick={handleLocateAndFilter}
+                                            disabled={isLocating}
+                                            className="w-full bg-zinc-900 hover:bg-black text-white h-12 rounded-xl font-bold shadow-lg"
+                                        >
+                                            {isLocating ? "Localisation..." : (
+                                                <>
+                                                    <Navigation className="w-4 h-4 mr-2" />
+                                                    📍 Activer ma position
+                                                </>
+                                            )}
+                                        </Button>
+                                    )}
+
+                                    {!permissionDenied && (
+                                        <div className="relative flex py-1 items-center">
+                                            <div className="flex-grow border-t border-zinc-200"></div>
+                                            <span className="flex-shrink-0 mx-4 text-zinc-400 text-xs font-bold uppercase">OU</span>
+                                            <div className="flex-grow border-t border-zinc-200"></div>
+                                        </div>
+                                    )}
+
+                                    {/* City Fallback */}
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold text-zinc-500 ml-1">
+                                            {permissionDenied ? "📍 Choisissez votre ville manuellement :" : "🏙️ Ou choisissez une ville :"}
+                                        </label>
+                                        <Select onValueChange={handleCitySelect}>
+                                            <SelectTrigger className="w-full h-12 rounded-xl border-zinc-200 bg-white shadow-sm">
+                                                <SelectValue placeholder="Sélectionner une ville..." />
+                                            </SelectTrigger>
+                                            <SelectContent className="max-h-[200px]">
+                                                {sortedCities.map((city) => (
+                                                    <SelectItem key={city} value={city}>
+                                                        {city}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                </>
                             )}
 
                             <DrawerClose asChild>
-                                <Button variant="outline" className="w-full rounded-xl h-11 border-zinc-200">
-                                    Annuler
+                                <Button variant="ghost" className="w-full rounded-xl h-11 text-zinc-500 hover:bg-zinc-100">
+                                    Fermer
                                 </Button>
                             </DrawerClose>
                         </div>
