@@ -100,7 +100,7 @@ export function NotificationBell({ label }: { label?: string }) {
                                                     <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                                                         {notification.title}
                                                     </p>
-                                                    <span className="text-[10px] text-zinc-500 whitespace-nowrap mr-2">
+                                                    <span className="text-[10px] text-zinc-500 whitespace-nowrap mr-2" suppressHydrationWarning>
                                                         {formatDistanceToNow(new Date(notification.created_at), { addSuffix: true, locale: fr })}
                                                     </span>
                                                 </div>

@@ -32,6 +32,12 @@ export function LocationFilterSidebar({ ads }: SidebarProps) {
     const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
     const [isLocating, setIsLocating] = useState(false);
 
+    // Safe desktop check to prevent Leaflet initialization on mobile (display: none container crash)
+    const [isDesktop, setIsDesktop] = useState(false);
+    useEffect(() => {
+        setIsDesktop(window.innerWidth >= 1024);
+    }, []);
+
     // Initialize location from URL if present
     useEffect(() => {
         const latStr = searchParams.get("lat");
@@ -122,14 +128,23 @@ export function LocationFilterSidebar({ ads }: SidebarProps) {
                 </div>
 
                 {/* Map Preview */}
+                {/* Map Preview */}
                 <div className="h-[220px] w-full rounded-2xl overflow-hidden border border-zinc-100 mb-6 relative group">
-                    <MultiMarkerMap
-                        ads={ads}
-                        center={mapCenter}
-                        zoom={mapZoom}
-                        userLocation={userLocation ? [userLocation.lat, userLocation.lng] : null}
-                        radiusKm={radius[0]}
-                    />
+                    {/* Only render map if we are on client to avoid hydration issues, checking width is tricky with hydration, 
+                        but Leaflet handles display:none better if we delay it slightly or ensure container has dimensions.
+                        However, simplest fix for mobile crash is to ensure this component (LocationFilterSidebar) isn't rendered on mobile by parent.
+                        Since parent uses CSS hiding, we adding a client-side width check to nullify map on mobile. */}
+                    <div className="h-full w-full">
+                        {isDesktop && (
+                            <MultiMarkerMap
+                                ads={ads}
+                                center={mapCenter}
+                                zoom={mapZoom}
+                                userLocation={userLocation ? [userLocation.lat, userLocation.lng] : null}
+                                radiusKm={radius[0]}
+                            />
+                        )}
+                    </div>
                     {!userLocation && (
                         <div className="absolute inset-0 bg-white/40 backdrop-blur-[2px] flex items-center justify-center z-[500] transition-opacity group-hover:bg-white/20">
                             <Button
