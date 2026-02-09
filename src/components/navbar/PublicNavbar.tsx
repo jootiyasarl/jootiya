@@ -136,10 +136,10 @@ function PublicNavbar() {
             </div>
 
             <Link href="/marketplace/post" className="hidden lg:block">
-              <Button className="rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-bold h-11 px-5 shadow-lg shadow-orange-200/50 transition-all hover:translate-y-[-1px] active:translate-y-[0px] active:scale-[0.98] flex items-center gap-2">
+              <div className="rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-bold h-11 px-5 shadow-lg shadow-orange-200/50 transition-all hover:translate-y-[-1px] active:translate-y-[0px] active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer">
                 <PlusCircle className="w-5 h-5" />
                 <span>Déposer une annonce</span>
-              </Button>
+              </div>
             </Link>
           </div>
 
@@ -332,10 +332,10 @@ function PublicNavbar() {
             {/* Drawer Footer */}
             <div className="p-5 border-t border-zinc-100 bg-zinc-50/50">
               <Link href="/marketplace/post" onClick={() => setIsMobileMenuOpen(false)}>
-                <Button className="w-full h-14 rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-black shadow-lg shadow-orange-100 text-base flex items-center justify-center gap-2">
+                <div className="w-full h-14 rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-black shadow-lg shadow-orange-100 text-base flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.98]">
                   <PlusCircle className="w-6 h-6" />
                   Déposer une annonce
-                </Button>
+                </div>
               </Link>
             </div>
           </div>
