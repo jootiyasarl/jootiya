@@ -27,17 +27,17 @@ export function CategoryGrid() {
                     </Link>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
+                <div className="flex overflow-x-auto no-scrollbar gap-4 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-10 sm:overflow-visible">
                     {CATEGORIES.map((category) => (
                         <Link
                             key={category.id}
                             href={category.href}
-                            className="group flex flex-col items-center justify-center p-6 bg-white border border-gray-100 rounded-2xl transition-all duration-300 hover:shadow-md hover:scale-105 active:scale-95"
+                            className="group flex flex-col items-center justify-center p-4 bg-white border border-gray-100 rounded-2xl transition-all duration-300 hover:shadow-md hover:scale-105 active:scale-95 min-w-[100px] sm:min-w-0"
                         >
-                            <div className={`flex h-12 w-12 items-center justify-center rounded-full ${category.bg} mb-4 transition-transform group-hover:rotate-6`}>
-                                <category.icon size={24} strokeWidth={1.5} className="shrink-0" />
+                            <div className={`flex h-10 w-10 items-center justify-center rounded-full ${category.bg} mb-2 transition-transform group-hover:rotate-6`}>
+                                <category.icon size={20} strokeWidth={1.5} className="shrink-0" />
                             </div>
-                            <span className="text-sm font-medium text-slate-800 text-center line-clamp-1">
+                            <span className="text-[11px] font-medium text-slate-800 text-center line-clamp-1">
                                 {category.label}
                             </span>
                         </Link>
