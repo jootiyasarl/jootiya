@@ -137,9 +137,9 @@ export function UnifiedSearchBar() {
                 {/* Compact Search Button */}
                 <Button
                     onClick={handleSearch}
-                    className="h-10 rounded-full bg-orange-600 hover:bg-orange-700 text-white font-bold px-6 shadow-md shadow-orange-100 flex items-center gap-2 text-sm transition-all active:scale-[0.98] shrink-0 ml-1"
+                    className="h-9 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold px-4 shadow-md shadow-orange-100 flex items-center gap-2 text-xs uppercase tracking-wide transition-all active:scale-[0.98] shrink-0 ml-1"
                 >
-                    <Search className="w-4 h-4" />
+                    <Search className="w-3.5 h-3.5" />
                     <span>Chercher</span>
                 </Button>
             </div>

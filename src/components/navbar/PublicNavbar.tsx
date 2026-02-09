@@ -127,7 +127,7 @@ function PublicNavbar() {
             </div>
 
             <Link href="/marketplace/post" className="hidden lg:block shrink-0">
-              <div className="rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold h-10 px-4 text-sm shadow-md shadow-orange-200/50 transition-all hover:translate-y-[-1px] active:translate-y-[0px] active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap">
+              <div className="rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold h-9 px-4 text-xs uppercase tracking-wide shadow-md shadow-orange-200/50 transition-all hover:translate-y-[-1px] active:translate-y-[0px] active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap">
                 <PlusCircle className="w-4 h-4 shrink-0" />
                 <span>Déposer une annonce</span>
               </div>
