@@ -135,9 +135,9 @@ function PublicNavbar() {
               <UnifiedSearchBar />
             </div>
 
-            <Link href="/marketplace/post" className="hidden lg:block">
-              <div className="rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-bold h-11 px-5 shadow-lg shadow-orange-200/50 transition-all hover:translate-y-[-1px] active:translate-y-[0px] active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer">
-                <PlusCircle className="w-5 h-5" />
+            <Link href="/marketplace/post" className="hidden lg:block shrink-0">
+              <div className="rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-bold h-11 px-5 shadow-lg shadow-orange-200/50 transition-all hover:translate-y-[-1px] active:translate-y-[0px] active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap">
+                <PlusCircle className="w-5 h-5 shrink-0" />
                 <span>Déposer une annonce</span>
               </div>
             </Link>
