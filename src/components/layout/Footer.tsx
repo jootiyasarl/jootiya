@@ -1,99 +1,208 @@
+"use client";
+
 import React from 'react';
 import Link from 'next/link';
-import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from 'lucide-react';
+import {
+    Facebook,
+    Instagram,
+    Twitter,
+    Mail,
+    Phone,
+    MapPin,
+    Send,
+    ShieldCheck,
+    Zap,
+    Globe,
+    ExternalLink
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+
+const POPULAR_CATEGORIES = [
+    { id: "electronics", label: "Électronique" },
+    { id: "home-furniture", label: "Maison & Ameublement" },
+    { id: "vehicles", label: "Véhicules" },
+    { id: "fashion", label: "Mode" },
+    { id: "tools-equipment", label: "Outils & Équipement" },
+    { id: "hobbies", label: "Loisirs" },
+];
+
+const MAJOR_CITIES = [
+    "Casablanca",
+    "Rabat",
+    "Marrakech",
+    "Tanger",
+    "Agadir",
+    "Fès",
+];
 
 export default function Footer() {
     const currentYear = new Date().getFullYear();
 
     return (
-        <footer className="bg-[#0F172A] text-zinc-300 py-16 border-t border-white/5" dir="ltr">
-            <div className="container mx-auto px-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-                    {/* Brand Section */}
-                    <div className="space-y-6">
-                        <Link href="/" className="text-2xl font-bold text-white flex items-center gap-2">
-                            <span className="text-orange-500 text-3xl">J</span>ootiya
+        <footer className="bg-[#0b0f1a] text-zinc-400 pt-20 pb-10 border-t border-zinc-800/50" dir="ltr">
+            <div className="container mx-auto px-4 md:px-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-8 mb-16">
+
+                    {/* Column 1: Brand & Bio */}
+                    <div className="lg:col-span-1 space-y-6">
+                        <Link href="/" className="inline-block transition-transform hover:scale-105 active:scale-95">
+                            <span className="text-2xl font-black tracking-tighter text-white">
+                                JOOTIYA<span className="text-orange-500">.</span>
+                            </span>
                         </Link>
-                        <p className="text-zinc-500 leading-relaxed">
-                            La plateforme n°1 au Maroc pour acheter et vendre tout ce dont vous avez besoin. Simplicité, sécurité et rapidité en un seul endroit.
+                        <p className="text-sm leading-relaxed text-zinc-500 max-w-xs">
+                            La plateforme n°1 au Maroc pour l'achat et la vente d'occasion. Nous connectons des milliers d'acheteurs et de vendeurs chaque jour dans un environnement sécurisé.
                         </p>
-                        <div className="flex gap-4">
-                            <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-orange-500 hover:text-white transition-all duration-300">
-                                <Facebook size={20} />
-                            </a>
-                            <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-orange-500 hover:text-white transition-all duration-300">
-                                <Instagram size={20} />
-                            </a>
-                            <a href="#" className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-orange-500 hover:text-white transition-all duration-300">
-                                <Twitter size={20} />
-                            </a>
+                        <div className="flex items-center gap-3">
+                            <SocialLink href="#" icon={<Facebook size={18} />} color="hover:text-[#1877F2]" />
+                            <SocialLink href="#" icon={<Instagram size={18} />} color="hover:text-[#E4405F]" />
+                            <SocialLink href="#" icon={<Twitter size={18} />} color="hover:text-[#1DA1F2]" />
                         </div>
                     </div>
 
-                    {/* Quick Links */}
+                    {/* Column 2: SEO Categories */}
                     <div className="space-y-6">
-                        <h3 className="text-white text-lg font-bold">Liens Rapides</h3>
-                        <ul className="space-y-4">
-                            <li>
-                                <Link href="/about" className="hover:text-orange-500 transition-colors">À propos</Link>
-                            </li>
-                            <li>
-                                <Link href="/contact" className="hover:text-orange-500 transition-colors">Contact</Link>
-                            </li>
-                            <li>
-                                <Link href="/marketplace" className="hover:text-orange-500 transition-colors">Marché</Link>
-                            </li>
-                            <li>
-                                <Link href="/dashboard" className="hover:text-orange-500 transition-colors">Tableau de bord</Link>
-                            </li>
+                        <h4 className="text-white text-xs font-black uppercase tracking-widest flex items-center gap-2">
+                            <Zap className="w-3 h-3 text-orange-500" />
+                            Févries Populaires
+                        </h4>
+                        <ul className="space-y-3">
+                            {POPULAR_CATEGORIES.map((cat) => (
+                                <li key={cat.id}>
+                                    <Link
+                                        href={`/marketplace?category=${cat.id}`}
+                                        className="text-[13px] font-medium hover:text-orange-500 transition-colors flex items-center group"
+                                    >
+                                        <span className="w-1 h-1 rounded-full bg-zinc-700 mr-2 group-hover:bg-orange-500 transition-colors" />
+                                        {cat.label}
+                                    </Link>
+                                </li>
+                            ))}
                         </ul>
                     </div>
 
-                    {/* Legal Pages */}
+                    {/* Column 3: SEO Cities */}
                     <div className="space-y-6">
-                        <h3 className="text-white text-lg font-bold">Légal</h3>
-                        <ul className="space-y-4">
-                            <li>
-                                <Link href="/privacy-policy" className="hover:text-orange-500 transition-colors">Confidentialité</Link>
-                            </li>
-                            <li>
-                                <Link href="/terms" className="hover:text-orange-500 transition-colors">Conditions</Link>
-                            </li>
+                        <h4 className="text-white text-xs font-black uppercase tracking-widest flex items-center gap-2">
+                            <MapPin className="w-3 h-3 text-orange-500" />
+                            Villes Principales
+                        </h4>
+                        <ul className="space-y-3">
+                            {MAJOR_CITIES.map((city) => (
+                                <li key={city}>
+                                    <Link
+                                        href={`/marketplace?city=${city}`}
+                                        className="text-[13px] font-medium hover:text-orange-500 transition-colors flex items-center group"
+                                    >
+                                        <span className="w-1 h-1 rounded-full bg-zinc-700 mr-2 group-hover:bg-orange-500 transition-colors" />
+                                        {city}
+                                    </Link>
+                                </li>
+                            ))}
                         </ul>
                     </div>
 
-                    {/* Contact Info */}
+                    {/* Column 4: Links & Support */}
                     <div className="space-y-6">
-                        <h3 className="text-white text-lg font-bold">Nous Contacter</h3>
-                        <ul className="space-y-4">
-                            <li className="flex items-center gap-3">
-                                <div className="text-orange-500"><Mail size={18} /></div>
-                                <a href="mailto:contact@jootiya.com" className="hover:text-orange-500 transition-colors">contact@jootiya.com</a>
-                            </li>
-                            <li className="flex items-center gap-3">
-                                <div className="text-orange-500"><Phone size={18} /></div>
-                                <span dir="ltr">+212 000-000000</span>
-                            </li>
-                            <li className="flex items-center gap-3">
-                                <div className="text-orange-500"><MapPin size={18} /></div>
-                                <span>Casablanca, Maroc</span>
-                            </li>
+                        <h4 className="text-white text-xs font-black uppercase tracking-widest flex items-center gap-2">
+                            <ShieldCheck className="w-3 h-3 text-orange-500" />
+                            Aide & Légal
+                        </h4>
+                        <ul className="space-y-3">
+                            <FooterLink href="/about">Notre Concept</FooterLink>
+                            <FooterLink href="/safety">Conseils de Sécurité</FooterLink>
+                            <FooterLink href="/terms">CGU & Conditions</FooterLink>
+                            <FooterLink href="/privacy-policy">Confidentialité</FooterLink>
+                            <FooterLink href="/contact">Support Client</FooterLink>
                         </ul>
+                    </div>
+
+                    {/* Column 5: Newsletter & Contact */}
+                    <div className="lg:col-span-1 space-y-6">
+                        <h4 className="text-white text-xs font-black uppercase tracking-widest flex items-center gap-2">
+                            <Mail className="w-3 h-3 text-orange-500" />
+                            Newsletter
+                        </h4>
+                        <div className="space-y-4">
+                            <p className="text-[12px] text-zinc-500 font-medium italic">
+                                Recevez les meilleures offres de votre ville.
+                            </p>
+                            <div className="relative group">
+                                <input
+                                    type="email"
+                                    placeholder="Votre email..."
+                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-orange-500/50 focus:ring-4 focus:ring-orange-500/10 transition-all text-white pr-12"
+                                />
+                                <button className="absolute right-1 top-1 bottom-1 px-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors flex items-center justify-center">
+                                    <Send className="w-3.5 h-3.5" />
+                                </button>
+                            </div>
+                        </div>
+                        <div className="pt-4 space-y-3">
+                            <div className="flex items-center gap-3 text-xs text-zinc-400">
+                                <Phone size={14} className="text-orange-500" />
+                                <span dir="ltr">+212 5XX-XXXXXX</span>
+                            </div>
+                            <div className="flex items-center gap-3 text-xs text-zinc-400">
+                                <Globe size={14} className="text-orange-500" />
+                                <span>www.jootiya.com</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                {/* Bottom Bar */}
-                <div className="mt-16 pt-8 border-t border-zinc-800 text-center md:flex md:justify-between md:items-center animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-                    <p className="text-zinc-600 text-sm">
-                        © {currentYear} <span className="text-white font-medium">Jootiya.com</span>. Tous droits réservés.
-                    </p>
-                    <div className="mt-4 md:mt-0 flex justify-center gap-6 opacity-70 hover:opacity-100 transition-opacity">
-                        <div className="h-8 bg-white/5 border border-white/10 rounded px-3 flex items-center text-xs font-bold text-zinc-400">VISA</div>
-                        <div className="h-8 bg-white/5 border border-white/10 rounded px-3 flex items-center text-xs font-bold text-zinc-400">MasterCard</div>
-                        <div className="h-8 bg-white/5 border border-white/10 rounded px-3 flex items-center text-xs font-bold text-zinc-400">PayPal</div>
+                {/* Bottom Bar Section */}
+                <div className="pt-10 border-t border-zinc-800/50 flex flex-col md:flex-row justify-between items-center gap-6">
+                    <div className="flex items-center gap-4 text-xs font-medium text-zinc-600">
+                        <p>© {currentYear} JOOTIYA. Tous droits réservés.</p>
+                        <span className="hidden md:block w-1 h-1 rounded-full bg-zinc-800" />
+                        <div className="flex items-center gap-1.5 opacity-60 hover:opacity-100 transition-opacity cursor-default">
+                            <div className="w-4 h-4 rounded-full bg-red-600 flex items-center justify-center text-[8px] font-bold text-white leading-none">M</div>
+                            <span>Fait au Maroc avec ❤️</span>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center gap-6 opacity-30 hover:opacity-80 transition-all duration-500 grayscale hover:grayscale-0">
+                        <PaymentIcon name="VISA" />
+                        <PaymentIcon name="MasterCard" />
+                        <PaymentIcon name="CMI" />
+                        <PaymentIcon name="PayPal" />
                     </div>
                 </div>
             </div>
         </footer>
+    );
+}
+
+function SocialLink({ href, icon, color }: { href: string; icon: React.ReactNode; color: string }) {
+    return (
+        <a
+            href={href}
+            className={`w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center text-zinc-400 transition-all duration-300 ${color} hover:bg-white/10 hover:translate-y-[-2px]`}
+        >
+            {icon}
+        </a>
+    );
+}
+
+function FooterLink({ href, children }: { href: string; children: React.ReactNode }) {
+    return (
+        <li>
+            <Link
+                href={href}
+                className="text-[13px] font-medium hover:text-white transition-colors flex items-center group"
+            >
+                {children}
+            </Link>
+        </li>
+    );
+}
+
+function PaymentIcon({ name }: { name: string }) {
+    return (
+        <div className="flex flex-col items-center">
+            <span className="text-[10px] font-black text-white tracking-widest">{name}</span>
+            <div className="w-8 h-0.5 bg-orange-500/20 rounded-full mt-0.5"></div>
+        </div>
     );
 }
