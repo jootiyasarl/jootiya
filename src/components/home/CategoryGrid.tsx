@@ -32,12 +32,12 @@ export function CategoryGrid() {
                         <Link
                             key={category.id}
                             href={category.href}
-                            className="group flex flex-col items-center justify-center p-4 bg-white border border-gray-100 rounded-2xl transition-all duration-300 hover:shadow-md hover:scale-105 active:scale-95 min-w-[100px] sm:min-w-0"
+                            className="group flex flex-col items-center justify-center p-2.5 bg-zinc-50/50 border border-zinc-100 rounded-xl transition-all duration-300 hover:bg-white hover:shadow-md hover:-translate-y-1 hover:border-orange-100 min-w-[90px] sm:min-w-0"
                         >
-                            <div className={`flex h-10 w-10 items-center justify-center rounded-full ${category.bg} mb-2 transition-transform group-hover:rotate-6`}>
-                                <category.icon size={20} strokeWidth={1.5} className="shrink-0" />
+                            <div className={`flex h-9 w-9 items-center justify-center rounded-full ${category.bg} mb-2 transition-transform group-hover:scale-110`}>
+                                <category.icon size={18} strokeWidth={2} className="shrink-0" />
                             </div>
-                            <span className="text-[11px] font-medium text-slate-800 text-center line-clamp-1">
+                            <span className="text-[10px] font-bold text-zinc-600 text-center line-clamp-1 group-hover:text-zinc-900">
                                 {category.label}
                             </span>
                         </Link>

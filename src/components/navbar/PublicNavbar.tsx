@@ -113,31 +113,22 @@ function PublicNavbar() {
     <header className="sticky top-0 z-50 w-full bg-white border-b border-zinc-200">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         {/* Main Nav Row */}
-        <div className="flex h-16 md:h-20 items-center justify-between gap-4 py-2">
+        <div className="flex h-16 items-center justify-between gap-4 py-2">
           {/* Left: Logo & Post Ad */}
           <div className="flex items-center gap-4 lg:gap-8">
-            {/* Mobile Menu Button - REMOVED for Bottom Nav
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 text-zinc-600 hover:bg-zinc-100 rounded-xl transition-colors"
-            >
-              <Menu className="w-6 h-6" />
-            </button>
-            */}
-
             <Link href="/" className="flex items-center shrink-0">
               <span className="text-xl md:text-2xl font-black tracking-tighter text-[#0F172A]">
                 JOOTIYA <span className="text-orange-500">.</span>
               </span>
             </Link>
 
-            <div className="hidden md:flex flex-1 max-w-2xl px-2">
+            <div className="hidden md:flex flex-1 max-w-xl px-2">
               <UnifiedSearchBar />
             </div>
 
             <Link href="/marketplace/post" className="hidden lg:block shrink-0">
-              <div className="rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-bold h-11 px-5 shadow-lg shadow-orange-200/50 transition-all hover:translate-y-[-1px] active:translate-y-[0px] active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap">
-                <PlusCircle className="w-5 h-5 shrink-0" />
+              <div className="rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold h-10 px-4 text-sm shadow-md shadow-orange-200/50 transition-all hover:translate-y-[-1px] active:translate-y-[0px] active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap">
+                <PlusCircle className="w-4 h-4 shrink-0" />
                 <span>Déposer une annonce</span>
               </div>
             </Link>
