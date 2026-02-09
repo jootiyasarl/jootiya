@@ -33,14 +33,21 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete }: 
   const isFeatured = variant === "featured" || ad.isFeatured;
   const linkHref = href || `/ads/${ad.slug || ad.id}`;
 
-  const card = (
-    <article className="group cursor-pointer flex flex-col gap-3 bg-white rounded-[1.5rem] p-1 border border-zinc-50 hover:border-orange-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ease-out">
+  return (
+    <article className="group relative flex flex-col gap-3 bg-white rounded-[1.5rem] p-1 border border-zinc-50 hover:border-orange-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ease-out">
+      {/* Main Clickable Link Overlay */}
+      {linkHref && (
+        <Link href={linkHref} className="absolute inset-0 z-10 rounded-[1.5rem]" aria-label={ad.title}>
+          <span className="sr-only">Voir l'annonce</span>
+        </Link>
+      )}
+
       {/* Seller Header */}
-      <div className="flex items-center gap-2 px-2 pt-1">
+      <div className="flex items-center gap-2 px-2 pt-1 relative z-20 pointer-events-none">
         <div className="w-6 h-6 rounded-full bg-zinc-100 flex items-center justify-center overflow-hidden">
           <User className="w-4 h-4 text-zinc-400" />
         </div>
-        <span className="text-[11px] font-bold text-zinc-500 truncate">{ad.sellerName || "Vendeur Jootiya"}</span>
+        <span className="text-[11px] font-bold text-zinc-500 truncate max-w-[120px]">{ad.sellerName || "Vendeur Jootiya"}</span>
       </div>
 
       {/* Image Container */}
@@ -59,26 +66,28 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete }: 
           </div>
         )}
 
-        {/* Favorite Heart Icon Overlay */}
+        {/* Favorite Heart Icon Overlay - High z-index to be clickable above the link */}
         <button
-          className="absolute right-3 top-3 z-10 p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm text-zinc-800 hover:text-orange-600 transition-colors"
+          className="absolute right-3 top-3 z-30 p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm text-zinc-800 hover:text-orange-600 transition-colors cursor-pointer"
           onClick={(e) => {
             e.preventDefault();
+            e.stopPropagation();
             // Wishlist logic
+            console.log("Add to favorites");
           }}
         >
           <Heart className="h-5 w-5" />
         </button>
 
         {isFeatured && (
-          <div className="absolute left-3 top-3 rounded-lg bg-orange-500 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
+          <div className="absolute left-3 top-3 z-20 rounded-lg bg-orange-500 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
             À la une
           </div>
         )}
       </div>
 
       {/* Info Section */}
-      <div className="flex flex-col gap-1 px-3 pb-4">
+      <div className="flex flex-col gap-1 px-3 pb-4 pointer-events-none">
         <h3 className="text-[14px] font-semibold text-zinc-800 leading-snug line-clamp-2 min-h-[2.5rem]">
           {ad.title}
         </h3>
@@ -88,24 +97,19 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete }: 
             {ad.price}
           </span>
           <div className="flex items-center gap-1.5 text-zinc-400 text-[11px] mt-1 font-medium">
-            <span className="truncate">{ad.location}</span>
+            <span className="truncate max-w-[100px]">{ad.location}</span>
             <span className="shrink-0">•</span>
             <span className="shrink-0">{ad.createdAt || "Aujourd'hui"}</span>
           </div>
         </div>
 
-        {footerSlot}
+        {/* Footer Slot - Needs pointer-events-auto if it contains buttons */}
+        {footerSlot && (
+          <div className="mt-2 pointer-events-auto z-20 relative">
+            {footerSlot}
+          </div>
+        )}
       </div>
     </article>
   );
-
-  if (linkHref) {
-    return (
-      <Link href={linkHref} className="block">
-        {card}
-      </Link>
-    );
-  }
-
-  return card;
 }

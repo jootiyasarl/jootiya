@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { Menu, ChevronDown, ArrowLeft, ExternalLink, User } from "lucide-react";
+import { Menu, ChevronDown, ArrowLeft, ExternalLink, User, CreditCard, LogOut } from "lucide-react";
 import { DashboardSidebar } from "@/components/dashboard-sidebar";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { Button } from "@/components/ui/button";
@@ -149,5 +149,3 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     </div>
   );
 }
-
-import { CreditCard, LogOut } from "lucide-react";
