@@ -23,7 +23,7 @@ export type Message = {
     content: string;
     is_read: boolean;
     created_at: string;
-    message_type: 'text' | 'audio';
+    message_type: 'text' | 'audio' | 'image' | 'file';
     file_url?: string;
     is_optimistic?: boolean;
 };

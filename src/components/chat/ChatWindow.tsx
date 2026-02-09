@@ -39,6 +39,7 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
     const scrollRef = useRef<HTMLDivElement>(null);
     const [showAudioRecorder, setShowAudioRecorder] = useState(false);
     const [recorderCoords, setRecorderCoords] = useState<{ x: number, y: number } | undefined>(undefined);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     // Fetch messages
     useEffect(() => {
@@ -89,12 +90,12 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
         }
     }, [messages, isLoading]);
 
-    const handleSendMessage = async (e?: React.FormEvent, contentOverride?: string, audioUrl?: string) => {
+    const handleSendMessage = async (e?: React.FormEvent, contentOverride?: string, fileUrl?: string, typeOverride?: 'text' | 'audio' | 'image' | 'file') => {
         e?.preventDefault();
         const content = contentOverride || newMessage.trim();
-        const messageType = audioUrl ? 'audio' : 'text';
+        const messageType = typeOverride || (fileUrl ? 'audio' : 'text');
 
-        if (!content && !audioUrl) return;
+        if (!content && !fileUrl) return;
 
         // Optimistic Update
         const tempId = `temp-${Date.now()}`;
@@ -102,16 +103,16 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
             id: tempId,
             conversation_id: conversation.id,
             sender_id: currentUser.id,
-            content: audioUrl ? "Audio message" : content,
+            content: (messageType === 'text') ? content : `Sent a ${messageType}`,
             message_type: messageType,
-            file_url: audioUrl || undefined,
+            file_url: fileUrl || undefined,
             is_read: false,
             created_at: new Date().toISOString(),
             is_optimistic: true // Custom flag for UI
         };
 
         setMessages((prev) => [...prev, optimisticMsg]);
-        if (!audioUrl) setNewMessage("");
+        if (messageType === 'text') setNewMessage("");
 
         setIsSending(true);
         const { data, error } = await supabase
@@ -119,9 +120,9 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
             .insert({
                 conversation_id: conversation.id,
                 sender_id: currentUser.id,
-                content: audioUrl ? "Audio message" : content,
+                content: optimisticMsg.content,
                 message_type: messageType,
-                file_url: audioUrl || null
+                file_url: fileUrl || null
             })
             .select()
             .single();
@@ -138,6 +139,36 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
             onMessageSent(data as Message);
         }
         setIsSending(false);
+    };
+
+    const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setIsSending(true);
+        try {
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${Math.random()}.${fileExt}`;
+            const filePath = `chat-attachments/${fileName}`;
+
+            const { error: uploadError } = await supabase.storage
+                .from('chat-attachments')
+                .upload(filePath, file);
+
+            if (uploadError) throw uploadError;
+
+            const { data: { publicUrl } } = supabase.storage
+                .from('chat-attachments')
+                .getPublicUrl(filePath);
+
+            const type: 'image' | 'file' = file.type.startsWith('image/') ? 'image' : 'file';
+            await handleSendMessage(undefined, undefined, publicUrl, type);
+        } catch (error: any) {
+            toast.error(`Erreur d'envoi du fichier: ${error.message}`);
+        } finally {
+            setIsSending(false);
+            if (fileInputRef.current) fileInputRef.current.value = '';
+        }
     };
 
     const handleMicStart = (e: React.MouseEvent | React.TouchEvent) => {
@@ -197,9 +228,41 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                                             "px-3 py-2 md:px-4 md:py-2 shadow-sm text-sm md:text-[15px] leading-relaxed break-words relative",
                                             isMe ? "bg-orange-500 text-white rounded-2xl rounded-tr-sm" : "bg-white border border-zinc-100 text-zinc-800 rounded-2xl rounded-tl-sm"
                                         )}>
-                                            {msg.message_type === 'audio' ? (
+                                            {msg.message_type === 'audio' && (
                                                 <ChatAudioPlayer url={msg.file_url || ""} isMe={isMe} />
-                                            ) : (
+                                            )}
+                                            {msg.message_type === 'image' && msg.file_url && (
+                                                <div className="relative w-48 h-48 md:w-64 md:h-64 rounded-lg overflow-hidden my-1 border border-white/20">
+                                                    <Image
+                                                        src={msg.file_url}
+                                                        alt="Image"
+                                                        fill
+                                                        className="object-cover"
+                                                        unoptimized // For immediate display of optimistic/new images
+                                                    />
+                                                </div>
+                                            )}
+                                            {msg.message_type === 'file' && msg.file_url && (
+                                                <Link
+                                                    href={msg.file_url}
+                                                    target="_blank"
+                                                    className={cn(
+                                                        "flex items-center gap-2 p-2 rounded-lg border",
+                                                        isMe ? "bg-white/10 border-white/20 hover:bg-white/20" : "bg-zinc-50 border-zinc-200 hover:bg-zinc-100"
+                                                    )}
+                                                >
+                                                    <div className="w-8 h-8 rounded bg-orange-100 flex items-center justify-center shrink-0">
+                                                        <Paperclip className="w-4 h-4 text-orange-600" />
+                                                    </div>
+                                                    <div className="flex flex-col overflow-hidden">
+                                                        <span className="text-[10px] font-bold uppercase opacity-60">Fichier / ملف</span>
+                                                        <span className="text-xs truncate max-w-[120px]">
+                                                            {msg.file_url.split('/').pop()}
+                                                        </span>
+                                                    </div>
+                                                </Link>
+                                            )}
+                                            {msg.message_type === 'text' && (
                                                 msg.content
                                             )}
                                         </div>
@@ -235,11 +298,18 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
 
             {/* Input Area */}
             <div className="p-2 md:p-3 bg-zinc-100/50 backdrop-blur-sm border-t border-zinc-200 z-50 sticky bottom-0">
+                <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleFileSelect}
+                    className="hidden"
+                    accept="image/*,application/pdf,.doc,.docx"
+                />
                 <div className="flex items-end gap-2 w-full max-w-full">
                     <div className="flex-1 flex items-center gap-1 bg-white rounded-[24px] shadow-sm border border-zinc-200 min-h-[48px] px-1 relative">
                         {showAudioRecorder ? (
                             <ChatAudioRecorder
-                                onSend={(url) => handleSendMessage(undefined, undefined, url)}
+                                onSend={(url) => handleSendMessage(undefined, undefined, url, 'audio')}
                                 onCancel={() => setShowAudioRecorder(false)}
                                 initialX={recorderCoords?.x}
                                 initialY={recorderCoords?.y}
@@ -255,11 +325,28 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                                     placeholder="Message..."
                                     className="flex-1 bg-transparent border-none focus-visible:ring-0 px-2 py-3 font-medium text-[16px] min-w-0"
                                 />
-                                <Button type="button" size="icon" variant="ghost" className="h-10 w-10 text-zinc-500 rounded-full shrink-0">
+                                <Button
+                                    type="button"
+                                    size="icon"
+                                    variant="ghost"
+                                    onClick={() => fileInputRef.current?.click()}
+                                    className="h-10 w-10 text-zinc-500 rounded-full shrink-0"
+                                >
                                     <Paperclip className="h-5 w-5 rotate-45" />
                                 </Button>
                                 {!newMessage.trim() && (
-                                    <Button type="button" size="icon" variant="ghost" className="h-10 w-10 text-zinc-500 rounded-full shrink-0">
+                                    <Button
+                                        type="button"
+                                        size="icon"
+                                        variant="ghost"
+                                        onClick={() => {
+                                            if (fileInputRef.current) {
+                                                fileInputRef.current.accept = "image/*";
+                                                fileInputRef.current.click();
+                                            }
+                                        }}
+                                        className="h-10 w-10 text-zinc-500 rounded-full shrink-0"
+                                    >
                                         <Camera className="h-6 w-6" />
                                     </Button>
                                 )}
