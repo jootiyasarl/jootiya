@@ -26,8 +26,8 @@ export function LocationFilterSidebar({ ads }: SidebarProps) {
     const searchParams = useSearchParams();
 
     const radiusParam = searchParams.get("radius");
-    const parsedRadius = radiusParam ? parseInt(radiusParam) : 50;
-    const initialRadius = isNaN(parsedRadius) ? 50 : parsedRadius;
+    const parsedRadius = radiusParam ? parseInt(radiusParam) : 5;
+    const initialRadius = isNaN(parsedRadius) ? 5 : parsedRadius;
     const [radius, setRadius] = useState([initialRadius]);
     const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
     const [isLocating, setIsLocating] = useState(false);
