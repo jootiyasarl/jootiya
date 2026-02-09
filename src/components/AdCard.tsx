@@ -33,17 +33,17 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete }: 
   const linkHref = href || `/ads/${ad.slug || ad.id}`;
 
   const card = (
-    <article className="group cursor-pointer flex flex-col gap-3 bg-white hover:bg-zinc-50/50 transition-colors duration-200">
+    <article className="group cursor-pointer flex flex-col gap-3 bg-white rounded-[1.5rem] p-1 border border-zinc-50 hover:border-orange-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ease-out">
       {/* Seller Header */}
-      <div className="flex items-center gap-2 px-1">
-        <div className="w-6 h-6 rounded-full bg-zinc-200 flex items-center justify-center overflow-hidden">
+      <div className="flex items-center gap-2 px-2 pt-1">
+        <div className="w-6 h-6 rounded-full bg-zinc-100 flex items-center justify-center overflow-hidden">
           <User className="w-4 h-4 text-zinc-400" />
         </div>
-        <span className="text-xs font-bold text-zinc-900 truncate">{ad.sellerName || "Vendeur Jootiya"}</span>
+        <span className="text-[11px] font-bold text-zinc-500 truncate">{ad.sellerName || "Vendeur Jootiya"}</span>
       </div>
 
       {/* Image Container */}
-      <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-zinc-100">
+      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[1.25rem] bg-zinc-50">
         {ad.imageUrl ? (
           <Image
             src={ad.imageUrl}
@@ -77,16 +77,16 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete }: 
       </div>
 
       {/* Info Section */}
-      <div className="flex flex-col gap-1 px-1 pb-2">
-        <h3 className="text-[15px] font-medium text-zinc-900 leading-tight line-clamp-2 min-h-[2.5rem]">
+      <div className="flex flex-col gap-1 px-3 pb-4">
+        <h3 className="text-[14px] font-semibold text-zinc-800 leading-snug line-clamp-2 min-h-[2.5rem]">
           {ad.title}
         </h3>
 
-        <div className="flex flex-col gap-0.5 mt-1">
-          <span className="text-[17px] font-black text-zinc-900">
+        <div className="flex flex-col gap-0.5 mt-2">
+          <span className="text-base font-black text-orange-600">
             {ad.price}
           </span>
-          <div className="flex items-center gap-1.5 text-zinc-500 text-xs mt-1">
+          <div className="flex items-center gap-1.5 text-zinc-400 text-[11px] mt-1 font-medium">
             <span className="truncate">{ad.location}</span>
             <span className="shrink-0">•</span>
             <span className="shrink-0">{ad.createdAt || "Aujourd'hui"}</span>

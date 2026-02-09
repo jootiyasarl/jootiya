@@ -94,7 +94,7 @@ export default async function Home() {
 
       <CategoryGrid />
 
-      <main className="mx-auto max-w-7xl px-4 space-y-16">
+      <main className="mx-auto max-w-7xl px-4 space-y-24 sm:space-y-32">
 
         {fetchError ? (
           <div className="rounded-xl border border-red-200 bg-red-50 p-8 text-center text-red-700">

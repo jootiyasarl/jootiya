@@ -62,7 +62,7 @@ export function UnifiedSearchBar() {
     return (
         <div className="w-full max-w-6xl mx-auto px-4" ref={containerRef}>
             {/* Desktop Version */}
-            <div className="hidden lg:flex items-center bg-white border border-zinc-200 rounded-full shadow-lg shadow-zinc-200/50 p-1.5 h-16">
+            <div className="hidden lg:flex items-center bg-white border border-transparent rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.06)] p-2 h-16 transition-shadow hover:shadow-[0_8px_30px_rgb(0,0,0,0.1)]">
                 {/* Keyword Search */}
                 <div className="flex-1 flex items-center px-4 gap-3 border-r border-zinc-100 h-full">
                     <Search className="w-5 h-5 text-zinc-400 shrink-0" />
@@ -178,7 +178,7 @@ export function UnifiedSearchBar() {
                 {/* Search Button */}
                 <Button
                     onClick={handleSearch}
-                    className="h-full rounded-full bg-orange-500 hover:bg-orange-600 text-white font-black px-10 shadow-lg shadow-orange-200/50 flex items-center gap-2 text-base transition-all hover:scale-[1.02] active:scale-[0.98] shrink-0"
+                    className="h-full rounded-full bg-orange-600 hover:bg-orange-700 text-white font-black px-12 shadow-xl shadow-orange-100 flex items-center gap-2 text-base transition-all active:scale-[0.98] shrink-0"
                 >
                     <Search className="w-5 h-5" />
                     Rechercher
@@ -186,9 +186,9 @@ export function UnifiedSearchBar() {
             </div>
 
             {/* Mobile Version */}
-            <div className="lg:hidden flex flex-col gap-2.5">
+            <div className="lg:hidden flex flex-col gap-3">
                 {/* Search Input */}
-                <div className="flex items-center bg-white border border-zinc-200 rounded-2xl shadow-sm px-4 h-12">
+                <div className="flex items-center bg-white border border-zinc-100 rounded-full shadow-sm px-5 h-14">
                     <Search className="w-4 h-4 text-zinc-400 mr-3 shrink-0" />
                     <input
                         type="text"
@@ -196,7 +196,7 @@ export function UnifiedSearchBar() {
                         onChange={(e) => setQuery(e.target.value)}
                         onKeyDown={handleKeyDown}
                         placeholder="Que recherchez-vous ?"
-                        className="flex-1 bg-transparent outline-none text-[13px] font-bold placeholder:text-zinc-400"
+                        className="flex-1 bg-transparent outline-none text-base font-medium placeholder:text-zinc-400"
                     />
                 </div>
 

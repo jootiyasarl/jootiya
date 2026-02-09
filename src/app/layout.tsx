@@ -1,13 +1,12 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter } from "next/font/google";
+import { Readex_Pro } from "next/font/google";
 import "./globals.css";
 import { RootNavbarShell } from "@/components/navbar/RootNavbarShell";
 import Footer from "@/components/layout/Footer";
 import { Toaster } from "sonner";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const readexPro = Readex_Pro({
+  variable: "--font-readex-pro",
+  subsets: ["arabic", "latin"],
   display: 'swap',
 });
 
@@ -31,7 +30,7 @@ export default function RootLayout({
   return (
     <html lang="fr" dir="ltr" className="scroll-smooth">
       <body
-        className={`${geistSans.variable} font-sans antialiased bg-white text-zinc-900`}
+        className={`${readexPro.variable} font-sans antialiased bg-white text-zinc-900`}
       >
         <ServiceWorkerRegistration />
         <RootNavbarShell>{children}</RootNavbarShell>
