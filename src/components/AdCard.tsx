@@ -36,7 +36,7 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete }: 
   const linkHref = href || `/ads/${ad.slug || ad.id}`;
 
   return (
-    <article className="group relative flex flex-col gap-3 bg-white rounded-[1.5rem] p-1 border border-zinc-50 hover:border-orange-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ease-out">
+    <article className="group relative flex flex-col gap-3 bg-white dark:bg-zinc-900 rounded-[2rem] p-3 border border-zinc-100 dark:border-zinc-800 shadow-premium hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 ease-out active:scale-[0.98]">
       {/* Main Clickable Link Overlay */}
       {linkHref && (
         <Link href={linkHref} className="absolute inset-0 z-10 rounded-[1.5rem]" aria-label={ad.title}>
@@ -45,15 +45,15 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete }: 
       )}
 
       {/* Seller Header */}
-      <div className="flex items-center gap-2 px-2 pt-1 relative z-20 pointer-events-none">
-        <div className="w-6 h-6 rounded-full bg-zinc-100 flex items-center justify-center overflow-hidden">
+      <div className="flex items-center gap-2 px-1 relative z-20 pointer-events-none">
+        <div className="w-7 h-7 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center overflow-hidden border border-zinc-200/50 dark:border-white/5">
           <User className="w-4 h-4 text-zinc-400" />
         </div>
-        <span className="text-[11px] font-bold text-zinc-500 truncate max-w-[120px]">{ad.sellerName || "Vendeur Jootiya"}</span>
+        <span className="text-[12px] font-bold text-zinc-600 dark:text-zinc-400 truncate max-w-[140px] uppercase tracking-wide">{ad.sellerName || "Vendeur Jootiya"}</span>
       </div>
 
       {/* Image Container */}
-      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[1.25rem] bg-zinc-50">
+      <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-zinc-50 dark:bg-zinc-800 shadow-inner-soft">
         {ad.imageUrl ? (
           <Image
             src={ad.imageUrl}
@@ -75,7 +75,7 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete }: 
         </div>
 
         {isFeatured && (
-          <div className="absolute left-3 top-3 z-20 rounded-lg bg-orange-500 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
+          <div className="absolute left-3 top-3 z-30 rounded-full bg-orange-600/90 backdrop-blur-md px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.1em] text-white shadow-lg">
             À la une
           </div>
         )}
@@ -97,7 +97,7 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete }: 
         </h3>
 
         <div className="flex flex-col gap-0.5 mt-2">
-          <span className="text-base font-black text-orange-600">
+          <span className="text-xl font-black text-orange-600 tracking-tight">
             {ad.price}
           </span>
           <div className="flex items-center gap-1.5 text-zinc-400 text-[11px] mt-1 font-medium">

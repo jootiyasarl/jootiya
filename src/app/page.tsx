@@ -129,7 +129,7 @@ export default async function Home({
           </div>
 
           {/* Main Feed */}
-          <div className="lg:col-span-9 space-y-24 sm:space-y-32">
+          <div className="lg:col-span-9 space-y-16 sm:space-y-32">
             {fetchError ? (
               <div className="rounded-xl border border-red-200 bg-red-50 p-8 text-center text-red-700">
                 <p>Une erreur s'est produite lors du chargement des annonces. Veuillez réessayer.</p>
@@ -159,7 +159,7 @@ export default async function Home({
                         Résultats à proximité ({ads.length})
                       </h2>
                     </div>
-                    <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4">
+                    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4" style={{ gridTemplateColumns: 'repeat(2, minmax(0, 1fr))' }}>
                       {ads.map((ad) => (
                         <AdCard key={ad.id} ad={ad} href={`/ads/${ad.id}`} />
                       ))}
@@ -188,7 +188,7 @@ export default async function Home({
                               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                             </Link>
                           </div>
-                          <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4">
+                          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4" style={{ gridTemplateColumns: 'repeat(2, minmax(0, 1fr))' }}>
                             {catAds.map((ad) => (
                               <AdCard key={ad.id} ad={ad} href={`/ads/${ad.id}`} />
                             ))}
@@ -209,7 +209,7 @@ export default async function Home({
                           <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                         </Link>
                       </div>
-                      <div className="grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4">
+                      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4" style={{ gridTemplateColumns: 'repeat(2, minmax(0, 1fr))' }}>
                         {ads.slice(0, 12).map((ad) => (
                           <AdCard key={ad.id} ad={ad} href={`/ads/${ad.id}`} />
                         ))}

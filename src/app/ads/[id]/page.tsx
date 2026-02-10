@@ -405,7 +405,7 @@ export default async function AdPage({ params }: AdPageProps) {
                 Voir plus
               </Link>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6" style={{ gridTemplateColumns: 'repeat(2, minmax(0, 1fr))' }}>
               {similarAds.map((simAd: any) => (
                 <AdCard key={simAd.id} ad={{
                   id: simAd.id,
