@@ -50,7 +50,7 @@ function getStatusMeta(status: AdminAdStatus): {
   const normalized = (status ?? "").toString().toLowerCase();
 
   if (!normalized || normalized === "pending") {
-    return { label: "Pending review", tone: "info" };
+    return { label: "En attente", tone: "info" };
   }
 
   if (normalized === "active" || normalized === "approved" || normalized === "published") {
@@ -58,14 +58,14 @@ function getStatusMeta(status: AdminAdStatus): {
   }
 
   if (normalized === "rejected") {
-    return { label: "Rejected", tone: "danger" };
+    return { label: "Refusée", tone: "danger" };
   }
 
   if (normalized === "deleted") {
-    return { label: "Deleted", tone: "neutral" };
+    return { label: "Supprimée", tone: "neutral" };
   }
 
-  return { label: status?.toString() || "Unknown", tone: "neutral" };
+  return { label: status?.toString() || "Inconnu", tone: "neutral" };
 }
 
 function getStatusBadgeClasses(tone: "neutral" | "info" | "success" | "danger") {
@@ -130,16 +130,16 @@ export function AdsTable({
 
   const currentStatusLabel =
     filters.status === "all"
-      ? "All statuses"
+      ? "Tous les statuts"
       : getStatusMeta(filters.status).label;
 
   const currentLocationLabel =
-    filters.location === "all" ? "All locations" : filters.location || "All locations";
+    filters.location === "all" ? "Toutes les localisations" : filters.location || "Toutes les localisations";
 
   const currentCategoryLabel =
     filters.category === "all"
-      ? "All categories"
-      : filters.category || "All categories";
+      ? "Toutes les catégories"
+      : filters.category || "Toutes les catégories";
 
   const handleStatusChange = (value: string) => {
     onFiltersChange({ ...filters, status: value });
@@ -163,9 +163,9 @@ export function AdsTable({
     <div className="space-y-4">
       <div className="flex flex-col gap-3 md:flex-row md:items-end">
         <div className="flex-1 space-y-1.5">
-          <Label className="text-xs text-zinc-400">Search</Label>
+          <Label className="text-xs text-zinc-400">Recherche</Label>
           <Input
-            placeholder="Search by title or ID"
+            placeholder="Rechercher par titre ou ID"
             value={filters.query}
             onChange={handleQueryChange}
             className="h-9 bg-zinc-900/40 text-sm text-zinc-50 placeholder:text-zinc-500"
@@ -174,7 +174,7 @@ export function AdsTable({
 
         <div className="grid flex-1 gap-3 md:grid-cols-3">
           <div className="space-y-1.5">
-            <Label className="text-xs text-zinc-400">Status</Label>
+            <Label className="text-xs text-zinc-400">Statut</Label>
             <Select value={filters.status} onValueChange={handleStatusChange}>
               <SelectTrigger className="h-9 border-zinc-800 bg-zinc-900/60 text-xs text-zinc-100">
                 <span className="truncate text-left text-xs">
@@ -182,7 +182,7 @@ export function AdsTable({
                 </span>
               </SelectTrigger>
               <SelectContent className="border-zinc-800 bg-zinc-900 text-xs text-zinc-50">
-                <SelectItem value="all">All statuses</SelectItem>
+                <SelectItem value="all">Tous les statuts</SelectItem>
                 {statusOptions.map((value) => (
                   <SelectItem key={value} value={value}>
                     {getStatusMeta(value).label}
@@ -193,7 +193,7 @@ export function AdsTable({
           </div>
 
           <div className="space-y-1.5">
-            <Label className="text-xs text-zinc-400">Location</Label>
+            <Label className="text-xs text-zinc-400">Localisation</Label>
             <Select value={filters.location} onValueChange={handleLocationChange}>
               <SelectTrigger className="h-9 border-zinc-800 bg-zinc-900/60 text-xs text-zinc-100">
                 <span className="truncate text-left text-xs">
@@ -201,7 +201,7 @@ export function AdsTable({
                 </span>
               </SelectTrigger>
               <SelectContent className="border-zinc-800 bg-zinc-900 text-xs text-zinc-50">
-                <SelectItem value="all">All locations</SelectItem>
+                <SelectItem value="all">Toutes les localisations</SelectItem>
                 {locationOptions.map((value) => (
                   <SelectItem key={value} value={value}>
                     {value}
@@ -212,7 +212,7 @@ export function AdsTable({
           </div>
 
           <div className="space-y-1.5">
-            <Label className="text-xs text-zinc-400">Category</Label>
+            <Label className="text-xs text-zinc-400">Catégorie</Label>
             <Select
               value={filters.category}
               onValueChange={handleCategoryChange}
@@ -223,7 +223,7 @@ export function AdsTable({
                 </span>
               </SelectTrigger>
               <SelectContent className="border-zinc-800 bg-zinc-900 text-xs text-zinc-50">
-                <SelectItem value="all">All categories</SelectItem>
+                <SelectItem value="all">Toutes les catégories</SelectItem>
                 {categoryOptions.map((value) => (
                   <SelectItem key={value} value={value}>
                     {value}
@@ -240,19 +240,19 @@ export function AdsTable({
           <TableHeader>
             <TableRow className="border-zinc-800/80 bg-zinc-950/80">
               <TableHead className="w-[32%] text-[11px] uppercase tracking-[0.16em] text-zinc-500">
-                Ad
+                Annonce
               </TableHead>
               <TableHead className="w-[12%] text-[11px] uppercase tracking-[0.16em] text-zinc-500">
-                Status
+                Statut
               </TableHead>
               <TableHead className="w-[12%] text-[11px] uppercase tracking-[0.16em] text-zinc-500">
-                Location / Category
+                Localisation / Catégorie
               </TableHead>
               <TableHead className="w-[12%] text-[11px] uppercase tracking-[0.16em] text-zinc-500">
-                Price
+                Prix
               </TableHead>
               <TableHead className="w-[12%] text-[11px] uppercase tracking-[0.16em] text-zinc-500">
-                Featured
+                À la une
               </TableHead>
               <TableHead className="w-[20%] text-right text-[11px] uppercase tracking-[0.16em] text-zinc-500">
                 Actions
@@ -295,7 +295,7 @@ export function AdsTable({
                           </span>
                         </div>
                         <span className="text-[11px] text-zinc-500">
-                          Created {formatDate(ad.created_at)}
+                          Créée le {formatDate(ad.created_at)}
                         </span>
                       </div>
                     </TableCell>
@@ -325,7 +325,7 @@ export function AdsTable({
                       <div className="flex flex-col gap-1">
                         <span>{ad.location ?? "—"}</span>
                         <span className="text-[11px] text-zinc-500">
-                          {ad.category ?? "No category"}
+                          {ad.category ?? "Sans catégorie"}
                         </span>
                       </div>
                     </TableCell>
@@ -345,7 +345,7 @@ export function AdsTable({
                           )}
                         />
                         <span className="text-[11px] font-medium">
-                          {isFeatured ? "Featured" : "Standard"}
+                          {isFeatured ? "À la une" : "Standard"}
                         </span>
                       </div>
                     </TableCell>
@@ -361,7 +361,7 @@ export function AdsTable({
                           onClick={() => onApprove(ad)}
                         >
                           <Check className="mr-1 h-3 w-3" />
-                          Approve
+                          Approuver
                         </Button>
 
                         <Button
@@ -373,7 +373,7 @@ export function AdsTable({
                           onClick={() => onReject(ad)}
                         >
                           <X className="mr-1 h-3 w-3" />
-                          Reject
+                          Refuser
                         </Button>
 
                         <Button
@@ -385,7 +385,7 @@ export function AdsTable({
                           onClick={() => onDelete(ad)}
                         >
                           <Trash2 className="mr-1 h-3 w-3" />
-                          Delete
+                          Supprimer
                         </Button>
 
                         <Button
@@ -409,7 +409,7 @@ export function AdsTable({
                                 : "text-amber-300",
                             )}
                           />
-                          {isFeatured ? "Unfeature" : "Feature"}
+                          {isFeatured ? "Retirer de la une" : "Mettre à la une"}
                         </Button>
                       </div>
                     </TableCell>

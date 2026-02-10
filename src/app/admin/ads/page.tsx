@@ -107,9 +107,9 @@ export default function AdminAdsPage() {
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight text-zinc-100">Ads Management</h2>
+        <h2 className="text-2xl font-bold tracking-tight text-zinc-100">Gestion des annonces</h2>
         <p className="text-zinc-400">
-          Moderate, edit, and manage all marketplace listings.
+          Modérez, modifiez et gérez toutes les annonces du marché.
         </p>
       </div>
 
