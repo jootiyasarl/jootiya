@@ -211,9 +211,9 @@ function PublicNavbar() {
             className="lg:hidden fixed inset-0 z-[120] bg-black/40 backdrop-blur-sm"
             onClick={() => setIsMobileMenuOpen(false)}
           />
-          <div className="lg:hidden fixed inset-y-0 left-0 z-[130] w-[85%] max-w-sm bg-white dark:bg-zinc-900 shadow-2xl animate-in slide-in-from-left duration-300 ease-out flex flex-col">
+          <div className="lg:hidden fixed inset-y-0 left-0 z-[130] w-[85%] max-w-sm max-h-screen bg-white dark:bg-zinc-900 shadow-2xl animate-in slide-in-from-left duration-300 ease-out flex flex-col pb-safe">
             {/* Drawer Header */}
-            <div className="flex items-center justify-between p-5 border-b border-zinc-100 dark:border-zinc-800">
+            <div className="flex items-center justify-between p-5 border-b border-zinc-100 dark:border-zinc-800 flex-shrink-0">
               <span className="text-2xl font-black text-[#0F172A] dark:text-white tracking-tighter">
                 JOOTIYA<span className="text-orange-500">.</span>
               </span>
@@ -226,7 +226,7 @@ function PublicNavbar() {
             </div>
 
             {/* Drawer Content */}
-            <div className="flex-1 overflow-y-auto px-5 py-6 space-y-8">
+            <div className="flex-1 overflow-y-auto overflow-x-hidden px-5 py-6 space-y-8">
               {/* Theme Selector in Mobile Drawer */}
               <div className="space-y-4">
                 <h3 className="text-[11px] font-black uppercase tracking-wider text-zinc-400 px-1">Apparence</h3>
@@ -303,7 +303,7 @@ function PublicNavbar() {
             </div>
 
             {/* Drawer Footer */}
-            <div className="p-5 border-t border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50">
+            <div className="p-5 border-t border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 flex-shrink-0">
               <Link href="/marketplace/post" onClick={() => setIsMobileMenuOpen(false)}>
                 <div className="w-full h-14 rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-black shadow-lg shadow-orange-100 dark:shadow-none text-base flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.98]">
                   <PlusCircle className="w-6 h-6" />
