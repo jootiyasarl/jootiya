@@ -4,7 +4,6 @@ import { createSupabaseServerClient, getServerUser } from "@/lib/supabase-server
 import { Button } from "@/components/ui/button";
 import { AdImageGallery } from "@/components/ads/AdImageGallery";
 import { ContactActions } from "@/components/ads/ContactActions";
-import { MobileAdActions } from "@/components/ads/MobileAdActions";
 import { AdLocationMap } from "@/components/ads/AdLocationMap";
 import { AdCard } from "@/components/AdCard";
 import { RecentReviews } from "@/components/ads/RecentReviews";
@@ -423,17 +422,12 @@ export default async function AdPage({ params }: AdPageProps) {
 
       </main>
 
-      {/* Mobile Sticky Bar */}
-      <MobileAdActions
-        adId={ad.id}
-        sellerId={ad.seller_id}
-        sellerPhone={ad.phone || (Array.isArray(ad.profiles) ? ad.profiles[0]?.phone : ad.profiles?.phone)}
-        currentUser={user}
-      />
-
       <QuickActionFooter
         phone={ad.phone || (Array.isArray(ad.profiles) ? ad.profiles[0]?.phone : ad.profiles?.phone)}
         adTitle={ad.title}
+        adId={ad.id}
+        sellerId={ad.seller_id}
+        currentUser={user}
       />
 
     </div>
