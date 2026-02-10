@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -64,8 +64,7 @@ const CATEGORIES = [
 ];
 
 const STEPS = [
-    { id: 'category', label: 'Catégorie', icon: Tag },
-    { id: 'details', label: 'Détails', icon: FileText },
+    { id: 'details', label: 'Infos & Détails', icon: FileText },
     { id: 'media', label: 'Photos', icon: ImageIcon },
     { id: 'final', label: 'Prix & Lieu', icon: MapPin },
 ];
@@ -102,14 +101,43 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
 
     const selectedCategory = watch('category');
 
+    // Smart Defaults: Fetch user info on mount
+    useEffect(() => {
+        const fetchUserData = async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                const { data: profile } = await supabase
+                    .from('profiles')
+                    .select('phone_number, city')
+                    .eq('id', user.id)
+                    .single();
+
+                if (profile) {
+                    if (profile.phone_number && !watch('phone')) {
+                        setValue('phone', profile.phone_number);
+                    }
+                    if (profile.city && !watch('city')) {
+                        setValue('city', profile.city);
+                    }
+                }
+            }
+        };
+        fetchUserData();
+    }, [setValue, watch]);
+
     const handleNext = async () => {
         let fieldsToValidate: (keyof AdFormValues)[] = [];
 
-        if (currentStep === 0) fieldsToValidate = ['category'];
-        if (currentStep === 1) fieldsToValidate = ['title', 'description', 'condition'];
-        if (currentStep === 3) fieldsToValidate = ['price', 'city', 'phone'];
+        if (currentStep === 0) fieldsToValidate = ['category', 'title', 'description', 'condition'];
+        if (currentStep === 2) fieldsToValidate = ['price', 'city', 'phone'];
 
         const isValid = await trigger(fieldsToValidate);
+
+        // Step 2 (Media) validation
+        if (currentStep === 1 && previews.length === 0) {
+            alert("Veuillez ajouter au moins une photo");
+            return;
+        }
 
         if (isValid) {
             setCurrentStep(prev => Math.min(prev + 1, STEPS.length - 1));
@@ -134,16 +162,29 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
 
     const removeImage = (index: number) => {
         const previewToRemove = previews[index];
-
-        // If it's a new image (blob URL), we should find its index in the 'images' array and remove it
         if (previewToRemove.startsWith('blob:')) {
-            // This is a bit tricky if multiple blobs are added. 
-            // Better: find how many blobs are before this one in the previews array.
             const blobIndex = previews.slice(0, index).filter(p => p.startsWith('blob:')).length;
             setImages(prev => prev.filter((_, i) => i !== blobIndex));
         }
-
         setPreviews(prev => prev.filter((_, i) => i !== index));
+    };
+
+    const setMainImage = (index: number) => {
+        if (index === 0) return;
+
+        const newPreviews = [...previews];
+        const [movedPreview] = newPreviews.splice(index, 1);
+        newPreviews.unshift(movedPreview);
+        setPreviews(newPreviews);
+
+        const previewToMove = previews[index];
+        if (previewToMove.startsWith('blob:')) {
+            const blobIndex = previews.slice(0, index).filter(p => p.startsWith('blob:')).length;
+            const newImages = [...images];
+            const [movedFile] = newImages.splice(blobIndex, 1);
+            newImages.unshift(movedFile);
+            setImages(newImages);
+        }
     };
 
     const onSubmit = async (data: AdFormValues) => {
@@ -269,15 +310,15 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                     <CheckCircle2 className="w-12 h-12 text-white" />
                 </div>
                 <h2 className="text-4xl font-black text-zinc-900 mb-4 tracking-tight uppercase">Annonce publiée !</h2>
-                <p className="text-zinc-500 text-lg mb-10 max-w-md mx-auto">
-                    Votre annonce est en cours de révision par notre équipe. Elle sera visible sur le site très prochainement.
+                <p className="text-zinc-500 text-lg mb-10 max-w-md mx-auto leading-relaxed">
+                    Votre annonce est en cours de révision. Elle sera visible sous peu.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <Button onClick={() => window.location.href = '/dashboard/ads'} variant="outline" className="h-12 px-8 rounded-xl font-bold">
-                        Gérer mes annonces
+                    <Button onClick={() => window.location.href = '/dashboard/ads'} variant="outline" className="h-14 px-8 rounded-2xl font-bold border-zinc-200 hover:bg-zinc-50 transition-all">
+                        Voir mon annonce
                     </Button>
-                    <Button onClick={() => window.location.href = '/'} className="h-12 px-8 rounded-xl font-bold bg-orange-600 hover:bg-orange-700">
-                        Retour à l'accueil
+                    <Button onClick={() => { setIsSuccess(false); setCurrentStep(0); setImages([]); setPreviews([]); }} className="h-14 px-8 rounded-2xl font-bold bg-orange-600 hover:bg-orange-700 shadow-xl shadow-orange-200 transition-all">
+                        Publier une autre
                     </Button>
                 </div>
             </div>
@@ -288,11 +329,13 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
         <div className="max-w-2xl mx-auto">
             {/* Progress Bar */}
             <div className="mb-12 px-4">
+                <div className="text-center mb-6">
+                    <p className="text-[11px] font-black uppercase tracking-[0.3em] text-orange-600">Étape {currentStep + 1} sur 3</p>
+                </div>
                 <div className="flex justify-between items-center relative">
-                    {/* Line behind steps */}
-                    <div className="absolute top-1/2 left-0 w-full h-0.5 bg-zinc-100 -translate-y-1/2 z-0" />
+                    <div className="absolute top-1/2 left-0 w-full h-1 bg-zinc-100 -translate-y-1/2 z-0 rounded-full" />
                     <div
-                        className="absolute top-1/2 left-0 h-0.5 bg-orange-500 -translate-y-1/2 z-0 transition-all duration-500 ease-in-out"
+                        className="absolute top-1/2 left-0 h-1 bg-orange-500 -translate-y-1/2 z-0 transition-all duration-700 ease-in-out rounded-full"
                         style={{ width: `${(currentStep / (STEPS.length - 1)) * 100}%` }}
                     />
 
@@ -304,19 +347,13 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                         return (
                             <div key={idx} className="relative z-10 flex flex-col items-center gap-3">
                                 <div className={cn(
-                                    "w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-500 border-[3px]",
+                                    "w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500 border-4",
                                     isCompleted ? "bg-orange-500 border-orange-50 text-white" :
-                                        isActive ? "bg-white border-orange-500 text-orange-500 shadow-xl shadow-orange-100" :
+                                        isActive ? "bg-white border-orange-500 text-orange-500 shadow-2xl shadow-orange-100 scale-110" :
                                             "bg-white border-zinc-100 text-zinc-300"
                                 )}>
-                                    {isCompleted ? <CheckCircle2 className="w-5 h-5" /> : <StepIcon className="w-4 h-4" />}
+                                    {isCompleted ? <CheckCircle2 className="w-6 h-6" /> : <StepIcon className="w-5 h-5" />}
                                 </div>
-                                <span className={cn(
-                                    "text-[10px] font-black uppercase tracking-widest transition-colors duration-300",
-                                    isActive ? "text-orange-500" : "text-zinc-400"
-                                )}>
-                                    {step.label}
-                                </span>
                             </div>
                         );
                     })}
@@ -324,17 +361,12 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)} className="relative min-h-[500px]">
-                {/* Step 1: Category */}
+                {/* Step 1: Infos & Détails */}
                 {currentStep === 0 && (
-                    <div className="animate-in slide-in-from-right-8 fade-in duration-500">
-                        <div className="bg-white/80 backdrop-blur-2xl border border-white shadow-2xl shadow-zinc-200/50 rounded-[2.5rem] p-8 md:p-12 text-center">
-                            <div className="w-14 h-14 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-600 mx-auto mb-6">
-                                <Tag className="w-6 h-6" />
-                            </div>
-                            <h2 className="text-3xl font-black text-zinc-900 mb-2 uppercase tracking-tight">Choisissez une catégorie</h2>
-                            <p className="text-zinc-500 mb-10 font-medium">Sélectionnez le type d'article que vous souhaitez vendre</p>
-
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+                    <div className="animate-in slide-in-from-right-8 fade-in duration-500 space-y-6">
+                        <div className="bg-white/80 backdrop-blur-2xl border border-white shadow-2xl shadow-zinc-200/50 rounded-[2.5rem] p-8 md:p-10">
+                            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-orange-600 mb-6 px-1">1. Choisissez une catégorie</h3>
+                            <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-10">
                                 {CATEGORIES.map((cat) => {
                                     const Icon = cat.icon;
                                     const isSelected = selectedCategory === cat.id;
@@ -344,119 +376,74 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                             type="button"
                                             onClick={() => setValue('category', cat.id, { shouldValidate: true })}
                                             className={cn(
-                                                "relative flex flex-col items-center justify-center gap-3 p-4 rounded-2xl border-2 transition-all duration-300 group hover:scale-[1.03]",
+                                                "relative flex flex-col items-center justify-center gap-2 p-3 rounded-2xl border-2 transition-all duration-300 group",
                                                 isSelected
-                                                    ? "border-orange-500 bg-orange-50/50 shadow-xl shadow-orange-100/50"
-                                                    : "border-zinc-50 bg-zinc-50/50 hover:bg-white hover:border-orange-100 hover:shadow-xl hover:shadow-zinc-100"
+                                                    ? "border-orange-500 bg-orange-50/50 shadow-lg shadow-orange-100/50 scale-[1.05]"
+                                                    : "border-zinc-50 bg-zinc-50/50 hover:bg-white hover:border-orange-100"
                                             )}
                                         >
-                                            <div className={cn("p-3 rounded-xl transition-all duration-300 group-hover:scale-110", cat.bg)}>
-                                                <Icon className={cn("h-5 w-5", cat.color)} />
+                                            <div className={cn("p-2 rounded-xl transition-all duration-300", cat.bg)}>
+                                                <Icon className={cn("h-4 w-4", cat.color)} />
                                             </div>
-                                            <span className={cn("text-xs font-black uppercase tracking-widest", isSelected ? "text-orange-700" : "text-zinc-500 group-hover:text-zinc-900")}>
+                                            <span className={cn("text-[9px] font-black uppercase tracking-tighter text-center", isSelected ? "text-orange-700" : "text-zinc-500 group-hover:text-zinc-900")}>
                                                 {cat.label}
                                             </span>
-                                            {isSelected && (
-                                                <div className="absolute top-4 right-4 text-orange-500">
-                                                    <CheckCircle2 className="h-5 w-5" />
-                                                </div>
-                                            )}
                                         </button>
                                     );
                                 })}
                             </div>
-                            {errors.category && <p className="text-red-500 text-xs font-bold mt-6 uppercase tracking-widest">{errors.category.message}</p>}
+                            {errors.category && <p className="text-red-500 text-[10px] font-bold mt-2 uppercase tracking-widest px-1">{errors.category.message}</p>}
 
-                            <div className="mt-12 flex justify-center">
-                                <Button
-                                    type="button"
-                                    onClick={handleNext}
-                                    className="w-full md:w-auto h-11 px-8 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-black text-sm shadow-xl shadow-orange-200 active:scale-95 transition-all flex items-center justify-center gap-3"
-                                >
-                                    Suivant
-                                    <ChevronRight className="w-5 h-5" />
-                                </Button>
-                            </div>
-                        </div>
-                    </div>
-                )}
+                            <hr className="border-zinc-100 mb-10" />
 
-                {/* Step 2: Details */}
-                {currentStep === 1 && (
-                    <div className="animate-in slide-in-from-right-8 fade-in duration-500">
-                        <div className="bg-white/80 backdrop-blur-2xl border border-white shadow-xl shadow-zinc-200/50 rounded-3xl p-6 md:p-8">
-                            <div className="flex items-center gap-6 mb-10">
-                                <div className="w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-600 shrink-0">
-                                    <FileText className="w-5 h-5" />
-                                </div>
-                                <div>
-                                    <h2 className="text-xl font-black text-zinc-900 uppercase tracking-tight">Détails de l'article</h2>
-                                    <p className="text-zinc-500 font-medium">Décrivez votre produit pour attirer plus d'acheteurs</p>
-                                </div>
-                            </div>
-
-                            <div className="space-y-8">
-                                <div className="space-y-3">
-                                    <label className="text-[11px] font-black uppercase tracking-[0.2em] text-zinc-400 ml-1">Titre de l'annonce</label>
+                            <h3 className="text-[11px] font-black uppercase tracking-[0.2em] text-orange-600 mb-6 px-1">2. Détails de l'article</h3>
+                            <div className="space-y-6">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 ml-1">Titre de l'annonce</label>
                                     <Input
                                         {...register('title')}
-                                        placeholder="ex: iPhone 15 Pro Max - Comme neuf"
-                                        className="h-12 px-6 text-base rounded-xl border-zinc-100 bg-white focus:ring-4 focus:ring-orange-50 focus:border-orange-500 transition-all"
+                                        placeholder="ex: iPhone 15 Pro Max..."
+                                        className="h-12 px-5 text-base rounded-xl border-zinc-100 bg-zinc-50/30 focus:bg-white focus:ring-4 focus:ring-orange-50 focus:border-orange-500 transition-all"
                                     />
-                                    {errors.title && <p className="text-red-500 text-xs font-bold uppercase tracking-widest ml-1">{errors.title.message}</p>}
+                                    {errors.title && <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest ml-1">{errors.title.message}</p>}
                                 </div>
 
-                                <div className="space-y-3">
-                                    <label className="text-[11px] font-black uppercase tracking-[0.2em] text-zinc-400 ml-1">État du produit</label>
-                                    <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 ml-1">État</label>
+                                    <div className="grid grid-cols-2 gap-3">
                                         <label className={cn(
-                                            "flex items-center justify-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all",
-                                            watch('condition') === 'new'
-                                                ? "border-orange-600 bg-orange-50 text-orange-700 font-bold"
-                                                : "border-zinc-100 bg-white text-zinc-600 hover:border-orange-200"
+                                            "flex items-center justify-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all text-xs font-bold uppercase tracking-widest",
+                                            watch('condition') === 'new' ? "border-orange-600 bg-orange-50 text-orange-700" : "border-zinc-100 bg-white text-zinc-400"
                                         )}>
                                             <input type="radio" value="new" {...register('condition')} className="hidden" />
-                                            <Sparkles className={cn("w-5 h-5", watch('condition') === 'new' ? "text-orange-600 fill-orange-600/20" : "text-zinc-400")} />
                                             <span>Neuf</span>
                                         </label>
                                         <label className={cn(
-                                            "flex items-center justify-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all",
-                                            watch('condition') === 'used'
-                                                ? "border-amber-500 bg-amber-50 text-amber-700 font-bold"
-                                                : "border-zinc-100 bg-white text-zinc-600 hover:border-amber-200"
+                                            "flex items-center justify-center gap-2 p-3 rounded-xl border-2 cursor-pointer transition-all text-xs font-bold uppercase tracking-widest",
+                                            watch('condition') === 'used' ? "border-orange-600 bg-orange-50 text-orange-700" : "border-zinc-100 bg-white text-zinc-400"
                                         )}>
                                             <input type="radio" value="used" {...register('condition')} className="hidden" />
-                                            <Tag className={cn("w-5 h-5", watch('condition') === 'used' ? "text-amber-500 fill-amber-500/20" : "text-zinc-400")} />
                                             <span>Occasion</span>
                                         </label>
                                     </div>
-                                    {errors.condition && <p className="text-red-500 text-xs font-bold uppercase tracking-widest ml-1">{errors.condition.message}</p>}
                                 </div>
 
-                                <div className="space-y-3">
-                                    <label className="text-[11px] font-black uppercase tracking-[0.2em] text-zinc-400 ml-1">Description détaillée</label>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 ml-1">Description</label>
                                     <textarea
                                         {...register('description')}
-                                        className="w-full min-h-[220px] p-6 text-lg rounded-[2rem] border border-zinc-100 bg-white focus:ring-4 focus:ring-orange-50 focus:border-orange-500 outline-none transition-all placeholder:text-zinc-300"
-                                        placeholder="Décrivez l'état de l'objet, ses fonctionnalités, les accessoires fournis, la raison de la vente..."
+                                        className="w-full min-h-[150px] p-5 text-sm rounded-2xl border border-zinc-100 bg-zinc-50/30 focus:bg-white focus:ring-4 focus:ring-orange-50 focus:border-orange-500 outline-none transition-all"
+                                        placeholder="Décrivez votre article..."
                                     />
-                                    <div className="flex items-center gap-2 text-zinc-400 bg-zinc-50 p-3 rounded-xl">
-                                        <Info size={14} className="text-orange-500" />
-                                        <p className="text-[10px] font-bold uppercase tracking-widest">Une description riche augmente vos chances de vente de 40%</p>
-                                    </div>
-                                    {errors.description && <p className="text-red-500 text-xs font-bold uppercase tracking-widest ml-1">{errors.description.message}</p>}
+                                    {errors.description && <p className="text-red-500 text-[10px] font-bold uppercase tracking-widest ml-1">{errors.description.message}</p>}
                                 </div>
                             </div>
 
-                            <div className="mt-12 flex flex-col-reverse md:flex-row items-center justify-between gap-4 md:gap-0">
-                                <Button type="button" variant="ghost" onClick={handleBack} className="w-full md:w-auto h-11 px-6 rounded-xl font-black text-zinc-400 hover:text-zinc-900 transition-all flex items-center justify-center md:justify-start gap-2">
-                                    <ChevronLeft className="w-5 h-5" />
-                                    Retour
-                                </Button>
+                            <div className="mt-10 flex justify-end">
                                 <Button
                                     type="button"
                                     onClick={handleNext}
-                                    className="w-full md:w-auto h-11 px-8 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-black text-sm shadow-xl shadow-orange-200 active:scale-95 transition-all flex items-center justify-center gap-3"
+                                    className="h-12 px-10 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-black text-sm shadow-xl shadow-orange-200 transition-all flex items-center justify-center gap-3"
                                 >
                                     Suivant
                                     <ChevronRight className="w-5 h-5" />
@@ -509,22 +496,29 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                 </div>
 
                                 {previews.length > 0 && (
-                                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mt-8">
+                                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8">
                                         {previews.map((src, idx) => (
-                                            <div key={idx} className="relative aspect-square rounded-[1.5rem] overflow-hidden group shadow-md border border-zinc-100 animate-in zoom-in duration-300">
-                                                <Image src={src} alt="preview" fill className="object-cover transition-transform group-hover:scale-110 duration-500" />
-                                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <div key={idx} className="relative aspect-square rounded-2xl overflow-hidden group border border-zinc-100 animate-in zoom-in duration-300">
+                                                <Image src={src} alt="preview" fill className="object-cover transition-transform group-hover:scale-105" />
+                                                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
+                                                    <button
+                                                        type="button"
+                                                        onClick={(e) => { e.stopPropagation(); setMainImage(idx); }}
+                                                        className="bg-white text-orange-600 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-tight hover:bg-orange-600 hover:text-white transition-colors"
+                                                    >
+                                                        Mettre en avant
+                                                    </button>
                                                     <button
                                                         type="button"
                                                         onClick={(e) => { e.stopPropagation(); removeImage(idx); }}
-                                                        className="bg-white/20 backdrop-blur-md text-white rounded-full p-2.5 hover:bg-red-500 transition-colors"
+                                                        className="bg-red-500 text-white p-1.5 rounded-full hover:bg-red-600 transition-colors"
                                                     >
-                                                        <X size={18} />
+                                                        <X size={14} />
                                                     </button>
                                                 </div>
                                                 {idx === 0 && (
-                                                    <div className="absolute bottom-2 left-2 right-2 bg-orange-600 text-white text-[8px] font-black uppercase text-center py-1 rounded-lg tracking-widest">
-                                                        Photo principale
+                                                    <div className="absolute top-2 left-2 bg-orange-600 text-white text-[9px] font-black uppercase px-2 py-1 rounded-md shadow-lg">
+                                                        Principale
                                                     </div>
                                                 )}
                                             </div>
