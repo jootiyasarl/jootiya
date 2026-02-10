@@ -23,6 +23,7 @@ CREATE INDEX IF NOT EXISTS idx_ads_description_fts ON public.ads USING gin (to_t
 -- 3. Smart Search Function with Weighting
 -- Searches both title and description with fuzzy matching
 -- Title matches are weighted higher than description matches
+-- NOW INCLUDES: Semantic tags search for multilingual/dialect support
 CREATE OR REPLACE FUNCTION public.search_ads_smart(
     search_query TEXT,
     similarity_threshold FLOAT DEFAULT 0.3,
@@ -44,7 +45,12 @@ RETURNS TABLE (
     rank REAL,
     similarity REAL
 ) AS $$
+DECLARE
+    search_words TEXT[];
 BEGIN
+    -- Split search query into words for tag matching
+    search_words := string_to_array(lower(search_query), ' ');
+    
     RETURN QUERY
     SELECT 
         a.id,
@@ -85,6 +91,12 @@ BEGIN
             OR
             -- Fuzzy match on description
             similarity(coalesce(a.description, ''), search_query) > similarity_threshold
+            OR
+            -- NEW: Semantic tags search (multilingual/dialect support)
+            (
+                a.search_tags IS NOT NULL 
+                AND a.search_tags && search_words
+            )
         )
     ORDER BY rank DESC, similarity DESC, a.created_at DESC
     LIMIT result_limit;
