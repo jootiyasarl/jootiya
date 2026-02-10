@@ -31,14 +31,13 @@ export function FloatingBottomNav() {
                                     <Link
                                         key={item.id}
                                         href={item.href}
-                                        className="flex flex-col items-center justify-center group absolute left-1/2 -translate-x-1/2 -top-8 z-[110]"
+                                        className="flex flex-col items-center justify-center group relative z-[110] -mt-6"
                                     >
-                                        {/* Hero Circle Button with Enhanced Shadow */}
-                                        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#FF6B00] to-[#FF8533] shadow-[0_8px_30px_rgb(255,107,0,0.4)] flex items-center justify-center transition-transform duration-200 active:scale-95 hover:scale-110">
-                                            <Icon className="w-7 h-7 text-white" strokeWidth={2} />
+                                        {/* Hero Circle Button with Pro Design */}
+                                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-[0_8px_20px_rgba(249,115,22,0.3)] flex items-center justify-center transition-all duration-300 group-active:scale-90 group-hover:rotate-6">
+                                            <Icon className="w-7 h-7 text-white" strokeWidth={2.5} />
                                         </div>
-                                        {/* Label */}
-                                        <span className="text-[10px] font-bold text-[#FF6B00] mt-1">
+                                        <span className="text-[10px] font-black uppercase tracking-tighter text-orange-600 mt-1.5">
                                             {item.label}
                                         </span>
                                     </Link>
@@ -50,25 +49,31 @@ export function FloatingBottomNav() {
                                     key={item.id}
                                     href={item.href}
                                     className={cn(
-                                        "flex flex-col items-center justify-center gap-1 transition-colors duration-200 py-2 px-3",
-                                        "group"
+                                        "flex flex-col items-center justify-center gap-1 transition-all duration-300 py-2 px-3",
+                                        "active:scale-90",
+                                        isActive ? "translate-y-[-2px]" : ""
                                     )}
                                 >
-                                    <Icon
-                                        className={cn(
-                                            "w-6 h-6 transition-colors",
-                                            isActive
-                                                ? "text-[#FF6B00]"
-                                                : "text-zinc-400 dark:text-zinc-500 group-hover:text-[#FF6B00]"
-                                        )}
-                                        strokeWidth={1.5}
-                                    />
+                                    <div className={cn(
+                                        "transition-all duration-300 rounded-xl p-1",
+                                        isActive ? "bg-orange-50 dark:bg-orange-500/10" : ""
+                                    )}>
+                                        <Icon
+                                            className={cn(
+                                                "w-6 h-6 transition-colors",
+                                                isActive
+                                                    ? "text-orange-600"
+                                                    : "text-zinc-400 dark:text-zinc-500"
+                                            )}
+                                            strokeWidth={isActive ? 2.5 : 2}
+                                        />
+                                    </div>
                                     <span
                                         className={cn(
-                                            "text-[10px] font-medium transition-colors",
+                                            "text-[10px] font-bold uppercase tracking-tight transition-colors",
                                             isActive
-                                                ? "text-[#FF6B00] font-bold"
-                                                : "text-zinc-500 dark:text-zinc-400 group-hover:text-[#FF6B00]"
+                                                ? "text-orange-600"
+                                                : "text-zinc-500 dark:text-zinc-400"
                                         )}
                                     >
                                         {item.label}

@@ -129,7 +129,9 @@
   --chart-3: 197 37% 24%;
   --chart-4: 43 74% 66%;
   --chart-5: 27 87% 67%;
-  --radius: 0.5rem;
+  --radius: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-2xl: 2rem;
   --sidebar-background: 0 0% 98%;
   --sidebar-foreground: 240 5.3% 26.1%;
   --sidebar-primary: 240 5.9% 10%;
@@ -281,7 +283,28 @@
 
   /* Pill Shape Utility */
   .pill {
-    border-radius: 50px;
+    border-radius: 9999px;
+  }
+
+  /* Premium Layered Shadows */
+  .shadow-premium {
+    box-shadow:
+      0 1px 2px rgba(0, 0, 0, 0.02),
+      0 4px 12px rgba(0, 0, 0, 0.05),
+      0 12px 24px rgba(0, 0, 0, 0.1);
+  }
+
+  .shadow-inner-soft {
+    box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+  }
+
+  /* Frosted Glass Utilities */
+  .glass-frosted {
+    @apply bg-white/70 dark:bg-zinc-900/70 backdrop-blur-2xl border border-white/20 dark:border-white/5;
+  }
+
+  .glass-frosted-dark {
+    @apply bg-zinc-950/60 backdrop-blur-2xl border border-white/5;
   }
 
   /* Hide Scrollbar but Keep Functionality */
