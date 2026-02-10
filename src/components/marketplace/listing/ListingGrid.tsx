@@ -7,11 +7,11 @@ import { NoResultsFallback } from "../NoResultsFallback";
 export function ListingGrid({ items, isLoading, skeletonCount = 8, searchQuery, category, city }: ListingGridProps) {
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 px-6 max-w-7xl mx-auto">
         {Array.from({ length: skeletonCount }).map((_, index) => (
           <div
             key={index}
-            className="h-60 animate-pulse rounded-xl border bg-zinc-100"
+            className="h-72 animate-pulse rounded-xl bg-zinc-100 dark:bg-zinc-800"
           />
         ))}
       </div>
@@ -23,7 +23,7 @@ export function ListingGrid({ items, isLoading, skeletonCount = 8, searchQuery, 
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 px-6 max-w-7xl mx-auto">
       {items.map((item) => (
         <ListingCard key={item.id} {...item} />
       ))}
