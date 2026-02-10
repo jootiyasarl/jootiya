@@ -21,9 +21,13 @@ import {
 } from "lucide-react";
 import { useTheme } from "next-themes";
 
-export function MobileMenu() {
+interface MobileMenuProps {
+    initialUserEmail?: string | null;
+}
+
+export function MobileMenu({ initialUserEmail = null }: MobileMenuProps) {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [userEmail, setUserEmail] = useState<string | null>(null);
+    const [userEmail, setUserEmail] = useState<string | null>(initialUserEmail);
     const { setTheme, theme } = useTheme();
 
     useEffect(() => {

@@ -13,14 +13,20 @@ import { supabase } from "@/lib/supabaseClient";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 
-export function DesktopActions() {
-    const [userEmail, setUserEmail] = useState<string | null>(null);
-    const [isAdmin, setIsAdmin] = useState(false);
+interface DesktopActionsProps {
+    initialUserEmail?: string | null;
+    initialIsAdmin?: boolean;
+}
+
+export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false }: DesktopActionsProps) {
+    const [userEmail, setUserEmail] = useState<string | null>(initialUserEmail);
+    const [isAdmin, setIsAdmin] = useState(initialIsAdmin);
     const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
 
     const isAdminEmail = (email: string) => email === "jootiyasarl@gmail.com";
 
     useEffect(() => {
+        // Only run if we don't have initial data OR to sync with any changes
         const checkSession = async () => {
             const { data: { session } } = await supabase.auth.getSession();
             if (session?.user?.email) {
@@ -35,6 +41,9 @@ export function DesktopActions() {
                     .neq('sender_id', session.user.id);
 
                 setHasUnreadMessages(count !== null && count > 0);
+            } else {
+                setUserEmail(null);
+                setIsAdmin(false);
             }
         };
 

@@ -3,12 +3,17 @@ import { PlusCircle } from "lucide-react";
 import { UnifiedSearchBar } from "@/components/search/UnifiedSearchBar";
 import { DesktopActions } from "./DesktopActions";
 import { MobileMenu } from "./MobileMenu";
+import { getServerUser } from "@/lib/supabase-server";
 
 interface PublicNavbarProps {
   isHome?: boolean;
 }
 
-export default function PublicNavbar({ isHome = false }: PublicNavbarProps) {
+export default async function PublicNavbar({ isHome = false }: PublicNavbarProps) {
+  const user = await getServerUser();
+  const userEmail = user?.email ?? null;
+  const isAdmin = userEmail === "jootiyasarl@gmail.com";
+
   return (
     <header className="sticky top-0 z-50 w-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border-b border-zinc-200 dark:border-zinc-800">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
@@ -50,10 +55,10 @@ export default function PublicNavbar({ isHome = false }: PublicNavbarProps) {
             </Link>
 
             {/* Client-side actions (Auth, Notifications, Theme) */}
-            <DesktopActions />
+            <DesktopActions initialUserEmail={userEmail} initialIsAdmin={isAdmin} />
 
             {/* Mobile Menu Component (Client-side) */}
-            <MobileMenu />
+            <MobileMenu initialUserEmail={userEmail} />
           </div>
         </div>
 
