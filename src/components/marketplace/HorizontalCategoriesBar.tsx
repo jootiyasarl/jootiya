@@ -29,7 +29,7 @@ export function HorizontalCategoriesBar() {
     };
 
     return (
-        <div className="bg-white dark:bg-zinc-950 sticky top-0 z-40">
+        <div className="bg-white dark:bg-zinc-950 sticky top-0 z-40 px-4">
             <div className="mx-auto max-w-7xl px-4 py-4">
                 <div className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth snap-x">
                     {categories.map((category) => {
