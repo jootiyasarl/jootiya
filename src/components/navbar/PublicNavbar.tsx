@@ -208,10 +208,10 @@ function PublicNavbar() {
       {isMobileMenuOpen && (
         <>
           <div
-            className="lg:hidden fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm"
+            className="lg:hidden fixed inset-0 z-[120] bg-black/40 backdrop-blur-sm"
             onClick={() => setIsMobileMenuOpen(false)}
           />
-          <div className="lg:hidden fixed inset-y-0 left-0 z-[70] w-[85%] max-w-sm bg-white dark:bg-zinc-900 shadow-2xl animate-in slide-in-from-left duration-300 ease-out flex flex-col">
+          <div className="lg:hidden fixed inset-y-0 left-0 z-[130] w-[85%] max-w-sm bg-white dark:bg-zinc-900 shadow-2xl animate-in slide-in-from-left duration-300 ease-out flex flex-col">
             {/* Drawer Header */}
             <div className="flex items-center justify-between p-5 border-b border-zinc-100 dark:border-zinc-800">
               <span className="text-2xl font-black text-[#0F172A] dark:text-white tracking-tighter">
