@@ -43,9 +43,9 @@ self.addEventListener('push', function (event) {
     try {
         const data = event.data.json();
         const options = {
-            body: data.body || 'لديك إشعار جديد من Jootiya',
+            body: data.body || 'Vous avez une nouvelle notification de Jootiya',
             icon: '/icon-192x192.png', // Fallback to site icon
-            badge: '/badge-72x72.png',
+            badge: '/icon-192x192.png',
             data: {
                 url: data.url || '/dashboard/messages'
             },
@@ -53,7 +53,7 @@ self.addEventListener('push', function (event) {
             actions: [
                 {
                     action: 'open',
-                    title: 'عرض الرسالة'
+                    title: 'Voir le message'
                 }
             ]
         };

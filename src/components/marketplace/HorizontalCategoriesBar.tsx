@@ -5,14 +5,14 @@ import { cn } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
 
 const categories = [
-    { id: "all", label: "الكل", labelFr: "Tout", icon: Home },
-    { id: "vehicules", label: "سيارات", labelFr: "Véhicules", icon: Car },
-    { id: "electronique", label: "إلكترونيات", labelFr: "Électronique", icon: Laptop },
-    { id: "mode", label: "موضة", labelFr: "Mode", icon: Shirt },
-    { id: "meubles", label: "أثاث", labelFr: "Meubles", icon: Armchair },
-    { id: "sports", label: "رياضة", labelFr: "Sports", icon: Dumbbell },
-    { id: "livres", label: "كتب", labelFr: "Livres", icon: BookOpen },
-    { id: "jeux", label: "ألعاب", labelFr: "Jeux", icon: Gamepad2 },
+    { id: "all", label: "Tout", icon: Home },
+    { id: "vehicules", label: "Véhicules", icon: Car },
+    { id: "electronique", label: "Électronique", icon: Laptop },
+    { id: "mode", label: "Mode", icon: Shirt },
+    { id: "meubles", label: "Meubles", icon: Armchair },
+    { id: "sports", label: "Sports", icon: Dumbbell },
+    { id: "livres", label: "Livres", icon: BookOpen },
+    { id: "jeux", label: "Jeux", icon: Gamepad2 },
 ];
 
 export function HorizontalCategoriesBar() {
@@ -75,7 +75,7 @@ export function HorizontalCategoriesBar() {
                                             : "text-zinc-600 dark:text-zinc-400 group-hover:text-[#FF6B00]"
                                     )}
                                 >
-                                    {category.labelFr}
+                                    {category.label}
                                 </span>
                             </button>
                         );
