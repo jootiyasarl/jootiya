@@ -103,19 +103,38 @@ export function ChatAudioRecorder({ onSend, onCancel, initialX, initialY }: Chat
     const processAndUpload = async (rawBlob: Blob) => {
         setIsProcessing(true);
         try {
-            // Phase 1: Professional Compression
-            console.log("Senior Engineer: Starting MP3 encoding...", (rawBlob.size / 1024).toFixed(1), "KB");
-            const audioBuffer = await blobToAudioBuffer(rawBlob);
-            const mp3Blob = await encodeToMp3(audioBuffer);
-            console.log("Senior Engineer: Compression complete.", (mp3Blob.size / 1024).toFixed(1), "KB");
+            let blobToUpload = rawBlob;
+            let finalMimeType = rawBlob.type || "audio/webm";
+
+            try {
+                // Phase 1: Professional Compression
+                console.log("Senior Engineer: Attempting MP3 encoding...", (rawBlob.size / 1024).toFixed(1), "KB");
+                const audioBuffer = await blobToAudioBuffer(rawBlob);
+                const mp3Blob = await encodeToMp3(audioBuffer);
+
+                // Only use MP3 if it actually saved space and worked
+                if (mp3Blob.size > 0) {
+                    blobToUpload = mp3Blob;
+                    finalMimeType = "audio/mpeg";
+                    console.log("Senior Engineer: Compression success.", (mp3Blob.size / 1024).toFixed(1), "KB");
+                }
+            } catch (compressionError) {
+                console.warn("Senior Engineer: MP3 Compression failed, falling back to raw recording.", compressionError);
+                // Fallback: stay with rawBlob
+            }
 
             // Phase 2: Upload to Supabase Storage
-            const fileName = `${Date.now()}.mp3`;
+            const ext = finalMimeType === "audio/mpeg" ? "mp3" : (finalMimeType.split('/')[1]?.split(';')[0] || "webm");
+            const fileName = `${Date.now()}.${ext}`;
             const filePath = `chat-audios/${fileName}`;
 
             const { error: uploadError } = await supabase.storage
                 .from("chat-audios")
-                .upload(filePath, mp3Blob, { contentType: 'audio/mpeg' });
+                .upload(filePath, blobToUpload, {
+                    contentType: finalMimeType,
+                    cacheControl: '3600',
+                    upsert: false
+                });
 
             if (uploadError) throw uploadError;
 
@@ -125,8 +144,8 @@ export function ChatAudioRecorder({ onSend, onCancel, initialX, initialY }: Chat
 
             onSend(publicUrl);
         } catch (error: any) {
-            console.error("Audio Processing Error:", error);
-            toast.error("Échec du traitement du message vocal.");
+            console.error("Critical Audio Error:", error);
+            toast.error(`Erreur d'envoi: ${error.message || "Problème de connexion"}`);
             onCancel();
         } finally {
             setIsProcessing(false);
