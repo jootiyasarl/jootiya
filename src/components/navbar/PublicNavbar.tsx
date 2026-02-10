@@ -219,7 +219,7 @@ function PublicNavbar() {
             aria-hidden="true"
           />
           {/* Sidebar Menu - Slides from left */}
-          <div className="lg:hidden fixed top-0 bottom-0 left-0 z-[9999] w-[280px] h-screen bg-white dark:bg-zinc-900 shadow-2xl animate-in slide-in-from-left duration-300 ease-out flex flex-col border-r border-zinc-100 dark:border-zinc-800">
+          <div className="lg:hidden fixed top-0 bottom-0 left-0 z-[9999] w-full h-screen bg-white dark:bg-zinc-900 animate-in slide-in-from-left duration-300 ease-out flex flex-col">
             {/* Drawer Header */}
             <div className="flex items-center justify-between p-4 border-b border-zinc-100 dark:border-zinc-800 flex-shrink-0">
               <span className="text-xl font-black text-[#0F172A] dark:text-white tracking-tighter">
