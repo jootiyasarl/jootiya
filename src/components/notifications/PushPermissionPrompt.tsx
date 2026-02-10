@@ -39,12 +39,12 @@ export function PushPermissionPrompt() {
             const permission = await Notification.requestPermission();
             if (permission === 'granted') {
                 await subscribeUserToPush();
-                toast.success("تم تفعيل التنبيهات بنجاح!");
+                toast.success("Notifications activées avec succès !");
             }
             setIsVisible(false);
         } catch (error) {
             console.error("Push: Error requesting permission", error);
-            toast.error("فشل تفعيل التنبيهات");
+            toast.error("Échec de l'activation des notifications");
         }
     };
 
@@ -80,10 +80,10 @@ export function PushPermissionPrompt() {
 
                     <div className="space-y-3">
                         <h3 className="text-2xl font-black text-zinc-900 dark:text-white leading-tight">
-                            ما تزگل حتى همزة! 🚀
+                            Ne ratez aucune opportunité ! 🚀
                         </h3>
                         <p className="text-sm font-medium text-zinc-500 leading-relaxed dark:text-zinc-400 px-4">
-                            فعل التنبيهات باش يوصلك ميساج دبا يلا شي حد هضر معاك، وماتضيع عليك حتى فرصة بيع أو شراء.
+                            Activez les notifications pour être averti instantanément quand quelqu'un vous contacte et ne manquez aucune vente.
                         </p>
                     </div>
 
@@ -92,19 +92,19 @@ export function PushPermissionPrompt() {
                             onClick={handleAllow}
                             className="w-full h-14 rounded-2xl bg-orange-600 hover:bg-orange-700 text-white font-bold text-lg transition-all active:scale-95 shadow-xl shadow-orange-200 dark:shadow-none"
                         >
-                            فعل التنبيهات
+                            Activez les notifications
                         </Button>
                         <button
                             onClick={handleDismiss}
                             className="text-sm font-bold text-zinc-400 hover:text-zinc-600 transition-colors py-2"
                         >
-                            ليس الآن
+                            Plus tard
                         </button>
                     </div>
 
                     <div className="flex items-center gap-2 text-[10px] text-zinc-400 uppercase tracking-widest font-black opacity-60">
                         <ShieldCheck className="h-3 w-3" />
-                        نحترم خصوصيتك بالكامل
+                        Nous respectons votre vie privée
                     </div>
                 </div>
             </div>

@@ -16,11 +16,11 @@ interface ReportModalProps {
 }
 
 const REPORT_REASONS = [
-    { id: "scam", label: "احتيال (Scam/Fraud)", icon: ShieldAlert, color: "text-red-500" },
-    { id: "inappropriate", label: "محتوى غير لائق (Inappropriate)", icon: Flag, color: "text-orange-500" },
-    { id: "fake_price", label: "سعر وهمي (Fake Price)", icon: AlertTriangle, color: "text-amber-500" },
-    { id: "duplicate", label: "إعلان مكرر (Duplicate)", icon: Flag, color: "text-blue-500" },
-    { id: "other", label: "سبب آخر (Other)", icon: Flag, color: "text-zinc-500" },
+    { id: "scam", label: "Arnaque / Fraude", icon: ShieldAlert, color: "text-red-500" },
+    { id: "inappropriate", label: "Contenu inapproprié", icon: Flag, color: "text-orange-500" },
+    { id: "fake_price", label: "Prix fictif", icon: AlertTriangle, color: "text-amber-500" },
+    { id: "duplicate", label: "Annonce en double", icon: Flag, color: "text-blue-500" },
+    { id: "other", label: "Autre raison", icon: Flag, color: "text-zinc-500" },
 ];
 
 export function ReportModal({ isOpen, onClose, targetId, targetType, reporterId }: ReportModalProps) {
@@ -32,7 +32,7 @@ export function ReportModal({ isOpen, onClose, targetId, targetType, reporterId 
 
     const handleSubmit = async () => {
         if (!selectedReason) {
-            toast.error("يرجى اختيار سبب الإبلاغ");
+            toast.error("Veuillez sélectionner un motif de signalement");
             return;
         }
 
@@ -53,10 +53,10 @@ export function ReportModal({ isOpen, onClose, targetId, targetType, reporterId 
 
             if (error) throw error;
 
-            toast.success("تم إرسال بلاغك بنجاح. سنقوم بمراجعته قريباً.");
+            toast.success("Votre signalement a été envoyé avec succès. Nous l'examinerons prochainement.");
             onClose();
         } catch (error: any) {
-            toast.error("عذراً، حدث خطأ أثناء إرسال البلاغ.");
+            toast.error("Désolé, une erreur est survenue lors de l'envoi du signalement.");
             console.error("Report Error:", error);
         } finally {
             setIsSubmitting(false);
@@ -73,8 +73,8 @@ export function ReportModal({ isOpen, onClose, targetId, targetType, reporterId 
                             <Flag className="w-5 h-5 text-red-600" />
                         </div>
                         <div>
-                            <h3 className="font-black text-zinc-900 leading-tight">الإبلاغ عن الإعلان</h3>
-                            <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider mt-0.5">Report this Listing</p>
+                            <h3 className="font-black text-zinc-900 leading-tight">Signaler l'annonce</h3>
+                            <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider mt-0.5">Motif du signalement</p>
                         </div>
                     </div>
                     <button onClick={onClose} className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-zinc-100 transition-colors">
@@ -85,7 +85,7 @@ export function ReportModal({ isOpen, onClose, targetId, targetType, reporterId 
                 {/* Body */}
                 <div className="p-6 space-y-6">
                     <div className="space-y-3">
-                        <p className="text-sm font-bold text-zinc-700 mb-2">ما هو سبب الإبلاغ؟</p>
+                        <p className="text-sm font-bold text-zinc-700 mb-2">Quel est le motif du signalement ?</p>
                         <div className="grid gap-2">
                             {REPORT_REASONS.map((reason) => {
                                 const Icon = reason.icon;
@@ -95,7 +95,7 @@ export function ReportModal({ isOpen, onClose, targetId, targetType, reporterId 
                                         key={reason.id}
                                         onClick={() => setSelectedReason(reason.id)}
                                         className={cn(
-                                            "flex items-center justify-between p-4 rounded-2xl border-2 transition-all text-right group",
+                                            "flex items-center justify-between p-4 rounded-2xl border-2 transition-all group",
                                             isSelected
                                                 ? "border-red-600 bg-red-50/50"
                                                 : "border-zinc-100 hover:border-zinc-200 bg-white"
@@ -113,12 +113,12 @@ export function ReportModal({ isOpen, onClose, targetId, targetType, reporterId 
                     </div>
 
                     <div className="space-y-2">
-                        <p className="text-sm font-bold text-zinc-700">تفاصيل إضافية (اختياري)</p>
+                        <p className="text-sm font-bold text-zinc-700">Détails supplémentaires (Optionnel)</p>
                         <textarea
                             value={details}
                             onChange={(e) => setDetails(e.target.value)}
-                            className="w-full p-4 rounded-2xl border-2 border-zinc-100 focus:border-red-600 focus:ring-0 transition-all text-sm min-h-[100px] bg-zinc-50/30 resize-none text-right"
-                            placeholder="أخبرنا بالمزيد عن المشكلة..."
+                            className="w-full p-4 rounded-2xl border-2 border-zinc-100 focus:border-red-600 focus:ring-0 transition-all text-sm min-h-[100px] bg-zinc-50/30 resize-none"
+                            placeholder="Dites-nous en plus sur le problème..."
                         />
                     </div>
                 </div>
@@ -133,7 +133,7 @@ export function ReportModal({ isOpen, onClose, targetId, targetType, reporterId 
                         {isSubmitting ? (
                             <Loader2 className="w-5 h-5 animate-spin" />
                         ) : (
-                            "إرسال البلاغ"
+                            "Envoyer le signalement"
                         )}
                     </Button>
                 </div>

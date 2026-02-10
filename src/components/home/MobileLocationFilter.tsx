@@ -158,7 +158,7 @@ export function MobileLocationFilter() {
                             Radar Jootiya
                         </DrawerTitle>
                         <DrawerDescription className="text-center">
-                            Trouvez les bonnes affaires ("الهمزات") autour de vous.
+                            Trouvez les bonnes affaires dans votre quartier.
                         </DrawerDescription>
                     </DrawerHeader>
 

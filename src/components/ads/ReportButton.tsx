@@ -23,7 +23,7 @@ export function ReportButton({ targetId, targetType, reporterId }: ReportButtonP
                 className="flex items-center gap-2 text-zinc-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all h-9 px-3"
             >
                 <Flag className="w-4 h-4" />
-                <span className="text-xs font-bold">إبلاغ (Report)</span>
+                <span className="text-xs font-bold">Signaler</span>
             </Button>
 
             <ReportModal

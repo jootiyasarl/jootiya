@@ -40,7 +40,7 @@ export function ChatAudioRecorder({ onSend, onCancel, initialX, initialY }: Chat
 
     const startRecording = async () => {
         if (typeof window === 'undefined' || !navigator.mediaDevices || !window.MediaRecorder) {
-            toast.error("Votre navigateur ne supportه pas l'enregistrement audio.");
+            toast.error("Votre navigateur ne supporte pas l'enregistrement audio.");
             onCancel();
             return;
         }
@@ -231,7 +231,7 @@ export function ChatAudioRecorder({ onSend, onCancel, initialX, initialY }: Chat
                             </div>
                         ) : (
                             <span className="text-[10px] md:text-[11px] font-black text-zinc-400 uppercase tracking-widest whitespace-nowrap animate-pulse">
-                                اسحب لليسار للإلغاء <span className="opacity-40 ml-1">←</span>
+                                Glisser vers la gauche pour annuler <span className="opacity-40 ml-1">←</span>
                             </span>
                         )}
                     </div>
@@ -278,8 +278,8 @@ export function ChatAudioRecorder({ onSend, onCancel, initialX, initialY }: Chat
                             <Loader2 className="w-5 h-5 animate-spin text-orange-500" />
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-[11px] font-black uppercase tracking-wider leading-none">جاري الضغط...</span>
-                            <span className="text-[9px] text-zinc-400 font-bold mt-1">تجهيز الملف فائق السرعة</span>
+                            <span className="text-[11px] font-black uppercase tracking-wider leading-none">Compression en cours...</span>
+                            <span className="text-[9px] text-zinc-400 font-bold mt-1">Préparation ultra-rapide du fichier</span>
                         </div>
                     </div>
                 </div>

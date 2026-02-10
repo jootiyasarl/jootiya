@@ -10,7 +10,7 @@ import { toast } from "sonner";
 // Dynamically import the entire LeafletMap component to avoid SSR issues
 const LeafletMap = dynamic(() => import("./LeafletMap"), {
     ssr: false,
-    loading: () => <div className="h-full w-full bg-zinc-100 animate-pulse flex items-center justify-center text-zinc-400 text-xs font-bold">جاري تحميل الخريطة...</div>
+    loading: () => <div className="h-full w-full bg-zinc-100 animate-pulse flex items-center justify-center text-zinc-400 text-xs font-bold">Chargement de la carte...</div>
 });
 
 interface AdLocationMapProps {
@@ -53,10 +53,10 @@ export function AdLocationMap({ lat, lng, city, neighborhood }: AdLocationMapPro
             const dist = calculateDistance(pos.latitude, pos.longitude, lat, lng);
             setUserLocation({ lat: pos.latitude, lng: pos.longitude });
             setDistance(dist);
-            toast.success("تم حساب المسافة بنجاح");
+            toast.success("Distance calculée avec succès");
             setShowExplanation(false);
         } catch (error: any) {
-            toast.error(error.message || "فشل الحصول على الموقع");
+            toast.error(error.message || "Échec de l'obtention de la position");
         } finally {
             setIsRequesting(false);
         }
@@ -69,7 +69,7 @@ export function AdLocationMap({ lat, lng, city, neighborhood }: AdLocationMapPro
             <div className="flex items-center justify-between">
                 <h2 className="text-xl font-bold flex items-center gap-2 text-slate-900">
                     <span className="h-8 w-1.5 rounded-full bg-orange-600" />
-                    موقع السلعة
+                    Emplacement de l'article
                 </h2>
                 <div className="flex items-center gap-2 text-xs font-bold text-slate-400 bg-slate-50 px-2.5 py-1 rounded-full border border-slate-100">
                     <MapPin className="h-3 w-3 text-orange-500" />
@@ -88,7 +88,7 @@ export function AdLocationMap({ lat, lng, city, neighborhood }: AdLocationMapPro
                 {/* Overlay Text for "Big Engineer" Context */}
                 <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl shadow-sm border border-white/50 z-[400] max-w-[200px]">
                     <p className="text-[10px] font-bold text-zinc-600 leading-tight">
-                        <span className="text-orange-600">⚠</span> موقع تقريبي (شعاع 400م)
+                        <span className="text-orange-600">⚠</span> Emplacement approximatif (rayon 400m)
                     </p>
                 </div>
             </div>
@@ -101,7 +101,7 @@ export function AdLocationMap({ lat, lng, city, neighborhood }: AdLocationMapPro
                 className="flex items-center justify-center w-full h-11 bg-zinc-900 hover:bg-zinc-800 text-white rounded-xl font-bold text-sm gap-2 transition-all shadow-lg shadow-zinc-200 active:scale-[0.98]"
             >
                 <img src="https://www.google.com/images/branding/product/ico/maps15_bnuw3a_32dp.ico" alt="Google Maps" className="w-5 h-5" />
-                فتح في Google Maps
+                Ouvrir dans Google Maps
             </a>
 
             {/* Permission / Distance Calculation Section */}
@@ -113,10 +113,10 @@ export function AdLocationMap({ lat, lng, city, neighborhood }: AdLocationMapPro
                         </div>
                         <div className="flex-1 space-y-1">
                             <p className="text-xs font-bold text-zinc-900">
-                                شحال بعيدة عليك هاد السلعة؟
+                                À quelle distance se trouve cet article ?
                             </p>
                             <p className="text-[11px] text-zinc-500 leading-relaxed">
-                                وافق على مشاركة موقعك لنحسب لك المسافة والوقت المتبقي للوصول بدقة.
+                                Autorisez le partage de votre position pour calculer la distance et le temps de trajet estimé.
                             </p>
                         </div>
                         <Button
@@ -125,7 +125,7 @@ export function AdLocationMap({ lat, lng, city, neighborhood }: AdLocationMapPro
                             size="sm"
                             className="w-full sm:w-auto bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl shadow-md shadow-orange-100 whitespace-nowrap px-6"
                         >
-                            {isRequesting ? "جاري الحساب..." : "حسب المسافة"}
+                            {isRequesting ? "Calcul..." : "Calculer la distance"}
                         </Button>
                     </div>
                 ) : (
@@ -135,9 +135,9 @@ export function AdLocationMap({ lat, lng, city, neighborhood }: AdLocationMapPro
                                 <Navigation className="w-5 h-5 text-emerald-600" />
                             </div>
                             <div>
-                                <div className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">المسافة</div>
+                                <div className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">Distance</div>
                                 <div className="text-base font-black text-emerald-900">
-                                    {distance.toFixed(1)} كم <span className="text-xs font-medium text-emerald-700/60">عليك</span>
+                                    {distance.toFixed(1)} km <span className="text-xs font-medium text-emerald-700/60">de vous</span>
                                 </div>
                             </div>
                         </div>
@@ -146,7 +146,7 @@ export function AdLocationMap({ lat, lng, city, neighborhood }: AdLocationMapPro
             </div>
 
             <p className="text-[10px] text-zinc-400 text-center leading-tight pt-1">
-                نحن نحترم خصوصية البائع، لذلك لا نظهر الموقع الدقيق إلا عند التواصل المباشر.
+                Nous respectons la vie privée du vendeur, c'est pourquoi nous ne montrons l'emplacement exact qu'au moment du contact direct.
             </p>
         </div>
     );

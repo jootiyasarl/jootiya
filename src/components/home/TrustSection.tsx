@@ -3,18 +3,18 @@ import { ShieldCheck, Zap, HeartHandshake } from "lucide-react";
 const FEATURES = [
     {
         icon: ShieldCheck,
-        title: "أمان وموثوقية",
-        description: "نتحقق من هوية البائعين ونراقب الإعلانات لضمان تجربة آمنة لكل المستخدمين.",
+        title: "Sécurité et Fiabilité",
+        description: "Nous vérifions l'identité des vendeurs et surveillons les annonces pour garantir une expérience sûre pour tous.",
     },
     {
         icon: Zap,
-        title: "بيع سريع",
-        description: "أنشئ إعلانك في دقائق واعرضه أمام آلاف المشترين المحتملين يومياً.",
+        title: "Vente Rapide",
+        description: "Créez votre annonce en quelques minutes et exposez-la à des milliers d'acheteurs potentiels chaque jour.",
     },
     {
         icon: HeartHandshake,
-        title: "مجتمع محلي",
-        description: "تواصل مع جيرانك وتجار مدينتك لبيع وشراء كل ما تحتاجه محلياً.",
+        title: "Communauté Locale",
+        description: "Connectez-vous avec vos voisins et les commerçants de votre ville pour acheter et vendre tout ce dont vous avez besoin localement.",
     },
 ];
 
@@ -23,9 +23,9 @@ export function TrustSection() {
         <section className="bg-white py-24 sm:py-32 border-t border-zinc-100">
             <div className="mx-auto max-w-7xl px-6 lg:px-8">
                 <div className="mx-auto max-w-2xl lg:text-center">
-                    <h2 className="text-base font-semibold leading-7 text-orange-600">لماذا Jootiya؟</h2>
+                    <h2 className="text-base font-semibold leading-7 text-orange-600">Pourquoi Jootiya ?</h2>
                     <p className="mt-2 text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl">
-                        تجربة بيع وشراء لا مثيل لها
+                        Une expérience d'achat et de vente inégalée
                     </p>
                 </div>
                 <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">

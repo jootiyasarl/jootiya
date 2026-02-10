@@ -6,16 +6,16 @@ import { Smartphone, Car, Shirt, Package, Armchair, Hammer, Gamepad2, PawPrint, 
 import { cn } from "@/lib/utils";
 
 const CATEGORIES = [
-    { id: "electronics", label: "إلكترونيات", icon: Smartphone },
-    { id: "home-furniture", label: "المنزل و الأثاث", icon: Armchair },
-    { id: "vehicles", label: "سيارات و نقل", icon: Car },
-    { id: "fashion", label: "ملابس و أحذية", icon: Shirt },
-    { id: "tools-equipment", label: "أدوات و معدات", icon: Hammer },
-    { id: "hobbies", label: "ترفيه و هوايات", icon: Gamepad2 },
-    { id: "animals", label: "حيوانات", icon: PawPrint },
-    { id: "books", label: "كتب و دراسة", icon: BookOpen },
-    { id: "used-clearance", label: "مستعمل / تصفية", icon: Tag },
-    { id: "other", label: "أخرى", icon: Package },
+    { id: "electronics", label: "Électronique", icon: Smartphone },
+    { id: "home-furniture", label: "Maison & Ameublement", icon: Armchair },
+    { id: "vehicles", label: "Véhicules & Transport", icon: Car },
+    { id: "fashion", label: "Mode & Chaussures", icon: Shirt },
+    { id: "tools-equipment", label: "Outils & Équipement", icon: Hammer },
+    { id: "hobbies", label: "Loisirs & Divertissement", icon: Gamepad2 },
+    { id: "animals", label: "Animaux", icon: PawPrint },
+    { id: "books", label: "Livres & Études", icon: BookOpen },
+    { id: "used-clearance", label: "Occasion / Déstockage", icon: Tag },
+    { id: "other", label: "Autres", icon: Package },
 ];
 
 export function CategoryFilterBar() {
@@ -38,7 +38,7 @@ export function CategoryFilterBar() {
                         <div className="h-6 w-6">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-layout-grid"><rect width="7" height="7" x="3" y="3" rx="1" /><rect width="7" height="7" x="14" y="3" rx="1" /><rect width="7" height="7" x="14" y="14" rx="1" /><rect width="7" height="7" x="3" y="14" rx="1" /></svg>
                         </div>
-                        <span className="text-xs font-medium">الكل</span>
+                        <span className="text-xs font-medium">Tout</span>
                     </Link>
 
                     {CATEGORIES.map((category) => {

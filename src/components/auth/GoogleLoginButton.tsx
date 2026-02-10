@@ -75,7 +75,7 @@ export function GoogleLoginButton() {
           </svg>
         </span>
       )}
-      <span>{isLoading ? "تسجيل الدخول..." : "متابعة باستخدام جوجل"}</span>
+      <span>{isLoading ? "Connexion..." : "Continuer avec Google"}</span>
     </button>
   );
 }

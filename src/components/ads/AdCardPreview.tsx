@@ -51,16 +51,16 @@ export function AdCardPreview({
         <footer className="flex items-center justify-between text-[11px] text-zinc-500">
           {isWholesale ? (
             <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-medium text-emerald-700">
-              عرض بالجملة
+              Vente en gros
             </span>
           ) : (
             <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-medium text-zinc-700">
-              إعلان عادي
+              Annonce classique
             </span>
           )}
 
           {images.length > 1 ? (
-            <span>{images.length} صور</span>
+            <span>{images.length} photos</span>
           ) : null}
         </footer>
       </div>

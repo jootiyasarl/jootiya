@@ -66,10 +66,10 @@ export default async function FavoritesPage() {
         <div className="space-y-8 animate-in fade-in duration-500">
             <div>
                 <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent dark:from-white dark:to-gray-400">
-                    Mes Favoris (المفضلة)
+                    Mes Favoris
                 </h1>
                 <p className="text-zinc-500 dark:text-gray-400 mt-1">
-                    Retrouvez vos annonces sauvegardées | تصفح إعلاناتك المحفوظة
+                    Retrouvez ici toutes les annonces que vous avez sauvegardées.
                 </p>
             </div>
 
@@ -81,8 +81,6 @@ export default async function FavoritesPage() {
                     <h3 className="text-xl font-bold text-zinc-900 dark:text-white">Aucun favori pour le moment</h3>
                     <p className="text-zinc-500 mt-2 max-w-sm text-center dark:text-zinc-400">
                         Parcourez le marché et cliquez sur le cœur pour sauvegarder les annonces qui vous intéressent.
-                        <br />
-                        تصفح الموقع وقم بحفظ الإعلانات التي تهمك بالضغط على القلب.
                     </p>
                     <Link href="/marketplace" className="mt-6">
                         <Button className="rounded-xl px-8 h-12 font-bold transition-all hover:scale-105">Explorer le marché</Button>

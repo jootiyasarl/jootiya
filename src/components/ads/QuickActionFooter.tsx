@@ -123,7 +123,7 @@ export function QuickActionFooter({ phone, adTitle, adId, sellerId, currentUser 
                     className="flex-1 min-h-[44px] h-12 bg-orange-600 hover:bg-orange-700 text-white font-black rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-orange-200 text-xs uppercase"
                 >
                     <Phone className="w-4 h-4" />
-                    اتصال
+                    Appeler
                 </a>
 
                 <a
@@ -133,7 +133,7 @@ export function QuickActionFooter({ phone, adTitle, adId, sellerId, currentUser 
                     className="flex-1 min-h-[44px] h-12 border-2 border-green-600 text-green-600 hover:bg-green-50 font-black rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 text-xs uppercase"
                 >
                     <MessageCircle className="w-4 h-4" />
-                    واتساب
+                    WhatsApp
                 </a>
 
                 {/* Icon Actions */}

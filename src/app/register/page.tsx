@@ -9,7 +9,7 @@ import { createSupabaseServerClient, setAuthSession } from "@/lib/supabase-serve
 import { UserPlus, ShieldCheck, Mail, Lock, ChevronLeft } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "إنشاء حساب | جوتيا",
+  title: "Créer un compte | Jootiya",
 };
 
 interface RegisterPageProps {
@@ -27,7 +27,7 @@ async function registerAction(formData: FormData) {
 
   if (typeof email !== "string" || typeof password !== "string") {
     const params = new URLSearchParams();
-    params.set("error", "يرجى إدخال البريد الإلكتروني وكلمة المرور.");
+    params.set("error", "Veuillez entrer votre email et votre mot de passe.");
     redirect(`/register?${params.toString()}`);
   }
 
@@ -38,7 +38,7 @@ async function registerAction(formData: FormData) {
     const params = new URLSearchParams();
     params.set(
       "error",
-      "يرجى تقديم بريد إلكتروني صالح وكلمة مرور لا تقل عن 8 أحرف.",
+      "Veuillez fournir un email valide et un mot de passe d'au moins 8 caractères.",
     );
     redirect(`/register?${params.toString()}`);
   }
@@ -52,7 +52,7 @@ async function registerAction(formData: FormData) {
 
   if (error || !data.user) {
     const params = new URLSearchParams();
-    params.set("error", error?.message ?? "فشل في إنشاء الحساب.");
+    params.set("error", error?.message ?? "Échec de la création du compte.");
     redirect(`/register?${params.toString()}`);
   }
 
@@ -72,7 +72,7 @@ async function registerAction(formData: FormData) {
 
   if (profileError) {
     const params = new URLSearchParams();
-    params.set("error", "فشل في حفظ ملفك الشخصي.");
+    params.set("error", "Échec de la sauvegarde de votre profil.");
     redirect(`/register?${params.toString()}`);
   }
 
@@ -84,7 +84,7 @@ async function registerAction(formData: FormData) {
   const params = new URLSearchParams();
   params.set(
     "message",
-    "تم إنشاء الحساب. يرجى التحقق من بريدك الإلكتروني لتأكيد التسجيل، ثم قم بتسجيل الدخول.",
+    "Compte créé. Veuillez vérifier votre email pour confirmer votre inscription, puis connectez-vous.",
   );
   redirect(`/login?${params.toString()}`);
 }
@@ -102,12 +102,12 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10 px-4">
         <Link href="/" className="inline-flex items-center gap-2 text-zinc-500 hover:text-zinc-900 transition-colors mb-8 group">
-          <ChevronLeft className="w-4 h-4 rotate-180 group-hover:-translate-x-1 transition-transform" />
-          <span className="text-sm font-bold">العودة للرئيسية</span>
+          <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+          <span className="text-sm font-bold">Retour à l'accueil</span>
         </Link>
         <h1 className="text-3xl font-black tracking-tighter text-orange-600 mb-2">JOOTIYA</h1>
-        <h2 className="text-3xl font-bold text-zinc-900">إنشاء حساب جديد</h2>
-        <p className="mt-2 text-zinc-500 text-sm">ابدأ البيع والشراء في أكبر سوق مغربي</p>
+        <h2 className="text-3xl font-bold text-zinc-900">Créer un nouveau compte</h2>
+        <p className="mt-2 text-zinc-500 text-sm">Commencez à vendre et acheter sur le plus grand marché du Maroc</p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-[440px] relative z-10 px-4">
@@ -128,26 +128,26 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
 
             <form action={registerAction} className="space-y-5">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-bold text-zinc-700 mr-1">البريد الإلكتروني</Label>
+                <Label htmlFor="email" className="text-sm font-bold text-zinc-700 ml-1">Email</Label>
                 <div className="relative group">
-                  <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <Mail className="h-4 w-4 text-zinc-400 group-focus-within:text-orange-500 transition-colors" />
                   </div>
                   <Input
                     id="email"
                     name="email"
                     type="email"
-                    placeholder="example@mail.com"
+                    placeholder="exemple@mail.com"
                     required
-                    className="h-12 pr-11 text-sm rounded-2xl bg-zinc-50 border-transparent focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-200 transition-all"
+                    className="h-12 pl-11 text-sm rounded-2xl bg-zinc-50 border-transparent focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-200 transition-all"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-bold text-zinc-700 mr-1">كلمة المرور</Label>
+                <Label htmlFor="password" className="text-sm font-bold text-zinc-700 ml-1">Mot de passe</Label>
                 <div className="relative group">
-                  <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <Lock className="h-4 w-4 text-zinc-400 group-focus-within:text-orange-500 transition-colors" />
                   </div>
                   <Input
@@ -157,24 +157,24 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
                     placeholder="••••••••"
                     minLength={8}
                     required
-                    className="h-12 pr-11 text-sm rounded-2xl bg-zinc-50 border-transparent focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-200 transition-all"
+                    className="h-12 pl-11 text-sm rounded-2xl bg-zinc-50 border-transparent focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-200 transition-all"
                   />
                 </div>
-                <p className="text-[10px] text-zinc-400 pr-1">يجب أن تتكون من 8 أحرف على الأقل</p>
+                <p className="text-[10px] text-zinc-400 pl-1">Doit contenir au moins 8 caractères</p>
               </div>
 
               <SubmitButton
-                label="إنشاء الحساب"
-                loadingLabel="جاري الإنشاء..."
+                label="Créer le compte"
+                loadingLabel="Création en cours..."
                 className="w-full h-12 text-sm font-bold rounded-2xl bg-orange-600 hover:bg-orange-700 text-white shadow-lg shadow-orange-200 transition-all active:scale-[0.98] mt-2"
               />
             </form>
 
             <div className="mt-8 pt-8 border-t border-zinc-100 text-center">
               <p className="text-sm text-zinc-500">
-                لديك حساب بالفعل؟{' '}
+                Vous avez déjà un compte ?{' '}
                 <Link href="/login" className="font-bold text-orange-600 hover:text-orange-700 transition-colors">
-                  سجل الدخول الآن
+                  Connectez-vous maintenant
                 </Link>
               </p>
             </div>
@@ -183,7 +183,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
 
         {/* Legal links */}
         <p className="mt-8 text-center text-[11px] text-zinc-400">
-          من خلال إنشاء حساب، فإنك توافق على <Link href="/terms" className="underline hover:text-zinc-600">شروط الاستخدام</Link> و <Link href="/privacy" className="underline hover:text-zinc-600">سياسة الخصوصية</Link>
+          En créant un compte, vous acceptez nos <Link href="/terms" className="underline hover:text-zinc-600">Conditions d'utilisation</Link> et notre <Link href="/privacy" className="underline hover:text-zinc-600">Politique de confidentialité</Link>
         </p>
       </div>
     </div>

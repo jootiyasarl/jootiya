@@ -115,7 +115,7 @@ export function LoginRedirectHandler() {
   if (status === "failed") {
     return (
       <div className="mb-4 p-3 rounded-xl bg-red-50 text-red-600 text-xs border border-red-100 text-center">
-        فشل الاتصال بجوجل. يرجى المحاولة مرة أخرى.
+        Échec de la connexion à Google. Veuillez réessayer.
       </div>
     );
   }
@@ -128,9 +128,9 @@ export function LoginRedirectHandler() {
       </div>
       <div className="flex flex-col items-center gap-1">
         <p className="text-sm font-bold text-zinc-900 dark:text-zinc-100">
-          {status === "checking" ? "جاري التحقق من الحساب..." : "جاري تحضير جلستك..."}
+          {status === "checking" ? "Vérification du compte..." : "Préparation de votre session..."}
         </p>
-        <p className="text-[10px] text-zinc-400 font-medium">سيتم توجيهك في ثوانٍ قليلة</p>
+        <p className="text-[10px] text-zinc-400 font-medium">Vous allez être redirigé dans quelques secondes</p>
       </div>
     </div>
   );

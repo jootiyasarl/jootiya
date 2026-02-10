@@ -16,10 +16,10 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 const CATEGORIES = [
-    { id: "technical", label: "مشكل تقني (Technical)", icon: MessageSquare },
-    { id: "billing", label: "الدفع والإعلانات (Payments)", icon: ShieldCheck },
-    { id: "account", label: "حسابي (Account)", icon: LifeBuoy },
-    { id: "general", label: "استفسار عام (General)", icon: Search },
+    { id: "technical", label: "Problème technique", icon: MessageSquare },
+    { id: "billing", label: "Paiements et publicités", icon: ShieldCheck },
+    { id: "account", label: "Mon compte", icon: LifeBuoy },
+    { id: "general", label: "Question générale", icon: Search },
 ];
 
 export default function HelpPage() {
@@ -33,7 +33,7 @@ export default function HelpPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!email || !subject || !message) {
-            toast.error("يرجى ملء جميع الحقول");
+            toast.error("Veuillez remplir tous les champs");
             return;
         }
 
@@ -50,10 +50,10 @@ export default function HelpPage() {
 
             if (error) throw error;
 
-            toast.success("تم إرسال رسالتك بنجاح!");
+            toast.success("Votre message a été envoyé avec succès !");
             setIsSubmitted(true);
         } catch (error: any) {
-            toast.error("حدث خطأ أثناء إرسال الرسالة.");
+            toast.error("Une erreur est survenue lors de l'envoi du message.");
             console.error(error);
         } finally {
             setIsSubmitting(false);
@@ -68,14 +68,14 @@ export default function HelpPage() {
                         <Send className="w-10 h-10 text-emerald-600" />
                     </div>
                     <div className="space-y-2">
-                        <h1 className="text-3xl font-black text-zinc-900">تم الإرسال بنجاح!</h1>
-                        <p className="text-zinc-500 font-medium">سنتواصل معك عبر البريد الإلكتروني في أقرب وقت ممكن.</p>
+                        <h1 className="text-3xl font-black text-zinc-900">Envoyé avec succès !</h1>
+                        <p className="text-zinc-500 font-medium">Nous vous contacterons par e-mail dans les plus brefs délais.</p>
                     </div>
                     <Button
                         onClick={() => window.location.href = "/"}
                         className="w-full h-14 rounded-2xl bg-zinc-900 hover:bg-zinc-800 text-white font-bold"
                     >
-                        العودة للرئيسية
+                        Retour à l'accueil
                     </Button>
                 </div>
             </div>
@@ -90,10 +90,10 @@ export default function HelpPage() {
                 <div className="text-center space-y-4">
                     <div className="inline-flex items-center gap-2 px-4 py-2 bg-orange-100 text-orange-700 rounded-full text-sm font-black uppercase tracking-widest">
                         <LifeBuoy className="w-4 h-4" />
-                        مركز المساعدة
+                        Centre d'aide
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-black text-zinc-900 tracking-tight leading-tight">كيف يمكننا مساعدتك؟</h1>
-                    <p className="text-lg text-zinc-500 max-w-2xl mx-auto font-medium">نحن هنا للإجابة على جميع استفساراتك وحل المشاكل التي تواجهك.</p>
+                    <h1 className="text-4xl md:text-5xl font-black text-zinc-900 tracking-tight leading-tight">Comment pouvons-nous vous aider ?</h1>
+                    <p className="text-lg text-zinc-500 max-w-2xl mx-auto font-medium">Nous sommes là pour répondre à toutes vos questions et résoudre vos problèmes.</p>
                 </div>
 
                 <div className="grid md:grid-cols-12 gap-10">
@@ -101,7 +101,7 @@ export default function HelpPage() {
                     {/* Sidebar / Categories */}
                     <div className="md:col-span-4 space-y-6">
                         <div className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-zinc-100">
-                            <h3 className="text-sm font-black text-zinc-400 uppercase tracking-widest mb-6">التصنيفات</h3>
+                            <h3 className="text-sm font-black text-zinc-400 uppercase tracking-widest mb-6">Catégories</h3>
                             <div className="space-y-2">
                                 {CATEGORIES.map((cat) => (
                                     <button
@@ -126,12 +126,12 @@ export default function HelpPage() {
                         {/* Quick Contact Info */}
                         <div className="bg-orange-500 p-8 rounded-[2.5rem] text-white shadow-xl shadow-orange-100 relative overflow-hidden group">
                             <div className="relative z-10 flex flex-col h-full justify-between gap-6">
-                                <h4 className="text-xl font-black leading-tight">تواصل معنا مباشرة عبر واتساب</h4>
+                                <h4 className="text-xl font-black leading-tight">Contactez-nous directement via WhatsApp</h4>
                                 <Button
                                     onClick={() => window.open('https://wa.me/212600000000', '_blank')}
                                     className="bg-white text-orange-600 hover:bg-zinc-50 font-black h-12 rounded-xl"
                                 >
-                                    إرسال رسالة
+                                    Envoyer un message
                                 </Button>
                             </div>
                             <LifeBuoy className="absolute -bottom-6 -right-6 w-32 h-32 text-white/10 rotate-12 group-hover:rotate-0 transition-transform duration-500" />
@@ -144,35 +144,35 @@ export default function HelpPage() {
                             <form onSubmit={handleSubmit} className="space-y-8">
                                 <div className="grid sm:grid-cols-2 gap-6">
                                     <div className="space-y-3">
-                                        <label className="text-sm font-black text-zinc-900 mr-2">البريد الإلكتروني</label>
+                                        <label className="text-sm font-black text-zinc-900 ml-2">Email</label>
                                         <input
                                             type="email"
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
-                                            placeholder="example@mail.com"
-                                            className="w-full h-14 px-6 rounded-2xl border-2 border-zinc-100 focus:border-zinc-900 focus:ring-0 transition-all font-medium text-zinc-900 text-right"
+                                            placeholder="exemple@mail.com"
+                                            className="w-full h-14 px-6 rounded-2xl border-2 border-zinc-100 focus:border-zinc-900 focus:ring-0 transition-all font-medium text-zinc-900"
                                             dir="ltr"
                                         />
                                     </div>
                                     <div className="space-y-3">
-                                        <label className="text-sm font-black text-zinc-900 mr-2">الموضوع</label>
+                                        <label className="text-sm font-black text-zinc-900 ml-2">Sujet</label>
                                         <input
                                             type="text"
                                             value={subject}
                                             onChange={(e) => setSubject(e.target.value)}
-                                            placeholder="أدخل عنوان الرسالة"
-                                            className="w-full h-14 px-6 rounded-2xl border-2 border-zinc-100 focus:border-zinc-900 focus:ring-0 transition-all font-medium text-zinc-900 text-right"
+                                            placeholder="Saisissez le titre du message"
+                                            className="w-full h-14 px-6 rounded-2xl border-2 border-zinc-100 focus:border-zinc-900 focus:ring-0 transition-all font-medium text-zinc-900"
                                         />
                                     </div>
                                 </div>
 
                                 <div className="space-y-3">
-                                    <label className="text-sm font-black text-zinc-900 mr-2">الرسالة</label>
+                                    <label className="text-sm font-black text-zinc-900 ml-2">Message</label>
                                     <textarea
                                         value={message}
                                         onChange={(e) => setMessage(e.target.value)}
-                                        placeholder="كيف يمكننا مساعدتك؟ اشرح لنا المشكلة بالتفصيل..."
-                                        className="w-full p-6 rounded-[2rem] border-2 border-zinc-100 focus:border-zinc-900 focus:ring-0 transition-all font-medium text-zinc-900 min-h-[200px] bg-zinc-50/30 resize-none text-right"
+                                        placeholder="Comment pouvons-nous vous aider ? Expliquez-nous le problème en détail..."
+                                        className="w-full p-6 rounded-[2rem] border-2 border-zinc-100 focus:border-zinc-900 focus:ring-0 transition-all font-medium text-zinc-900 min-h-[200px] bg-zinc-50/30 resize-none"
                                     />
                                 </div>
 
@@ -185,8 +185,8 @@ export default function HelpPage() {
                                         <Loader2 className="w-6 h-6 animate-spin" />
                                     ) : (
                                         <>
-                                            إرسال الطلب
-                                            <Send className="w-5 h-5 ml-2 mr-0" />
+                                            Envoyer la demande
+                                            <Send className="w-5 h-5 ml-2" />
                                         </>
                                     )}
                                 </Button>

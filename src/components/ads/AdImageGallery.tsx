@@ -62,7 +62,7 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
     if (!images || images.length === 0) {
         return (
             <div className="flex aspect-[4/3] w-full items-center justify-center rounded-2xl bg-zinc-100 text-zinc-400">
-                لا توجد صور متاحة
+                Aucune photo disponible
             </div>
         );
     }
@@ -178,7 +178,7 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
             {isLightboxOpen && (
                 <div className="fixed inset-0 z-[100] flex flex-col bg-black animate-in fade-in duration-300">
                     <div className="flex items-center justify-between p-4 z-50 bg-gradient-to-b from-black/50 to-transparent absolute top-0 left-0 right-0">
-                        <span className="text-white text-xs font-black uppercase tracking-[0.3em]">معاينة التفاصيل</span>
+                        <span className="text-white text-xs font-black uppercase tracking-[0.3em]">Aperçu des détails</span>
                         <button
                             onClick={() => setIsLightboxOpen(false)}
                             className="rounded-full bg-white/10 p-3 text-white backdrop-blur-xl hover:bg-white/20 transition-all active:scale-90"

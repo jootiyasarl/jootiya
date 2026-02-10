@@ -381,17 +381,17 @@ export function ProfileForm() {
       <div className="rounded-2xl border bg-white p-4 sm:p-6">
         <div className="flex flex-col gap-1 mb-6">
           <h2 className="text-sm font-semibold text-zinc-900">
-            إعدادات التنبيهات
+            Paramètres des notifications
           </h2>
           <p className="text-xs text-zinc-500">
-            تحكم في كيفية تلقي التنبيهات عند وجود رسائل جديدة أو تفاعل مع إعلاناتك.
+            Gérez comment vous recevez les alertes pour les nouveaux messages ou les interactions avec vos annonces.
           </p>
         </div>
 
         <div className="flex items-center justify-between p-4 rounded-xl bg-zinc-50 border border-zinc-100">
           <div className="flex flex-col gap-0.5">
-            <span className="text-sm font-bold text-zinc-900">التنبيهات الفورية (Push)</span>
-            <span className="text-[10px] text-zinc-400">استلام إشعارات مباشرة على هاتفك أو متصفحك</span>
+            <span className="text-sm font-bold text-zinc-900">Notifications Push</span>
+            <span className="text-[10px] text-zinc-400">Recevoir des notifications directes sur votre appareil</span>
           </div>
           <button
             onClick={async () => {
@@ -404,9 +404,9 @@ export function ProfileForm() {
                   .eq('id', userId);
                 if (error) throw error;
                 setPersonalInfo(prev => ({ ...prev, push_enabled: newValue }));
-                toast.success(newValue ? "تم تفعيل التنبيهات" : "تم إلغاء تفعيل التنبيهات");
+                toast.success(newValue ? "Notifications activées" : "Notifications désactivées");
               } catch (e) {
-                toast.error("فشل تعديل الإعدادات");
+                toast.error("Échec de la modification des paramètres");
               } finally {
                 setSavingProfile(false);
               }

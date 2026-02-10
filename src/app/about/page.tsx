@@ -2,8 +2,8 @@ import React from 'react';
 import Image from 'next/image';
 
 export const metadata = {
-    title: 'من نحن - Jootiya',
-    description: 'تعرف على jootiya.com، المنصة العربية الرائدة في المغرب.',
+    title: 'À propos de nous - Jootiya',
+    description: 'Découvrez jootiya.com, la plateforme leader au Maroc.',
 };
 
 export default function AboutUsPage() {

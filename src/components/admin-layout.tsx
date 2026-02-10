@@ -43,52 +43,52 @@ type AdminNavItem = {
 
 const adminNavItems: AdminNavItem[] = [
   {
-    label: "Dashboard",
+    label: "Tableau de bord",
     href: "/admin",
     icon: LayoutDashboard,
   },
   {
-    label: "Users",
+    label: "Utilisateurs",
     href: "/admin/users",
     icon: Users,
   },
   {
-    label: "Ads",
+    label: "Annonces",
     href: "/admin/ads",
     icon: Megaphone,
   },
   {
-    label: "Categories",
+    label: "Catégories",
     href: "/admin/categories",
     icon: Tag,
   },
   {
-    label: "Cities",
+    label: "Villes",
     href: "/admin/cities",
     icon: MapPin,
   },
   {
-    label: "Reports",
+    label: "Signalements",
     href: "/admin/reports",
     icon: Flag,
   },
   {
-    label: "Support Tickets",
+    label: "Tickets de support",
     href: "/admin/support",
     icon: LifeBuoy,
   },
   {
-    label: "Analytics",
+    label: "Analyses",
     href: "/admin/analytics",
     icon: BarChart3,
   },
   {
-    label: "Reviews",
+    label: "Avis",
     href: "/admin/reviews",
     icon: Star,
   },
   {
-    label: "Settings",
+    label: "Paramètres",
     href: "/admin/settings",
     icon: Settings,
   },
@@ -232,10 +232,10 @@ export function AdminLayout({ children }: AdminLayoutProps) {
             <div className="flex flex-1 items-center justify-between gap-3">
               <div className="space-y-0.5">
                 <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-zinc-500">
-                  Admin
+                  Administration
                 </p>
                 <h1 className="text-sm font-semibold text-zinc-100 md:text-base">
-                  Dashboard
+                  Tableau de bord
                 </h1>
               </div>
 
@@ -263,12 +263,12 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                     </div>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="mt-2 min-w-[190px] border-zinc-800 bg-zinc-950 text-zinc-50">
-                    <DropdownMenuLabel>Account</DropdownMenuLabel>
-                    <DropdownMenuItem>Profile</DropdownMenuItem>
-                    <DropdownMenuItem>Billing</DropdownMenuItem>
+                    <DropdownMenuLabel>Compte</DropdownMenuLabel>
+                    <DropdownMenuItem>Profil</DropdownMenuItem>
+                    <DropdownMenuItem>Facturation</DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem className="text-red-400">
-                      Sign out
+                      Déconnexion
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

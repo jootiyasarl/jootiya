@@ -2,8 +2,8 @@ import React from 'react';
 import { Mail, Clock, MessageSquare } from 'lucide-react';
 
 export const metadata = {
-    title: 'تواصل معنا - Jootiya',
-    description: 'اتصل بنا عبر البريد الإلكتروني أو من خلال موقعنا.',
+    title: 'Contactez-nous - Jootiya',
+    description: 'Contactez-nous par e-mail ou via notre site web.',
 };
 
 export default function ContactUsPage() {

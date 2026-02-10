@@ -23,7 +23,7 @@ export function FeaturedGrid({ title, ads, viewAllLink }: FeaturedGridProps) {
                     {viewAllLink && (
                         <Link href={viewAllLink}>
                             <Button variant="ghost" className="text-orange-600 hover:text-orange-700 hover:bg-orange-50">
-                                مشاهدة المزيد &larr;
+                                Voir plus &larr;
                             </Button>
                         </Link>
                     )}

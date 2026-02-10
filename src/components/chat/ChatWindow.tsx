@@ -41,7 +41,7 @@ interface ChatWindowProps {
 }
 
 const QUICK_REPLIES = [
-    "Salam, dispo ?",
+    "Bonjour, disponible ?",
     "Prix final ?",
     "Localisation ?",
     "Je suis intéressé !"
@@ -404,7 +404,7 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                                                     {msg.is_optimistic && (
                                                         <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/10">
                                                             <Loader2 className="h-6 w-6 animate-spin text-white drop-shadow-md" />
-                                                            <span className="text-[10px] text-white font-bold drop-shadow-md uppercase tracking-wider">ضغط ورفع...</span>
+                                                            <span className="text-[10px] text-white font-bold drop-shadow-md uppercase tracking-wider">Compression et envoi...</span>
                                                         </div>
                                                     )}
                                                 </div>
@@ -422,7 +422,7 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                                                         <Paperclip className="w-4 h-4 text-orange-600" />
                                                     </div>
                                                     <div className="flex flex-col overflow-hidden">
-                                                        <span className="text-[10px] font-bold uppercase opacity-60">Fichier / ملف</span>
+                                                        <span className="text-[10px] font-bold uppercase opacity-60">Fichier</span>
                                                         <span className="text-xs truncate max-w-[120px]">
                                                             {msg.file_url.split('/').pop()}
                                                         </span>

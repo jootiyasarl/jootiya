@@ -61,7 +61,7 @@ export function NoResultsFallback({ searchQuery, category, city }: NoResultsFall
         return (
             <div className="text-center py-12">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto"></div>
-                <p className="text-zinc-500 mt-4">جاري البحث عن همزات مقترحة...</p>
+                <p className="text-zinc-500 mt-4">Recherche de suggestions pour vous...</p>
             </div>
         );
     }
@@ -74,15 +74,15 @@ export function NoResultsFallback({ searchQuery, category, city }: NoResultsFall
                     <Sparkles className="w-8 h-8 text-orange-600" />
                 </div>
                 <h2 className="text-2xl font-bold text-zinc-900 mb-2">
-                    لم نجد نتائج مطابقة
+                    Aucun résultat trouvé
                 </h2>
                 {searchQuery && (
                     <p className="text-zinc-600 mb-4">
-                        لا توجد نتائج للبحث عن &quot;{searchQuery}&quot;
+                        Aucun résultat pour la recherche &quot;{searchQuery}&quot;
                     </p>
                 )}
                 <p className="text-zinc-500 text-sm">
-                    جرب تعديل كلمات البحث أو تصفح الهمزات المقترحة أدناه
+                    Essayez d'ajuster vos mots-clés ou parcourez nos suggestions ci-dessous.
                 </p>
             </div>
 
@@ -91,7 +91,7 @@ export function NoResultsFallback({ searchQuery, category, city }: NoResultsFall
                 <div>
                     <h3 className="text-xl font-bold text-zinc-900 mb-4 flex items-center gap-2">
                         <Sparkles className="w-5 h-5 text-orange-600" />
-                        همزات مقترحة لك
+                        Suggestions pour vous
                     </h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         {suggestedAds.map((ad) => (
@@ -138,12 +138,12 @@ export function NoResultsFallback({ searchQuery, category, city }: NoResultsFall
             {/* No Suggestions Either */}
             {suggestedAds.length === 0 && (
                 <div className="text-center py-8">
-                    <p className="text-zinc-500 mb-4">لا توجد همزات مقترحة حالياً</p>
+                    <p className="text-zinc-500 mb-4">Aucune suggestion disponible pour le moment.</p>
                     <Link
                         href="/marketplace"
                         className="inline-block px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
                     >
-                        تصفح جميع الهمزات
+                        Parcourir toutes les annonces
                     </Link>
                 </div>
             )}

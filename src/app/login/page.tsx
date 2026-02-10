@@ -46,10 +46,10 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
         </Link>
 
         <h2 className="text-center text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">
-          Welcome back
+          Bon retour
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
-          Sign in to your account
+          Connectez-vous à votre compte
         </p>
       </div>
 
@@ -66,7 +66,7 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
                 </div>
                 <div className="ml-3 flex-1 md:flex md:justify-between">
                   <p className="text-sm text-blue-700 dark:text-blue-200">
-                    You need to sign in to post an ad.
+                    Vous devez vous connecter pour publier une annonce.
                   </p>
                 </div>
               </div>
@@ -86,21 +86,21 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
               </div>
               <div className="relative flex justify-center text-sm">
                 <span className="px-2 bg-transparent text-gray-500 dark:text-gray-400 bg-white dark:bg-zinc-900">
-                  Secure access
+                  Accès sécurisé
                 </span>
               </div>
             </div>
 
             <p className="text-center text-xs text-gray-500 dark:text-gray-400">
-              By signing in, you agree to our Terms of Service and Privacy Policy.
+              En vous connectant, vous acceptez nos <Link href="/terms" className="underline">Conditions d'utilisation</Link> et notre <Link href="/privacy" className="underline">Politique de confidentialité</Link>.
             </p>
           </div>
         </div>
 
         <p className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
-          Don't have an account?{' '}
+          Vous n'avez pas de compte ?{' '}
           <Link href="/register" className="font-semibold text-orange-600 hover:text-orange-500 dark:text-orange-400">
-            Create one for free
+            Créez-en un gratuitement
           </Link>
         </p>
       </div>

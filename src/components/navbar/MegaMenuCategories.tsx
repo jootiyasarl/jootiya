@@ -3,16 +3,16 @@
 import Link from "next/link";
 
 const categories = [
-  { name: "إلكترونيات", slug: "electronics" },
-  { name: "المنزل و الأثاث", slug: "home-furniture" },
-  { name: "سيارات و نقل", slug: "vehicles" },
-  { name: "ملابس و أحذية", slug: "fashion" },
-  { name: "أدوات و معدات", slug: "tools-equipment" },
-  { name: "ترفيه و هوايات", slug: "hobbies" },
-  { name: "حيوانات", slug: "animals" },
-  { name: "كتب و دراسة", slug: "books" },
-  { name: "مستعمل / تصفية", slug: "used-clearance" },
-  { name: "أخرى", slug: "other" },
+  { name: "Électronique", slug: "electronics" },
+  { name: "Maison & Ameublement", slug: "home-furniture" },
+  { name: "Véhicules & Transport", slug: "vehicles" },
+  { name: "Mode & Chaussures", slug: "fashion" },
+  { name: "Outils & Équipement", slug: "tools-equipment" },
+  { name: "Loisirs & Divertissement", slug: "hobbies" },
+  { name: "Animaux", slug: "animals" },
+  { name: "Livres & Études", slug: "books" },
+  { name: "Occasion / Déstockage", slug: "used-clearance" },
+  { name: "Autres", slug: "other" },
 ] as const;
 
 export function MegaMenuCategories() {

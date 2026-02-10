@@ -27,14 +27,13 @@ export function CallToActionSection({
       <div className="relative flex flex-col gap-8 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-3 sm:space-y-4">
           <p className="text-xs font-semibold uppercase tracking-[0.25em] text-amber-300">
-            جاهز تبيع؟
+            Prêt à vendre ?
           </p>
           <h2 className="text-2xl font-bold leading-tight sm:text-3xl">
-            بيع شي حاجة اليوم
+            Vendez quelque chose aujourd'hui
           </h2>
           <p className="max-w-md text-sm text-zinc-200 sm:text-base">
-            نشر إعلان مجاني في أقل من دقيقة، وخلي الناس القريبة منك تكتشف عروضك
-            بسهولة. ما تحتاج لا بطاقة بنكية ولا تعقيدات  بس صوّر، وصف، وانشر.
+            Publiez une annonce gratuite en moins d'une minute et laissez les personnes proches de vous découvrir vos offres facilement. Pas besoin de carte bancaire ni de complications : il suffit de prendre en photo, de décrire et de publier.
           </p>
         </div>
 
@@ -45,7 +44,7 @@ export function CallToActionSection({
                 size="lg"
                 className="min-w-[150px] bg-amber-400 text-zinc-950 shadow-lg shadow-amber-500/40 hover:bg-amber-300"
               >
-                Create Ad
+                Déposer une annonce
               </Button>
             </Link>
             <Link href={browseHref} className="inline-flex">
@@ -54,13 +53,12 @@ export function CallToActionSection({
                 variant="outline"
                 className="min-w-[150px] border-zinc-500 bg-zinc-900/50 text-zinc-50 hover:bg-zinc-800/80 hover:text-zinc-50"
               >
-                Browse Near You
+                Parcourir les offres
               </Button>
             </Link>
           </div>
-          <p className="text-[11px] text-zinc-300">
-            خفف الفوضى في دارك، وربح شوية فلوس من الحوايج اللي ما بقاوش
-            مستعملين عندك.
+          <p className="text-[11px] text-zinc-300 text-right">
+            Libérez de l'espace chez vous et gagnez un peu d'argent avec les objets que vous n'utilisez plus.
           </p>
         </div>
       </div>

@@ -195,7 +195,7 @@ export function LocationFilterSidebar({ ads }: SidebarProps) {
                     <div>
                         <h4 className="font-bold text-sm mb-1">Astuce de Pro</h4>
                         <p className="text-xs text-orange-100 leading-relaxed opacity-90">
-                            Activez le Radar pour trouver des "الهمزات" في حومتك قبل أن يراها الآخرون!
+                            Activez le Radar pour trouver des "bonnes affaires" dans votre quartier avant tout le monde !
                         </p>
                     </div>
                 </div>
