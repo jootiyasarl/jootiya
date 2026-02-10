@@ -1,6 +1,6 @@
 import { createSupabaseServerClient } from "./supabase";
 
-export type NotificationType = 'info' | 'success' | 'warning' | 'error' | 'message' | 'ad_approval';
+export type NotificationType = 'info' | 'success' | 'warning' | 'error' | 'message' | 'ad_approval' | 'price_drop' | 'follow_up';
 
 export interface CreateNotificationParams {
     userId: string;

@@ -74,3 +74,41 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Scheduling (Note: This requires pg_cron enabled in Supabase)
 -- SELECT cron.schedule('0 9 * * *', 'SELECT public.check_ad_follow_ups()');
+
+-- 4. Price Drop Notification System
+-- Function to notify users when a favorited ad's price drops
+CREATE OR REPLACE FUNCTION public.notify_price_drop()
+RETURNS TRIGGER AS $$
+DECLARE
+    fav_record RECORD;
+BEGIN
+    -- Only proceed if price has actually decreased
+    IF NEW.price < OLD.price THEN
+        -- Find all users who have favorited this ad
+        FOR fav_record IN 
+            SELECT user_id 
+            FROM public.favorites 
+            WHERE ad_id = NEW.id
+        LOOP
+            -- Create notification for each user
+            INSERT INTO public.notifications (user_id, title, message, type)
+            VALUES (
+                fav_record.user_id,
+                'خبر سار! انخفاض في السعر 🎉',
+                'خبر سار! الهمزة التي تتابعها "' || NEW.title || '" انخفض سعرها الآن! سارع بالشراء',
+                'price_drop'
+            );
+        END LOOP;
+    END IF;
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Trigger to detect price changes
+DROP TRIGGER IF EXISTS trg_notify_price_drop ON public.ads;
+CREATE TRIGGER trg_notify_price_drop
+AFTER UPDATE OF price ON public.ads
+FOR EACH ROW
+WHEN (NEW.price < OLD.price)
+EXECUTE FUNCTION public.notify_price_drop();
