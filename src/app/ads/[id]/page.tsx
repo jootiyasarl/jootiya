@@ -10,6 +10,7 @@ import { AdCard } from "@/components/AdCard";
 import { RecentReviews } from "@/components/ads/RecentReviews";
 import { ReportModal } from "@/components/ads/ReportModal";
 import { ReportButton } from "@/components/ads/ReportButton";
+import { FavoriteButton } from "@/components/ads/FavoriteButton";
 import {
   MapPin,
   Calendar,
@@ -200,10 +201,10 @@ export default async function AdPage({ params }: AdPageProps) {
                 <Share2 className="h-4 w-4" />
                 <span className="hidden lg:inline">Partager</span>
               </Button>
-              <Button variant="ghost" size="sm" className="hidden sm:flex gap-2 text-zinc-600 hover:text-red-600">
-                <Heart className="h-4 w-4" />
-                <span className="hidden lg:inline">Enregistrer</span>
-              </Button>
+              <FavoriteButton
+                adId={ad.id}
+                className="hover:bg-red-50 text-zinc-600 hover:text-red-600 rounded-xl"
+              />
               <ReportButton
                 targetId={ad.id}
                 targetType="ad"

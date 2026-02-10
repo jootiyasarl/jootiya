@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Heart, User } from "lucide-react";
+import { FavoriteButton } from "./ads/FavoriteButton";
 
 export type PublicAdCardAd = {
   id: string;
@@ -68,18 +69,10 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete }: 
           </div>
         )}
 
-        {/* Favorite Heart Icon Overlay - High z-index to be clickable above the link */}
-        <button
-          className="absolute right-3 top-3 z-30 p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm text-zinc-800 hover:text-orange-600 transition-colors cursor-pointer"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            // Wishlist logic
-            console.log("Add to favorites");
-          }}
-        >
-          <Heart className="h-5 w-5" />
-        </button>
+        {/* Favorite Heart Icon Overlay */}
+        <div className="absolute right-3 top-3 z-30">
+          <FavoriteButton adId={ad.id} className="shadow-sm" />
+        </div>
 
         {isFeatured && (
           <div className="absolute left-3 top-3 z-20 rounded-lg bg-orange-500 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
