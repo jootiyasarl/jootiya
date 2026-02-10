@@ -133,7 +133,7 @@ function PublicNavbar() {
             </div>
 
             <Link href="/marketplace/post" className="hidden lg:block shrink-0">
-              <div className="rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold h-9 px-4 text-xs uppercase tracking-wide shadow-md shadow-orange-200/50 transition-all hover:translate-y-[-1px] active:translate-y-[0px] active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap">
+              <div className="rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold h-10 px-5 text-[11px] uppercase tracking-wider shadow-lg shadow-orange-200/50 dark:shadow-orange-900/20 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap border border-orange-400/20">
                 <PlusCircle className="w-4 h-4 shrink-0" />
                 <span>Déposer une annonce</span>
               </div>
@@ -144,50 +144,37 @@ function PublicNavbar() {
 
           {/* Right: User Actions / Info */}
           <div className="flex items-center gap-2">
-            <div className="hidden lg:flex items-center gap-3">
-              <ThemeToggle />
-              <NotificationBell label="Notifications" />
+            <div className="hidden lg:flex items-center gap-1">
+              <ThemeToggle compact />
+              <NotificationBell />
 
-              <Link href="/dashboard/favorites" className="flex flex-col items-center gap-0 px-4 py-1 group transition-colors">
-                <div className="p-1.5 rounded-full group-hover:bg-orange-50 dark:group-hover:bg-orange-900/20 transition-colors">
-                  <Heart className="w-5 h-5 text-zinc-800 dark:text-zinc-200 group-hover:text-orange-600 transition-colors" />
-                </div>
-                <span className="text-[11px] font-bold text-zinc-600 dark:text-zinc-400 group-hover:text-orange-600 transition-colors uppercase tracking-tight -mt-1">Favoris</span>
+              <Link href="/dashboard/favorites" className="p-2.5 rounded-xl text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all relative" title="Favoris">
+                <Heart className="w-5 h-5" />
               </Link>
 
-              <Link href="/dashboard/messages" className="flex flex-col items-center gap-0 px-4 py-1 group transition-colors relative">
-                <div className="p-1.5 rounded-full group-hover:bg-orange-50 dark:group-hover:bg-orange-900/20 transition-colors relative">
-                  <MessageCircle className="w-5 h-5 text-zinc-800 dark:text-zinc-200 group-hover:text-orange-600 transition-colors" />
-                  {hasUnreadMessages && (
-                    <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-zinc-900" />
-                  )}
-                </div>
-                <span className="text-[11px] font-bold text-zinc-600 dark:text-zinc-400 group-hover:text-orange-600 transition-colors uppercase tracking-tight -mt-1">Messages</span>
+              <Link href="/dashboard/messages" className="p-2.5 rounded-xl text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all relative" title="Messages">
+                <MessageCircle className="w-5 h-5" />
+                {hasUnreadMessages && (
+                  <span className="absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-orange-500 rounded-full border-2 border-white dark:border-zinc-900" />
+                )}
               </Link>
 
-              <div className="ml-2 pl-2 border-l border-zinc-200 dark:border-zinc-800">
+              <div className="ml-1 pl-1 border-l border-zinc-200 dark:border-zinc-800 flex items-center gap-1">
                 {userEmail ? (
-                  <div className="flex items-center gap-3">
-                    <Link href={isAdmin ? "/admin" : "/dashboard"} className="flex flex-col items-center gap-0 px-2 group transition-colors">
-                      <div className="p-1.5 rounded-full group-hover:bg-zinc-100 dark:group-hover:bg-zinc-800 transition-colors">
-                        <div className="w-5 h-5 rounded-full bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center text-orange-600 group-hover:bg-orange-600 group-hover:text-white transition-all ring-1 ring-orange-100 dark:ring-orange-900/50 text-[10px]">
-                          {isAdmin ? <ShieldAlert className="w-3.5 h-3.5" /> : <User className="w-3.5 h-3.5" />}
-                        </div>
-                      </div>
-                      <span className="text-[11px] font-bold text-zinc-600 dark:text-zinc-400 group-hover:text-orange-600 transition-colors uppercase tracking-tight -mt-1">
-                        {isAdmin ? "Admin" : "Compte"}
-                      </span>
+                  <>
+                    <Link href={isAdmin ? "/admin" : "/dashboard"}
+                      className="p-2.5 rounded-xl text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all"
+                      title={isAdmin ? "Administration" : "Mon Compte"}
+                    >
+                      {isAdmin ? <ShieldAlert className="w-5 h-5" /> : <User className="w-5 h-5" />}
                     </Link>
-                    <button onClick={handleLogout} className="p-2 text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg transition-all" title="Déconnexion">
-                      <LogOut className="w-4 h-4" />
+                    <button onClick={handleLogout} className="p-2.5 text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl transition-all" title="Déconnexion">
+                      <LogOut className="w-5 h-5" />
                     </button>
-                  </div>
+                  </>
                 ) : (
-                  <Link href="/login" className="flex flex-col items-center gap-0 px-4 py-1 group transition-colors">
-                    <div className="p-1.5 rounded-full group-hover:bg-orange-50 dark:group-hover:bg-orange-900/20 transition-colors">
-                      <User className="w-5 h-5 text-zinc-800 dark:text-zinc-200 group-hover:text-orange-600 transition-colors" />
-                    </div>
-                    <span className="text-[11px] font-bold text-zinc-600 dark:text-zinc-400 group-hover:text-orange-600 transition-colors uppercase tracking-tight -mt-1">Connexion</span>
+                  <Link href="/login" className="p-2.5 rounded-xl text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all" title="Connexion">
+                    <User className="w-5 h-5" />
                   </Link>
                 )}
               </div>

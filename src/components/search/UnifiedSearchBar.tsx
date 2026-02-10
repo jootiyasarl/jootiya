@@ -62,7 +62,7 @@ export function UnifiedSearchBar() {
     return (
         <div className="w-full" ref={containerRef}>
             {/* Desktop Version - Ultra Compact */}
-            <div className="hidden lg:flex items-center bg-zinc-50 border border-zinc-100 rounded-full p-1 h-12 transition-all hover:bg-white hover:shadow-md hover:border-zinc-200">
+            <div className="hidden lg:flex items-center bg-white/50 dark:bg-zinc-800/50 backdrop-blur-sm border border-zinc-200/50 dark:border-zinc-700/50 rounded-full p-1 h-12 transition-all hover:bg-white dark:hover:bg-zinc-800 hover:shadow-lg hover:border-zinc-300 dark:hover:border-zinc-600">
                 {/* Keyword Search */}
                 <div className="flex-1 flex items-center px-4 gap-2 border-r border-zinc-200 h-full">
                     <Search className="w-4 h-4 text-zinc-400 shrink-0" />

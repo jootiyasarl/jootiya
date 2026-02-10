@@ -6,7 +6,7 @@ import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-export function ThemeToggle() {
+export function ThemeToggle({ compact = false }: { compact?: boolean }) {
     const { setTheme, theme } = useTheme();
     const [mounted, setMounted] = React.useState(false);
 
@@ -16,7 +16,23 @@ export function ThemeToggle() {
 
     if (!mounted) {
         return (
-            <div className="flex bg-zinc-100 p-1 rounded-2xl w-[140px] h-11 animate-pulse" />
+            <div className={cn(
+                "flex bg-zinc-100 dark:bg-zinc-800 rounded-2xl animate-pulse",
+                compact ? "w-10 h-10" : "w-[140px] h-11"
+            )} />
+        );
+    }
+
+    if (compact) {
+        const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        return (
+            <button
+                onClick={() => setTheme(isDark ? 'light' : 'dark')}
+                className="flex items-center justify-center w-10 h-10 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-500 transition-all active:scale-95 shadow-sm overflow-hidden"
+                title="Changer le thème"
+            >
+                {theme === 'light' ? <Sun className="w-5 h-5" /> : theme === 'dark' ? <Moon className="w-5 h-5" /> : <Monitor className="w-5 h-5" />}
+            </button>
         );
     }
 
