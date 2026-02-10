@@ -21,8 +21,12 @@ import {
   Star,
   Home,
   Car,
-  Laptop
+  Laptop,
+  Moon,
+  Sun,
+  Monitor
 } from "lucide-react";
+import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { UnifiedSearchBar } from "@/components/search/UnifiedSearchBar";
@@ -31,6 +35,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 function PublicNavbar() {
   const router = useRouter();
   const pathname = usePathname();
+  const { setTheme, theme } = useTheme();
 
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -209,61 +214,83 @@ function PublicNavbar() {
         <>
           {/* Dark Overlay - Covers entire screen */}
           <div
-            className="lg:hidden fixed inset-0 z-[9998] bg-black opacity-50"
+            className="lg:hidden fixed inset-0 z-[9998] bg-black/50 backdrop-blur-sm transition-opacity"
             onClick={() => setIsMobileMenuOpen(false)}
             aria-hidden="true"
           />
           {/* Sidebar Menu - Slides from left */}
-          <div className="lg:hidden fixed top-0 bottom-0 left-0 z-[9999] w-[85%] max-w-sm h-screen bg-white dark:bg-zinc-900 shadow-2xl animate-in slide-in-from-left duration-300 ease-out flex flex-col">
+          <div className="lg:hidden fixed top-0 bottom-0 left-0 z-[9999] w-[280px] h-screen bg-white dark:bg-zinc-900 shadow-2xl animate-in slide-in-from-left duration-300 ease-out flex flex-col border-r border-zinc-100 dark:border-zinc-800">
             {/* Drawer Header */}
-            <div className="flex items-center justify-between p-5 border-b border-zinc-100 dark:border-zinc-800 flex-shrink-0">
-              <span className="text-2xl font-black text-[#0F172A] dark:text-white tracking-tighter">
+            <div className="flex items-center justify-between p-4 border-b border-zinc-100 dark:border-zinc-800 flex-shrink-0">
+              <span className="text-xl font-black text-[#0F172A] dark:text-white tracking-tighter">
                 JOOTIYA<span className="text-orange-500">.</span>
               </span>
               <button
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="p-2.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 transition-active active:scale-95"
+                className="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 transition-colors"
               >
-                <X className="w-6 h-6" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Drawer Content */}
-            <div className="flex-1 overflow-y-auto overflow-x-hidden px-5 py-6 space-y-8">
-              {/* Theme Selector in Mobile Drawer */}
-              <div className="space-y-4">
-                <h3 className="text-[11px] font-black uppercase tracking-wider text-zinc-400 px-1">Apparence</h3>
-                <div className="px-1">
-                  <ThemeToggle />
+            <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-6">
+
+              {/* Theme Selector - Custom Compact Icons */}
+              <div className="space-y-2">
+                <h3 className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 px-1">Apparence</h3>
+                <div className="flex items-center gap-1 p-1 bg-zinc-100 dark:bg-zinc-800/50 rounded-xl w-fit">
+                  {[
+                    { id: 'light', icon: Sun },
+                    { id: 'system', icon: Monitor },
+                    { id: 'dark', icon: Moon },
+                  ].map((opt) => {
+                    const Icon = opt.icon;
+                    const isActive = theme === opt.id;
+                    return (
+                      <button
+                        key={opt.id}
+                        onClick={() => setTheme(opt.id)}
+                        className={cn(
+                          "p-2 rounded-lg transition-all duration-200",
+                          isActive
+                            ? "bg-white dark:bg-zinc-700 text-orange-600 shadow-sm"
+                            : "text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300"
+                        )}
+                      >
+                        <Icon className="w-4 h-4 stroke-[2]" />
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
-              {/* User Section in Drawer */}
-              <div className="space-y-4">
-                <h3 className="text-[11px] font-black uppercase tracking-wider text-zinc-400 px-1">Compte personnel</h3>
+              {/* User Section */}
+              <div className="space-y-2">
+                <h3 className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 px-1">Compte personnel</h3>
                 {userEmail ? (
-                  <div className="space-y-2">
+                  <div className="space-y-1">
                     <Link
                       href="/dashboard"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="flex items-center justify-between p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors group"
+                      className="flex items-center justify-between p-3 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors group border border-transparent hover:border-zinc-100 dark:hover:border-zinc-700"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-orange-600 flex items-center justify-center text-white shadow-lg shadow-orange-100 dark:shadow-none">
-                          <User className="w-4.5 h-4.5" />
+                        <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/20 flex items-center justify-center text-orange-600 dark:text-orange-500">
+                          <User className="w-5 h-5" />
                         </div>
-                        <div>
-                          <p className="text-sm font-bold text-zinc-900 dark:text-zinc-100">Mon profil</p>
-                          <p className="text-[11px] text-zinc-500 truncate max-w-[150px]">{userEmail}</p>
+                        <div className="flex flex-col">
+                          <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100">Mon profil</span>
+                          <span className="text-[11px] text-zinc-500 truncate max-w-[140px] leading-tight">{userEmail}</span>
                         </div>
                       </div>
-                      <ChevronRight className="w-4 h-4 text-zinc-400 group-hover:text-orange-600 transition-colors" />
+                      <ChevronRight className="w-4 h-4 text-zinc-300 group-hover:text-orange-500 transition-colors" />
                     </Link>
                     <button
                       onClick={handleLogout}
-                      className="w-full flex items-center gap-3 p-4 rounded-2xl text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors font-bold text-sm"
+                      className="w-full flex items-center gap-3 p-3 rounded-xl text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors text-sm font-medium"
                     >
-                      <LogOut className="w-5 h-5" />
+                      <LogOut className="w-4 h-4" />
                       Déconnexion
                     </button>
                   </div>
@@ -271,34 +298,34 @@ function PublicNavbar() {
                   <Link
                     href="/login"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center gap-4 p-4 rounded-2xl bg-orange-600 text-white font-black shadow-xl shadow-orange-100 active:scale-[0.98] transition-all"
+                    className="flex items-center gap-3 p-3 rounded-xl bg-orange-600 hover:bg-orange-700 text-white shadow-md shadow-orange-200 dark:shadow-none transition-all"
                   >
-                    <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-                      <User className="w-5 h-5" />
+                    <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                      <User className="w-4 h-4" />
                     </div>
-                    <span>Se connecter / S'inscrire</span>
+                    <span className="text-sm font-bold">Se connecter</span>
                   </Link>
                 )}
               </div>
 
               {/* Categories Section */}
-              <div className="space-y-4">
-                <h3 className="text-[11px] font-black uppercase tracking-wider text-zinc-400 px-1">Toutes les catégories</h3>
-                <div className="grid grid-cols-1 gap-2">
+              <div className="space-y-2">
+                <h3 className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 px-1">Toutes les catégories</h3>
+                <div className="grid grid-cols-1 gap-1">
                   {navLinks.map((link) => (
                     <Link
                       key={link.name}
                       href={link.href}
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="flex items-center justify-between p-3.5 rounded-2xl hover:bg-orange-50 dark:hover:bg-orange-900/10 group transition-all"
+                      className="flex items-center justify-between p-2.5 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800/50 group transition-all"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 group-hover:bg-white dark:group-hover:bg-zinc-700 group-hover:text-orange-600 transition-colors shadow-sm shadow-zinc-200/50">
-                          <link.icon className="w-4.5 h-4.5" />
+                        <div className="w-8 h-8 rounded-lg flex items-center justify-center text-zinc-400 group-hover:text-orange-600 transition-colors">
+                          <link.icon className="w-5 h-5 stroke-[1.5]" />
                         </div>
-                        <span className="font-bold text-zinc-900 dark:text-zinc-100 group-hover:text-orange-600 transition-colors">{link.name}</span>
+                        <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">{link.name}</span>
                       </div>
-                      <ChevronRight className="w-4 h-4 text-zinc-300 group-hover:text-orange-600 group-hover:translate-x-1 transition-all" />
+                      <ChevronRight className="w-4 h-4 text-zinc-300 group-hover:text-orange-500 group-hover:translate-x-0.5 transition-all" />
                     </Link>
                   ))}
                 </div>
@@ -306,10 +333,10 @@ function PublicNavbar() {
             </div>
 
             {/* Drawer Footer */}
-            <div className="p-5 border-t border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50 flex-shrink-0">
+            <div className="p-4 border-t border-zinc-100 dark:border-zinc-800">
               <Link href="/marketplace/post" onClick={() => setIsMobileMenuOpen(false)}>
-                <div className="w-full h-14 rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-black shadow-lg shadow-orange-100 dark:shadow-none text-base flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.98]">
-                  <PlusCircle className="w-6 h-6" />
+                <div className="w-full h-11 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold shadow-md shadow-orange-200 dark:shadow-none text-sm flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.98]">
+                  <PlusCircle className="w-4 h-4" />
                   Déposer une annonce
                 </div>
               </Link>
