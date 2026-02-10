@@ -141,7 +141,7 @@ export default async function PublicProfilePage({ params }: ProfilePageProps) {
                                 Annonces actives
                             </h2>
                             {ads && ads.length > 0 ? (
-                                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 gap-4">
+                                <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-3" style={{ gridTemplateColumns: 'repeat(2, minmax(0, 1fr))' }}>
                                     {ads?.map((ad) => (
                                         <AdCard
                                             key={ad.id}

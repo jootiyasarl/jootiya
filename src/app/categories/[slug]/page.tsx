@@ -117,7 +117,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
                     </div>
                 ) : (
                     <>
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6">
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6" style={{ gridTemplateColumns: 'repeat(2, minmax(0, 1fr))' }}>
                             {ads.map((ad) => (
                                 <AdCard key={ad.id} ad={ad as any} />
                             ))}
