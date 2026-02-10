@@ -36,7 +36,7 @@ export function CategoriesGrid({
     <section className={cn("space-y-4", className)}>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
         {categories.map((category) => {
-          const href = `/category/${encodeURIComponent(category.slug)}`;
+          const href = `/categories/${encodeURIComponent(category.slug)}`;
 
           return (
             <Link key={category.slug} href={href} className="group block">
