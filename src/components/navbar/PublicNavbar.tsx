@@ -26,6 +26,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { UnifiedSearchBar } from "@/components/search/UnifiedSearchBar";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 function PublicNavbar() {
   const router = useRouter();
@@ -110,14 +111,14 @@ function PublicNavbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-xl border-b border-zinc-200">
+    <header className="sticky top-0 z-50 w-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border-b border-zinc-200 dark:border-zinc-800">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         {/* Main Nav Row */}
         <div className="flex h-16 items-center justify-between gap-4 py-2">
           {/* Left: Logo & Post Ad */}
           <div className="flex items-center gap-4 lg:gap-8">
             <Link href="/" className="flex items-center shrink-0">
-              <span className="text-xl md:text-2xl font-black tracking-tighter text-[#0F172A]">
+              <span className="text-xl md:text-2xl font-black tracking-tighter text-[#0F172A] dark:text-white">
                 JOOTIYA <span className="text-orange-500">.</span>
               </span>
             </Link>
@@ -136,88 +137,104 @@ function PublicNavbar() {
 
           <div className="hidden lg:flex flex-1 max-w-xl" />
 
-
           {/* Right: User Actions / Info */}
-          <div className="flex items-center gap-1 sm:gap-2">
-            <div className="hidden lg:flex items-center">
+          <div className="flex items-center gap-2">
+            <div className="hidden lg:flex items-center gap-3">
+              <ThemeToggle />
               <NotificationBell label="Notifications" />
 
               <Link href="/dashboard/favorites" className="flex flex-col items-center gap-0 px-4 py-1 group transition-colors">
-                <div className="p-1.5 rounded-full group-hover:bg-orange-50 transition-colors">
-                  <Heart className="w-5 h-5 text-zinc-800 group-hover:text-orange-600 transition-colors" />
+                <div className="p-1.5 rounded-full group-hover:bg-orange-50 dark:group-hover:bg-orange-900/20 transition-colors">
+                  <Heart className="w-5 h-5 text-zinc-800 dark:text-zinc-200 group-hover:text-orange-600 transition-colors" />
                 </div>
-                <span className="text-[11px] font-bold text-zinc-600 group-hover:text-orange-600 transition-colors uppercase tracking-tight -mt-1">Favoris</span>
+                <span className="text-[11px] font-bold text-zinc-600 dark:text-zinc-400 group-hover:text-orange-600 transition-colors uppercase tracking-tight -mt-1">Favoris</span>
               </Link>
 
               <Link href="/dashboard/messages" className="flex flex-col items-center gap-0 px-4 py-1 group transition-colors relative">
-                <div className="p-1.5 rounded-full group-hover:bg-orange-50 transition-colors relative">
-                  <MessageCircle className="w-5 h-5 text-zinc-800 group-hover:text-orange-600 transition-colors" />
+                <div className="p-1.5 rounded-full group-hover:bg-orange-50 dark:group-hover:bg-orange-900/20 transition-colors relative">
+                  <MessageCircle className="w-5 h-5 text-zinc-800 dark:text-zinc-200 group-hover:text-orange-600 transition-colors" />
                   {hasUnreadMessages && (
-                    <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white" />
+                    <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white dark:border-zinc-900" />
                   )}
                 </div>
-                <span className="text-[11px] font-bold text-zinc-600 group-hover:text-orange-600 transition-colors uppercase tracking-tight -mt-1">Messages</span>
+                <span className="text-[11px] font-bold text-zinc-600 dark:text-zinc-400 group-hover:text-orange-600 transition-colors uppercase tracking-tight -mt-1">Messages</span>
               </Link>
 
-              <div className="ml-2 pl-2 border-l border-zinc-200">
+              <div className="ml-2 pl-2 border-l border-zinc-200 dark:border-zinc-800">
                 {userEmail ? (
                   <div className="flex items-center gap-3">
                     <Link href={isAdmin ? "/admin" : "/dashboard"} className="flex flex-col items-center gap-0 px-2 group transition-colors">
-                      <div className="p-1.5 rounded-full group-hover:bg-zinc-100 transition-colors">
-                        <div className="w-5 h-5 rounded-full bg-orange-50 flex items-center justify-center text-orange-600 group-hover:bg-orange-600 group-hover:text-white transition-all ring-1 ring-orange-100 text-[10px]">
+                      <div className="p-1.5 rounded-full group-hover:bg-zinc-100 dark:group-hover:bg-zinc-800 transition-colors">
+                        <div className="w-5 h-5 rounded-full bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center text-orange-600 group-hover:bg-orange-600 group-hover:text-white transition-all ring-1 ring-orange-100 dark:ring-orange-900/50 text-[10px]">
                           {isAdmin ? <ShieldAlert className="w-3.5 h-3.5" /> : <User className="w-3.5 h-3.5" />}
                         </div>
                       </div>
-                      <span className="text-[11px] font-bold text-zinc-600 group-hover:text-orange-600 transition-colors uppercase tracking-tight -mt-1">
+                      <span className="text-[11px] font-bold text-zinc-600 dark:text-zinc-400 group-hover:text-orange-600 transition-colors uppercase tracking-tight -mt-1">
                         {isAdmin ? "Admin" : "Compte"}
                       </span>
                     </Link>
-                    <button onClick={handleLogout} className="p-2 text-zinc-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all" title="Déconnexion">
+                    <button onClick={handleLogout} className="p-2 text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-lg transition-all" title="Déconnexion">
                       <LogOut className="w-4 h-4" />
                     </button>
                   </div>
                 ) : (
                   <Link href="/login" className="flex flex-col items-center gap-0 px-4 py-1 group transition-colors">
-                    <div className="p-1.5 rounded-full group-hover:bg-orange-50 transition-colors">
-                      <User className="w-5 h-5 text-zinc-800 group-hover:text-orange-600 transition-colors" />
+                    <div className="p-1.5 rounded-full group-hover:bg-orange-50 dark:group-hover:bg-orange-900/20 transition-colors">
+                      <User className="w-5 h-5 text-zinc-800 dark:text-zinc-200 group-hover:text-orange-600 transition-colors" />
                     </div>
-                    <span className="text-[11px] font-bold text-zinc-600 group-hover:text-orange-600 transition-colors uppercase tracking-tight -mt-1">Connexion</span>
+                    <span className="text-[11px] font-bold text-zinc-600 dark:text-zinc-400 group-hover:text-orange-600 transition-colors uppercase tracking-tight -mt-1">Connexion</span>
                   </Link>
                 )}
               </div>
             </div>
 
-            {/* Mobile Icons - Simplified 
-            <div className="lg:hidden flex items-center gap-0.5">
-               <NotificationBell label="" iconOnly />
-            </div>
-            */}
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="lg:hidden p-2 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition-colors"
+            >
+              <Menu className="w-6 h-6" />
+            </button>
           </div>
         </div>
 
-        {/* Mobile Unified Search Bar - Minimalist Row */}
+        {/* Mobile Unified Search Bar */}
         <div className="pb-3 md:hidden">
           <UnifiedSearchBar />
         </div>
-
-
       </div>
 
       {/* Mobile Drawer Overlay */}
       {isMobileMenuOpen && (
         <>
-          <div className="lg:hidden fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm" onClick={() => setIsMobileMenuOpen(false)} />
-          <div className="lg:hidden fixed inset-y-0 left-0 z-[70] w-[85%] max-w-sm bg-white shadow-2xl animate-in slide-in-from-left duration-300 ease-out flex flex-col">
+          <div
+            className="lg:hidden fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+          <div className="lg:hidden fixed inset-y-0 left-0 z-[70] w-[85%] max-w-sm bg-white dark:bg-zinc-900 shadow-2xl animate-in slide-in-from-left duration-300 ease-out flex flex-col">
             {/* Drawer Header */}
-            <div className="flex items-center justify-between p-5 border-b border-zinc-100">
-              <span className="text-2xl font-black text-[#0F172A] tracking-tighter">JOOTIYA<span className="text-orange-500">.</span></span>
-              <button onClick={() => setIsMobileMenuOpen(false)} className="p-2.5 rounded-full bg-zinc-100 text-zinc-600 transition-active active:scale-95">
+            <div className="flex items-center justify-between p-5 border-b border-zinc-100 dark:border-zinc-800">
+              <span className="text-2xl font-black text-[#0F172A] dark:text-white tracking-tighter">
+                JOOTIYA<span className="text-orange-500">.</span>
+              </span>
+              <button
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="p-2.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 transition-active active:scale-95"
+              >
                 <X className="w-6 h-6" />
               </button>
             </div>
 
             {/* Drawer Content */}
             <div className="flex-1 overflow-y-auto px-5 py-6 space-y-8">
+              {/* Theme Selector in Mobile Drawer */}
+              <div className="space-y-4">
+                <h3 className="text-[11px] font-black uppercase tracking-wider text-zinc-400 px-1">Apparence</h3>
+                <div className="px-1">
+                  <ThemeToggle />
+                </div>
+              </div>
+
               {/* User Section in Drawer */}
               <div className="space-y-4">
                 <h3 className="text-[11px] font-black uppercase tracking-wider text-zinc-400 px-1">Compte personnel</h3>
@@ -226,14 +243,14 @@ function PublicNavbar() {
                     <Link
                       href="/dashboard"
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="flex items-center justify-between p-3.5 rounded-2xl bg-zinc-50 hover:bg-zinc-100 transition-colors group"
+                      className="flex items-center justify-between p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors group"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-orange-600 flex items-center justify-center text-white shadow-lg shadow-orange-100">
+                        <div className="w-9 h-9 rounded-full bg-orange-600 flex items-center justify-center text-white shadow-lg shadow-orange-100 dark:shadow-none">
                           <User className="w-4.5 h-4.5" />
                         </div>
                         <div>
-                          <p className="text-sm font-bold text-zinc-900">Mon profil</p>
+                          <p className="text-sm font-bold text-zinc-900 dark:text-zinc-100">Mon profil</p>
                           <p className="text-[11px] text-zinc-500 truncate max-w-[150px]">{userEmail}</p>
                         </div>
                       </div>
@@ -241,7 +258,7 @@ function PublicNavbar() {
                     </Link>
                     <button
                       onClick={handleLogout}
-                      className="w-full flex items-center gap-3 p-4 rounded-2xl text-red-600 hover:bg-red-50 transition-colors font-bold text-sm"
+                      className="w-full flex items-center gap-3 p-4 rounded-2xl text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors font-bold text-sm"
                     >
                       <LogOut className="w-5 h-5" />
                       Déconnexion
@@ -270,60 +287,25 @@ function PublicNavbar() {
                       key={link.name}
                       href={link.href}
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="flex items-center justify-between p-3.5 rounded-2xl hover:bg-orange-50 group transition-all"
+                      className="flex items-center justify-between p-3.5 rounded-2xl hover:bg-orange-50 dark:hover:bg-orange-900/10 group transition-all"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-zinc-50 flex items-center justify-center text-zinc-600 group-hover:bg-white group-hover:text-orange-600 transition-colors shadow-sm shadow-zinc-200/50">
+                        <div className="w-9 h-9 rounded-xl bg-zinc-50 dark:bg-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-400 group-hover:bg-white dark:group-hover:bg-zinc-700 group-hover:text-orange-600 transition-colors shadow-sm shadow-zinc-200/50">
                           <link.icon className="w-4.5 h-4.5" />
                         </div>
-                        <span className="font-bold text-zinc-900 group-hover:text-orange-600 transition-colors">{link.name}</span>
+                        <span className="font-bold text-zinc-900 dark:text-zinc-100 group-hover:text-orange-600 transition-colors">{link.name}</span>
                       </div>
                       <ChevronRight className="w-4 h-4 text-zinc-300 group-hover:text-orange-600 group-hover:translate-x-1 transition-all" />
                     </Link>
                   ))}
-                  <Link
-                    href="/marketplace"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center justify-between p-4 rounded-2xl hover:bg-amber-50 group transition-all"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-zinc-50 flex items-center justify-center text-zinc-600 group-hover:bg-white group-hover:text-amber-600 transition-colors">
-                        <Star className="w-5 h-5" />
-                      </div>
-                      <span className="font-bold text-zinc-900 group-hover:text-amber-600 transition-colors">Bons plans</span>
-                    </div>
-                    <ChevronRight className="w-5 h-5 text-zinc-300 group-hover:text-amber-600 group-hover:translate-x-1 transition-all" />
-                  </Link>
-                </div>
-              </div>
-              {/* Info Pages Section */}
-              <div className="space-y-4">
-                <h3 className="text-[11px] font-black uppercase tracking-wider text-zinc-400 px-1">INFORMATIONS</h3>
-                <div className="grid grid-cols-1 gap-2">
-                  <Link
-                    href="/about"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center justify-between p-3.5 rounded-2xl hover:bg-zinc-50 group transition-all"
-                  >
-                    <span className="font-bold text-zinc-900 group-hover:text-orange-600 transition-colors">À propos</span>
-                    <ChevronRight className="w-4 h-4 text-zinc-300" />
-                  </Link>
-                  <Link
-                    href="/contact"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center justify-between p-3.5 rounded-2xl hover:bg-zinc-50 group transition-all"
-                  >
-                    <span className="font-bold text-zinc-900 group-hover:text-orange-600 transition-colors">Contact</span>
-                    <ChevronRight className="w-4 h-4 text-zinc-300" />
-                  </Link>
                 </div>
               </div>
             </div>
 
             {/* Drawer Footer */}
-            <div className="p-5 border-t border-zinc-100 bg-zinc-50/50">
+            <div className="p-5 border-t border-zinc-100 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50">
               <Link href="/marketplace/post" onClick={() => setIsMobileMenuOpen(false)}>
-                <div className="w-full h-14 rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-black shadow-lg shadow-orange-100 text-base flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.98]">
+                <div className="w-full h-14 rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-black shadow-lg shadow-orange-100 dark:shadow-none text-base flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.98]">
                   <PlusCircle className="w-6 h-6" />
                   Déposer une annonce
                 </div>

@@ -141,25 +141,26 @@
 }
 
 .dark {
-  --background: 0 0% 3.9%;
-  --foreground: 0 0% 98%;
-  --card: 0 0% 3.9%;
-  --card-foreground: 0 0% 98%;
-  --popover: 0 0% 3.9%;
-  --popover-foreground: 0 0% 98%;
-  --primary: 0 0% 98%;
-  --primary-foreground: 0 0% 9%;
-  --secondary: 0 0% 14.9%;
-  --secondary-foreground: 0 0% 98%;
-  --muted: 0 0% 14.9%;
-  --muted-foreground: 0 0% 63.9%;
-  --accent: 0 0% 14.9%;
-  --accent-foreground: 0 0% 98%;
+  --background: 224 71% 4%;
+  --foreground: 213 31% 91%;
+  --card: 224 71% 4%;
+  --card-foreground: 213 31% 91%;
+  --popover: 224 71% 4%;
+  --popover-foreground: 213 31% 91%;
+  --primary: 25 95% 53%;
+  /* Keep vibrant orange */
+  --primary-foreground: 0 0% 100%;
+  --secondary: 222 47% 11%;
+  --secondary-foreground: 210 40% 98%;
+  --muted: 223 47% 11%;
+  --muted-foreground: 215.4 16.3% 56.9%;
+  --accent: 216 34% 17%;
+  --accent-foreground: 210 40% 98%;
   --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 0 0% 98%;
-  --border: 0 0% 14.9%;
-  --input: 0 0% 14.9%;
-  --ring: 0 0% 83.1%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 216 34% 17%;
+  --input: 216 34% 17%;
+  --ring: 25 95% 53%;
   --chart-1: 220 70% 50%;
   --chart-2: 160 60% 45%;
   --chart-3: 30 80% 55%;
@@ -196,5 +197,100 @@
     body {
       padding-bottom: 0px;
     }
+  }
+
+  /* Minimalist Design System - Typography */
+  .font-arabic {
+    font-family: var(--font-tajawal), sans-serif;
+  }
+
+  .font-latin {
+    font-family: var(--font-inter), sans-serif;
+  }
+
+  /* Default to Inter for mixed content */
+  body {
+    font-family: var(--font-inter), var(--font-tajawal), sans-serif;
+  }
+
+  /* Arabic content uses Tajawal */
+  [lang="ar"],
+  [dir="rtl"] {
+    font-family: var(--font-tajawal), var(--font-inter), sans-serif;
+  }
+}
+
+/* Minimalist Spacing Scale (8px grid) */
+@layer utilities {
+  .space-1 {
+    @apply gap-2;
+  }
+
+  /* 8px */
+  .space-2 {
+    @apply gap-4;
+  }
+
+  /* 16px */
+  .space-3 {
+    @apply gap-6;
+  }
+
+  /* 24px */
+  .space-4 {
+    @apply gap-8;
+  }
+
+  /* 32px */
+  .space-6 {
+    @apply gap-12;
+  }
+
+  /* 48px */
+  .space-8 {
+    @apply gap-16;
+  }
+
+  /* 64px */
+
+  /* Generous White Space Utilities */
+  .breathing-room {
+    @apply px-6 py-8;
+  }
+
+  .breathing-room-sm {
+    @apply px-4 py-6;
+  }
+
+  .breathing-room-lg {
+    @apply px-8 py-12;
+  }
+
+  /* Minimalist Shadows */
+  .shadow-minimal {
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  }
+
+  .shadow-soft {
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.07);
+  }
+
+  .shadow-floating {
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  }
+
+  /* Pill Shape Utility */
+  .pill {
+    border-radius: 50px;
+  }
+
+  /* Hide Scrollbar but Keep Functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 }

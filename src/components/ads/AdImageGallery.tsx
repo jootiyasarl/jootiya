@@ -86,7 +86,7 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
                             return (
                                 <div key={index} className="relative h-full w-full flex-[0_0_100%] min-w-0">
                                     <Image
-                                        src={src}
+                                        src={getOptimizedImageUrl(src, { width: 800, height: 600, quality: 80 })}
                                         alt={`Product view ${index + 1}`}
                                         fill
                                         placeholder={blurUrl ? "blur" : "empty"}
@@ -193,12 +193,12 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
                                 <div key={index} className="relative h-full w-full flex-[0_0_100%] min-w-0 flex items-center justify-center">
                                     <div className="relative h-full w-full">
                                         <Image
-                                            src={src}
+                                            src={getOptimizedImageUrl(src, { width: 1200, height: 900, quality: 90 })}
                                             alt={`Full screen view ${index + 1}`}
                                             fill
                                             className="object-contain"
-                                            quality={100}
                                             priority={index === currentIndex}
+                                            sizes="100vw"
                                         />
                                     </div>
                                 </div>

@@ -1,13 +1,21 @@
 import type { Metadata } from "next";
-import { Readex_Pro } from "next/font/google";
+import { Tajawal, Inter } from "next/font/google";
 import "./globals.css";
 import { RootNavbarShell } from "@/components/navbar/RootNavbarShell";
 import Footer from "@/components/layout/Footer";
 import { Toaster } from "sonner";
 
-const readexPro = Readex_Pro({
-  variable: "--font-readex-pro",
-  subsets: ["arabic", "latin"],
+const tajawal = Tajawal({
+  variable: "--font-tajawal",
+  subsets: ["arabic"],
+  weight: ["400", "500", "700"],
+  display: 'swap',
+});
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
   display: 'swap',
 });
 
@@ -33,20 +41,29 @@ export const viewport = {
 import { PushPermissionPrompt } from "@/components/notifications/PushPermissionPrompt";
 import { ServiceWorkerRegistration } from "@/components/notifications/ServiceWorkerRegistration";
 
+import { ThemeProvider } from "@/components/theme-provider";
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" dir="ltr" className="scroll-smooth">
+    <html lang="fr" dir="ltr" className="scroll-smooth" suppressHydrationWarning>
       <body
-        className={`${readexPro.variable} font-sans antialiased bg-white text-zinc-900`}
+        className={`${tajawal.variable} ${inter.variable} font-sans antialiased`}
       >
-        <ServiceWorkerRegistration />
-        <RootNavbarShell>{children}</RootNavbarShell>
-        <PushPermissionPrompt />
-        <Toaster position="top-center" richColors />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <ServiceWorkerRegistration />
+          <RootNavbarShell>{children}</RootNavbarShell>
+          <PushPermissionPrompt />
+          <Toaster position="top-center" richColors />
+        </ThemeProvider>
       </body>
     </html>
   );

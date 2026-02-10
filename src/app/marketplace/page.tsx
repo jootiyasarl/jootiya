@@ -4,6 +4,8 @@ import { getAds } from '@/lib/db/ads';
 import MarketplaceManager from '@/components/marketplace/MarketplaceManager';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
 import { ListingSkeleton } from '@/components/ads/ListingSkeleton';
+import { HorizontalCategoriesBar } from '@/components/marketplace/HorizontalCategoriesBar';
+import { FloatingBottomNav } from '@/components/navigation/FloatingBottomNav';
 
 export const metadata = {
   title: 'Marché - Jootiya',
@@ -35,8 +37,8 @@ export default async function MarketplacePage({
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-zinc-50">
-        <div className="text-center p-8 bg-white rounded-3xl shadow-xl border border-zinc-100 max-w-md">
+      <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-950">
+        <div className="text-center p-8 bg-white dark:bg-zinc-900 rounded-3xl shadow-xl border border-zinc-100 dark:border-zinc-800 max-w-md">
           <h2 className="text-xl font-bold text-zinc-900 mb-2">Erreur de chargement</h2>
           <p className="text-zinc-500 mb-6">
             Désolé, une erreur est survenue lors de la récupération des annonces.
@@ -53,21 +55,29 @@ export default async function MarketplacePage({
   }
 
   return (
-    <div className="min-h-screen bg-zinc-50 pb-16 pt-8 dark:bg-zinc-950">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">
-            Marché
-          </h1>
-          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-            Découvrez de superbes offres autour de vous.
-          </p>
+    <>
+      {/* Horizontal Categories Bar */}
+      <HorizontalCategoriesBar />
+
+      <div className="min-h-screen bg-white dark:bg-zinc-950 pb-24 pt-8 breathing-room-sm">
+        <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-6">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">
+              Marché
+            </h1>
+            <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+              Découvrez de superbes offres autour de vous.
+            </p>
+          </div>
         </div>
+
+        <Suspense fallback={<ListingSkeleton />}>
+          <MarketplaceManager ads={ads || []} />
+        </Suspense>
       </div>
 
-      <Suspense fallback={<ListingSkeleton />}>
-        <MarketplaceManager ads={ads || []} />
-      </Suspense>
-    </div>
+      {/* Floating Bottom Navigation */}
+      <FloatingBottomNav />
+    </>
   );
 }

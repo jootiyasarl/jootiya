@@ -178,18 +178,18 @@ export default async function AdPage({ params }: AdPageProps) {
   const memberSince = sellerProfile?.created_at ? new Date(sellerProfile.created_at).getFullYear() : "2024";
 
   return (
-    <div dir="ltr" className="min-h-screen bg-[#F8FAFC] pb-32 font-sans text-zinc-900">
+    <div dir="ltr" className="min-h-screen bg-[#F8FAFC] dark:bg-zinc-950 pb-32 font-sans text-zinc-900 dark:text-zinc-100">
 
       {/* Top Header / Breadcrumbs */}
-      <div className="bg-white border-b border-zinc-200 sticky top-0 z-40 backdrop-blur-md bg-white/90 supports-[backdrop-filter]:bg-white/60">
+      <div className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 sticky top-0 z-40 backdrop-blur-md bg-white/90 dark:bg-zinc-900/90 supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-zinc-900/60">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between text-sm">
             <nav className="flex items-center gap-2 text-zinc-500 overflow-hidden">
-              <Link href="/" className="hover:text-zinc-900 transition-colors flex-shrink-0">Accueil</Link>
+              <Link href="/" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors flex-shrink-0">Accueil</Link>
               <ChevronRight className="h-4 w-4 flex-shrink-0" />
-              <Link href="/marketplace" className="hover:text-zinc-900 transition-colors flex-shrink-0">Marché</Link>
+              <Link href="/marketplace" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors flex-shrink-0">Marché</Link>
               <ChevronRight className="h-4 w-4 flex-shrink-0" />
-              <span className="text-zinc-900 font-medium truncate">{ad.title}</span>
+              <span className="text-zinc-900 dark:text-zinc-100 font-medium truncate">{ad.title}</span>
             </nav>
 
             <div className="flex items-center gap-3 flex-shrink-0">
@@ -222,14 +222,14 @@ export default async function AdPage({ params }: AdPageProps) {
           <div className="lg:col-span-8 space-y-8">
 
             {/* Image Gallery Component */}
-            <section className="rounded-3xl overflow-hidden shadow-sm bg-white">
+            <section className="rounded-3xl overflow-hidden shadow-sm bg-white dark:bg-zinc-900">
               <AdImageGallery images={images} />
             </section>
 
             {/* Mobile Title & Price (Visible only on mobile) */}
             <div className="lg:hidden space-y-3 px-1">
               <div className="flex items-start justify-between gap-4">
-                <h1 className="text-2xl font-bold leading-tight sm:text-3xl text-zinc-900">{ad.title}</h1>
+                <h1 className="text-2xl font-bold leading-tight sm:text-3xl text-zinc-900 dark:text-zinc-100">{ad.title}</h1>
                 <div className="text-xl font-black text-orange-600 whitespace-nowrap">{formattedPrice}</div>
               </div>
               <div className="flex items-center gap-2 text-sm text-zinc-500">
@@ -241,8 +241,8 @@ export default async function AdPage({ params }: AdPageProps) {
             </div>
 
             {/* Description Card */}
-            <div className="rounded-3xl bg-white p-6 shadow-sm border border-zinc-100 sm:p-8">
-              <h2 className="text-lg font-bold flex items-center gap-2 mb-6">
+            <div className="rounded-3xl bg-white dark:bg-zinc-900 p-6 shadow-sm border border-zinc-100 dark:border-zinc-800 sm:p-8">
+              <h2 className="text-lg font-bold flex items-center gap-2 mb-6 text-zinc-900 dark:text-zinc-100">
                 <Sparkles className="w-5 h-5 text-orange-500" />
                 Description
               </h2>
@@ -252,13 +252,13 @@ export default async function AdPage({ params }: AdPageProps) {
 
               {/* Specs Grid */}
               <div className="mt-10 grid grid-cols-2 gap-4 pt-8 border-t border-zinc-50 sm:grid-cols-3">
-                <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-100">
+                <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700">
                   <span className="text-[10px] uppercase tracking-wider text-zinc-400 font-bold block mb-1">Catégorie</span>
-                  <p className="font-semibold text-zinc-900 text-sm">{ad.category || "Autre"}</p>
+                  <p className="font-semibold text-zinc-900 dark:text-zinc-100 text-sm">{ad.category || "Autre"}</p>
                 </div>
-                <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-100">
+                <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700">
                   <span className="text-[10px] uppercase tracking-wider text-zinc-400 font-bold block mb-1">État</span>
-                  <p className="font-semibold text-zinc-900 text-sm flex items-center gap-1.5">
+                  <p className="font-semibold text-zinc-900 dark:text-zinc-100 text-sm flex items-center gap-1.5">
                     {ad.condition === 'new' ? (
                       <>
                         <span className="w-2 h-2 rounded-full bg-green-500" /> Neuf
@@ -270,9 +270,9 @@ export default async function AdPage({ params }: AdPageProps) {
                     )}
                   </p>
                 </div>
-                <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-100">
+                <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700">
                   <span className="text-[10px] uppercase tracking-wider text-zinc-400 font-bold block mb-1">Vues</span>
-                  <p className="font-semibold text-zinc-900 text-sm flex items-center gap-1.5">
+                  <p className="font-semibold text-zinc-900 dark:text-zinc-100 text-sm flex items-center gap-1.5">
                     <Eye className="w-3.5 h-3.5 text-zinc-400" /> {ad.views_count || 1}
                   </p>
                 </div>
@@ -304,8 +304,8 @@ export default async function AdPage({ params }: AdPageProps) {
           <div className="lg:col-span-4 space-y-6">
 
             {/* Primary Details Card (Desktop) */}
-            <div className="hidden lg:block rounded-3xl bg-white p-8 shadow-sm border border-zinc-100 sticky top-24">
-              <h1 className="text-2xl font-bold leading-tight mb-2 text-zinc-900">{ad.title}</h1>
+            <div className="hidden lg:block rounded-3xl bg-white dark:bg-zinc-900 p-8 shadow-sm border border-zinc-100 dark:border-zinc-800 sticky top-24">
+              <h1 className="text-2xl font-bold leading-tight mb-2 text-zinc-900 dark:text-zinc-100">{ad.title}</h1>
               <div className="flex items-center gap-2 text-sm text-zinc-500 mb-8">
                 <MapPin className="h-4 w-4" />
                 <span>{ad.city}</span>
@@ -313,7 +313,7 @@ export default async function AdPage({ params }: AdPageProps) {
                 <span>{formattedDate}</span>
               </div>
 
-              <div className="text-4xl font-black text-zinc-900 mb-8 tracking-tight">{formattedPrice}</div>
+              <div className="text-4xl font-black text-zinc-900 dark:text-zinc-100 mb-8 tracking-tight">{formattedPrice}</div>
 
               <div className="space-y-4">
                 <ContactActions
@@ -326,7 +326,7 @@ export default async function AdPage({ params }: AdPageProps) {
             </div>
 
             {/* Verified Seller Card */}
-            <div className="rounded-3xl bg-white p-6 shadow-sm border border-zinc-100 relative overflow-hidden group">
+            <div className="rounded-3xl bg-white dark:bg-zinc-900 p-6 shadow-sm border border-zinc-100 dark:border-zinc-800 relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-24 h-24 bg-orange-50 rounded-bl-[80px] -mr-4 -mt-4 z-0 transition-transform group-hover:scale-110" />
 
               <div className="relative z-10 flex items-center gap-4 mb-6">
@@ -338,7 +338,7 @@ export default async function AdPage({ params }: AdPageProps) {
                   )}
                 </div>
                 <div>
-                  <h3 className="font-bold text-zinc-900 flex items-center gap-1.5">
+                  <h3 className="font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
                     {sellerName}
                     {isTrusted && (
                       <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-blue-100 text-[10px] text-blue-700 font-extrabold tracking-wide border border-blue-200">
@@ -352,12 +352,12 @@ export default async function AdPage({ params }: AdPageProps) {
               </div>
 
               <div className="grid grid-cols-2 gap-3 relative z-10">
-                <div className="bg-zinc-50 p-3 rounded-2xl text-center border border-zinc-100">
-                  <span className="block text-lg font-black text-zinc-900">100%</span>
+                <div className="bg-zinc-50 dark:bg-zinc-800 p-3 rounded-2xl text-center border border-zinc-100 dark:border-zinc-700">
+                  <span className="block text-lg font-black text-zinc-900 dark:text-zinc-100">100%</span>
                   <span className="text-[10px] text-zinc-400 uppercase font-bold tracking-wider">Réponse</span>
                 </div>
-                <div className="bg-zinc-50 p-3 rounded-2xl text-center border border-zinc-100">
-                  <span className="block text-lg font-black text-zinc-900 flex items-center justify-center gap-1">
+                <div className="bg-zinc-50 dark:bg-zinc-800 p-3 rounded-2xl text-center border border-zinc-100 dark:border-zinc-700">
+                  <span className="block text-lg font-black text-zinc-900 dark:text-zinc-100 flex items-center justify-center gap-1">
                     {avgRating > 0 ? avgRating : '-'}
                     <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
                   </span>
@@ -398,9 +398,9 @@ export default async function AdPage({ params }: AdPageProps) {
 
         {/* Similar Ads Section */}
         {similarAds.length > 0 && (
-          <div className="mt-24 border-t border-zinc-100 pt-16">
+          <div className="mt-24 border-t border-zinc-100 dark:border-zinc-800 pt-16">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-bold text-zinc-900">Annonces similaires</h2>
+              <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Annonces similaires</h2>
               <Link href={`/marketplace?category=${ad.category}`} className="text-sm font-bold text-orange-600 hover:text-orange-700 hidden sm:block">
                 Voir plus
               </Link>
