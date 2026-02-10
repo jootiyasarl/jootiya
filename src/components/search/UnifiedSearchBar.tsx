@@ -61,45 +61,45 @@ export function UnifiedSearchBar() {
 
     return (
         <div className="w-full" ref={containerRef}>
-            {/* Desktop Version - Ultra-Premium Pill */}
-            <div className="hidden lg:flex items-center bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl border border-white/20 dark:border-zinc-800/20 rounded-full p-1.5 h-14 transition-all shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.08)] hover:bg-white dark:hover:bg-zinc-900 ring-1 ring-zinc-200/50 dark:ring-zinc-800/50">
+            {/* Desktop Version - Refined & Compact Pill */}
+            <div className="hidden lg:flex items-center bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl border border-white/20 dark:border-zinc-800/20 rounded-full p-1 h-12 transition-all shadow-sm ring-1 ring-zinc-200/50 dark:ring-zinc-800/50 hover:shadow-md hover:bg-white dark:hover:bg-zinc-900">
                 {/* Keyword Search */}
-                <div className="flex-[1.5] flex items-center px-6 gap-3 min-w-0">
-                    <Search className="w-5 h-5 text-orange-500/70 shrink-0" />
+                <div className="flex-[1.2] flex items-center px-4 gap-2.5 min-w-0">
+                    <Search className="w-4 h-4 text-orange-500/70 shrink-0" />
                     <input
                         type="text"
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                         onKeyDown={handleKeyDown}
-                        placeholder="Que recherchez-vous ?"
-                        className="w-full bg-transparent outline-none text-[14px] font-semibold text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 placeholder:font-medium"
+                        placeholder="Rechercher..."
+                        className="w-full bg-transparent outline-none text-[13px] font-semibold text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 placeholder:font-medium"
                     />
                 </div>
 
                 {/* Separator */}
-                <div className="h-6 w-[1px] bg-zinc-200 dark:bg-zinc-800 shrink-0" />
+                <div className="h-5 w-[1px] bg-zinc-200 dark:bg-zinc-800 shrink-0" />
 
                 {/* Category Select */}
-                <div className="relative h-full flex items-center min-w-[200px]">
+                <div className="relative h-full flex items-center min-w-[150px]">
                     <button
                         type="button"
                         onClick={(e) => {
                             e.stopPropagation();
                             setActiveMenu(prev => prev === 'category' ? null : 'category');
                         }}
-                        className="flex items-center justify-between w-full h-full px-5 gap-3 text-zinc-700 dark:text-zinc-300 hover:text-orange-600 transition-colors z-10"
+                        className="flex items-center justify-between w-full h-full px-4 gap-2 text-zinc-700 dark:text-zinc-300 hover:text-orange-600 transition-colors z-10"
                     >
-                        <div className="flex items-center gap-2.5 overflow-hidden pointer-events-none text-xs font-black uppercase tracking-tight">
-                            <LayoutGrid className="w-4 h-4 text-zinc-400 shrink-0" />
+                        <div className="flex items-center gap-2 overflow-hidden pointer-events-none text-[10px] font-black uppercase tracking-wider">
+                            <LayoutGrid className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
                             <span className="truncate">{category.label}</span>
                         </div>
-                        <ChevronDown className={cn("w-4 h-4 text-zinc-400 transition-transform duration-300 pointer-events-none", activeMenu === 'category' && "rotate-180")} />
+                        <ChevronDown className={cn("w-3.5 h-3.5 text-zinc-400 transition-transform duration-300 pointer-events-none", activeMenu === 'category' && "rotate-180")} />
                     </button>
                     {activeMenu === 'category' && (
-                        <div className="absolute top-full left-0 mt-3 w-64 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xl border border-zinc-100 dark:border-zinc-800 rounded-2xl shadow-2xl py-2 z-50 max-h-[400px] overflow-y-auto animate-in fade-in zoom-in-95 duration-200">
+                        <div className="absolute top-full left-0 mt-3 w-60 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xl border border-zinc-100 dark:border-zinc-800 rounded-2xl shadow-2xl py-2 z-50 max-h-[400px] overflow-y-auto animate-in fade-in zoom-in-95 duration-200">
                             {CATEGORIES.map((cat) => (
                                 <button key={cat.id} onClick={(e) => { e.stopPropagation(); setCategory(cat); setActiveMenu(null); }}
-                                    className={cn("w-full text-left px-5 py-2.5 text-[13px] font-bold transition-all hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600", category.id === cat.id ? "text-orange-600 bg-orange-50/50 dark:bg-orange-900/30 font-black" : "text-zinc-600 dark:text-zinc-400")}
+                                    className={cn("w-full text-left px-5 py-2 text-[12px] font-bold transition-all hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600", category.id === cat.id ? "text-orange-600 bg-orange-50/50 dark:bg-orange-900/30 font-black" : "text-zinc-600 dark:text-zinc-400")}
                                 >
                                     {cat.label}
                                 </button>
@@ -109,29 +109,29 @@ export function UnifiedSearchBar() {
                 </div>
 
                 {/* Separator */}
-                <div className="h-6 w-[1px] bg-zinc-200 dark:bg-zinc-800 shrink-0" />
+                <div className="h-5 w-[1px] bg-zinc-200 dark:bg-zinc-800 shrink-0" />
 
                 {/* Location Select */}
-                <div className="relative h-full flex items-center min-w-[190px]">
+                <div className="relative h-full flex items-center min-w-[150px]">
                     <button
                         type="button"
                         onClick={(e) => {
                             e.stopPropagation();
                             setActiveMenu(prev => prev === 'location' ? null : 'location');
                         }}
-                        className="flex items-center justify-between w-full h-full px-5 gap-3 text-zinc-700 dark:text-zinc-300 hover:text-orange-600 transition-colors z-10"
+                        className="flex items-center justify-between w-full h-full px-4 gap-2 text-zinc-700 dark:text-zinc-300 hover:text-orange-600 transition-colors z-10"
                     >
-                        <div className="flex items-center gap-2.5 overflow-hidden pointer-events-none text-xs font-black uppercase tracking-tight">
-                            <MapPin className="w-4 h-4 text-zinc-400 shrink-0" />
+                        <div className="flex items-center gap-2 overflow-hidden pointer-events-none text-[10px] font-black uppercase tracking-wider">
+                            <MapPin className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
                             <span className="truncate">{location === "Choisir ville - secteur" ? "Ma ville" : location}</span>
                         </div>
-                        <ChevronDown className={cn("w-4 h-4 text-zinc-400 transition-transform duration-300 pointer-events-none", activeMenu === 'location' && "rotate-180")} />
+                        <ChevronDown className={cn("w-3.5 h-3.5 text-zinc-400 transition-transform duration-300 pointer-events-none", activeMenu === 'location' && "rotate-180")} />
                     </button>
                     {activeMenu === 'location' && (
-                        <div className="absolute top-full right-0 mt-3 w-64 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xl border border-zinc-100 dark:border-zinc-800 rounded-2xl shadow-2xl py-2 z-50 max-h-[400px] overflow-y-auto animate-in fade-in zoom-in-95 duration-200">
+                        <div className="absolute top-full right-0 mt-3 w-60 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xl border border-zinc-100 dark:border-zinc-800 rounded-2xl shadow-2xl py-2 z-50 max-h-[400px] overflow-y-auto animate-in fade-in zoom-in-95 duration-200">
                             {ALL_CITIES.map((city) => (
                                 <button key={city} onClick={(e) => { e.stopPropagation(); setLocation(city); setActiveMenu(null); }}
-                                    className={cn("w-full text-left px-5 py-2.5 text-[13px] font-bold transition-all hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600", location === city ? "text-orange-600 bg-orange-50/50 dark:bg-orange-900/30 font-black" : "text-zinc-600 dark:text-zinc-400")}
+                                    className={cn("w-full text-left px-5 py-2 text-[12px] font-bold transition-all hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600", location === city ? "text-orange-600 bg-orange-50/50 dark:bg-orange-900/30 font-black" : "text-zinc-600 dark:text-zinc-400")}
                                 >
                                     {city}
                                 </button>
@@ -140,12 +140,12 @@ export function UnifiedSearchBar() {
                     )}
                 </div>
 
-                {/* Premium Search Button */}
+                {/* Refined Search Button */}
                 <Button
                     onClick={handleSearch}
-                    className="h-11 rounded-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-black px-7 shadow-lg shadow-orange-500/25 flex items-center gap-2.5 text-xs uppercase tracking-[0.1em] transition-all hover:scale-[1.03] active:scale-[0.97] shrink-0 ml-1 border border-orange-400/20"
+                    className="h-10 rounded-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-black px-6 shadow-md shadow-orange-500/10 flex items-center gap-2 text-[10px] uppercase tracking-wider transition-all hover:scale-[1.03] active:scale-[0.97] shrink-0 ml-1"
                 >
-                    <Search className="w-4 h-4" />
+                    <Search className="w-3.5 h-3.5" />
                     <span>Chercher</span>
                 </Button>
             </div>
