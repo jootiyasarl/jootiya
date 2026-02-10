@@ -383,10 +383,12 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                             const isMe = msg.sender_id === currentUser.id;
                             return (
                                 <div key={msg.id} className={cn("flex w-full", isMe ? "justify-end" : "justify-start", msg.is_optimistic && "opacity-70")}>
-                                    <div className={cn("flex flex-col max-w-[90%] md:max-w-[70%]", isMe ? "items-end" : "items-start")}>
+                                    <div className={cn("flex flex-col max-w-[85%] md:max-w-[70%] transition-all duration-500 animate-in fade-in slide-in-from-bottom-2", isMe ? "items-end" : "items-start")}>
                                         <div className={cn(
-                                            "px-3 py-2 md:px-4 md:py-2 shadow-sm text-sm md:text-[15px] leading-relaxed break-words relative",
-                                            isMe ? "bg-orange-500 text-white rounded-2xl rounded-tr-sm" : "bg-white border border-zinc-100 text-zinc-800 rounded-2xl rounded-tl-sm"
+                                            "px-4 py-2.5 md:px-5 md:py-3 text-sm md:text-[16px] leading-relaxed break-words relative shadow-premium",
+                                            isMe
+                                                ? "bg-gradient-to-br from-orange-500 to-orange-600 text-white rounded-[1.5rem] rounded-tr-sm"
+                                                : "bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 text-zinc-800 dark:text-zinc-100 rounded-[1.5rem] rounded-tl-sm"
                                         )}>
                                             {msg.message_type === 'audio' && (
                                                 <ChatAudioPlayer url={msg.file_url || ""} isMe={isMe} />
