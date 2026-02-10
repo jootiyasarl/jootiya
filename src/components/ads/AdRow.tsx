@@ -23,6 +23,7 @@ interface AdRowProps {
   onEdit?: (ad: DashboardAd) => void;
   onDelete?: (ad: DashboardAd) => void;
   onBoost?: (ad: DashboardAd) => void;
+  onStatusUpdate?: (adId: string, newStatus: string) => void;
 }
 
 function getStatusMeta(status: DashboardAdStatus) {
@@ -79,7 +80,7 @@ function formatPrice(price: number | null, currency: string | null) {
   return `${price} ${trimmedCurrency}`;
 }
 
-export function AdRow({ ad, canBoost = false, onEdit, onDelete, onBoost }: AdRowProps) {
+export function AdRow({ ad, canBoost = false, onEdit, onDelete, onBoost, onStatusUpdate }: AdRowProps) {
   const { label, badgeClass, dotClass } = getStatusMeta(ad.status);
   const priceLabel = formatPrice(ad.price, ad.currency);
   const views = ad.views_count ?? 0;
@@ -134,7 +135,46 @@ export function AdRow({ ad, canBoost = false, onEdit, onDelete, onBoost }: AdRow
         </div>
       </td>
       <td className="whitespace-nowrap px-4 py-3 text-right text-sm">
-        <div className="flex justify-end gap-1">
+        <div className="flex justify-end gap-1 items-center">
+          {/* Status Toggles */}
+          {ad.status !== 'sold' && (ad.status === 'active' || ad.status === 'approved') && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="h-8 px-2 text-[10px] font-bold border-green-200 text-green-700 hover:bg-green-50"
+              onClick={() => onStatusUpdate?.(ad.id, 'sold')}
+            >
+              MARQUER VENDU
+            </Button>
+          )}
+
+          {ad.status === 'sold' && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="h-8 px-2 text-[10px] font-bold border-zinc-200 text-zinc-700 hover:bg-zinc-50"
+              onClick={() => onStatusUpdate?.(ad.id, 'approved')}
+            >
+              RÉACTIVER
+            </Button>
+          )}
+
+          {ad.status !== 'archived' && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="h-8 px-2 text-[10px] font-bold border-amber-200 text-amber-700 hover:bg-amber-50"
+              onClick={() => onStatusUpdate?.(ad.id, 'archived')}
+            >
+              MASQUER
+            </Button>
+          )}
+
+          <div className="w-[1px] h-4 bg-zinc-200 mx-1" />
+
           <Button
             type="button"
             variant="outline"
@@ -143,7 +183,7 @@ export function AdRow({ ad, canBoost = false, onEdit, onDelete, onBoost }: AdRow
             onClick={() => onEdit?.(ad)}
           >
             <Pencil className="h-3.5 w-3.5" />
-            <span className="sr-only">Edit ad</span>
+            <span className="sr-only">Modifier</span>
           </Button>
           <Button
             type="button"
@@ -153,20 +193,8 @@ export function AdRow({ ad, canBoost = false, onEdit, onDelete, onBoost }: AdRow
             onClick={() => onDelete?.(ad)}
           >
             <Trash2 className="h-3.5 w-3.5" />
-            <span className="sr-only">Delete ad</span>
+            <span className="sr-only">Supprimer</span>
           </Button>
-          {canBoost ? (
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              className="h-8 w-8 border-amber-200 text-amber-700 hover:bg-amber-50"
-              onClick={() => onBoost?.(ad)}
-            >
-              <Sparkles className="h-3.5 w-3.5" />
-              <span className="sr-only">Boost ad</span>
-            </Button>
-          ) : null}
         </div>
       </td>
     </tr>

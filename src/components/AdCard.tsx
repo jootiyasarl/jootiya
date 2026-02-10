@@ -18,6 +18,7 @@ export type PublicAdCardAd = {
   imageUrl?: string;
   sellerName?: string;
   currency?: string;
+  status?: string;
 };
 
 export interface AdCardProps {
@@ -83,6 +84,15 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete }: 
         {isFeatured && (
           <div className="absolute left-3 top-3 z-20 rounded-lg bg-orange-500 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
             À la une
+          </div>
+        )}
+
+        {/* Sold Overlay */}
+        {ad.status === "sold" && (
+          <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
+            <div className="rotate-[-12deg] rounded-xl border-4 border-white px-4 py-2 text-2xl font-black tracking-tighter text-white shadow-2xl outline outline-2 outline-white/50">
+              VENDU
+            </div>
           </div>
         )}
       </div>

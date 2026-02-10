@@ -33,6 +33,24 @@ export function MyAdsClient({ initialAds }: MyAdsClientProps) {
         router.push(`/dashboard/ads/${ad.id}/edit`);
     }
 
+    async function handleStatusUpdate(adId: string, newStatus: string) {
+        setAds((prev) =>
+            prev.map((ad) => (ad.id === adId ? { ...ad, status: newStatus } : ad))
+        );
+
+        const { error } = await supabase
+            .from("ads")
+            .update({ status: newStatus })
+            .eq("id", adId);
+
+        if (error) {
+            console.error("Error updating status:", error);
+            // Revert state if error
+            setAds(initialAds);
+            setError("Failed to update status.");
+        }
+    }
+
     function handleRequestDelete(ad: DashboardAd) {
         setAdToDelete(ad);
     }
@@ -52,13 +70,29 @@ export function MyAdsClient({ initialAds }: MyAdsClientProps) {
             if (userError) throw userError;
             if (!user) throw new Error("You must be signed in to delete an ad.");
 
-            const { error: updateError } = await supabase
+            // 1. Cleanup Storage (Save space as requested)
+            if (adToDelete.images && adToDelete.images.length > 0) {
+                // Extract file names from URLs
+                const filesToRemove = adToDelete.images.map(url => {
+                    const parts = url.split('/');
+                    return parts[parts.length - 1];
+                });
+
+                if (filesToRemove.length > 0) {
+                    await supabase.storage
+                        .from("ad-images")
+                        .remove(filesToRemove);
+                }
+            }
+
+            // 2. Actual Delete from DB (Trigger will move it to ads_archive)
+            const { error: deleteError } = await supabase
                 .from("ads")
-                .update({ status: "deleted" })
+                .delete()
                 .eq("id", adToDelete.id)
                 .eq("seller_id", user.id);
 
-            if (updateError) throw updateError;
+            if (deleteError) throw deleteError;
 
             setAds((prev) => prev.filter((ad) => ad.id !== adToDelete.id));
             setLastDeletedAd(adToDelete);
@@ -85,13 +119,39 @@ export function MyAdsClient({ initialAds }: MyAdsClientProps) {
             if (userError) throw userError;
             if (!user) throw new Error("You must be signed in to restore an ad.");
 
-            const { error: updateError } = await supabase
-                .from("ads")
-                .update({ status: lastDeletedAd.status })
+            // Restore from ads_archive to ads
+            // We fetch from archive first
+            const { data: archivedAd, error: fetchError } = await supabase
+                .from("ads_archive")
+                .select("*")
                 .eq("id", lastDeletedAd.id)
-                .eq("seller_id", user.id);
+                .single();
 
-            if (updateError) throw updateError;
+            if (fetchError) throw fetchError;
+
+            // Insert back into ads
+            const { error: insertError } = await supabase
+                .from("ads")
+                .insert({
+                    id: archivedAd.id,
+                    seller_id: archivedAd.seller_id,
+                    category_id: archivedAd.category_id,
+                    title: archivedAd.title,
+                    description: archivedAd.description,
+                    price: archivedAd.price,
+                    currency: archivedAd.currency,
+                    image_urls: archivedAd.image_urls,
+                    city: archivedAd.city,
+                    neighborhood: archivedAd.neighborhood,
+                    status: archivedAd.status,
+                    views_count: archivedAd.views_count,
+                    created_at: archivedAd.original_created_at
+                });
+
+            if (insertError) throw insertError;
+
+            // Delete from archive
+            await supabase.from("ads_archive").delete().eq("id", archivedAd.id);
 
             setAds((prev) => [lastDeletedAd, ...prev]);
             setLastDeletedAd(null);
@@ -214,6 +274,7 @@ export function MyAdsClient({ initialAds }: MyAdsClientProps) {
                                         canBoost={canBoost}
                                         onEdit={() => handleEdit(ad)}
                                         onDelete={() => handleRequestDelete(ad)}
+                                        onStatusUpdate={handleStatusUpdate}
                                     />
                                 ))}
                             </tbody>
