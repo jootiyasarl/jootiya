@@ -204,14 +204,17 @@ function PublicNavbar() {
         </div>
       </div>
 
-      {/* Mobile Drawer Overlay */}
+      {/* Mobile Drawer Overlay - HIGHEST Z-INDEX */}
       {isMobileMenuOpen && (
         <>
+          {/* Dark Overlay - Covers entire screen */}
           <div
-            className="lg:hidden fixed inset-0 z-[9998] bg-black/40 backdrop-blur-sm"
+            className="lg:hidden fixed inset-0 z-[9998] bg-black opacity-50"
             onClick={() => setIsMobileMenuOpen(false)}
+            aria-hidden="true"
           />
-          <div className="lg:hidden fixed inset-y-0 left-0 z-[9999] w-[85%] max-w-sm max-h-screen bg-white dark:bg-zinc-900 shadow-2xl animate-in slide-in-from-left duration-300 ease-out flex flex-col pb-safe">
+          {/* Sidebar Menu - Slides from left */}
+          <div className="lg:hidden fixed top-0 bottom-0 left-0 z-[9999] w-[85%] max-w-sm h-screen bg-white dark:bg-zinc-900 shadow-2xl animate-in slide-in-from-left duration-300 ease-out flex flex-col">
             {/* Drawer Header */}
             <div className="flex items-center justify-between p-5 border-b border-zinc-100 dark:border-zinc-800 flex-shrink-0">
               <span className="text-2xl font-black text-[#0F172A] dark:text-white tracking-tighter">
