@@ -84,6 +84,9 @@ export default function MarketplaceManager({ ads }: { ads: any[] }) {
             listingGridProps={{
                 items: formattedAds,
                 isLoading: false,
+                searchQuery: query,
+                category: searchParams.get("category") || undefined,
+                city: activeCity || undefined,
             }}
         />
     );

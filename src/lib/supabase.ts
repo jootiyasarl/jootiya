@@ -126,3 +126,14 @@ export async function getServerUser(): Promise<User | null> {
 
   return data.user;
 }
+
+// Browser client for client components
+export function createSupabaseBrowserClient() {
+  return createClient(supabaseUrl as string, supabaseAnonKey as string, {
+    auth: {
+      persistSession: true,
+      storageKey: 'sb-auth-token',
+    },
+  });
+}
+

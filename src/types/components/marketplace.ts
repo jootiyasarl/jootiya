@@ -15,6 +15,9 @@ export interface ListingGridProps {
   items: ListingCardProps[];
   isLoading?: boolean;
   skeletonCount?: number;
+  searchQuery?: string;
+  category?: string;
+  city?: string;
 }
 
 export interface MarketplaceSearchBarProps {

@@ -2,8 +2,9 @@
 
 import type { ListingGridProps } from "@/types/components/marketplace";
 import { ListingCard } from "./ListingCard";
+import { NoResultsFallback } from "../NoResultsFallback";
 
-export function ListingGrid({ items, isLoading, skeletonCount = 8 }: ListingGridProps) {
+export function ListingGrid({ items, isLoading, skeletonCount = 8, searchQuery, category, city }: ListingGridProps) {
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -18,11 +19,7 @@ export function ListingGrid({ items, isLoading, skeletonCount = 8 }: ListingGrid
   }
 
   if (!items.length) {
-    return (
-      <div className="rounded-xl border border-dashed bg-zinc-50 p-8 text-center text-sm text-zinc-500">
-        Aucune annonce trouvée.
-      </div>
-    );
+    return <NoResultsFallback searchQuery={searchQuery} category={category} city={city} />;
   }
 
   return (
