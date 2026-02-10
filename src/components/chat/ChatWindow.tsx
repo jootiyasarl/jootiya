@@ -316,9 +316,9 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
     };
 
     return (
-        <div className="flex flex-col h-[100dvh] bg-[#FAFAFA] relative">
-            {/* Header */}
-            <div className="bg-white border-b border-zinc-100 p-3 md:p-4 flex items-center justify-between shadow-sm z-10 sticky top-0">
+        <div className="flex flex-col h-[100dvh] bg-[#F4F4F9] dark:bg-zinc-950 relative">
+            {/* Header: Pro Frosted Design */}
+            <div className="glass-frosted border-b border-zinc-200/50 dark:border-white/5 p-3 md:p-4 flex items-center justify-between shadow-premium z-20 sticky top-0">
                 <div className="flex items-center gap-2 md:gap-3">
                     <Button variant="ghost" size="icon" onClick={onBack} className="md:hidden -ml-2 text-zinc-500 h-9 w-9">
                         <ChevronLeft className="h-6 w-6" />
@@ -367,8 +367,8 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                 />
             )}
 
-            {/* Messages List */}
-            <ScrollArea className="flex-1 p-4 sm:p-6">
+            {/* Messages List: Native Scrolling Area */}
+            <ScrollArea className="flex-1 px-4 py-6 md:px-8">
                 <div className="space-y-6">
                     {isLoading ? (
                         <div className="flex justify-center py-10">
@@ -466,8 +466,8 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                 ))}
             </div>
 
-            {/* Input Area */}
-            <div className="p-2 md:p-3 bg-zinc-100/50 backdrop-blur-sm border-t border-zinc-200 z-50 sticky bottom-0 pb-safe-bottom">
+            {/* Input Area: High-End Frosted Glass Container */}
+            <div className="p-3 md:p-4 glass-frosted border-t border-zinc-200/50 dark:border-white/5 z-50 sticky bottom-0 pb-safe-bottom shadow-[0_-10px_30px_rgba(0,0,0,0.03)]">
                 <input
                     type="file"
                     id="chat-file-input"
@@ -496,14 +496,14 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                             />
                         ) : (
                             <>
-                                <Button type="button" size="icon" variant="ghost" className="h-10 w-10 text-zinc-500 rounded-full shrink-0">
+                                <Button type="button" size="icon" variant="ghost" className="h-10 w-10 text-zinc-400 hover:text-orange-600 rounded-full shrink-0 transition-colors">
                                     <Smile className="h-6 w-6" />
                                 </Button>
                                 <Input
                                     value={newMessage}
                                     onChange={(e) => setNewMessage(e.target.value)}
-                                    placeholder="Message..."
-                                    className="flex-1 bg-transparent border-none focus-visible:ring-0 px-2 py-3 font-medium text-[16px] min-w-0"
+                                    placeholder="Ecrivez votre message..."
+                                    className="flex-1 bg-transparent border-none focus-visible:ring-0 px-2 py-3 font-bold text-[16px] placeholder:text-zinc-400 min-w-0"
                                 />
                                 {/* Paperclip: Use label for robust touch target */}
                                 <label
@@ -535,8 +535,8 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                             onClick={newMessage.trim() ? (e) => handleSendMessage(e) : undefined}
                             disabled={isSending}
                             className={cn(
-                                "h-12 w-12 rounded-full flex items-center justify-center transition-all shadow-md active:scale-90 p-0",
-                                newMessage.trim() ? "bg-orange-600 text-white" : "bg-[#128C7E] text-white"
+                                "h-12 w-12 rounded-2xl flex items-center justify-center transition-all shadow-lg active:scale-90 p-0",
+                                newMessage.trim() ? "bg-orange-500 text-white shadow-orange-200" : "bg-[#128C7E] text-white shadow-green-100"
                             )}
                         >
                             {newMessage.trim() ? (
