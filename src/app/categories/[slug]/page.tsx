@@ -49,7 +49,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
     // 1. Fetch Category & Hierarchy
     const { data: category, error: catError } = await supabase
         .from("categories")
-        .select("*")
+        .select("*, parent_id, description, seo_footer_text")
         .eq("slug", slug)
         .single();
 
@@ -178,6 +178,19 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
                     </>
                 )}
             </div>
+
+            {/* SEO Footer Content */}
+            {category.seo_footer_text && (
+                <div className="mt-16 pt-8 border-t border-zinc-200">
+                    <div className="prose prose-sm prose-zinc max-w-none text-zinc-500 bg-white p-6 md:p-8 rounded-3xl border border-zinc-100 shadow-sm">
+                        {category.seo_footer_text.split('\n').map((line: string, i: number) => (
+                            <p key={i} className="mb-4 last:mb-0 leading-relaxed">
+                                {line}
+                            </p>
+                        ))}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
