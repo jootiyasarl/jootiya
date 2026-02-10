@@ -48,11 +48,11 @@ export function HorizontalCategoriesBar() {
                                 {/* Circular Icon Container */}
                                 <div
                                     className={cn(
-                                        "w-16 h-16 rounded-full flex items-center justify-center transition-all duration-200",
+                                        "w-[60px] h-[60px] rounded-full flex items-center justify-center transition-all duration-200",
                                         "border-2",
                                         isActive
                                             ? "border-[#FF6B00] bg-orange-50 dark:bg-orange-950/30"
-                                            : "border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 group-hover:border-[#FF6B00] group-hover:bg-orange-50 dark:group-hover:bg-orange-950/30"
+                                            : "border-zinc-100 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 group-hover:border-[#FF6B00] group-hover:bg-orange-50 dark:group-hover:bg-orange-950/30"
                                     )}
                                 >
                                     <Icon

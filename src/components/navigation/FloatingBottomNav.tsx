@@ -17,9 +17,9 @@ export function FloatingBottomNav() {
     const pathname = usePathname();
 
     return (
-        <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 pb-safe">
+        <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-[100] pb-safe">
             {/* Background with blur */}
-            <div className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl border-t border-zinc-100 dark:border-zinc-800 shadow-floating">
+            <div className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl border-t border-zinc-100 dark:border-zinc-800 shadow-2xl">
                 <div className="mx-auto max-w-7xl px-4">
                     <div className="flex items-center justify-around h-16 relative">
                         {navItems.map((item) => {
@@ -31,10 +31,10 @@ export function FloatingBottomNav() {
                                     <Link
                                         key={item.id}
                                         href={item.href}
-                                        className="flex flex-col items-center justify-center group absolute left-1/2 -translate-x-1/2 -top-8"
+                                        className="flex flex-col items-center justify-center group absolute left-1/2 -translate-x-1/2 -top-8 z-[110]"
                                     >
-                                        {/* Hero Circle Button */}
-                                        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#FF6B00] to-[#FF8533] shadow-floating flex items-center justify-center transition-transform duration-200 active:scale-95 hover:scale-110">
+                                        {/* Hero Circle Button with Enhanced Shadow */}
+                                        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#FF6B00] to-[#FF8533] shadow-[0_8px_30px_rgb(255,107,0,0.4)] flex items-center justify-center transition-transform duration-200 active:scale-95 hover:scale-110">
                                             <Icon className="w-7 h-7 text-white" strokeWidth={2} />
                                         </div>
                                         {/* Label */}

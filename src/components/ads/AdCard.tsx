@@ -31,29 +31,31 @@ export function AdCard({ ad, canBoost, onEdit, onDelete }: { ad: Ad; canBoost?: 
       className="group relative block overflow-hidden transition-all duration-200 hover:-translate-y-1"
     >
       {/* Image Container - Minimalist with rounded-xl */}
-      <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-800">
-        <Image
-          src={thumbnailUrl}
-          alt={ad.title}
-          fill
-          placeholder="blur"
-          blurDataURL={blurUrl}
-          className="object-cover transition-transform duration-300 group-hover:scale-105"
-          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-          loading="lazy"
-        />
+      <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-800 p-0.5">
+        <div className="relative w-full h-full rounded-lg overflow-hidden">
+          <Image
+            src={thumbnailUrl}
+            alt={ad.title}
+            fill
+            placeholder="blur"
+            blurDataURL={blurUrl}
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            loading="lazy"
+          />
 
-        {/* Wishlist Heart - Top Right */}
-        <WishlistHeart adId={ad.id} />
+          {/* Wishlist Heart - Top Right */}
+          <WishlistHeart adId={ad.id} />
 
-        {/* Sold Overlay */}
-        {ad.status === "sold" && (
-          <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
-            <div className="rotate-[-12deg] rounded-xl border-4 border-white px-4 py-2 text-2xl font-black tracking-tighter text-white shadow-floating">
-              VENDU
+          {/* Sold Overlay */}
+          {ad.status === "sold" && (
+            <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
+              <div className="rotate-[-12deg] rounded-xl border-4 border-white px-4 py-2 text-2xl font-black tracking-tighter text-white shadow-floating">
+                VENDU
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* Content - Minimalist with generous spacing */}
@@ -70,7 +72,7 @@ export function AdCard({ ad, canBoost, onEdit, onDelete }: { ad: Ad; canBoost?: 
         </div>
 
         {/* Price - Bold Orange at Bottom */}
-        <div className="text-lg font-bold text-[#FF6B00]">
+        <div className="text-xl font-extrabold text-[#FF6B00]">
           {priceDisplay} {currencyDisplay}
         </div>
 
