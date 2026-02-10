@@ -101,7 +101,7 @@ export function MarketplaceSearchBar({
   return (
     <div className="flex w-full items-center relative group max-w-xl" ref={dropdownRef}>
       <input
-        className="w-full bg-white border border-zinc-200 focus:border-blue-300 focus:ring-4 focus:ring-blue-100 rounded-xl py-3 pr-12 pl-4 text-sm transition-all outline-none"
+        className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 focus:ring-4 focus:ring-orange-100 dark:focus:ring-orange-950/30 rounded-2xl py-3.5 pr-14 pl-5 text-[15px] font-bold transition-all outline-none shadow-premium placeholder:text-zinc-400 placeholder:font-medium"
         type="search"
         value={query}
         onChange={(e) => {
@@ -126,9 +126,9 @@ export function MarketplaceSearchBar({
         )}
       </button>
 
-      {/* Autocomplete Dropdown */}
+      {/* Autocomplete Dropdown: Pro Glass Design */}
       {showDropdown && suggestions.length > 0 && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-zinc-200 rounded-xl shadow-lg overflow-hidden z-50 max-h-80 overflow-y-auto">
+        <div className="absolute top-full left-0 right-0 mt-3 glass-frosted rounded-[1.5rem] shadow-premium overflow-hidden z-50 max-h-80 overflow-y-auto">
           {suggestions.map((suggestion, index) => (
             <button
               key={suggestion.id}
