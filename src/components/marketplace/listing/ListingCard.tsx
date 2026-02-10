@@ -18,7 +18,7 @@ export function ListingCard(props: ListingCardProps) {
   } = props;
 
   return (
-    <article className="group cursor-pointer flex flex-col gap-3 bg-white hover:bg-zinc-50/50 transition-all duration-200 active:scale-[0.98] select-none">
+    <article className="group cursor-pointer flex flex-col gap-3 bg-white dark:bg-zinc-900 rounded-[2rem] p-3 shadow-premium hover:shadow-2xl transition-all duration-300 active:scale-[0.98] select-none border border-zinc-100 dark:border-zinc-800">
       <Link href={href} className="flex flex-col gap-3">
         {/* Seller Info */}
         <div className="flex items-center gap-2 px-1">
@@ -29,7 +29,7 @@ export function ListingCard(props: ListingCardProps) {
         </div>
 
         {/* Image Container */}
-        <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-zinc-100">
+        <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-zinc-100 shadow-inner-soft">
           {imageUrl ? (
             <Image
               src={imageUrl}
@@ -55,7 +55,7 @@ export function ListingCard(props: ListingCardProps) {
           </button>
 
           {badgeLabel && (
-            <div className="absolute left-3 top-3 rounded-lg bg-orange-600 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
+            <div className="absolute left-3 top-3 rounded-full bg-orange-600/90 backdrop-blur-md px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.1em] text-white shadow-lg">
               {badgeLabel === "Featured" ? "À la une" : badgeLabel}
             </div>
           )}
@@ -67,8 +67,8 @@ export function ListingCard(props: ListingCardProps) {
             {title}
           </h3>
 
-          <div className="flex flex-col gap-0.5 mt-1">
-            <span className="text-[17px] font-black text-zinc-900">
+          <div className="flex flex-col gap-0.5 mt-2">
+            <span className="text-xl font-black text-orange-600 tracking-tight">
               {price}
             </span>
             <div className="flex items-center gap-1.5 text-zinc-500 text-xs mt-1">
