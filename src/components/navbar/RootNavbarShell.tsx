@@ -2,18 +2,16 @@
 
 import { ReactNode, Suspense } from "react";
 import { usePathname } from "next/navigation";
-import PublicNavbar from "./PublicNavbar";
 import { MobileBottomNav } from "./MobileBottomNav";
-import Footer from "../layout/Footer";
 
 interface RootNavbarShellProps {
   children: ReactNode;
+  navbar: ReactNode;
+  footer: ReactNode;
 }
 
-export function RootNavbarShell({ children }: RootNavbarShellProps) {
+export function RootNavbarShell({ children, navbar, footer }: RootNavbarShellProps) {
   const pathname = usePathname();
-
-  const isHome = pathname === "/" || pathname === "/ar" || pathname === "/fr";
 
   const isSpecialPath =
     pathname?.startsWith("/dashboard") ||
@@ -29,7 +27,7 @@ export function RootNavbarShell({ children }: RootNavbarShellProps) {
       {!isSpecialPath && (
         <>
           <Suspense fallback={<div className="h-16 w-full bg-white border-b border-zinc-200" />}>
-            <PublicNavbar isHome={isHome} />
+            {navbar}
           </Suspense>
           {/* Hide Bottom Nav on Post Ad and Ad Details pages to prevent overlap with sticky actions */}
           {!(pathname?.startsWith('/marketplace/post') || pathname?.startsWith('/ads/')) && (
@@ -40,7 +38,7 @@ export function RootNavbarShell({ children }: RootNavbarShellProps) {
       <main className="min-h-screen">
         {children}
       </main>
-      {!isSpecialPath && <Footer />}
+      {!isSpecialPath && footer}
     </>
   );
 }

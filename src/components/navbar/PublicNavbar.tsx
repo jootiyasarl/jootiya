@@ -4,12 +4,9 @@ import { UnifiedSearchBar } from "@/components/search/UnifiedSearchBar";
 import { DesktopActions } from "./DesktopActions";
 import { MobileMenu } from "./MobileMenu";
 import { getServerUser } from "@/lib/supabase-server";
+import { NavbarLogo } from "./NavbarLogo";
 
-interface PublicNavbarProps {
-  isHome?: boolean;
-}
-
-export default async function PublicNavbar({ isHome = false }: PublicNavbarProps) {
+export default async function PublicNavbar() {
   const user = await getServerUser();
   const userEmail = user?.email ?? null;
   const isAdmin = userEmail === "jootiyasarl@gmail.com";
@@ -21,17 +18,7 @@ export default async function PublicNavbar({ isHome = false }: PublicNavbarProps
         <div className="flex h-16 items-center justify-between gap-8 py-2">
           {/* Left: Logo */}
           <div className="flex items-center">
-            <Link href="/" className="flex items-center shrink-0">
-              {isHome ? (
-                <h1 className="text-xl md:text-2xl font-black tracking-tighter text-[#0F172A] dark:text-white">
-                  JOOTIYA <span className="text-orange-500">.</span>
-                </h1>
-              ) : (
-                <div className="text-xl md:text-2xl font-black tracking-tighter text-[#0F172A] dark:text-white">
-                  JOOTIYA <span className="text-orange-500">.</span>
-                </div>
-              )}
-            </Link>
+            <NavbarLogo />
           </div>
 
           {/* Center: Search Bar */}

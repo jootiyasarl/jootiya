@@ -40,6 +40,7 @@ export const viewport = {
 
 import { PushPermissionPrompt } from "@/components/notifications/PushPermissionPrompt";
 import { ServiceWorkerRegistration } from "@/components/notifications/ServiceWorkerRegistration";
+import PublicNavbar from "@/components/navbar/PublicNavbar";
 
 import { ThemeProvider } from "@/components/theme-provider";
 
@@ -60,7 +61,12 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <ServiceWorkerRegistration />
-          <RootNavbarShell>{children}</RootNavbarShell>
+          <RootNavbarShell
+            navbar={<PublicNavbar />}
+            footer={<Footer />}
+          >
+            {children}
+          </RootNavbarShell>
           <PushPermissionPrompt />
           <Toaster position="top-center" richColors />
         </ThemeProvider>
