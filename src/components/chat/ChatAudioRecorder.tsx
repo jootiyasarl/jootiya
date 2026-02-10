@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Mic, Trash2, Send, Loader2 } from "lucide-react";
+import { Mic, Trash2, Send, Loader2, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabaseClient";
 import { toast } from "sonner";
+import { encodeToMp3, blobToAudioBuffer } from "@/lib/audioUtils";
+import { cn } from "@/lib/utils";
 
 interface ChatAudioRecorderProps {
     onSend: (fileUrl: string) => void;
@@ -16,7 +18,7 @@ interface ChatAudioRecorderProps {
 export function ChatAudioRecorder({ onSend, onCancel, initialX, initialY }: ChatAudioRecorderProps) {
     const [isRecording, setIsRecording] = useState(false);
     const [duration, setDuration] = useState(0);
-    const [isUploading, setIsUploading] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
     const [cancelDistance, setCancelDistance] = useState(0);
     const [isLocked, setIsLocked] = useState(false);
 
@@ -38,7 +40,7 @@ export function ChatAudioRecorder({ onSend, onCancel, initialX, initialY }: Chat
 
     const startRecording = async () => {
         if (typeof window === 'undefined' || !navigator.mediaDevices || !window.MediaRecorder) {
-            toast.error("Votre navigateur ne supporte pas l'enregistrement audio.");
+            toast.error("Votre navigateur ne supportه pas l'enregistrement audio.");
             onCancel();
             return;
         }
@@ -46,23 +48,9 @@ export function ChatAudioRecorder({ onSend, onCancel, initialX, initialY }: Chat
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
-            // Professional Prioritized MIME Types: MP4/AAC for max compatibility
-            const MIME_TYPES = [
-                "audio/mp4;codecs=mp4a",
-                "audio/webm;codecs=opus",
-                "audio/webm",
-                "audio/mp4",
-                "audio/ogg;codecs=opus",
-                "audio/wav",
-                "audio/aac"
-            ];
-
-            const mimeType = MIME_TYPES.find(type => MediaRecorder.isTypeSupported(type)) || "";
-            const options = mimeType ? { mimeType } : {};
-
-            console.log("Senior Engineer: Using MIME Type", mimeType);
-
-            const mediaRecorder = new MediaRecorder(stream, options);
+            // Note: We use raw MediaRecorder to catch the stream. 
+            // We'll compress it later using AudioContext -> lamejs
+            const mediaRecorder = new MediaRecorder(stream);
             mediaRecorderRef.current = mediaRecorder;
             chunksRef.current = [];
 
@@ -71,17 +59,19 @@ export function ChatAudioRecorder({ onSend, onCancel, initialX, initialY }: Chat
             };
 
             mediaRecorder.onstop = async () => {
-                // If cancelled (distance > 50 and not locked during the recording period)
-                // Actually, if it's currently showing cancel state, don't upload
-                if (!isLockedRef.current && cancelDistanceRef.current > 50) {
+                // If user swiped to cancel and wasn't locked
+                if (!isLockedRef.current && cancelDistanceRef.current > 80) {
+                    onCancel();
                     return;
                 }
 
-                const finalMimeType = mediaRecorderRef.current?.mimeType || "audio/webm";
-                const audioBlob = new Blob(chunksRef.current, { type: finalMimeType });
-                if (audioBlob.size < 1000) return;
+                const rawBlob = new Blob(chunksRef.current, { type: mediaRecorder.mimeType });
+                if (rawBlob.size < 500) {
+                    onCancel();
+                    return;
+                }
 
-                await uploadAudio(audioBlob, finalMimeType);
+                await processAndUpload(rawBlob);
             };
 
             mediaRecorder.start();
@@ -105,35 +95,41 @@ export function ChatAudioRecorder({ onSend, onCancel, initialX, initialY }: Chat
         }
         setIsRecording(false);
         if (shouldCleanup) {
+            // This is called when we want to fully abort (e.g. Garbage can icon clicked)
             onCancel();
         }
     };
 
-    const uploadAudio = async (blob: Blob, mimeType: string) => {
-        setIsUploading(true);
-        const extensions: Record<string, string> = {
-            'audio/webm': 'webm', 'audio/mp4': 'mp4', 'audio/mpeg': 'mp3',
-            'audio/ogg': 'ogg', 'audio/wav': 'wav', 'audio/aac': 'aac'
-        };
-        const ext = extensions[mimeType.split(';')[0]] || 'webm';
-        const fileName = `${Date.now()}.${ext}`;
-        const filePath = `chat-audios/${fileName}`;
-
+    const processAndUpload = async (rawBlob: Blob) => {
+        setIsProcessing(true);
         try {
-            const { data, error } = await supabase.storage
-                .from("chat-audios")
-                .upload(filePath, blob);
+            // Phase 1: Professional Compression
+            console.log("Senior Engineer: Starting MP3 encoding...", (rawBlob.size / 1024).toFixed(1), "KB");
+            const audioBuffer = await blobToAudioBuffer(rawBlob);
+            const mp3Blob = await encodeToMp3(audioBuffer);
+            console.log("Senior Engineer: Compression complete.", (mp3Blob.size / 1024).toFixed(1), "KB");
 
-            if (error) throw error;
+            // Phase 2: Upload to Supabase Storage
+            const fileName = `${Date.now()}.mp3`;
+            const filePath = `chat-audios/${fileName}`;
+
+            const { error: uploadError } = await supabase.storage
+                .from("chat-audios")
+                .upload(filePath, mp3Blob, { contentType: 'audio/mpeg' });
+
+            if (uploadError) throw uploadError;
 
             const { data: { publicUrl } } = supabase.storage
                 .from("chat-audios")
                 .getPublicUrl(filePath);
+
             onSend(publicUrl);
         } catch (error: any) {
-            toast.error(`Erreur d'envoi: ${error.message}`);
+            console.error("Audio Processing Error:", error);
+            toast.error("Échec du traitement du message vocal.");
+            onCancel();
         } finally {
-            setIsUploading(false);
+            setIsProcessing(false);
         }
     };
 
@@ -143,17 +139,12 @@ export function ChatAudioRecorder({ onSend, onCancel, initialX, initialY }: Chat
         return `${min}:${sec.toString().padStart(2, "0")}`;
     };
 
-    // Auto-start and Global listeners
     useEffect(() => {
         startRecording();
 
         const handleGlobalUp = () => {
             if (isRecordingRef.current && !isLockedRef.current) {
-                if (cancelDistanceRef.current > 50) {
-                    stopRecording(true);
-                } else {
-                    stopRecording(false);
-                }
+                stopRecording(false);
             }
         };
 
@@ -166,11 +157,15 @@ export function ChatAudioRecorder({ onSend, onCancel, initialX, initialY }: Chat
             const deltaX = startXRef.current - x;
             const deltaY = startYRef.current - y;
 
-            if (deltaX > 0) setCancelDistance(Math.min(deltaX, 100));
+            // Swipe Left to Cancel
+            if (deltaX > 0) {
+                setCancelDistance(Math.min(deltaX, 150));
+            }
 
-            if (deltaY > 60 && !isLockedRef.current) {
+            // Swipe Up to Lock
+            if (deltaY > 80 && !isLockedRef.current) {
                 setIsLocked(true);
-                toast.success("Enregistrement verrouillé");
+                toast.success("Enregistrement verrouillé (Locked)");
             }
         };
 
@@ -184,59 +179,89 @@ export function ChatAudioRecorder({ onSend, onCancel, initialX, initialY }: Chat
             window.removeEventListener('touchend', handleGlobalUp);
             window.removeEventListener('mousemove', handleGlobalMove);
             window.removeEventListener('touchmove', handleGlobalMove);
-            stopRecording(false);
+            // Don't stopRecording here as it might trigger on unmount before finish
         };
     }, []);
 
+    const showCancelIcon = cancelDistance > 60;
+
     return (
-        <div className="flex items-center gap-3 flex-1 bg-transparent relative overflow-hidden h-full min-h-[48px]">
+        <div className="flex items-center gap-3 flex-1 bg-transparent relative overflow-hidden h-full min-h-[48px] animate-in fade-in slide-in-from-right-2 duration-300">
             <div className="flex items-center gap-3 flex-1 pl-3">
-                <div className="relative flex items-center justify-center w-5 h-5">
+                {/* Status Indicator */}
+                <div className="relative flex items-center justify-center w-5 h-5 shrink-0">
                     <div className="absolute inset-0 bg-red-500 rounded-full animate-ping opacity-20" />
-                    <div className="w-2.5 h-2.5 bg-red-600 rounded-full shadow-[0_0_8px_rgba(220,38,38,0.5)]" />
+                    <Mic className="h-4 w-4 text-red-600 relative z-10" />
                 </div>
 
-                <span className="text-sm font-black text-zinc-900 tabular-nums">
+                {/* Counter */}
+                <span className="text-sm font-black text-zinc-900 tabular-nums shrink-0">
                     {formatDuration(duration)}
                 </span>
 
-                <div className="flex-1 relative flex items-center justify-center">
-                    {isLocked ? (
-                        <Button
-                            onClick={() => stopRecording(true)}
-                            variant="ghost" size="sm"
-                            className="text-red-600 font-bold text-[10px] uppercase h-8 px-2"
-                        >
-                            <Trash2 className="w-4 h-4 mr-1" /> Annuler
-                        </Button>
+                {/* Interaction Clue / Slider */}
+                <div className="flex-1 overflow-hidden">
+                    <div
+                        className="transition-transform duration-75 flex items-center gap-2"
+                        style={{ transform: !isLocked ? `translateX(-${cancelDistance}px)` : 'none' }}
+                    >
+                        {isLocked ? (
+                            <div className="flex items-center gap-2 bg-zinc-100/80 px-3 py-1 rounded-full border border-zinc-200">
+                                <Lock className="w-3 h-3 text-orange-600" />
+                                <span className="text-[10px] font-black text-zinc-500 uppercase tracking-tighter">Verrouillé</span>
+                            </div>
+                        ) : (
+                            <span className="text-[10px] md:text-[11px] font-black text-zinc-400 uppercase tracking-widest whitespace-nowrap animate-pulse">
+                                اسحب لليسار للإلغاء <span className="opacity-40 ml-1">←</span>
+                            </span>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            {/* Actions Area */}
+            <div className="flex items-center gap-2 pr-2 shrink-0">
+                {isLocked && (
+                    <Button
+                        onClick={() => stopRecording(true)}
+                        variant="ghost"
+                        size="icon"
+                        className="h-10 w-10 text-zinc-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
+                    >
+                        <Trash2 className="w-5 h-5" />
+                    </Button>
+                )}
+
+                <div className={cn(
+                    "h-12 w-12 rounded-full flex items-center justify-center transition-all duration-200",
+                    showCancelIcon ? "bg-red-50 text-red-600 scale-110" : "bg-orange-50 text-orange-600",
+                    isLocked && "bg-orange-600 text-white shadow-lg active:scale-95 cursor-pointer"
+                )}
+                    onClick={isLocked ? () => stopRecording(false) : undefined}
+                >
+                    {isProcessing ? (
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                    ) : isLocked ? (
+                        <Send className="w-5 h-5 ml-0.5" />
+                    ) : showCancelIcon ? (
+                        <Trash2 className="w-5 h-5 animate-bounce" />
                     ) : (
-                        <span className="text-[9px] md:text-[10px] font-black text-zinc-400 uppercase tracking-widest animate-pulse whitespace-nowrap">
-                            ← إلغاء | ↑ قفل
-                        </span>
+                        <Mic className="h-6 w-6 animate-pulse" />
                     )}
                 </div>
             </div>
 
-            <div className="flex items-center gap-2 pr-2">
-                {isLocked ? (
-                    <Button
-                        onClick={() => stopRecording(false)}
-                        className="bg-orange-600 text-white rounded-full w-10 h-10 p-0 shadow-lg"
-                    >
-                        <Send className="w-5 h-5 ml-0.5" />
-                    </Button>
-                ) : (
-                    <div className="relative w-10 h-10 flex items-center justify-center rounded-full bg-orange-50 shrink-0 border border-orange-100">
-                        {cancelDistance > 50 ? <Trash2 className="w-5 h-5 text-red-600" /> : <Mic className="w-5 h-5 text-orange-600 animate-pulse" />}
-                    </div>
-                )}
-            </div>
-
-            {isUploading && (
-                <div className="absolute inset-0 bg-white/90 backdrop-blur-md flex items-center justify-center z-30">
-                    <div className="flex items-center gap-2 bg-zinc-900 text-white px-4 py-2 rounded-full shadow-xl">
-                        <Loader2 className="w-4 h-4 animate-spin text-orange-500" />
-                        <span className="text-xs font-black uppercase">جاري الإرسال...</span>
+            {/* Overlay for processing/sending */}
+            {isProcessing && (
+                <div className="absolute inset-0 bg-white/95 backdrop-blur-sm flex items-center justify-center z-30 animate-in fade-in duration-300">
+                    <div className="flex items-center gap-3 bg-zinc-900 text-white px-5 py-2.5 rounded-2xl shadow-2xl border border-white/10">
+                        <div className="relative">
+                            <Loader2 className="w-5 h-5 animate-spin text-orange-500" />
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="text-[11px] font-black uppercase tracking-wider leading-none">جاري الضغط...</span>
+                            <span className="text-[9px] text-zinc-400 font-bold mt-1">تجهيز الملف فائق السرعة</span>
+                        </div>
                     </div>
                 </div>
             )}
