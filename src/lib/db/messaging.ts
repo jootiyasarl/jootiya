@@ -1,4 +1,4 @@
-import { getAuthenticatedServerClient } from "../supabase";
+import { getAuthenticatedServerClient } from "../supabase-server";
 import { Conversation } from "@/types/messaging";
 
 export async function getConversations() {

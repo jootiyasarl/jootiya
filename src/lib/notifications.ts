@@ -1,4 +1,4 @@
-import { createSupabaseServerClient } from "./supabase";
+import { createSupabaseServerClient } from "./supabase-server";
 
 export type NotificationType = 'info' | 'success' | 'warning' | 'error' | 'message' | 'ad_approval' | 'price_drop' | 'follow_up';
 
