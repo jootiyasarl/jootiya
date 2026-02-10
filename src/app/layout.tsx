@@ -11,20 +11,23 @@ const readexPro = Readex_Pro({
   display: 'swap',
 });
 
-export const viewport = {
-  width: 'device-width',
-  initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
-};
-
 export const metadata: Metadata = {
   title: "Jootiya - Le n°1 de l'achat et de la vente au Maroc",
   description:
     "Jootiya, la première plateforme au Maroc pour acheter et vendre en toute sécurité.",
+  manifest: "/manifest.json",
   icons: {
     icon: "/favicon.svg",
+    apple: "/favicon.svg",
   },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: "#f97316",
 };
 
 import { PushPermissionPrompt } from "@/components/notifications/PushPermissionPrompt";

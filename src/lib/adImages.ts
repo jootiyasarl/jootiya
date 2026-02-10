@@ -20,6 +20,7 @@ export async function compressImageFile(
     maxSizeMB: options.maxSizeMB || 0.5,
     maxWidthOrHeight: options.maxWidth || 1200,
     useWebWorker: true,
+    preserveExif: false, // Explicitly strip EXIF/GPS metadata for privacy
   };
 
   try {

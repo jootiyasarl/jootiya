@@ -23,6 +23,7 @@ export type Message = {
     sender_id: string;
     content: string;
     is_read: boolean;
+    read_at?: string | null;
     created_at: string;
     message_type: 'text' | 'audio' | 'image' | 'file';
     file_url?: string;

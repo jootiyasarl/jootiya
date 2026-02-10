@@ -37,6 +37,41 @@ interface AdPageProps {
   }>;
 }
 
+export async function generateMetadata({ params }: AdPageProps) {
+  const { id } = await params;
+  const supabase = createSupabaseServerClient();
+  const identifier = id;
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(identifier);
+
+  let query = supabase
+    .from("ads")
+    .select("title, city, description, image_urls");
+
+  if (isUuid) {
+    query = query.or(`id.eq.${identifier},slug.eq.${identifier}`);
+  } else {
+    query = query.eq("slug", identifier);
+  }
+
+  const { data: ad } = await query.single();
+
+  if (!ad) return { title: "Annonce introuvable | Jootiya" };
+
+  const citySuffix = ad.city ? ` à ${ad.city}` : "";
+  const title = `${ad.title}${citySuffix} | Jootiya`;
+  const description = ad.description?.slice(0, 160) || `Découvrez cette annonce sur Jootiya: ${ad.title}`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: ad.image_urls?.[0] ? [{ url: ad.image_urls[0] }] : [],
+    },
+  };
+}
+
 export default async function AdPage({ params }: AdPageProps) {
   const { id } = await params;
   const user = await getServerUser();

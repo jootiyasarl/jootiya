@@ -110,12 +110,49 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                 (payload) => {
                     const newMsg = payload.new as Message;
                     setMessages((prev) => {
-                        if (prev.find(m => m.id === newMsg.id)) return prev;
+                        const exists = prev.find(m => m.id === newMsg.id);
+                        if (exists) return prev;
+
+                        // If we are currently viewing the chat and receive a message, mark it as read
+                        if (newMsg.sender_id !== currentUser.id) {
+                            supabase.from('messages')
+                                .update({ read_at: new Date().toISOString(), is_read: true })
+                                .eq('id', newMsg.id)
+                                .then();
+                        }
+
                         return [...prev, newMsg];
                     });
                 }
             )
+            .on(
+                "postgres_changes",
+                {
+                    event: "UPDATE",
+                    schema: 'public',
+                    table: 'messages',
+                    filter: `conversation_id=eq.${conversation.id}`,
+                },
+                (payload) => {
+                    const updatedMsg = payload.new as Message;
+                    if (updatedMsg.sender_id === currentUser.id) {
+                        // Other party read our message
+                        setMessages((prev) => prev.map(m => m.id === updatedMsg.id ? updatedMsg : m));
+                    }
+                }
+            )
             .subscribe();
+
+        // Mark all existing unread messages from other party as read
+        const markAsRead = async () => {
+            await supabase
+                .from('messages')
+                .update({ read_at: new Date().toISOString(), is_read: true })
+                .eq('conversation_id', conversation.id)
+                .neq('sender_id', currentUser.id)
+                .is('read_at', null);
+        };
+        markAsRead();
 
         return () => {
             supabase.removeChannel(channel);
@@ -404,7 +441,10 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                                                 msg.is_optimistic ? (
                                                     <Loader2 className="h-3 w-3 text-zinc-300 animate-spin" />
                                                 ) : (
-                                                    <CheckCheck className="h-3 w-3 text-orange-500" />
+                                                    <CheckCheck className={cn(
+                                                        "h-3 w-3 transition-colors",
+                                                        msg.read_at ? "text-blue-400" : "text-zinc-300"
+                                                    )} />
                                                 )
                                             )}
                                         </div>
