@@ -1,5 +1,3 @@
-"use client";
-
 import React from 'react';
 import Link from 'next/link';
 import {
@@ -12,10 +10,8 @@ import {
     Send,
     ShieldCheck,
     Zap,
-    Globe,
-    ExternalLink
+    Globe
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
 const POPULAR_CATEGORIES = [
     { id: "electronics", label: "Électronique" },
@@ -64,7 +60,7 @@ export default function Footer() {
                     <div className="space-y-6">
                         <h4 className="text-white text-xs font-black uppercase tracking-widest flex items-center gap-2">
                             <Zap className="w-3 h-3 text-orange-500" />
-                            Févries Populaires
+                            Catégories Populaires
                         </h4>
                         <ul className="space-y-3">
                             {POPULAR_CATEGORIES.map((cat) => (
@@ -109,11 +105,11 @@ export default function Footer() {
                             Aide & Légal
                         </h4>
                         <ul className="space-y-3">
-                            <FooterLink href="/about">Notre Concept</FooterLink>
-                            <FooterLink href="/safety">Conseils de Sécurité</FooterLink>
-                            <FooterLink href="/terms">CGU & Conditions</FooterLink>
-                            <FooterLink href="/privacy-policy">Confidentialité</FooterLink>
-                            <FooterLink href="/help">Support Client</FooterLink>
+                            <FooterLink href="/about" rel="nofollow">Notre Concept</FooterLink>
+                            <FooterLink href="/safety" rel="nofollow">Conseils de Sécurité</FooterLink>
+                            <FooterLink href="/terms" rel="nofollow">CGU & Conditions</FooterLink>
+                            <FooterLink href="/privacy-policy" rel="nofollow">Confidentialité</FooterLink>
+                            <FooterLink href="/help" rel="nofollow">Support Client</FooterLink>
                         </ul>
                     </div>
 
@@ -161,13 +157,6 @@ export default function Footer() {
                             <span>Fait au Maroc avec ❤️</span>
                         </div>
                     </div>
-
-                    <div className="flex items-center gap-6 opacity-30 hover:opacity-80 transition-all duration-500 grayscale hover:grayscale-0">
-                        <PaymentIcon name="VISA" />
-                        <PaymentIcon name="MasterCard" />
-                        <PaymentIcon name="CMI" />
-                        <PaymentIcon name="PayPal" />
-                    </div>
                 </div>
             </div>
         </footer>
@@ -178,6 +167,7 @@ function SocialLink({ href, icon, color }: { href: string; icon: React.ReactNode
     return (
         <a
             href={href}
+            rel="nofollow"
             className={`w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center text-zinc-400 transition-all duration-300 ${color} hover:bg-white/10 hover:translate-y-[-2px]`}
         >
             {icon}
@@ -185,24 +175,16 @@ function SocialLink({ href, icon, color }: { href: string; icon: React.ReactNode
     );
 }
 
-function FooterLink({ href, children }: { href: string; children: React.ReactNode }) {
+function FooterLink({ href, children, rel }: { href: string; children: React.ReactNode; rel?: string }) {
     return (
         <li>
             <Link
                 href={href}
+                rel={rel}
                 className="text-[13px] font-medium hover:text-white transition-colors flex items-center group"
             >
                 {children}
             </Link>
         </li>
-    );
-}
-
-function PaymentIcon({ name }: { name: string }) {
-    return (
-        <div className="flex flex-col items-center">
-            <span className="text-[10px] font-black text-white tracking-widest">{name}</span>
-            <div className="w-8 h-0.5 bg-orange-500/20 rounded-full mt-0.5"></div>
-        </div>
     );
 }
