@@ -158,7 +158,7 @@ export function UnifiedSearchBar() {
                     />
                 </div>
 
-                <div className="flex items-center gap-2 h-9">
+                <div className="flex items-center gap-2 h-11">
                     <div className="relative flex-1 h-full">
                         <button
                             type="button"
@@ -211,7 +211,7 @@ export function UnifiedSearchBar() {
 
                     <Button
                         onClick={handleSearch}
-                        className="w-12 h-full rounded-lg bg-orange-600 hover:bg-orange-700 text-white flex items-center justify-center p-0"
+                        className="w-12 h-full rounded-lg bg-orange-600 hover:bg-orange-700 text-white flex items-center justify-center p-0 min-h-[44px]"
                     >
                         <Search className="w-4 h-4" />
                     </Button>

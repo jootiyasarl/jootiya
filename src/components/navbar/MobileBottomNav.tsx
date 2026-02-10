@@ -3,7 +3,7 @@
 import React, { Suspense } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Search, PlusCircle, MessageCircle, User } from "lucide-react";
+import { Home, Search, PlusCircle, MessageCircle, User, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { MobileLocationFilter } from "@/components/home/MobileLocationFilter";
 
@@ -21,7 +21,7 @@ export function MobileBottomNav() {
                 <Link
                     href="/"
                     className={cn(
-                        "inline-flex flex-col items-center justify-center px-2 hover:bg-gray-50 group gap-1",
+                        "inline-flex flex-col items-center justify-center min-h-[44px] min-w-[44px] px-2 hover:bg-gray-50 group gap-1",
                         pathname === "/" ? "text-orange-600" : "text-zinc-400"
                     )}
                 >
@@ -31,16 +31,22 @@ export function MobileBottomNav() {
                     </span>
                 </Link>
 
-                {/* Radar / Location Filter - Replaces Search icon since Search is in top bar */}
-                <div className="flex items-center justify-center">
-                    <Suspense fallback={<div className="w-8 h-8 rounded-full bg-zinc-50 animate-pulse" />}>
-                        <MobileLocationFilter />
-                    </Suspense>
-                </div>
+                <Link
+                    href="/dashboard/favorites"
+                    className={cn(
+                        "inline-flex flex-col items-center justify-center min-h-[44px] min-w-[44px] px-2 hover:bg-gray-50 group gap-1",
+                        pathname === "/dashboard/favorites" ? "text-orange-600" : "text-zinc-400"
+                    )}
+                >
+                    <Heart className="w-6 h-6 group-hover:text-orange-600" />
+                    <span className="text-[10px] font-bold uppercase tracking-tighter group-hover:text-orange-600">
+                        Favoris
+                    </span>
+                </Link>
 
                 <Link
                     href="/marketplace/post"
-                    className="inline-flex flex-col items-center justify-center px-2 group relative -top-5"
+                    className="inline-flex flex-col items-center justify-center min-h-[44px] min-w-[44px] px-2 group relative -top-5"
                 >
                     <div className="p-3 bg-orange-500 rounded-full shadow-lg shadow-orange-200 group-hover:bg-orange-600 transition-all border-4 border-white active:scale-95">
                         <PlusCircle className="w-6 h-6 text-white" />
@@ -51,7 +57,7 @@ export function MobileBottomNav() {
                 <Link
                     href="/dashboard/messages"
                     className={cn(
-                        "inline-flex flex-col items-center justify-center px-2 hover:bg-gray-50 group gap-1",
+                        "inline-flex flex-col items-center justify-center min-h-[44px] min-w-[44px] px-2 hover:bg-gray-50 group gap-1",
                         pathname === "/dashboard/messages" ? "text-orange-600" : "text-zinc-400"
                     )}
                 >
@@ -64,7 +70,7 @@ export function MobileBottomNav() {
                 <Link
                     href="/dashboard"
                     className={cn(
-                        "inline-flex flex-col items-center justify-center px-2 hover:bg-gray-50 group gap-1",
+                        "inline-flex flex-col items-center justify-center min-h-[44px] min-w-[44px] px-2 hover:bg-gray-50 group gap-1",
                         pathname === "/dashboard" ? "text-orange-600" : "text-zinc-400"
                     )}
                 >

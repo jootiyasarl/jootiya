@@ -28,6 +28,7 @@ import {
   Sparkles,
   Star
 } from "lucide-react";
+import { QuickActionFooter } from "@/components/ads/QuickActionFooter";
 import Image from "next/image";
 
 export const dynamic = "force-dynamic";
@@ -428,6 +429,11 @@ export default async function AdPage({ params }: AdPageProps) {
         sellerId={ad.seller_id}
         sellerPhone={ad.phone || (Array.isArray(ad.profiles) ? ad.profiles[0]?.phone : ad.profiles?.phone)}
         currentUser={user}
+      />
+
+      <QuickActionFooter
+        phone={ad.phone || (Array.isArray(ad.profiles) ? ad.profiles[0]?.phone : ad.profiles?.phone)}
+        adTitle={ad.title}
       />
 
     </div>

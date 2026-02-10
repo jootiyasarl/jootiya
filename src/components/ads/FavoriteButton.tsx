@@ -88,7 +88,7 @@ export function FavoriteButton({ adId, initialIsFavorite = false, className }: F
             onClick={toggleFavorite}
             disabled={loading}
             className={cn(
-                "p-2 rounded-full transition-all duration-300",
+                "p-2 rounded-full transition-all duration-300 min-h-[44px] min-w-[44px] flex items-center justify-center",
                 isFavorite
                     ? "bg-red-50 text-red-500 scale-110"
                     : "bg-white/80 backdrop-blur-sm text-zinc-400 hover:text-red-500 hover:bg-red-50",

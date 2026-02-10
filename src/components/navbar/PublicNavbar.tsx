@@ -110,7 +110,7 @@ function PublicNavbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white border-b border-zinc-200">
+    <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-xl border-b border-zinc-200">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         {/* Main Nav Row */}
         <div className="flex h-16 items-center justify-between gap-4 py-2">

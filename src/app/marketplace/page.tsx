@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { getAds } from '@/lib/db/ads';
 import MarketplaceManager from '@/components/marketplace/MarketplaceManager';
 import { createSupabaseServerClient } from '@/lib/supabase';
+import { ListingSkeleton } from '@/components/ads/ListingSkeleton';
 
 export const metadata = {
   title: 'Marché - Jootiya',
@@ -64,7 +65,7 @@ export default async function MarketplacePage({
         </div>
       </div>
 
-      <Suspense fallback={<div>Chargement du marché...</div>}>
+      <Suspense fallback={<ListingSkeleton />}>
         <MarketplaceManager ads={ads || []} />
       </Suspense>
     </div>
