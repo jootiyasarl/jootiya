@@ -3,17 +3,32 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
-import { Loader2 } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 
 export function LoginRedirectHandler() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [status, setStatus] = useState<"checking" | "syncing" | "failed">("checking");
+  const [status, setStatus] = useState<"idle" | "checking" | "syncing" | "failed">("idle");
 
   useEffect(() => {
     let isActive = true;
 
     const checkSessionAndRedirect = async () => {
+      // Only run if we actually have an auth redirect or error
+      const hasHashToken = typeof window !== "undefined" && window.location.hash.includes("access_token=");
+      const hasError = searchParams.has("error") || searchParams.has("error_description");
+
+      if (hasError) {
+        setStatus("failed");
+        return;
+      }
+
+      if (!hasHashToken) {
+        // Not an OAuth redirect, just stay idle
+        return;
+      }
+
+      setStatus("checking");
       let session = null;
 
       // Poll a few times in case Supabase hasn't finished restoring
@@ -112,10 +127,20 @@ export function LoginRedirectHandler() {
     };
   }, [router, searchParams]);
 
+  if (status === "idle") {
+    return null;
+  }
+
   if (status === "failed") {
     return (
-      <div className="mb-4 p-3 rounded-xl bg-red-50 text-red-600 text-xs border border-red-100 text-center">
-        Échec de la connexion à Google. Veuillez réessayer.
+      <div className="mb-6 rounded-xl bg-red-50 p-4 border border-red-100 flex items-center gap-3 animate-in fade-in slide-in-from-top-2 duration-300">
+        <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+          <X className="w-4 h-4 text-red-600" />
+        </div>
+        <div className="flex-1">
+          <p className="text-sm font-bold text-red-900">Une erreur est survenue</p>
+          <p className="text-xs text-red-600">L'authentification Google a échoué. Veuillez réessayer.</p>
+        </div>
       </div>
     );
   }
