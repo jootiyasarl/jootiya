@@ -115,7 +115,7 @@ export function QuickActionFooter({ phone, adTitle, adId, sellerId, currentUser 
     };
 
     return (
-        <div className="lg:hidden fixed bottom-16 left-0 right-0 z-40 bg-white/80 backdrop-blur-xl border-t border-zinc-100 p-4 shadow-[0_-10px_20px_rgba(0,0,0,0.02)] animate-in slide-in-from-bottom duration-300">
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-t border-zinc-100 p-4 shadow-[0_-10px_20px_rgba(0,0,0,0.02)] animate-in slide-in-from-bottom duration-300 safe-area-bottom">
             <div className="flex gap-2 max-w-md mx-auto items-center">
                 {/* Main Contact Buttons */}
                 <a
