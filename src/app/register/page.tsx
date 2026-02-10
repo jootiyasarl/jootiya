@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SubmitButton } from "@/components/submit-button";
-import { createSupabaseServerClient, setAuthSession } from "@/lib/supabase";
+import { createSupabaseServerClient, setAuthSession } from "@/lib/supabase-server";
 import { UserPlus, ShieldCheck, Mail, Lock, ChevronLeft } from "lucide-react";
 
 export const metadata: Metadata = {

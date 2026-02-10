@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import Link from "next/link";
-import { createSupabaseServerClient } from "@/lib/supabase";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { HeroSection } from "@/components/home/HeroSection";
 import { CategoryGrid } from "@/components/home/CategoryGrid";
 import { AdCard } from "@/components/AdCard";

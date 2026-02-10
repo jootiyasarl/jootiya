@@ -1,4 +1,4 @@
-import { createSupabaseServerClient, getServerUser, getAuthenticatedServerClient } from "@/lib/supabase";
+import { createSupabaseServerClient, getServerUser, getAuthenticatedServerClient } from "@/lib/supabase-server";
 import { getSellerAds, getSellerStats } from "@/lib/db/dashboard";
 import { AnalyticsClient } from "@/components/dashboard/AnalyticsClient";
 import { redirect } from "next/navigation";

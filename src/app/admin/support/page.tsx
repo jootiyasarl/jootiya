@@ -1,4 +1,4 @@
-import { createSupabaseServerClient } from "@/lib/supabase";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { SupportTicketsList } from "@/components/admin/SupportTicketsList";
 import { LifeBuoy } from "lucide-react";
 import { Metadata } from "next";

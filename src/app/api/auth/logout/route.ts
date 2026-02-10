@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { clearAuthSession } from "@/lib/supabase";
+import { clearAuthSession } from "@/lib/supabase-server";
 
 export async function POST() {
   try {

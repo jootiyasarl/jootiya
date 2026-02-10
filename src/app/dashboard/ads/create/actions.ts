@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 import { createClient } from "@supabase/supabase-js";
-import { getProfileRole } from "@/lib/supabase";
+import { createSupabaseServerClient, getServerUser, getProfileRole } from "@/lib/supabase-server";
 import { slugify } from "@/lib/slug";
 
 const DEFAULT_SEARCH_RADIUS_KM = 3;

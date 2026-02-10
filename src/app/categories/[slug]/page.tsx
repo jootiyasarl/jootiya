@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { createSupabaseServerClient } from "@/lib/supabase";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { Breadcrumbs, BreadcrumbItem } from "@/components/navigation/Breadcrumbs";
 import { AdCard } from "@/components/AdCard";
 import { Button } from "@/components/ui/button";

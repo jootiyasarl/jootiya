@@ -1,4 +1,4 @@
-import { getServerUser } from "@/lib/supabase";
+import { getServerUser } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 import { getConversations } from "@/lib/db/messaging";
 import { MessagingClient } from "./MessagingClient";

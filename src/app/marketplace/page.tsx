@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import Link from 'next/link';
 import { getAds } from '@/lib/db/ads';
 import MarketplaceManager from '@/components/marketplace/MarketplaceManager';
-import { createSupabaseServerClient } from '@/lib/supabase';
+import { createSupabaseServerClient } from '@/lib/supabase-server';
 import { ListingSkeleton } from '@/components/ads/ListingSkeleton';
 
 export const metadata = {

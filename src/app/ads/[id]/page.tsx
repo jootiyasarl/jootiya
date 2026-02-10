@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { createSupabaseServerClient, getServerUser } from "@/lib/supabase";
+import { createSupabaseServerClient, getServerUser } from "@/lib/supabase-server";
 import { Button } from "@/components/ui/button";
 import { AdImageGallery } from "@/components/ads/AdImageGallery";
 import { ContactActions } from "@/components/ads/ContactActions";

@@ -1,4 +1,4 @@
-import { createSupabaseServerClient, getServerUser } from "@/lib/supabase";
+import { createSupabaseServerClient, getServerUser } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 import { AdCard } from "@/components/AdCard";
 import { Heart } from "lucide-react";

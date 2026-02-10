@@ -1,4 +1,4 @@
-import { createSupabaseServerClient, getServerUser } from "@/lib/supabase";
+import { createSupabaseServerClient, getServerUser } from "@/lib/supabase-server";
 import { notFound, redirect } from "next/navigation";
 import AdPostForm from "@/components/ads/AdPostForm";
 

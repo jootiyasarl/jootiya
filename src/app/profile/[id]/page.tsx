@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { createSupabaseServerClient } from "@/lib/supabase";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { AdCard } from "@/components/AdCard";
 import {
     Star,
@@ -16,7 +16,7 @@ import {
     Flag
 } from "lucide-react";
 import { ReportButton } from "@/components/ads/ReportButton";
-import { getServerUser } from "@/lib/supabase";
+import { getServerUser } from "@/lib/supabase-server";
 
 export const dynamic = "force-dynamic";
 

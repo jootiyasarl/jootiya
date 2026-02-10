@@ -1,4 +1,4 @@
-import { createSupabaseServerClient } from "@/lib/supabase";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { ReviewModerationList } from "@/components/admin/ReviewModerationList";
 import { MessageSquare } from "lucide-react";
 

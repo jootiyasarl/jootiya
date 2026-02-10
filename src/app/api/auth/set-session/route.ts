@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { Session } from "@supabase/supabase-js";
-import { setAuthSession } from "@/lib/supabase";
+import { setAuthSession } from "@/lib/supabase-server";
 
 export async function POST(req: Request) {
   try {
