@@ -6,12 +6,17 @@ export async function registerServiceWorker() {
     if (!('serviceWorker' in navigator)) return;
 
     try {
+        // Register the Main PWA Service Worker (Handles caching/offline)
+        const pwaRegistration = await navigator.serviceWorker.register('/sw.js');
+        console.log('PWA SW: Registered', pwaRegistration);
+
         // Register the Firebase Service Worker
-        const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-        console.log('FCM SW: Registered', registration);
-        return registration;
+        const firebaseRegistration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+        console.log('FCM SW: Registered', firebaseRegistration);
+
+        return { pwaRegistration, firebaseRegistration };
     } catch (e) {
-        console.error('FCM SW: Registration failed', e);
+        console.error('SW: Registration failed', e);
     }
 }
 
