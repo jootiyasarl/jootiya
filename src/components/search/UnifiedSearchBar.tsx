@@ -129,7 +129,7 @@ export function UnifiedSearchBar() {
                     </button>
                     {activeMenu === 'location' && (
                         <div className="absolute top-full right-0 mt-3 w-60 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xl border border-zinc-100 dark:border-zinc-800 rounded-2xl shadow-2xl py-2 z-50 max-h-[400px] overflow-y-auto animate-in fade-in zoom-in-95 duration-200">
-                            {ALL_CITIES.map((city) => (
+                            {ALL_CITIES.filter(city => city !== "Choisir ville - secteur").map((city) => (
                                 <button key={city} onClick={(e) => { e.stopPropagation(); setLocation(city); setActiveMenu(null); }}
                                     className={cn("w-full text-left px-5 py-2 text-[12px] font-bold transition-all hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600", location === city ? "text-orange-600 bg-orange-50/50 dark:bg-orange-900/30 font-black" : "text-zinc-600 dark:text-zinc-400")}
                                 >
@@ -204,7 +204,7 @@ export function UnifiedSearchBar() {
                         </button>
                         {activeMenu === 'location' && (
                             <div className="absolute top-full right-0 mt-2 w-[calc(200%+8px)] bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xl border border-zinc-100 dark:border-zinc-800 rounded-2xl shadow-2xl py-2 z-50 max-h-[300px] overflow-y-auto animate-in fade-in zoom-in-95 duration-200">
-                                {ALL_CITIES.map((city) => (
+                                {ALL_CITIES.filter(city => city !== "Choisir ville - secteur").map((city) => (
                                     <button key={city} onClick={(e) => { e.stopPropagation(); setLocation(city); setActiveMenu(null); }}
                                         className={cn("w-full text-left px-5 py-3 text-[13px] font-bold transition-all hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600", location === city ? "text-orange-600 bg-orange-50/50 dark:bg-orange-900/30 font-black" : "text-zinc-600 dark:text-zinc-400")}
                                     >
