@@ -18,18 +18,18 @@ export function ListingCard(props: ListingCardProps) {
   } = props;
 
   return (
-    <article className="group cursor-pointer flex flex-col gap-4 bg-white dark:bg-zinc-900 rounded-[1.5rem] p-4 shadow-premium hover:shadow-2xl transition-all duration-300 active:scale-[0.98] select-none border border-zinc-100 dark:border-zinc-800">
+    <article className="group cursor-pointer flex flex-col gap-4 bg-white dark:bg-zinc-900 rounded-[1.25rem] p-4 shadow-premium hover:shadow-2xl transition-all duration-300 active:scale-[0.98] select-none border border-zinc-100 dark:border-zinc-800">
       <Link href={href} className="flex flex-col gap-3">
         {/* Seller Info */}
         <div className="flex items-center gap-2 px-1">
-          <div className="w-8 h-8 rounded-full bg-zinc-200 flex items-center justify-center overflow-hidden">
-            <User className="w-5 h-5 text-zinc-400" />
+          <div className="w-10 h-10 rounded-full bg-zinc-200 flex items-center justify-center overflow-hidden">
+            <User className="w-6 h-6 text-zinc-400" />
           </div>
-          <span className="text-sm font-bold text-zinc-900 truncate">{sellerName || "Vendeur Jootiya"}</span>
+          <span className="text-base font-bold text-zinc-900 truncate">{sellerName || "Vendeur Jootiya"}</span>
         </div>
 
         {/* Image Container */}
-        <div className="relative aspect-square w-full overflow-hidden rounded-[1.25rem] bg-zinc-100 shadow-inner-soft">
+        <div className="relative aspect-square w-full overflow-hidden rounded-[1.5rem] bg-zinc-100 shadow-inner-soft">
           {imageUrl ? (
             <Image
               src={imageUrl}
@@ -62,17 +62,17 @@ export function ListingCard(props: ListingCardProps) {
         </div>
 
         {/* Content Section */}
-        <div className="flex flex-col gap-2 px-2 pb-3">
-          <h3 className="text-base font-medium text-zinc-900 leading-tight line-clamp-2 min-h-[3rem]">
+        <div className="flex flex-col gap-3 px-2 pb-4">
+          <h3 className="text-lg font-medium text-zinc-900 leading-tight line-clamp-2 min-h-[3.5rem]">
             {title}
           </h3>
 
           <div className="flex flex-col gap-0.5 mt-2">
-            <span className="text-2xl font-black text-orange-600 tracking-tight">
+            <span className="text-3xl font-black text-orange-600 tracking-tight">
               {price}
             </span>
             <div className="flex items-center gap-1.5 text-zinc-500 text-xs mt-1">
-              <span className="text-sm text-zinc-500 truncate">{subtitle || "Maroc"}</span>
+              <span className="text-base text-zinc-500 truncate">{subtitle || "Maroc"}</span>
               <span className="shrink-0">•</span>
               <span className="shrink-0">Aujourd'hui</span>
             </div>
