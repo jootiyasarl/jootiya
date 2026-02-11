@@ -21,7 +21,7 @@ const CATEGORIES = [
     { id: "other", label: "Autres" },
 ];
 
-const ALL_CITIES = MOROCCAN_CITIES.flatMap(region => region.cities).sort();
+const ALL_CITIES = ["Toutes les villes", ...MOROCCAN_CITIES.flatMap(region => region.cities).sort()];
 
 export function UnifiedSearchBar() {
     const router = useRouter();
