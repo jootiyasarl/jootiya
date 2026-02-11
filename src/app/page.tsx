@@ -197,25 +197,7 @@ export default async function Home({
                       );
                     })}
 
-                    {/* General Section */}
-                    <section className="space-y-6">
-                      <div className="flex items-center justify-between">
-                        <h2 className="text-xl font-bold text-zinc-900">Toutes les annonces</h2>
-                        <Link
-                          href="/marketplace"
-                          className="text-sm font-bold text-zinc-900 hover:text-orange-500 flex items-center gap-1 group"
-                        >
-                          Tout parcourir
-                          <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                        </Link>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4">
-                        {ads.slice(0, 12).map((ad) => (
-                          <AdCard key={ad.id} ad={ad} href={`/ads/${ad.id}`} />
-                        ))}
-                      </div>
-                    </section>
-                  </>
+                                      </>
                 )}
               </>
             )}
