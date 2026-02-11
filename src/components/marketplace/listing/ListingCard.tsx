@@ -46,7 +46,7 @@ export function ListingCard(props: ListingCardProps) {
 
           {/* Heart Overlay */}
           <button
-            className="absolute right-3 top-3 z-10 p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm text-zinc-800 hover:text-orange-600 transition-colors"
+            className="absolute right-3 top-3 z-10 p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm text-zinc-800 hover:text-orange-600 transition-colors rounded-[1.5rem]"
             onClick={(e) => {
               e.preventDefault();
             }}
