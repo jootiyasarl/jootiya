@@ -198,7 +198,7 @@ export function UnifiedSearchBar() {
                         >
                             <div className="flex items-center gap-2 min-w-0">
                                 <MapPin className="w-3.5 h-3.5 text-orange-500 shrink-0" />
-                                <span className="text-[11px] font-black uppercase tracking-tight truncate">{location === "Choisir ville - secteur" ? "Ma ville" : location}</span>
+                                <span className="text-[11px] font-black uppercase tracking-tight truncate">{location === "Choisir ville - secteur" ? "Choisir ville" : location}</span>
                             </div>
                             <ChevronDown className={cn("w-3.5 h-3.5 text-zinc-400 shrink-0 transition-transform", activeMenu === 'location' && "rotate-180")} />
                         </button>
