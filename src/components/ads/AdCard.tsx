@@ -16,7 +16,7 @@ export interface Ad {
   status?: string;
 }
 
-export function AdCard({ ad, canBoost, onEdit, onDelete }: { ad: Ad; canBoost?: boolean; onEdit?: (ad: Ad) => void; onDelete?: (ad: any) => void }) {
+export function AdCard({ ad, canBoost, onEdit, onDelete }: { ad: Ad; canBoost?: boolean; onEdit?: (ad: Ad) => void; onDelete?: (ad: Ad) => void }) {
   // Minimalist: Use optimized thumbnails
   const mainImage = ad.images?.[0] || '/placeholder-ad.jpg';
   const thumbnailUrl = getOptimizedImageUrl(mainImage, { width: 400, height: 400, quality: 60 });
