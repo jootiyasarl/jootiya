@@ -115,7 +115,7 @@ export function LocationFilterSidebar({ ads }: SidebarProps) {
     const mapZoom = userLocation ? 13 : 10;
 
     return (
-        <aside className="sticky top-24 space-y-6 hidden lg:block">
+        <aside className="sticky top-24 space-y-6 lg:block">
             <div className="bg-white rounded-3xl p-6 shadow-sm border border-zinc-100">
                 <div className="flex items-center gap-3 mb-6">
                     <div className="p-2.5 bg-orange-50 rounded-xl">
