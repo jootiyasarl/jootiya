@@ -159,7 +159,7 @@ export default async function Home({
                         Résultats à proximité ({ads.length})
                       </h2>
                     </div>
-                    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4" style={{ gridTemplateColumns: 'repeat(2, minmax(0, 1fr))' }}>
+                    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4" style={{ gridTemplateColumns: 'repeat(2, minmax(0, 1fr))' }}>
                       {ads.map((ad) => (
                         <AdCard key={ad.id} ad={ad} href={`/ads/${ad.id}`} />
                       ))}
@@ -188,7 +188,7 @@ export default async function Home({
                               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                             </Link>
                           </div>
-                          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4" style={{ gridTemplateColumns: 'repeat(2, minmax(0, 1fr))' }}>
+                          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4" style={{ gridTemplateColumns: 'repeat(2, minmax(0, 1fr))' }}>
                             {catAds.map((ad) => (
                               <AdCard key={ad.id} ad={ad} href={`/ads/${ad.id}`} />
                             ))}
@@ -209,7 +209,7 @@ export default async function Home({
                           <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                         </Link>
                       </div>
-                      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4" style={{ gridTemplateColumns: 'repeat(2, minmax(0, 1fr))' }}>
+                      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4" style={{ gridTemplateColumns: 'repeat(2, minmax(0, 1fr))' }}>
                         {ads.slice(0, 12).map((ad) => (
                           <AdCard key={ad.id} ad={ad} href={`/ads/${ad.id}`} />
                         ))}
