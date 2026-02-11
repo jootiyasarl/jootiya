@@ -197,6 +197,39 @@ export default async function Home({
                       );
                     })}
 
+                    {/* General Section - Show remaining ads */}
+                    {(() => {
+                      const categorizedAdIds = new Set();
+                      ['electronics', 'vehicles', 'real-estate'].forEach(catId => {
+                        const catAds = ads.filter(ad => ad.categorySlug === catId).slice(0, 6);
+                        catAds.forEach(ad => categorizedAdIds.add(ad.id));
+                      });
+                      
+                      const remainingAds = ads.filter(ad => !categorizedAdIds.has(ad.id)).slice(0, 12);
+                      
+                      if (remainingAds.length === 0) return null;
+                      
+                      return (
+                        <section className="space-y-6">
+                          <div className="flex items-center justify-between">
+                            <h2 className="text-xl font-bold text-zinc-900">Toutes les annonces</h2>
+                            <Link
+                              href="/marketplace"
+                              className="text-sm font-bold text-zinc-900 hover:text-orange-500 flex items-center gap-1 group"
+                            >
+                              Tout parcourir
+                              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                            </Link>
+                          </div>
+                          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4">
+                            {remainingAds.map((ad) => (
+                              <AdCard key={ad.id} ad={ad} href={`/ads/${ad.id}`} />
+                            ))}
+                          </div>
+                        </section>
+                      );
+                    })()}
+
                                       </>
                 )}
               </>
