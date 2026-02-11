@@ -62,7 +62,7 @@ export function UnifiedSearchBar() {
     return (
         <div className="w-full" ref={containerRef}>
             {/* Desktop Version - Refined & Compact Pill */}
-            <div className="flex items-center bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl border border-white/20 dark:border-zinc-800/20 rounded-full p-1 h-12 transition-all shadow-sm ring-1 ring-zinc-200/50 dark:ring-zinc-800/50 hover:shadow-md hover:bg-white dark:hover:bg-zinc-900">
+            <div className="hidden lg:flex items-center bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl border border-white/20 dark:border-zinc-800/20 rounded-full p-1 h-12 transition-all shadow-sm ring-1 ring-zinc-200/50 dark:ring-zinc-800/50 hover:shadow-md hover:bg-white dark:hover:bg-zinc-900">
                 {/* Keyword Search */}
                 <div className="flex-[1.2] flex items-center px-4 gap-2.5 min-w-0">
                     <Search className="w-4 h-4 text-orange-500/70 shrink-0" />
@@ -151,7 +151,7 @@ export function UnifiedSearchBar() {
             </div>
 
             {/* Mobile Version - Sleek & Premium */}
-            <div className="lg:hidden flex flex-col gap-3">
+            <div className="hidden flex flex-col gap-3">
                 <div className="flex items-center bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-800 rounded-2xl px-5 h-12 transition-all shadow-sm focus-within:bg-white dark:focus-within:bg-zinc-900 focus-within:shadow-md focus-within:ring-2 focus-within:ring-orange-500/20">
                     <Search className="w-4 h-4 text-orange-500 mr-3 shrink-0" />
                     <input
