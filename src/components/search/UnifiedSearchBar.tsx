@@ -7,12 +7,13 @@ import { cn } from "@/lib/utils";
 import { MOROCCAN_CITIES } from "@/lib/constants/cities";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
+import { createPortal } from "react-dom";
 
 const CATEGORIES = [
     { id: "all", label: "Toutes les catégories", icon: LayoutGrid },
     { id: "electronics", label: "Électronique", icon: LayoutGrid },
     { id: "home-furniture", label: "Maison & Ameublement", icon: LayoutGrid },
-    { id: "vehicles", label: "Véhicules & Transport", icon: LayoutGrid },
+    { id: "vehicles", label: "Véحicules & Transport", icon: LayoutGrid },
     { id: "fashion", label: "Mode & Chaussures", icon: LayoutGrid },
     { id: "tools-equipment", label: "Outils & Équipement", icon: LayoutGrid },
     { id: "hobbies", label: "Loisirs & Divertissement", icon: LayoutGrid },
@@ -23,6 +24,12 @@ const CATEGORIES = [
 ];
 
 const ALL_CITIES = ["Toutes les villes", ...MOROCCAN_CITIES.flatMap(region => region.cities).sort()];
+
+function SearchPortal({ children }: { children: React.ReactNode }) {
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => setMounted(true), []);
+    return mounted ? createPortal(children, document.body) : null;
+}
 
 export function UnifiedSearchBar() {
     const router = useRouter();
@@ -238,95 +245,97 @@ export function UnifiedSearchBar() {
             </div>
 
             {/* Mobile Selection Modals */}
-            <AnimatePresence>
-                {activeMenu && (
-                    <div className="fixed inset-0 z-[1000] lg:hidden">
-                        {/* Backdrop */}
-                        <motion.div 
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            onClick={() => setActiveMenu(null)}
-                            className="absolute inset-0 bg-zinc-950/60 backdrop-blur-sm"
-                        />
-                        
-                        {/* Content Modal */}
-                        <motion.div 
-                            initial={{ y: "100%" }}
-                            animate={{ y: 0 }}
-                            exit={{ y: "100%" }}
-                            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                            className="absolute bottom-0 left-0 right-0 bg-white dark:bg-zinc-950 rounded-t-[2.5rem] shadow-2xl flex flex-col max-h-[85vh] overflow-hidden"
-                        >
-                            {/* Modal Header */}
-                            <div className="p-6 border-b border-zinc-100 dark:border-zinc-900 flex items-center justify-between sticky top-0 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl z-10">
-                                <div>
-                                    <h3 className="text-xl font-black text-zinc-900 dark:text-white">
-                                        {activeMenu === 'category' ? "Sélectionner Catégorie" : "Sélectionner Ville"}
-                                    </h3>
-                                    <p className="text-sm text-zinc-500 font-medium">Faites votre choix pour filtrer</p>
+            <SearchPortal>
+                <AnimatePresence>
+                    {activeMenu && (
+                        <div className="fixed inset-0 z-[1000] lg:hidden">
+                            {/* Backdrop */}
+                            <motion.div 
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                onClick={() => setActiveMenu(null)}
+                                className="absolute inset-0 bg-zinc-950/60 backdrop-blur-sm"
+                            />
+                            
+                            {/* Content Modal */}
+                            <motion.div 
+                                initial={{ y: "100%" }}
+                                animate={{ y: 0 }}
+                                exit={{ y: "100%" }}
+                                transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                                className="absolute bottom-0 left-0 right-0 bg-white dark:bg-zinc-950 rounded-t-[2.5rem] shadow-2xl flex flex-col max-h-[85vh] overflow-hidden"
+                            >
+                                {/* Modal Header */}
+                                <div className="p-6 border-b border-zinc-100 dark:border-zinc-900 flex items-center justify-between sticky top-0 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl z-10">
+                                    <div>
+                                        <h3 className="text-xl font-black text-zinc-900 dark:text-white">
+                                            {activeMenu === 'category' ? "Sélectionner Catégorie" : "Sélectionner Ville"}
+                                        </h3>
+                                        <p className="text-sm text-zinc-500 font-medium">Faites votre choix pour filtrer</p>
+                                    </div>
+                                    <button 
+                                        onClick={() => setActiveMenu(null)}
+                                        className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
+                                    >
+                                        <X className="w-5 h-5" />
+                                    </button>
                                 </div>
-                                <button 
-                                    onClick={() => setActiveMenu(null)}
-                                    className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors"
-                                >
-                                    <X className="w-5 h-5" />
-                                </button>
-                            </div>
 
-                            {/* Options List */}
-                            <div className="flex-1 overflow-y-auto p-4 space-y-1 pb-10">
-                                {(activeMenu === 'category' ? CATEGORIES : ALL_CITIES).map((item: any) => {
-                                    const isSelected = activeMenu === 'category' 
-                                        ? category.id === item.id 
-                                        : location === item;
-                                    
-                                    return (
-                                        <button
-                                            key={typeof item === 'string' ? item : item.id}
-                                            onClick={() => {
-                                                if (activeMenu === 'category') setCategory(item);
-                                                else setLocation(item);
-                                                setActiveMenu(null);
-                                            }}
-                                            className={cn(
-                                                "w-full flex items-center justify-between px-5 py-4 rounded-2xl transition-all",
-                                                isSelected 
-                                                    ? "bg-orange-50 dark:bg-orange-500/10 text-orange-600 dark:text-orange-400 font-black shadow-sm ring-1 ring-orange-200 dark:ring-orange-500/20" 
-                                                    : "hover:bg-zinc-50 dark:hover:bg-zinc-900 text-zinc-700 dark:text-zinc-300 font-bold"
-                                            )}
-                                        >
-                                            <div className="flex items-center gap-4">
-                                                {activeMenu === 'category' ? (
-                                                    <div className={cn(
-                                                        "w-10 h-10 rounded-xl flex items-center justify-center transition-colors",
-                                                        isSelected ? "bg-orange-500 text-white" : "bg-zinc-100 dark:bg-zinc-800 text-zinc-400"
-                                                    )}>
-                                                        <LayoutGrid className="w-5 h-5" />
-                                                    </div>
-                                                ) : (
-                                                    <div className={cn(
-                                                        "w-10 h-10 rounded-xl flex items-center justify-center transition-colors",
-                                                        isSelected ? "bg-orange-500 text-white" : "bg-zinc-100 dark:bg-zinc-800 text-zinc-400"
-                                                    )}>
-                                                        <MapPin className="w-5 h-5" />
+                                {/* Options List */}
+                                <div className="flex-1 overflow-y-auto p-4 space-y-1 pb-10">
+                                    {(activeMenu === 'category' ? CATEGORIES : ALL_CITIES).map((item: any) => {
+                                        const isSelected = activeMenu === 'category' 
+                                            ? category.id === item.id 
+                                            : location === item;
+                                        
+                                        return (
+                                            <button
+                                                key={typeof item === 'string' ? item : item.id}
+                                                onClick={() => {
+                                                    if (activeMenu === 'category') setCategory(item);
+                                                    else setLocation(item);
+                                                    setActiveMenu(null);
+                                                }}
+                                                className={cn(
+                                                    "w-full flex items-center justify-between px-5 py-4 rounded-2xl transition-all",
+                                                    isSelected 
+                                                        ? "bg-orange-50 dark:bg-orange-500/10 text-orange-600 dark:text-orange-400 font-black shadow-sm ring-1 ring-orange-200 dark:ring-orange-500/20" 
+                                                        : "hover:bg-zinc-50 dark:hover:bg-zinc-900 text-zinc-700 dark:text-zinc-300 font-bold"
+                                                )}
+                                            >
+                                                <div className="flex items-center gap-4">
+                                                    {activeMenu === 'category' ? (
+                                                        <div className={cn(
+                                                            "w-10 h-10 rounded-xl flex items-center justify-center transition-colors",
+                                                            isSelected ? "bg-orange-500 text-white" : "bg-zinc-100 dark:bg-zinc-800 text-zinc-400"
+                                                        )}>
+                                                            <LayoutGrid className="w-5 h-5" />
+                                                        </div>
+                                                    ) : (
+                                                        <div className={cn(
+                                                            "w-10 h-10 rounded-xl flex items-center justify-center transition-colors",
+                                                            isSelected ? "bg-orange-500 text-white" : "bg-zinc-100 dark:bg-zinc-800 text-zinc-400"
+                                                        )}>
+                                                            <MapPin className="w-5 h-5" />
+                                                        </div>
+                                                    )}
+                                                    <span>{typeof item === 'string' ? item : item.label}</span>
+                                                </div>
+                                                {isSelected && (
+                                                    <div className="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center text-white shadow-sm">
+                                                        <Check className="w-3.5 h-3.5 stroke-[3]" />
                                                     </div>
                                                 )}
-                                                <span>{typeof item === 'string' ? item : item.label}</span>
-                                            </div>
-                                            {isSelected && (
-                                                <div className="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center text-white shadow-sm">
-                                                    <Check className="w-3.5 h-3.5 stroke-[3]" />
-                                                </div>
-                                            )}
-                                        </button>
-                                    );
-                                })}
-                            </div>
-                        </motion.div>
-                    </div>
-                )}
-            </AnimatePresence>
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </motion.div>
+                        </div>
+                    )}
+                </AnimatePresence>
+            </SearchPortal>
         </div>
     );
 }
