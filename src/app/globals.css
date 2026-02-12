@@ -233,15 +233,17 @@
 
 /* Minimalist Spacing Scale (8px grid) */
 @layer utilities {
-  .space-1 {
-    @apply gap-2;
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
-
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
   /* 8px */
   .space-2 {
     @apply gap-4;
   }
-
   /* 16px */
   .space-3 {
     @apply gap-6;

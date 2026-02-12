@@ -47,11 +47,20 @@ export function MobileMenu({ initialUserEmail = null }: MobileMenuProps) {
     useEffect(() => {
         if (isMobileMenuOpen) {
             document.body.style.overflow = 'hidden';
+            document.documentElement.style.overflow = 'hidden';
+            document.body.style.position = 'fixed';
+            document.body.style.width = '100%';
         } else {
             document.body.style.overflow = 'unset';
+            document.documentElement.style.overflow = 'unset';
+            document.body.style.position = 'unset';
+            document.body.style.width = 'unset';
         }
         return () => {
             document.body.style.overflow = 'unset';
+            document.documentElement.style.overflow = 'unset';
+            document.body.style.position = 'unset';
+            document.body.style.width = 'unset';
         };
     }, [isMobileMenuOpen]);
 
@@ -85,11 +94,11 @@ export function MobileMenu({ initialUserEmail = null }: MobileMenuProps) {
             {isMobileMenuOpen && (
                 <>
                     <div
-                        className="fixed inset-0 z-[10000] bg-black/60 backdrop-blur-md transition-opacity lg:hidden"
+                        className="fixed inset-0 z-[10000] bg-white dark:bg-zinc-950 transition-opacity lg:hidden"
                         onClick={() => setIsMobileMenuOpen(false)}
                     />
                     <div className="fixed top-0 bottom-0 left-0 z-[10001] w-full h-screen bg-white dark:bg-zinc-900 animate-in slide-in-from-left duration-300 ease-out flex flex-col lg:hidden overflow-hidden">
-                        <div className="flex items-center justify-between p-4 border-b border-zinc-100 dark:border-zinc-800 flex-shrink-0 bg-white dark:bg-zinc-900">
+                        <div className="flex items-center justify-between p-4 border-b border-zinc-100 dark:border-zinc-800 flex-shrink-0 bg-white dark:bg-zinc-900 shadow-sm relative z-10">
                             <span className="text-xl font-black text-[#0F172A] dark:text-white tracking-tighter">
                                 JOOTIYA<span className="text-orange-500">.</span>
                             </span>
@@ -101,7 +110,7 @@ export function MobileMenu({ initialUserEmail = null }: MobileMenuProps) {
                             </button>
                         </div>
 
-                        <div className="flex-1 overflow-y-auto p-4 space-y-6">
+                        <div className="flex-1 overflow-y-auto p-4 space-y-6 scrollbar-hide">
                             {/* Apparence */}
                             <div className="space-y-2">
                                 <h3 className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 px-1">Apparence</h3>
