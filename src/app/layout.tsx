@@ -46,6 +46,9 @@ export const viewport = {
 import { PushPermissionPrompt } from "@/components/notifications/PushPermissionPrompt";
 import { ServiceWorkerRegistration } from "@/components/notifications/ServiceWorkerRegistration";
 import PublicNavbar from "@/components/navbar/PublicNavbar";
+import { ProgressBar } from "@/components/layout/ProgressBar";
+import { PageTransition } from "@/components/layout/PageTransition";
+import { Suspense } from "react";
 
 import { ThemeProvider } from "@/components/theme-provider";
 
@@ -65,12 +68,17 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <Suspense fallback={null}>
+            <ProgressBar />
+          </Suspense>
           <ServiceWorkerRegistration />
           <RootNavbarShell
             navbar={<PublicNavbar />}
             footer={<Footer />}
           >
-            {children}
+            <PageTransition>
+              {children}
+            </PageTransition>
           </RootNavbarShell>
           <PushPermissionPrompt />
           <Toaster position="top-center" richColors />
