@@ -17,14 +17,14 @@ import { cn } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-const CATEGORIES_LIST = [
+const CATEGORIES = [
     { id: "all", label: "Tout", icon: LayoutGrid, bg: "bg-zinc-100 text-zinc-600", href: "/marketplace" },
     { id: "electronics", label: "Électronique", icon: Smartphone, bg: "bg-blue-50 text-blue-600", href: "/marketplace/category/electronics" },
     { id: "home-furniture", label: "Maison & Ameublement", icon: Armchair, bg: "bg-green-50 text-green-600", href: "/marketplace/category/home-furniture" },
     { id: "vehicles", label: "Véhicules & Transport", icon: Car, bg: "bg-orange-50 text-orange-600", href: "/marketplace/category/vehicles" },
     { id: "fashion", label: "Mode & Chaussures", icon: Shirt, bg: "bg-pink-50 text-pink-600", href: "/marketplace/category/fashion" },
     { id: "tools-equipment", label: "Outils & Équipement", icon: Hammer, bg: "bg-zinc-100 text-zinc-600", href: "/marketplace/category/tools-equipment" },
-    { id: "hobbies", label: "Loisirs & Diverتissement", icon: Gamepad2, bg: "bg-purple-50 text-purple-600", href: "/marketplace/category/hobbies" },
+    { id: "hobbies", label: "Loisirs & Divertissement", icon: Gamepad2, bg: "bg-purple-50 text-purple-600", href: "/marketplace/category/hobbies" },
     { id: "animals", label: "Animaux", icon: PawPrint, bg: "bg-amber-50 text-amber-600", href: "/marketplace/category/animals" },
     { id: "books", label: "Livres & Études", icon: BookOpen, bg: "bg-sky-50 text-sky-600", href: "/marketplace/category/books" },
     { id: "used-clearance", label: "Occasions", icon: Tag, bg: "bg-red-50 text-red-600", href: "/marketplace/category/used-clearance" },
@@ -38,7 +38,7 @@ export function HorizontalCategoriesBar() {
     return (
         <div className="mx-auto max-w-7xl px-4 py-4 mt-8 border-b border-zinc-50 bg-white sticky top-0 z-30">
             <div className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth snap-x pb-4 pt-2 px-2 -mx-2">
-                {CATEGORIES_LIST.map((cat) => {
+                {CATEGORIES.map((cat) => {
                     const Icon = cat.icon;
                     const isActive = activeCategory === cat.id;
                     return (
