@@ -38,7 +38,7 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete }: 
   return (
     <article className="group relative flex flex-col gap-2">
       {/* Image Container */}
-      <div className="relative aspect-square w-full overflow-hidden rounded-[1.5rem] bg-zinc-100 dark:bg-zinc-800 transition-all duration-300">
+      <div className="relative aspect-square w-full overflow-hidden rounded-[1.5rem] bg-white dark:bg-zinc-900 transition-all duration-300">
         {linkHref && (
           <Link href={linkHref} className="absolute inset-0 z-10" aria-label={ad.title}>
             <span className="sr-only">Voir l'annonce</span>
@@ -52,10 +52,10 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete }: 
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
             loading="lazy"
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            className="object-cover h-full w-full transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center text-zinc-400">
+          <div className="flex h-full w-full items-center justify-center bg-zinc-100 dark:bg-zinc-800 text-zinc-400">
             <span className="text-xs">Aucune image</span>
           </div>
         )}
