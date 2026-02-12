@@ -150,7 +150,7 @@ export function UnifiedSearchBar() {
             </div>
 
             {/* Mobile Version - Sleek & Premium */}
-            <div className="hidden flex flex-col gap-3">
+            <div className="flex flex-col gap-3 md:hidden">
                 <div className="flex items-center bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-800 rounded-2xl px-5 h-12 transition-all shadow-sm focus-within:bg-white dark:focus-within:bg-zinc-900 focus-within:shadow-md focus-within:ring-2 focus-within:ring-orange-500/20">
                     <Search className="w-4 h-4 text-orange-500 mr-3 shrink-0" />
                     <input
