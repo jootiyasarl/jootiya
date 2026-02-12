@@ -44,6 +44,17 @@ export function MobileMenu({ initialUserEmail = null }: MobileMenuProps) {
         return () => subscription.unsubscribe();
     }, []);
 
+    useEffect(() => {
+        if (isMobileMenuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isMobileMenuOpen]);
+
     const handleLogout = async () => {
         await supabase.auth.signOut();
         try {
@@ -74,11 +85,11 @@ export function MobileMenu({ initialUserEmail = null }: MobileMenuProps) {
             {isMobileMenuOpen && (
                 <>
                     <div
-                        className="fixed inset-0 z-[9998] bg-black/50 backdrop-blur-sm transition-opacity lg:hidden"
+                        className="fixed inset-0 z-[10000] bg-black/60 backdrop-blur-md transition-opacity lg:hidden"
                         onClick={() => setIsMobileMenuOpen(false)}
                     />
-                    <div className="fixed top-0 bottom-0 left-0 z-[9999] w-full h-screen bg-white dark:bg-zinc-900 animate-in slide-in-from-left duration-300 ease-out flex flex-col lg:hidden">
-                        <div className="flex items-center justify-between p-4 border-b border-zinc-100 dark:border-zinc-800 flex-shrink-0">
+                    <div className="fixed top-0 bottom-0 left-0 z-[10001] w-full h-screen bg-white dark:bg-zinc-900 animate-in slide-in-from-left duration-300 ease-out flex flex-col lg:hidden overflow-hidden">
+                        <div className="flex items-center justify-between p-4 border-b border-zinc-100 dark:border-zinc-800 flex-shrink-0 bg-white dark:bg-zinc-900">
                             <span className="text-xl font-black text-[#0F172A] dark:text-white tracking-tighter">
                                 JOOTIYA<span className="text-orange-500">.</span>
                             </span>

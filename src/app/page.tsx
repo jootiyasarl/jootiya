@@ -23,16 +23,13 @@ type HomepageAd = {
   longitude: number;
 };
 
-export default async function Home({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
+export default async function Home({ searchParams }: { searchParams: Promise<any> }) {
   const supabase = createSupabaseServerClient();
+  const resolvedParams = await searchParams;
 
-  const latParam = typeof searchParams.lat === 'string' ? parseFloat(searchParams.lat) : null;
-  const lngParam = typeof searchParams.lng === 'string' ? parseFloat(searchParams.lng) : null;
-  const radiusParam = typeof searchParams.radius === 'string' ? parseInt(searchParams.radius) : 50;
+  const latParam = typeof resolvedParams.lat === 'string' ? parseFloat(resolvedParams.lat) : null;
+  const lngParam = typeof resolvedParams.lng === 'string' ? parseFloat(resolvedParams.lng) : null;
+  const radiusParam = typeof resolvedParams.radius === 'string' ? parseInt(resolvedParams.radius) : 50;
 
   let ads: HomepageAd[] = [];
   let fetchError = null;
