@@ -42,7 +42,8 @@ export function HorizontalCategoriesBar() {
         } else {
             params.set("category", id);
         }
-        router.push(`/marketplace?${params.toString()}`);
+        // Use replace instead of push for faster filtering feel
+        router.replace(`/marketplace?${params.toString()}`, { scroll: false });
     };
 
     return (
@@ -56,15 +57,15 @@ export function HorizontalCategoriesBar() {
                             key={cat.id}
                             onClick={() => handleCategoryClick(cat.id)}
                             className={cn(
-                                "flex flex-col items-center gap-2 flex-shrink-0 transition-all duration-300 group snap-center min-w-[80px]",
-                                isActive ? "scale-105" : "opacity-70 hover:opacity-100"
+                                "flex flex-col items-center gap-2 flex-shrink-0 transition-transform duration-200 group snap-center min-w-[80px]",
+                                isActive ? "scale-105" : "opacity-70 hover:opacity-100 active:scale-95"
                             )}
                         >
                             <div className={cn(
-                                "w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300 border",
+                                "w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-200 border",
                                 isActive 
                                     ? `${cat.bg} border-orange-200 shadow-[0_8px_16px_-4px_rgba(249,115,22,0.2)] ring-4 ring-orange-500/5` 
-                                    : "bg-zinc-50 border-zinc-100 shadow-sm group-hover:bg-white group-hover:border-zinc-200 group-hover:shadow-md"
+                                    : "bg-zinc-50 border-zinc-100 shadow-sm group-hover:bg-white group-hover:border-zinc-200"
                             )}>
                                 <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
                             </div>
