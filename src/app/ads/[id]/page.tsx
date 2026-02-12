@@ -425,6 +425,7 @@ export default async function AdPage({ params }: AdPageProps) {
       <QuickActionFooter
         phone={ad.phone || (Array.isArray(ad.profiles) ? ad.profiles[0]?.phone : ad.profiles?.phone)}
         adTitle={ad.title}
+        adPrice={formattedPrice}
         adId={ad.id}
         sellerId={ad.seller_id}
         currentUser={user}

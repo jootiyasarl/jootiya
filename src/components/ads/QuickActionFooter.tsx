@@ -10,20 +10,26 @@ import { cn } from "@/lib/utils";
 interface QuickActionFooterProps {
     phone: string;
     adTitle: string;
+    adPrice: string;
     adId: string;
     sellerId: string;
     currentUser: any;
 }
 
-export function QuickActionFooter({ phone, adTitle, adId, sellerId, currentUser }: QuickActionFooterProps) {
+export function QuickActionFooter({ phone, adTitle, adPrice, adId, sellerId, currentUser }: QuickActionFooterProps) {
     const router = useRouter();
     const [isCreatingChat, setIsCreatingChat] = useState(false);
     const [isFavorite, setIsFavorite] = useState(false);
     const [isLoadingFav, setIsLoadingFav] = useState(false);
 
-    const whatsappUrl = `https://wa.me/${phone?.replace(/\D/g, '')}?text=${encodeURIComponent(
-        `Bonjour, je suis intéressé par votre annonce "${adTitle}" sur Jootiya.`
-    )}`;
+    // Format Moroccan phone number for WhatsApp
+    const cleanPhone = phone?.replace(/\D/g, '');
+    const formatPhone = (cleanPhone?.startsWith('0') && cleanPhone.length === 10)
+        ? '212' + cleanPhone.substring(1)
+        : cleanPhone;
+
+    const whatsappMessage = `السلام عليكم، شفت الإعلان ديالك ${adTitle} في تطبيق Jootiya بـ ${adPrice} وعجبني. واش مزال موجود؟`;
+    const whatsappUrl = `https://wa.me/${formatPhone}?text=${encodeURIComponent(whatsappMessage)}`;
 
     // Check favorite status on mount
     useEffect(() => {
@@ -115,12 +121,12 @@ export function QuickActionFooter({ phone, adTitle, adId, sellerId, currentUser 
     };
 
     return (
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-t border-zinc-100 p-4 shadow-[0_-10px_20px_rgba(0,0,0,0.02)] animate-in slide-in-from-bottom duration-300 safe-area-bottom">
-            <div className="flex gap-2 max-w-md mx-auto items-center">
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-zinc-900 border-t border-zinc-100 dark:border-zinc-800 p-3 shadow-[0_-10px_20px_rgba(0,0,0,0.05)] animate-in slide-in-from-bottom duration-300 safe-area-bottom">
+            <div className="flex gap-2 w-full items-center">
                 {/* Main Contact Buttons */}
                 <a
                     href={`tel:${phone}`}
-                    className="flex-1 min-h-[44px] h-12 bg-orange-600 hover:bg-orange-700 text-white font-black rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-orange-200 text-xs uppercase"
+                    className="flex-1 h-12 bg-orange-600 hover:bg-orange-700 text-white font-black rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-orange-200 dark:shadow-none text-[13px] uppercase tracking-tight"
                 >
                     <Phone className="w-4 h-4" />
                     Appeler
@@ -130,37 +136,25 @@ export function QuickActionFooter({ phone, adTitle, adId, sellerId, currentUser 
                     href={whatsappUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 min-h-[44px] h-12 border-2 border-green-600 text-green-600 hover:bg-green-50 font-black rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 text-xs uppercase"
+                    className="flex-1 h-12 bg-[#25D366] hover:bg-[#22c35e] text-white font-black rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 shadow-md shadow-green-100 dark:shadow-none text-[13px] uppercase tracking-tight"
                 >
-                    <MessageCircle className="w-4 h-4" />
+                    <MessageCircle className="w-4 h-4 fill-current" />
                     WhatsApp
                 </a>
 
-                {/* Icon Actions */}
-                <div className="flex gap-1 pl-1">
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={handleMessageClick}
-                        disabled={isCreatingChat}
-                        className="h-12 w-12 rounded-xl text-zinc-500 hover:bg-zinc-100 min-h-[44px] min-w-[44px]"
-                    >
-                        <MessageCircle className={cn("h-5 w-5", isCreatingChat && "animate-pulse")} />
-                    </Button>
-
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={handleFavoriteClick}
-                        disabled={isLoadingFav}
-                        className={cn(
-                            "h-12 w-12 rounded-xl min-h-[44px] min-w-[44px]",
-                            isFavorite ? "text-red-500 bg-red-50" : "text-zinc-500 hover:bg-zinc-100"
-                        )}
-                    >
-                        <Heart className={cn("h-5 w-5", isFavorite && "fill-current")} />
-                    </Button>
-                </div>
+                {/* Favorite Action */}
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={handleFavoriteClick}
+                    disabled={isLoadingFav}
+                    className={cn(
+                        "h-12 w-12 rounded-xl shrink-0 transition-all active:scale-90",
+                        isFavorite ? "text-red-500 bg-red-50 dark:bg-red-900/20" : "text-zinc-500 bg-zinc-50 dark:bg-zinc-800"
+                    )}
+                >
+                    <Heart className={cn("h-5 w-5", isFavorite && "fill-current")} />
+                </Button>
             </div>
         </div>
     );
