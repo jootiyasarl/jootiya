@@ -46,8 +46,8 @@ export function HorizontalCategoriesBar() {
     };
 
     return (
-        <div className="mx-auto max-w-7xl px-4 py-6 mt-8 border-b border-zinc-50 bg-white sticky top-0 z-30">
-            <div className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth snap-x pb-2">
+        <div className="mx-auto max-w-7xl px-4 py-4 mt-8 border-b border-zinc-50 bg-white sticky top-0 z-30">
+            <div className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth snap-x pb-4 pt-2 px-2 -mx-2">
                 {CATEGORIES.map((cat) => {
                     const Icon = cat.icon;
                     const isActive = activeCategory === cat.id;
@@ -61,10 +61,10 @@ export function HorizontalCategoriesBar() {
                             )}
                         >
                             <div className={cn(
-                                "w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300 shadow-sm border",
+                                "w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300 border",
                                 isActive 
-                                    ? `${cat.bg} border-orange-200 ring-4 ring-orange-500/10` 
-                                    : "bg-zinc-50 border-zinc-100 group-hover:bg-white group-hover:border-zinc-200"
+                                    ? `${cat.bg} border-orange-200 shadow-[0_8px_16px_-4px_rgba(249,115,22,0.2)] ring-4 ring-orange-500/5` 
+                                    : "bg-zinc-50 border-zinc-100 shadow-sm group-hover:bg-white group-hover:border-zinc-200 group-hover:shadow-md"
                             )}>
                                 <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
                             </div>
