@@ -23,6 +23,7 @@ import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/lib/supabaseClient';
 import { MOROCCAN_CITIES } from '@/lib/constants/cities';
+import { toast } from 'sonner';
 
 const adSchema = z.object({
     title: z.string().min(5, "Le titre doit contenir au moins 5 caractères"),
@@ -156,12 +157,28 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
     };
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files) {
-            const newFiles = Array.from(e.target.files);
-            setImages(prev => [...prev, ...newFiles]);
+        const files = e.target.files;
+        if (!files || files.length === 0) return;
 
-            const newPreviews = newFiles.map(file => URL.createObjectURL(file));
+        const newFiles = Array.from(files);
+        
+        // Limit to 10 images total
+        const remainingSlots = 10 - previews.length;
+        const filesToAdd = newFiles.slice(0, remainingSlots);
+
+        if (filesToAdd.length < newFiles.length) {
+            toast.error("Vous ne pouvez pas ajouter plus de 10 photos.");
+        }
+
+        if (filesToAdd.length > 0) {
+            setImages(prev => [...prev, ...filesToAdd]);
+            const newPreviews = filesToAdd.map(file => URL.createObjectURL(file));
             setPreviews(prev => [...prev, ...newPreviews]);
+        }
+
+        // Reset input value to allow selecting same file again
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
         }
     };
 
