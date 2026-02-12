@@ -233,6 +233,16 @@
 
 /* Minimalist Spacing Scale (8px grid) */
 @layer utilities {
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
@@ -248,7 +258,6 @@
   .space-3 {
     @apply gap-6;
   }
-
   /* 24px */
   .space-4 {
     @apply gap-8;

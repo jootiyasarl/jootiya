@@ -45,55 +45,52 @@ export function MessagingClient({ initialConversations, currentUser }: Messaging
     const activeConversation = conversations.find(c => c.id === selectedId);
 
     return (
-        <div className="flex h-screen md:h-[calc(100vh-140px)] w-full overflow-hidden md:rounded-3xl md:border md:border-zinc-200 bg-white md:shadow-2xl fixed inset-0 md:relative z-50 md:z-auto">
+        <div className="fixed inset-0 z-[100] flex flex-col bg-white dark:bg-zinc-950 md:relative md:inset-auto md:z-auto md:h-[calc(100vh-140px)] md:rounded-3xl md:border md:border-zinc-200 md:shadow-2xl overflow-hidden">
             {/* Sidebar: Conversation List */}
             <div className={cn(
-                "w-full md:w-80 lg:w-96 flex flex-col border-r border-zinc-100 bg-white",
+                "flex flex-col h-full bg-white dark:bg-zinc-950",
+                "w-full md:w-80 lg:w-96 md:border-r md:border-zinc-100",
                 selectedId ? "hidden md:flex" : "flex"
             )}>
-                <div className="p-4 md:p-6 border-b border-zinc-50 bg-white sticky top-0 z-10">
+                <div className="px-4 py-5 md:p-6 border-b border-zinc-50 dark:border-zinc-900 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl sticky top-0 z-10">
                     <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-2xl font-black text-zinc-900 tracking-tight">Messages</h2>
-                        <Button variant="ghost" size="icon" className="md:hidden rounded-full h-10 w-10">
-                            <MoreVertical className="w-5 h-5 text-zinc-400" />
+                        <h2 className="text-2xl font-black text-zinc-900 dark:text-white tracking-tight">Messages</h2>
+                        <Button variant="ghost" size="icon" className="rounded-full h-10 w-10 text-zinc-400">
+                            <MoreVertical className="w-5 h-5" />
                         </Button>
                     </div>
                     <div className="relative group">
                         <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 transition-colors group-focus-within:text-orange-500" />
                         <Input
-                            placeholder="Rechercher une discussion..."
-                            className="pl-10 h-11 rounded-2xl bg-zinc-50 border-none ring-offset-transparent focus-visible:ring-orange-500/20 focus-visible:ring-4 text-sm font-medium transition-all"
+                            placeholder="Rechercher..."
+                            className="pl-10 h-11 rounded-2xl bg-zinc-50 dark:bg-zinc-900 border-none ring-offset-transparent focus-visible:ring-orange-500/20 focus-visible:ring-4 text-sm font-medium transition-all"
                         />
                     </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto scrollbar-hide py-2 bg-white">
+                <div className="flex-1 overflow-y-auto scrollbar-hide py-2">
                     {conversations.length === 0 ? (
                         <div className="flex flex-col items-center justify-center h-full p-8 text-center text-zinc-400">
-                            <div className="w-16 h-16 bg-zinc-50 rounded-full flex items-center justify-center mb-4">
+                            <div className="w-16 h-16 bg-zinc-50 dark:bg-zinc-900 rounded-full flex items-center justify-center mb-4">
                                 <MessageSquare className="w-8 h-8 opacity-20" />
                             </div>
                             <p className="text-sm font-bold">Aucune discussion</p>
-                            <p className="text-xs mt-1">Vos messages s'afficheront ici.</p>
                         </div>
                     ) : (
-                        <div className="space-y-0.5 bg-white">
+                        <div className="space-y-0.5">
                             {conversations.map((conv) => (
                                 <button
                                     key={conv.id}
                                     onClick={() => setSelectedId(conv.id)}
                                     className={cn(
-                                        "w-full flex items-center gap-4 px-4 py-4 transition-all relative group bg-white",
+                                        "w-full flex items-center gap-4 px-4 py-3.5 transition-all relative group",
                                         selectedId === conv.id
-                                            ? "bg-orange-50/50"
-                                            : "hover:bg-zinc-50"
+                                            ? "bg-orange-50/50 dark:bg-orange-500/5"
+                                            : "hover:bg-zinc-50 dark:hover:bg-zinc-900/50"
                                     )}
                                 >
-                                    {selectedId === conv.id && (
-                                        <div className="absolute left-0 top-2 bottom-2 w-1 bg-orange-500 rounded-r-full" />
-                                    )}
                                     <div className="relative shrink-0">
-                                        <div className="w-14 h-14 rounded-2xl bg-zinc-100 overflow-hidden shadow-sm border-2 border-white">
+                                        <div className="w-14 h-14 rounded-2xl bg-zinc-100 dark:bg-zinc-800 overflow-hidden shadow-sm border-2 border-white dark:border-zinc-950">
                                             {conv.other_party?.avatar_url ? (
                                                 <Image
                                                     src={conv.other_party.avatar_url}
@@ -108,24 +105,26 @@ export function MessagingClient({ initialConversations, currentUser }: Messaging
                                                 </div>
                                             )}
                                         </div>
-                                        <span className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full shadow-sm" />
+                                        <span className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-white dark:border-zinc-950 rounded-full shadow-sm" />
                                     </div>
 
                                     <div className="flex-1 text-left overflow-hidden">
-                                        <div className="flex items-center justify-between mb-1">
-                                            <h3 className="font-bold text-zinc-900 text-[15px] truncate pr-2">
+                                        <div className="flex items-center justify-between mb-0.5">
+                                            <h3 className="font-bold text-zinc-900 dark:text-zinc-100 text-[15px] truncate">
                                                 {conv.other_party?.full_name || "Utilisateur"}
                                             </h3>
-                                            <span className="text-[11px] font-semibold text-zinc-400 shrink-0">
+                                            <span className="text-[11px] font-medium text-zinc-400 shrink-0">
                                                 {format(new Date(conv.last_message_at), 'HH:mm', { locale: fr })}
                                             </span>
                                         </div>
-                                        <p className="text-xs font-bold text-orange-600 truncate mb-1">
-                                            {conv.ad?.title || "Annonce supprimée"}
-                                        </p>
-                                        <p className="text-[12px] font-medium text-zinc-400 truncate leading-relaxed">
-                                            Cliquez pour voir les messages...
-                                        </p>
+                                        <div className="flex flex-col gap-0.5">
+                                            <p className="text-[11px] font-bold text-orange-600 dark:text-orange-500 truncate uppercase tracking-wide">
+                                                {conv.ad?.title || "Annonce supprimée"}
+                                            </p>
+                                            <p className="text-[13px] font-medium text-zinc-400 dark:text-zinc-500 truncate">
+                                                Appuyez pour voir les messages...
+                                            </p>
+                                        </div>
                                     </div>
                                 </button>
                             ))}
@@ -136,7 +135,7 @@ export function MessagingClient({ initialConversations, currentUser }: Messaging
 
             {/* Main Chat Area */}
             <div className={cn(
-                "flex-1 flex-col bg-zinc-50/30 w-full relative z-20",
+                "flex-1 flex-col h-full bg-zinc-50/30 dark:bg-zinc-950/30 w-full relative",
                 selectedId ? "flex" : "hidden md:flex"
             )}>
                 {activeConversation ? (
@@ -145,7 +144,6 @@ export function MessagingClient({ initialConversations, currentUser }: Messaging
                         currentUser={currentUser}
                         onBack={() => setSelectedId(null)}
                         onMessageSent={(msg) => {
-                            // Update conversation list last_message_at
                             setConversations(prev => prev.map(c =>
                                 c.id === activeConversation.id
                                     ? { ...c, last_message_at: msg.created_at }
@@ -154,13 +152,13 @@ export function MessagingClient({ initialConversations, currentUser }: Messaging
                         }}
                     />
                 ) : (
-                    <div className="flex flex-col items-center justify-center h-full p-8 text-center text-zinc-400 bg-white">
-                        <div className="w-24 h-24 rounded-[2.5rem] bg-zinc-50 flex items-center justify-center mb-6 shadow-inner-soft border border-zinc-100">
-                            <MessageSquare className="w-10 h-10 opacity-20 text-orange-500" />
+                    <div className="flex flex-col items-center justify-center h-full p-8 text-center text-zinc-400 bg-white dark:bg-zinc-950">
+                        <div className="w-24 h-24 rounded-[2.5rem] bg-zinc-50 dark:bg-zinc-900 flex items-center justify-center mb-6 border border-zinc-100 dark:border-zinc-800 shadow-inner">
+                            <MessageSquare className="w-10 h-10 text-orange-500 opacity-20" />
                         </div>
-                        <h3 className="text-2xl font-black text-zinc-900 tracking-tight mb-2">Sélectionnez une discussion</h3>
-                        <p className="text-sm font-medium max-w-xs leading-relaxed text-zinc-500">
-                            Choisissez une conversation pour commencer à discuter avec vos acheteurs ou vendeurs.
+                        <h3 className="text-2xl font-black text-zinc-900 dark:text-white tracking-tight mb-2">Sélectionnez une discussion</h3>
+                        <p className="text-sm font-medium max-w-xs text-zinc-500 dark:text-zinc-400">
+                            Choisissez une conversation pour commencer à discuter.
                         </p>
                     </div>
                 )}

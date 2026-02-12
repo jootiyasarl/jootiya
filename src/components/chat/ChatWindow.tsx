@@ -318,38 +318,39 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
     return (
         <div className="flex flex-col h-[100dvh] bg-[#F4F4F9] dark:bg-zinc-950 relative">
             {/* Header: Pro Frosted Design */}
-            <div className="glass-frosted border-b border-zinc-200/50 dark:border-white/5 p-3 md:p-4 flex items-center justify-between shadow-premium z-20 sticky top-0">
-                <div className="flex items-center gap-2 md:gap-3">
-                    <Button variant="ghost" size="icon" onClick={onBack} className="md:hidden -ml-2 text-zinc-500 h-9 w-9">
+            <div className="bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border-b border-zinc-100 dark:border-zinc-800 p-3 flex items-center justify-between z-20 sticky top-0">
+                <div className="flex items-center gap-3">
+                    <Button variant="ghost" size="icon" onClick={onBack} className="md:hidden -ml-2 text-zinc-500 h-10 w-10 rounded-full">
                         <ChevronLeft className="h-6 w-6" />
                     </Button>
-                    <Avatar className="h-9 w-9 md:h-10 md:w-10 border border-zinc-100">
+                    <Avatar className="h-10 w-10 border border-zinc-100 dark:border-zinc-800 shadow-sm">
                         <AvatarImage src={conversation.other_party?.avatar_url || ""} />
-                        <AvatarFallback>{conversation.other_party?.full_name?.charAt(0) || "U"}</AvatarFallback>
+                        <AvatarFallback className="bg-orange-100 text-orange-600 font-bold">
+                            {conversation.other_party?.full_name?.charAt(0) || "U"}
+                        </AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col">
-                        <h3 className="font-bold text-zinc-900 leading-none text-sm md:text-base">
+                        <h3 className="font-bold text-zinc-900 dark:text-zinc-100 leading-tight text-[15px]">
                             {conversation.other_party?.full_name || "Utilisateur"}
                         </h3>
-                        <div className="flex items-center gap-1 mt-1">
-                            <span className="w-1.5 h-1.5 bg-green-500 rounded-full" />
-                            <span className="text-[10px] md:text-xs text-zinc-400 font-medium">En ligne</span>
+                        <div className="flex items-center gap-1.5 mt-0.5">
+                            <span className="w-2 h-2 bg-emerald-500 rounded-full border border-white dark:border-zinc-900 shadow-sm" />
+                            <span className="text-[11px] text-zinc-400 font-bold uppercase tracking-wider">En ligne</span>
                         </div>
                     </div>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1">
                     {canRate && !hasRated && (
                         <Button
-                            variant="outline"
+                            variant="ghost"
                             size="sm"
                             onClick={() => setShowReviewModal(true)}
-                            className="text-[10px] md:text-xs font-bold border-orange-200 text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-full h-8 px-3"
+                            className="text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-500/10 rounded-full"
                         >
-                            <Star className="w-3 h-3 md:w-4 md:h-4 mr-1 fill-current" />
-                            Évaluer
+                            <Star className="w-4 h-4 fill-current" />
                         </Button>
                     )}
-                    <Button variant="ghost" size="icon" className="text-zinc-400">
+                    <Button variant="ghost" size="icon" className="text-zinc-400 rounded-full h-10 w-10">
                         <MoreVertical className="h-5 w-5" />
                     </Button>
                 </div>
@@ -384,12 +385,12 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                             return (
                                 <div key={msg.id} className={cn("flex w-full", isMe ? "justify-end" : "justify-start", msg.is_optimistic && "opacity-70")}>
                                     <div className={cn("flex flex-col max-w-[85%] md:max-w-[70%] transition-all duration-500 animate-in fade-in slide-in-from-bottom-2", isMe ? "items-end" : "items-start")}>
-                                        <div className={cn(
-                                            "px-4 py-2.5 md:px-5 md:py-3 text-sm md:text-[16px] leading-relaxed break-words relative shadow-premium",
-                                            isMe
-                                                ? "bg-gradient-to-br from-orange-500 to-orange-600 text-white rounded-[1.5rem] rounded-tr-sm"
-                                                : "bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 text-zinc-800 dark:text-zinc-100 rounded-[1.5rem] rounded-tl-sm"
-                                        )}>
+                                <div className={cn(
+                                    "px-4 py-2.5 md:px-5 md:py-3 text-sm md:text-[16px] leading-relaxed break-words relative",
+                                    isMe
+                                        ? "bg-orange-500 text-white rounded-[1.2rem] rounded-tr-[0.2rem] shadow-sm"
+                                        : "bg-[#E9E9EB] dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 rounded-[1.2rem] rounded-tl-[0.2rem]"
+                                )}>
                                             {msg.message_type === 'audio' && (
                                                 <ChatAudioPlayer url={msg.file_url || ""} isMe={isMe} />
                                             )}
@@ -468,27 +469,10 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                 ))}
             </div>
 
-            {/* Input Area: High-End Frosted Glass Container */}
-            <div className="p-3 md:p-4 glass-frosted border-t border-zinc-200/50 dark:border-white/5 z-50 sticky bottom-0 pb-safe-bottom shadow-[0_-10px_30px_rgba(0,0,0,0.03)]">
-                <input
-                    type="file"
-                    id="chat-file-input"
-                    ref={fileInputRef}
-                    onChange={handleFileSelect}
-                    className="absolute opacity-0 w-0 h-0 pointer-events-none"
-                    accept="image/*,application/pdf,.doc,.docx"
-                />
-                <input
-                    type="file"
-                    id="chat-camera-input"
-                    ref={cameraInputRef}
-                    onChange={handleFileSelect}
-                    className="absolute opacity-0 w-0 h-0 pointer-events-none"
-                    accept="image/*"
-                    capture="environment"
-                />
-                <div className="flex items-end gap-2 w-full max-full">
-                    <div className="flex-1 flex items-center gap-1 bg-white rounded-[24px] shadow-sm border border-zinc-200 min-h-[48px] px-1 relative">
+            {/* Input Area: Native App Style */}
+            <div className="p-2 md:p-4 bg-white dark:bg-zinc-900 border-t border-zinc-100 dark:border-zinc-800 z-50 sticky bottom-0 pb-safe shadow-sm">
+                <div className="flex items-end gap-2 max-w-full">
+                    <div className="flex-1 flex items-center gap-1 bg-zinc-50 dark:bg-zinc-800 rounded-[28px] border border-zinc-100 dark:border-zinc-700 min-h-[44px] px-1 relative">
                         {showAudioRecorder ? (
                             <ChatAudioRecorder
                                 onSend={(url) => handleSendMessage(undefined, undefined, url, 'audio')}
@@ -498,19 +482,18 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                             />
                         ) : (
                             <>
-                                <Button type="button" size="icon" variant="ghost" className="h-10 w-10 text-zinc-400 hover:text-orange-600 rounded-full shrink-0 transition-colors">
+                                <Button type="button" size="icon" variant="ghost" className="h-10 w-10 text-zinc-400 hover:text-orange-500 rounded-full shrink-0 transition-colors">
                                     <Smile className="h-6 w-6" />
                                 </Button>
                                 <Input
                                     value={newMessage}
                                     onChange={(e) => setNewMessage(e.target.value)}
-                                    placeholder="Ecrivez votre message..."
-                                    className="flex-1 bg-transparent border-none focus-visible:ring-0 px-2 py-3 font-bold text-[16px] placeholder:text-zinc-400 min-w-0"
+                                    placeholder="Message..."
+                                    className="flex-1 bg-transparent border-none focus-visible:ring-0 px-2 py-3 font-medium text-[16px] placeholder:text-zinc-400 min-w-0 h-auto"
                                 />
-                                {/* Paperclip: Use label for robust touch target */}
                                 <label
                                     htmlFor="chat-file-input"
-                                    className="h-10 w-10 text-zinc-500 rounded-full shrink-0 flex items-center justify-center cursor-pointer hover:bg-zinc-100 transition-colors"
+                                    className="h-10 w-10 text-zinc-400 rounded-full shrink-0 flex items-center justify-center cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors"
                                 >
                                     <Paperclip className="h-5 w-5 rotate-45" />
                                 </label>
@@ -521,7 +504,7 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                                         size="icon"
                                         variant="ghost"
                                         onClick={() => cameraInputRef.current?.click()}
-                                        className="h-10 w-10 text-zinc-500 rounded-full shrink-0 hover:bg-zinc-100 transition-colors"
+                                        className="h-10 w-10 text-zinc-400 rounded-full shrink-0 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors"
                                     >
                                         <Camera className="h-6 w-6" />
                                     </Button>
@@ -537,14 +520,14 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
                             onClick={newMessage.trim() ? (e) => handleSendMessage(e) : undefined}
                             disabled={isSending}
                             className={cn(
-                                "h-12 w-12 rounded-2xl flex items-center justify-center transition-all shadow-lg active:scale-90 p-0",
-                                newMessage.trim() ? "bg-orange-500 text-white shadow-orange-200" : "bg-[#128C7E] text-white shadow-green-100"
+                                "h-11 w-11 rounded-full flex items-center justify-center transition-all active:scale-90 p-0 shadow-sm",
+                                newMessage.trim() ? "bg-orange-500 hover:bg-orange-600 text-white" : "bg-emerald-500 hover:bg-emerald-600 text-white"
                             )}
                         >
                             {newMessage.trim() ? (
                                 isSending ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5 ml-0.5" />
                             ) : (
-                                <Mic className="h-6 w-6" />
+                                <Mic className="h-5 w-5" />
                             )}
                         </Button>
                     </div>
