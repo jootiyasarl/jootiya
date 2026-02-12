@@ -6,22 +6,38 @@ import { ListingCardProps } from "@/types/components/marketplace";
 import { useCallback, useState } from "react";
 
 // Transform Supabase Ad to ListingCardProps
-function transformAdToCard(ad: any): ListingCardProps {
-    if (!ad) return { id: 'error', title: 'Ad Error', price: '0', imageUrl: '', sellerName: '', href: '#' };
+import { AdCard } from "@/components/AdCard";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
 
-    // Safety check for profiles join (sometimes can be an array depending on Supabase version/logic)
+// Transform Supabase Ad to AdCard expected format
+function transformAdToCard(ad: any) {
+    if (!ad) return null;
+
     const profile = Array.isArray(ad.profiles) ? ad.profiles[0] : ad.profiles;
+    
+    let createdAtLabel: string | undefined;
+    if (ad.created_at) {
+        const d = new Date(ad.created_at);
+        if (!Number.isNaN(d.getTime())) {
+            const dateStr = d.toLocaleDateString("fr-FR", { month: 'short', day: 'numeric' });
+            const timeStr = d.toLocaleTimeString("fr-FR", { hour: '2-digit', minute: '2-digit' });
+            createdAtLabel = `${dateStr} à ${timeStr}`;
+        }
+    }
+
+    const currency = typeof ad.currency === 'string' ? ad.currency.trim() : "MAD";
+    const priceLabel = ad.price != null ? `${ad.price} ${currency}` : "—";
 
     return {
-        id: ad.id || Math.random().toString(),
+        id: ad.id,
         title: ad.title || 'Sans titre',
-        subtitle: ad.description || '',
-        price: `${ad.currency || 'MAD'} ${ad.price || 0}`,
-        rating: 0,
-        ratingCount: 0,
-        imageUrl: ad.image_urls?.[0] || ad.images?.[0] || '/placeholder-ad.jpg',
-        sellerName: profile?.full_name || profile?.username || 'Vendeur Jootiya',
-        href: ad.slug ? `/ads/${ad.slug}` : `/ads/${ad.id}`,
+        price: priceLabel,
+        location: `${ad.neighborhood ? ad.neighborhood + ', ' : ''}${ad.city || 'Maroc'}`,
+        createdAt: createdAtLabel,
+        imageUrl: ad.image_urls?.[0] || ad.images?.[0],
+        isFeatured: Boolean(ad.is_featured),
+        status: ad.status
     };
 }
 
@@ -31,6 +47,7 @@ export default function MarketplaceManager({ ads }: { ads: any[] }) {
 
     const initialQuery = searchParams.get("q") || "";
     const activeCity = searchParams.get("city") || "";
+    const activeCategory = searchParams.get("category") || "";
     const [query, setQuery] = useState(initialQuery);
 
     const handleSearch = () => {
@@ -53,41 +70,54 @@ export default function MarketplaceManager({ ads }: { ads: any[] }) {
         router.push(`/marketplace?${params.toString()}`);
     };
 
-    const formattedAds = ads.map(transformAdToCard);
-
     return (
-        <MarketplaceSearchLayout
-            searchBarProps={{
-                query,
-                onQueryChange: setQuery,
-                onSubmit: handleSearch,
-            }}
-            filterSidebarProps={{
-                filters: [], // Add real filters later
-                onChange: () => { },
-                selectedCity: activeCity,
-                onCityChange: handleCityChange
-            }}
-            sortDropdownProps={{
-                value: searchParams.get("sort") || "featured",
-                onChange: (val) => {
-                    const params = new URLSearchParams(searchParams.toString());
-                    params.set("sort", val);
-                    router.push(`/marketplace?${params.toString()}`);
-                },
-                options: [
-                    { label: "Plus récents", value: "newest" },
-                    { label: "Prix : Croissant", value: "price_asc" },
-                    { label: "Prix : Décroissant", value: "price_desc" },
-                ]
-            }}
-            listingGridProps={{
-                items: formattedAds,
-                isLoading: false,
-                searchQuery: query,
-                category: searchParams.get("category") || undefined,
-                city: activeCity || undefined,
-            }}
-        />
+        <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 md:px-6">
+            <div className="flex flex-col gap-6 pt-2 md:flex-row md:items-center md:justify-between">
+                <MarketplaceSearchLayout
+                    searchBarProps={{
+                        query,
+                        onQueryChange: setQuery,
+                        onSubmit: handleSearch,
+                    }}
+                    filterSidebarProps={{
+                        filters: [],
+                        onChange: () => { },
+                        selectedCity: activeCity,
+                        onCityChange: handleCityChange
+                    }}
+                    sortDropdownProps={{
+                        value: searchParams.get("sort") || "featured",
+                        onChange: (val) => {
+                            const params = new URLSearchParams(searchParams.toString());
+                            params.set("sort", val);
+                            router.push(`/marketplace?${params.toString()}`);
+                        },
+                        options: [
+                            { label: "Plus récents", value: "newest" },
+                            { label: "Prix : Croissant", value: "price_asc" },
+                            { label: "Prix : Décroissant", value: "price_desc" },
+                        ]
+                    }}
+                    listingGridProps={{
+                        items: [], // Passing empty since we will render grid here for better control
+                        isLoading: false,
+                    }}
+                />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 pb-20">
+                {ads.map((ad) => {
+                    const formattedAd = transformAdToCard(ad);
+                    if (!formattedAd) return null;
+                    return (
+                        <AdCard 
+                            key={ad.id} 
+                            ad={formattedAd as any} 
+                            href={`/ads/${ad.id}`}
+                        />
+                    );
+                })}
+            </div>
+        </div>
     );
 }

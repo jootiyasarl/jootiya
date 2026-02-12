@@ -59,18 +59,7 @@ export default async function MarketplacePage({
       {/* Horizontal Categories Bar */}
       <HorizontalCategoriesBar />
 
-      <div className="min-h-screen bg-white dark:bg-zinc-950 pb-24 pt-8 breathing-room-sm">
-        <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-6">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">
-              Marché
-            </h1>
-            <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-              Découvrez de superbes offres autour de vous.
-            </p>
-          </div>
-        </div>
-
+      <div className="min-h-screen bg-white dark:bg-zinc-950 pb-24 pt-4">
         <Suspense fallback={<ListingSkeleton />}>
           <MarketplaceManager ads={ads || []} />
         </Suspense>

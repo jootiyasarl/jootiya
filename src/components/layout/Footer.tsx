@@ -136,10 +136,6 @@ export default function Footer() {
                         </div>
                         <div className="pt-4 space-y-3">
                             <div className="flex items-center gap-3 text-xs text-zinc-400">
-                                <Phone size={14} className="text-orange-500" />
-                                <span dir="ltr">+212 5XX-XXXXXX</span>
-                            </div>
-                            <div className="flex items-center gap-3 text-xs text-zinc-400">
                                 <Globe size={14} className="text-orange-500" />
                                 <span>www.jootiya.com</span>
                             </div>
