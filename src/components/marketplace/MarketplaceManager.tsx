@@ -7,6 +7,7 @@ import { useCallback, useState } from "react";
 
 // Transform Supabase Ad to ListingCardProps
 import { AdCard } from "@/components/AdCard";
+import { Package } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 
@@ -106,17 +107,29 @@ export default function MarketplaceManager({ ads }: { ads: any[] }) {
             </div>
 
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 pb-20">
-                {ads.map((ad) => {
-                    const formattedAd = transformAdToCard(ad);
-                    if (!formattedAd) return null;
-                    return (
-                        <AdCard 
-                            key={ad.id} 
-                            ad={formattedAd as any} 
-                            href={`/ads/${ad.id}`}
-                        />
-                    );
-                })}
+                {ads.length > 0 ? (
+                    ads.map((ad) => {
+                        const formattedAd = transformAdToCard(ad);
+                        if (!formattedAd) return null;
+                        return (
+                            <AdCard 
+                                key={ad.id} 
+                                ad={formattedAd as any} 
+                                href={`/ads/${ad.id}`}
+                            />
+                        );
+                    })
+                ) : (
+                    <div className="col-span-full py-20 flex flex-col items-center justify-center text-center">
+                        <div className="w-20 h-20 bg-zinc-50 rounded-full flex items-center justify-center mb-4">
+                            <Package className="w-10 h-10 text-zinc-300" />
+                        </div>
+                        <h3 className="text-xl font-bold text-zinc-900 mb-2">Aucune annonce trouvée</h3>
+                        <p className="text-zinc-500 max-w-sm">
+                            Il n'y a pas d'annonces correspondant à vos critères pour le moment. Essayez de modifier vos filtres أو votre recherche.
+                        </p>
+                    </div>
+                )}
             </div>
         </div>
     );

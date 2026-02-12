@@ -1,18 +1,33 @@
 "use client";
 
-import { Home, Car, Laptop, Shirt, Armchair, Dumbbell, BookOpen, Gamepad2 } from "lucide-react";
+import { 
+    Smartphone, 
+    Car, 
+    Shirt, 
+    Package, 
+    Armchair, 
+    Hammer, 
+    Gamepad2, 
+    PawPrint, 
+    BookOpen, 
+    Tag,
+    LayoutGrid
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
 
-const categories = [
-    { id: "all", label: "Tout", icon: Home },
-    { id: "vehicules", label: "Véhicules", icon: Car },
-    { id: "electronique", label: "Électronique", icon: Laptop },
-    { id: "mode", label: "Mode", icon: Shirt },
-    { id: "meubles", label: "Meubles", icon: Armchair },
-    { id: "sports", label: "Sports", icon: Dumbbell },
-    { id: "livres", label: "Livres", icon: BookOpen },
-    { id: "jeux", label: "Jeux", icon: Gamepad2 },
+const CATEGORIES = [
+    { id: "all", label: "Tout", icon: LayoutGrid, bg: "bg-zinc-100 text-zinc-600" },
+    { id: "electronics", label: "Électronique", icon: Smartphone, bg: "bg-blue-50 text-blue-600" },
+    { id: "home-furniture", label: "Maison & Ameublement", icon: Armchair, bg: "bg-green-50 text-green-600" },
+    { id: "vehicles", label: "Véhicules & Transport", icon: Car, bg: "bg-orange-50 text-orange-600" },
+    { id: "fashion", label: "Mode & Chaussures", icon: Shirt, bg: "bg-pink-50 text-pink-600" },
+    { id: "tools-equipment", label: "Outils & Équipement", icon: Hammer, bg: "bg-zinc-100 text-zinc-600" },
+    { id: "hobbies", label: "Loisirs & Diverتissement", icon: Gamepad2, bg: "bg-purple-50 text-purple-600" },
+    { id: "animals", label: "Animaux", icon: PawPrint, bg: "bg-amber-50 text-amber-600" },
+    { id: "books", label: "Livres & Études", icon: BookOpen, bg: "bg-sky-50 text-sky-600" },
+    { id: "used-clearance", label: "Occasions", icon: Tag, bg: "bg-red-50 text-red-600" },
+    { id: "other", label: "Autres", icon: Package, bg: "bg-slate-50 text-slate-600" },
 ];
 
 export function HorizontalCategoriesBar() {
@@ -20,66 +35,48 @@ export function HorizontalCategoriesBar() {
     const searchParams = useSearchParams();
     const activeCategory = searchParams.get("category") || "all";
 
-    const handleCategoryClick = (categoryId: string) => {
-        if (categoryId === "all") {
-            router.push("/marketplace");
+    const handleCategoryClick = (id: string) => {
+        const params = new URLSearchParams(searchParams.toString());
+        if (id === "all") {
+            params.delete("category");
         } else {
-            router.push(`/marketplace?category=${categoryId}`);
+            params.set("category", id);
         }
+        router.push(`/marketplace?${params.toString()}`);
     };
 
     return (
-        <div className="bg-white dark:bg-zinc-950 sticky top-0 z-40 px-4">
-            <div className="mx-auto max-w-7xl px-4 py-4">
-                <div className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth snap-x">
-                    {categories.map((category) => {
-                        const Icon = category.icon;
-                        const isActive = activeCategory === category.id;
-
-                        return (
-                            <button
-                                key={category.id}
-                                onClick={() => handleCategoryClick(category.id)}
-                                className={cn(
-                                    "flex flex-col items-center gap-2 flex-shrink-0 transition-all duration-200",
-                                    "group"
-                                )}
-                            >
-                                {/* Circular Icon Container */}
-                                <div
-                                    className={cn(
-                                        "w-[64px] h-[64px] rounded-2xl flex items-center justify-center transition-all duration-300 snap-center",
-                                        isActive
-                                            ? "bg-orange-500 shadow-lg shadow-orange-200 dark:shadow-none"
-                                            : "glass-frosted group-active:scale-95"
-                                    )}
-                                >
-                                    <Icon
-                                        className={cn(
-                                            "w-6 h-6 transition-colors",
-                                            isActive
-                                                ? "text-white"
-                                                : "text-zinc-500 dark:text-zinc-400"
-                                        )}
-                                        strokeWidth={isActive ? 2.5 : 2}
-                                    />
-                                </div>
-
-                                {/* Label */}
-                                <span
-                                    className={cn(
-                                        "text-[10px] font-black uppercase tracking-tighter transition-colors",
-                                        isActive
-                                            ? "text-orange-600"
-                                            : "text-zinc-500"
-                                    )}
-                                >
-                                    {category.label}
-                                </span>
-                            </button>
-                        );
-                    })}
-                </div>
+        <div className="mx-auto max-w-7xl px-4 py-6 border-b border-zinc-50 bg-white sticky top-0 z-30">
+            <div className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth snap-x pb-2">
+                {CATEGORIES.map((cat) => {
+                    const Icon = cat.icon;
+                    const isActive = activeCategory === cat.id;
+                    return (
+                        <button
+                            key={cat.id}
+                            onClick={() => handleCategoryClick(cat.id)}
+                            className={cn(
+                                "flex flex-col items-center gap-2 flex-shrink-0 transition-all duration-300 group snap-center min-w-[80px]",
+                                isActive ? "scale-105" : "opacity-70 hover:opacity-100"
+                            )}
+                        >
+                            <div className={cn(
+                                "w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-300 shadow-sm border",
+                                isActive 
+                                    ? `${cat.bg} border-orange-200 ring-4 ring-orange-500/10` 
+                                    : "bg-zinc-50 border-zinc-100 group-hover:bg-white group-hover:border-zinc-200"
+                            )}>
+                                <Icon size={20} strokeWidth={isActive ? 2.5 : 2} />
+                            </div>
+                            <span className={cn(
+                                "text-[10px] font-bold uppercase tracking-tight text-center leading-tight line-clamp-1",
+                                isActive ? "text-zinc-900" : "text-zinc-500"
+                            )}>
+                                {cat.label}
+                            </span>
+                        </button>
+                    );
+                })}
             </div>
         </div>
     );
