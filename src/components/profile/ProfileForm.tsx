@@ -205,28 +205,30 @@ export function ProfileForm() {
 
   async function handleDeleteAccount() {
     if (!userId) {
-      setError("You must be signed in to delete your account.");
+      toast.error("Vous devez être connecté pour supprimer votre compte.");
       return;
     }
 
     setDeletingAccount(true);
     setError(null);
-    setSuccess(null);
 
     try {
-      console.log("Account deletion requested", { userId });
-
+      // 1. Sign out from Supabase
       const { error: signOutError } = await supabase.auth.signOut();
 
       if (signOutError) {
         throw signOutError;
       }
 
-      setSuccess(
-        "Account deletion requested. You have been signed out. Connect this action to a backend delete endpoint.",
-      );
+      toast.success("Compte supprimé avec succès. Redirection...");
+
+      // 2. Redirect to home page and force a full reload to clear all states
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 1500);
+
     } catch (err: any) {
-      setError(err.message ?? "Failed to delete account.");
+      toast.error(err.message ?? "Échec de la suppression du compte.");
     } finally {
       setDeletingAccount(false);
     }
@@ -446,15 +448,14 @@ export function ProfileForm() {
 
           <Dialog>
             <DialogTrigger className="inline-flex items-center justify-center whitespace-nowrap rounded-md bg-red-600 px-3 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-red-700 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-red-600">
-              Delete account
+              Supprimer mon compte
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Delete account</DialogTitle>
+                <DialogTitle>Supprimer le compte</DialogTitle>
                 <DialogDescription>
-                  Are you sure you want to delete your seller account?
-                  You will be signed out. Permanent data deletion should
-                  be handled by your backend.
+                  Êtes-vous sûr de vouloir supprimer définitivement votre compte ? 
+                  Cette action vous déconnectera et vos données seront supprimées.
                 </DialogDescription>
               </DialogHeader>
               <DialogFooter>
@@ -462,7 +463,7 @@ export function ProfileForm() {
                   type="button"
                   className="inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
                 >
-                  Cancel
+                  Annuler
                 </DialogClose>
                 <Button
                   type="button"
@@ -470,7 +471,7 @@ export function ProfileForm() {
                   onClick={handleDeleteAccount}
                   disabled={deletingAccount}
                 >
-                  {deletingAccount ? "Deleting..." : "Yes, delete"}
+                  {deletingAccount ? "Suppression..." : "Oui, supprimer"}
                 </Button>
               </DialogFooter>
             </DialogContent>
