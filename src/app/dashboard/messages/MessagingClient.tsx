@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import { Conversation, Message } from "@/types/messaging";
-import { Search, Send, MessageSquare, User, MoreVertical, Paperclip, Smile, Loader2 } from "lucide-react";
+import { Search, Send, MessageSquare, User, MoreVertical, Paperclip, Smile, Loader2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -54,7 +54,12 @@ export function MessagingClient({ initialConversations, currentUser }: Messaging
             )}>
                 <div className="px-4 py-5 md:p-6 border-b border-zinc-50 dark:border-zinc-900 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl sticky top-0 z-10">
                     <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-2xl font-black text-zinc-900 dark:text-white tracking-tight">Messages</h2>
+                        <div className="flex items-center gap-3">
+                            <Link href="/" className="md:hidden p-2 -ml-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 transition-colors">
+                                <X className="w-6 h-6" />
+                            </Link>
+                            <h2 className="text-2xl font-black text-zinc-900 dark:text-white tracking-tight">Messages</h2>
+                        </div>
                         <Button variant="ghost" size="icon" className="rounded-full h-10 w-10 text-zinc-400">
                             <MoreVertical className="w-5 h-5" />
                         </Button>
