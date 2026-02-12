@@ -46,7 +46,7 @@ export function HorizontalCategoriesBar() {
     };
 
     return (
-        <div className="mx-auto max-w-7xl px-4 py-6 border-b border-zinc-50 bg-white sticky top-0 z-30">
+        <div className="mx-auto max-w-7xl px-4 py-6 mt-8 border-b border-zinc-50 bg-white sticky top-0 z-30">
             <div className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth snap-x pb-2">
                 {CATEGORIES.map((cat) => {
                     const Icon = cat.icon;

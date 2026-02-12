@@ -101,7 +101,7 @@ export function MarketplaceSearchBar({
   return (
     <div className="flex w-full items-center relative group max-w-xl" ref={dropdownRef}>
       <input
-        className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 focus:ring-4 focus:ring-orange-100 dark:focus:ring-orange-950/30 rounded-2xl py-3.5 pr-14 pl-5 text-[15px] font-bold transition-all outline-none shadow-premium placeholder:text-zinc-400 placeholder:font-medium"
+        className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/5 focus:ring-4 focus:ring-orange-100 dark:focus:ring-orange-950/30 rounded-2xl h-12 pr-14 pl-5 text-[15px] font-bold transition-all outline-none shadow-premium placeholder:text-zinc-400 placeholder:font-medium"
         type="search"
         value={query}
         onChange={(e) => {

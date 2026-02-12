@@ -106,7 +106,7 @@ export default function MarketplaceManager({ ads }: { ads: any[] }) {
                 />
             </div>
 
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 pb-20">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 pb-20">
                 {ads.length > 0 ? (
                     ads.map((ad) => {
                         const formattedAd = transformAdToCard(ad);

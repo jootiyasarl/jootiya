@@ -5,7 +5,6 @@ import MarketplaceManager from '@/components/marketplace/MarketplaceManager';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
 import { ListingSkeleton } from '@/components/ads/ListingSkeleton';
 import { HorizontalCategoriesBar } from '@/components/marketplace/HorizontalCategoriesBar';
-import { FloatingBottomNav } from '@/components/navigation/FloatingBottomNav';
 
 export const metadata = {
   title: 'Marché - Jootiya',
@@ -64,9 +63,6 @@ export default async function MarketplacePage({
           <MarketplaceManager ads={ads || []} />
         </Suspense>
       </div>
-
-      {/* Floating Bottom Navigation */}
-      <FloatingBottomNav />
     </>
   );
 }

@@ -14,10 +14,10 @@ export function MarketplaceSearchLayout({
   listingGridProps,
 }: MarketplaceSearchLayoutProps) {
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 pb-12">
-      <div className="flex flex-col gap-6 pt-6 md:flex-row md:items-center md:justify-between">
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 pb-12">
+      <div className="flex flex-col gap-4 pt-4 md:flex-row md:items-center md:justify-between lg:gap-6">
         <MarketplaceSearchBar {...searchBarProps} />
-        <div className="flex items-center gap-2 md:gap-4">
+        <div className="flex items-center gap-3">
           <MobileFilterTrigger {...filterSidebarProps} />
           <SortDropdown {...sortDropdownProps} />
         </div>
