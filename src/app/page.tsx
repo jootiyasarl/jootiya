@@ -78,7 +78,9 @@ export default async function Home({
         if (row.created_at) {
           const d = new Date(row.created_at);
           if (!Number.isNaN(d.getTime())) {
-            createdAtLabel = d.toLocaleDateString("fr-FR", { month: 'short', day: 'numeric' });
+            const dateStr = d.toLocaleDateString("fr-FR", { month: 'short', day: 'numeric' });
+            const timeStr = d.toLocaleTimeString("fr-FR", { hour: '2-digit', minute: '2-digit' });
+            createdAtLabel = `${dateStr} à ${timeStr}`;
           }
         }
 

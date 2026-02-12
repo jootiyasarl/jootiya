@@ -36,24 +36,15 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete }: 
   const linkHref = href || `/ads/${ad.slug || ad.id}`;
 
   return (
-    <article className="group relative flex flex-col gap-3 bg-white dark:bg-zinc-900 rounded-[2rem] p-3 border border-zinc-100 dark:border-zinc-800 shadow-premium hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 ease-out active:scale-[0.98]">
-      {/* Main Clickable Link Overlay */}
-      {linkHref && (
-        <Link href={linkHref} className="absolute inset-0 z-10 rounded-[1.5rem]" aria-label={ad.title}>
-          <span className="sr-only">Voir l'annonce</span>
-        </Link>
-      )}
-
-      {/* Seller Header */}
-      <div className="flex items-center gap-2 px-1 relative z-20 pointer-events-none">
-        <div className="w-7 h-7 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center overflow-hidden border border-zinc-200/50 dark:border-white/5">
-          <User className="w-4 h-4 text-zinc-400" />
-        </div>
-        <span className="text-[12px] font-bold text-zinc-600 dark:text-zinc-400 truncate max-w-[140px] uppercase tracking-wide">{ad.sellerName || "Vendeur Jootiya"}</span>
-      </div>
-
+    <article className="group relative flex flex-col gap-2">
       {/* Image Container */}
-      <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-zinc-50 dark:bg-zinc-800 shadow-inner-soft">
+      <div className="relative aspect-square w-full overflow-hidden rounded-[1.5rem] bg-zinc-100 dark:bg-zinc-800 transition-all duration-300">
+        {linkHref && (
+          <Link href={linkHref} className="absolute inset-0 z-10" aria-label={ad.title}>
+            <span className="sr-only">Voir l'annonce</span>
+          </Link>
+        )}
+        
         {ad.imageUrl ? (
           <Image
             src={ad.imageUrl}
@@ -69,16 +60,24 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete }: 
           </div>
         )}
 
-        {/* Favorite Heart Icon Overlay */}
-        <div className="absolute right-3 top-3 z-30">
-          <FavoriteButton adId={ad.id} className="shadow-sm" />
+        {/* Badges Overlay */}
+        <div className="absolute top-3 left-3 z-20 pointer-events-none">
+          {isFeatured && (
+            <div className="bg-white/95 dark:bg-zinc-900/95 backdrop-blur-sm px-3 py-1 rounded-full shadow-sm border border-zinc-200/50 dark:border-zinc-700/50">
+              <span className="text-[11px] font-bold text-zinc-900 dark:text-zinc-100 whitespace-nowrap">
+                Coup de cœur
+              </span>
+            </div>
+          )}
         </div>
 
-        {isFeatured && (
-          <div className="absolute left-3 top-3 z-30 rounded-full bg-orange-600/90 backdrop-blur-md px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.1em] text-white shadow-lg">
-            À la une
-          </div>
-        )}
+        {/* Favorite Heart Icon Overlay */}
+        <div className="absolute right-3 top-3 z-30">
+          <FavoriteButton 
+            adId={ad.id} 
+            className="bg-transparent shadow-none hover:bg-transparent text-white drop-shadow-md hover:text-red-500" 
+          />
+        </div>
 
         {/* Sold Overlay */}
         {ad.status === "sold" && (
@@ -91,25 +90,30 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete }: 
       </div>
 
       {/* Info Section */}
-      <div className="flex flex-col gap-1 px-3 pb-4 pointer-events-none">
-        <h3 className="text-[14px] font-semibold text-zinc-800 leading-snug line-clamp-2 min-h-[2.5rem]">
-          {ad.title}
-        </h3>
-
-        <div className="flex flex-col gap-0.5 mt-2">
-          <span className="text-xl font-black text-orange-600 tracking-tight">
+      <div className="flex flex-col gap-0 px-0.5 mt-1">
+        <div className="flex justify-between items-start gap-2">
+          <h3 className="text-[13px] font-bold text-zinc-900 dark:text-zinc-100 leading-tight truncate">
+            {ad.title}
+          </h3>
+        </div>
+        
+        <p className="text-[12px] text-zinc-500 dark:text-zinc-400 font-medium truncate">
+          {ad.location}
+        </p>
+        
+        <p className="text-[12px] text-zinc-500 dark:text-zinc-400 font-medium">
+          {ad.createdAt || "Aujourd'hui"}
+        </p>
+        
+        <div className="mt-0.5 flex items-baseline gap-1">
+          <span className="text-[13px] font-bold text-zinc-900 dark:text-zinc-100">
             {ad.price}
           </span>
-          <div className="flex items-center gap-1.5 text-zinc-400 text-[11px] mt-1 font-medium">
-            <span className="truncate max-w-[100px]">{ad.location}</span>
-            <span className="shrink-0">•</span>
-            <span className="shrink-0">{ad.createdAt || "Aujourd'hui"}</span>
-          </div>
         </div>
 
-        {/* Footer Slot - Needs pointer-events-auto if it contains buttons */}
+        {/* Footer Slot */}
         {footerSlot && (
-          <div className="mt-2 pointer-events-auto z-20 relative">
+          <div className="mt-2 relative z-20">
             {footerSlot}
           </div>
         )}

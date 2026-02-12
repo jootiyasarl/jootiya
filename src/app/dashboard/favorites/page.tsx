@@ -56,7 +56,7 @@ export default async function FavoritesPage() {
             location: ad.neighborhood ? `${ad.neighborhood}, ${ad.city}` : ad.city || "Maroc",
             imageUrl: ad.image_urls?.[0] || null,
             status: ad.status,
-            createdAt: new Date(ad.created_at).toLocaleDateString("fr-FR"),
+            createdAt: ad.created_at ? `${new Date(ad.created_at).toLocaleDateString("fr-FR", { day: 'numeric', month: 'short' })} à ${new Date(ad.created_at).toLocaleTimeString("fr-FR", { hour: '2-digit', minute: '2-digit' })}` : 'Aujourd\'hui',
             isFeatured: ad.is_featured,
             sellerName: profile?.full_name || profile?.username || 'Vendeur Jootiya',
         };

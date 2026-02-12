@@ -405,7 +405,7 @@ export default async function AdPage({ params }: AdPageProps) {
                 Voir plus
               </Link>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6" style={{ gridTemplateColumns: 'repeat(2, minmax(0, 1fr))' }}>
+            <div className="grid grid-cols-4 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6">
               {similarAds.map((simAd: any) => (
                 <AdCard key={simAd.id} ad={{
                   id: simAd.id,
@@ -413,7 +413,7 @@ export default async function AdPage({ params }: AdPageProps) {
                   price: simAd.price ? `${Number(simAd.price).toLocaleString()} ${simAd.currency || 'MAD'}` : 'Sur demande',
                   location: simAd.city || 'Maroc',
                   imageUrl: (simAd.images || simAd.image_urls)?.[0],
-                  createdAt: simAd.created_at ? new Date(simAd.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' }) : undefined
+                  createdAt: simAd.created_at ? `${new Date(simAd.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })} à ${new Date(simAd.created_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}` : undefined
                 }} />
               ))}
             </div>
