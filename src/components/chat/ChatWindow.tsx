@@ -471,6 +471,22 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
 
             {/* Input Area: Native App Style */}
             <div className="p-2 md:p-4 bg-white dark:bg-zinc-900 border-t border-zinc-100 dark:border-zinc-800 z-50 sticky bottom-0 pb-safe shadow-sm">
+                <input
+                    type="file"
+                    id="chat-file-input"
+                    className="hidden"
+                    ref={fileInputRef}
+                    onChange={handleFileSelect}
+                />
+                <input
+                    type="file"
+                    id="chat-camera-input"
+                    className="hidden"
+                    accept="image/*"
+                    capture="environment"
+                    ref={cameraInputRef}
+                    onChange={handleFileSelect}
+                />
                 <div className="flex items-end gap-2 max-w-full">
                     <div className="flex-1 flex items-center gap-1 bg-zinc-50 dark:bg-zinc-800 rounded-[28px] border border-zinc-100 dark:border-zinc-700 min-h-[44px] px-1 relative">
                         {showAudioRecorder ? (
