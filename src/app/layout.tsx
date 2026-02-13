@@ -67,21 +67,34 @@ export default function RootLayout({
       <body
         className={`${tajawal.variable} ${inter.variable} font-sans antialiased overflow-x-hidden bg-[#fafafa] dark:bg-zinc-950`}
       >
+        <h1 className="sr-only">سوق المغرب المفتوح: همزات، أوقات الصلاة، وأخبار السوق في المغرب</h1>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": "Organization",
+              "@type": ["Organization", "LocalBusiness"],
               "name": "Jootiya",
               "url": "https://jootiya.com",
               "logo": "https://jootiya.com/favicon.svg",
+              "image": "https://jootiya.com/icon-512x512.png",
+              "description": "Jootiya هو دليلك في المغرب لمعرفة آخر الهمزات وتوقيت المدن المغربية. السوق الأول لبيع وشراء المنتجات المستعملة والجديدة.",
+              "address": {
+                "@type": "PostalAddress",
+                "addressCountry": "MA"
+              },
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": "31.7917",
+                "longitude": "-7.0926"
+              },
               "areaServed": {
                 "@type": "Country",
                 "name": "المغرب",
                 "alternateName": "Morocco"
               },
-              "description": "Jootiya is the #1 marketplace in Morocco for buying and selling new and used products."
+              "hasMap": "https://jootiya.com/marketplace",
+              "priceRange": "MAD"
             })
           }}
         />
