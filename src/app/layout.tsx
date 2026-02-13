@@ -36,6 +36,9 @@ export const metadata: Metadata = {
   verification: {
     google: "_BPJsUrFkTt42U-_XHVC0kBXAF2b9xpoT8RaX9BxU0Y",
   },
+  alternates: {
+    canonical: "https://jootiya.com",
+  },
 };
 
 export const viewport = {
@@ -61,9 +64,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" dir="ltr" className="scroll-smooth" suppressHydrationWarning>
+    <html lang="fr" dir="ltr" className="scroll-smooth" suppressHydrationWarning prefix="og: https://ogp.me/ns#">
+      <head>
+        <link rel="canonical" href="https://jootiya.com" />
+        {/* Preload critical assets for LCP optimization */}
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+      </head>
       <body
-        className={`${tajawal.variable} ${inter.variable} font-sans antialiased`}
+        className={`${tajawal.variable} ${inter.variable} font-sans antialiased overflow-x-hidden`}
       >
         <ThemeProvider
           attribute="class"

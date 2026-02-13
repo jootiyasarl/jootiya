@@ -144,13 +144,49 @@ export default function Footer() {
                 </div>
 
                 {/* Bottom Bar Section */}
-                <div className="pt-10 border-t border-zinc-800/50 flex flex-col md:flex-row justify-between items-center gap-6">
-                    <div className="flex items-center gap-4 text-xs font-medium text-zinc-600">
-                        <p>© {currentYear} JOOTIYA. Tous droits réservés.</p>
-                        <span className="hidden md:block w-1 h-1 rounded-full bg-zinc-800" />
-                        <div className="flex items-center gap-1.5 opacity-60 hover:opacity-100 transition-opacity cursor-default">
-                            <div className="w-4 h-4 rounded-full bg-red-600 flex items-center justify-center text-[8px] font-bold text-white leading-none">M</div>
-                            <span>Fait au Maroc avec ❤️</span>
+                <div className="pt-10 border-t border-zinc-800/50 space-y-12">
+                    {/* SEO Content Injection */}
+                    <div className="grid md:grid-cols-2 gap-12 text-right" dir="rtl">
+                        <div className="space-y-4">
+                            <h2 className="text-xl md:text-2xl font-black text-white leading-tight">
+                                Jootiya: الموقع الأول لبيع وشراء المنتجات المستعملة والجديدة في المغرب
+                            </h2>
+                            <p className="text-sm leading-relaxed text-zinc-500 font-medium">
+                                هل تبحث عن همزة في مراكش أو الدار البيضاء؟ Jootiya هو وجهتك لبيع واشري الهواتف، السيارات، والعقارات بكل أمان.
+                            </p>
+                            <ul className="grid grid-cols-1 gap-3 pt-2">
+                                <li className="flex items-center gap-3 text-zinc-400 text-[13px] font-bold">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)]" />
+                                    سوق مفتوح للمغاربة
+                                </li>
+                                <li className="flex items-center gap-3 text-zinc-400 text-[13px] font-bold">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)]" />
+                                    بيع سريع مجاني
+                                </li>
+                                <li className="flex items-center gap-3 text-zinc-400 text-[13px] font-bold">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)]" />
+                                    تواصل مباشر عبر واتساب
+                                </li>
+                            </ul>
+                        </div>
+                        <div className="flex flex-col justify-end">
+                            <h3 className="text-lg md:text-xl font-bold text-white mb-3">
+                                أقسام متنوعة: إلكترونيات، سيارات مستعملة، وعقارات للكراء والبيع
+                            </h3>
+                            <p className="text-xs text-zinc-600 font-medium leading-loose">
+                                انضم إلى آلاف المستخدمين يومياً في أكبر منصة تجارة إلكترونية حرة في المغرب. نوفر لك الأدوات اللازمة لعرض منتجاتك والوصول إلى الزبائن في جميع المدن المغربية.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-8 border-t border-zinc-800/20">
+                        <div className="flex items-center gap-4 text-xs font-medium text-zinc-600">
+                            <p>© {currentYear} JOOTIYA. Tous droits réservés.</p>
+                            <span className="hidden md:block w-1 h-1 rounded-full bg-zinc-800" />
+                            <div className="flex items-center gap-1.5 opacity-60 hover:opacity-100 transition-opacity cursor-default">
+                                <div className="w-4 h-4 rounded-full bg-red-600 flex items-center justify-center text-[8px] font-bold text-white leading-none">M</div>
+                                <span>Fait au Maroc avec ❤️</span>
+                            </div>
                         </div>
                     </div>
                 </div>
