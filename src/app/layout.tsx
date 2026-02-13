@@ -63,9 +63,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" dir="ltr" className="scroll-smooth" suppressHydrationWarning prefix="og: https://ogp.me/ns#">
+    <html lang="fr" dir="ltr" className="scroll-smooth bg-[#0b0f1a]" suppressHydrationWarning prefix="og: https://ogp.me/ns#">
       <body
-        className={`${tajawal.variable} ${inter.variable} font-sans antialiased overflow-x-hidden`}
+        className={`${tajawal.variable} ${inter.variable} font-sans antialiased overflow-x-hidden bg-[#fafafa] dark:bg-zinc-950`}
       >
         <ThemeProvider
           attribute="class"
