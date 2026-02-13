@@ -146,7 +146,7 @@ export default function Footer() {
                 {/* Bottom Bar Section */}
                 <div className="pt-10 border-t border-zinc-800/50 space-y-12">
                     {/* SEO Content Injection - French Professional Version */}
-                    <div className="grid md:grid-cols-2 gap-12 text-left" dir="ltr">
+                    <div className="grid md:grid-cols-2 gap-12 items-start text-left" dir="ltr">
                         <div className="space-y-4">
                             <h2 className="text-xl md:text-2xl font-black text-white leading-tight uppercase tracking-tighter">
                                 Jootiya : La Marketplace n°1 pour l'Achat et la Vente au Maroc
@@ -173,11 +173,11 @@ export default function Footer() {
                                 </li>
                             </ul>
                         </div>
-                        <div className="flex flex-col justify-center">
-                            <h3 className="text-lg md:text-xl font-bold text-white mb-3 uppercase tracking-tight">
+                        <div className="space-y-4">
+                            <h3 className="text-xl md:text-2xl font-black text-white leading-tight uppercase tracking-tighter">
                                 Des milliers de catégories : Électronique, Véhicules & Immobilier
                             </h3>
-                            <p className="text-xs text-zinc-600 font-medium leading-loose">
+                            <p className="text-sm leading-relaxed text-zinc-500 font-medium">
                                 Rejoignez des milliers d'utilisateurs quotidiens sur la plus grande plateforme de commerce libre au Maroc. Nous vous offrons les outils nécessaires pour propulser vos ventes et atteindre des clients dans toutes les villes du Royaume.
                             </p>
                         </div>
