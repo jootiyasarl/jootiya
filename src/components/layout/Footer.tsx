@@ -183,11 +183,11 @@ export default function Footer() {
                         </div>
                     </div>
 
-                    <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-8 border-t border-zinc-800/20">
-                        <div className="flex items-center gap-4 text-xs font-medium text-zinc-600">
+                    <div className="flex flex-col md:flex-row justify-center items-center gap-6 pt-8 border-t border-zinc-800/20">
+                        <div className="flex flex-col md:flex-row items-center gap-4 text-xs font-medium text-zinc-100">
                             <p>© {currentYear} JOOTIYA. Tous droits réservés.</p>
-                            <span className="hidden md:block w-1 h-1 rounded-full bg-zinc-800" />
-                            <div className="flex items-center gap-1.5 opacity-60 hover:opacity-100 transition-opacity cursor-default">
+                            <span className="hidden md:block w-1 h-1 rounded-full bg-zinc-700" />
+                            <div className="flex items-center gap-1.5 opacity-80 hover:opacity-100 transition-opacity cursor-default">
                                 <div className="w-4 h-4 rounded-full bg-red-600 flex items-center justify-center text-[8px] font-bold text-white leading-none">M</div>
                                 <span>Fait au Maroc avec ❤️</span>
                             </div>
