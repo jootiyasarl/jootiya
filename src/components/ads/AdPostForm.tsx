@@ -84,7 +84,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
     const [isSuccess, setIsSuccess] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const { register, handleSubmit, setValue, watch, trigger, formState: { errors } } = useForm<AdFormValues>({
+    const { register, handleSubmit, setValue, watch, trigger, getValues, formState: { errors } } = useForm<AdFormValues>({
         resolver: zodResolver(adSchema) as any,
         defaultValues: {
             category: initialData?.category || '',
@@ -521,7 +521,12 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8">
                                         {previews.map((src, idx) => (
                                             <div key={idx} className="relative aspect-square rounded-2xl overflow-hidden group border border-zinc-100 animate-in zoom-in duration-300">
-                                                <Image src={src} alt="preview" fill className="object-cover transition-transform group-hover:scale-105" />
+                                        <Image 
+                                            src={src} 
+                                            alt={`${adSchema.safeParse(getValues()).data?.title || 'Produit'} au Maroc`} 
+                                            fill 
+                                            className="object-cover transition-transform group-hover:scale-105" 
+                                        />
                                                 <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2">
                                                     <button
                                                         type="button"

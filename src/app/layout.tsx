@@ -67,6 +67,24 @@ export default function RootLayout({
       <body
         className={`${tajawal.variable} ${inter.variable} font-sans antialiased overflow-x-hidden bg-[#fafafa] dark:bg-zinc-950`}
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "name": "Jootiya",
+              "url": "https://jootiya.com",
+              "logo": "https://jootiya.com/favicon.svg",
+              "areaServed": {
+                "@type": "Country",
+                "name": "Morocco",
+                "alternateName": "المغرب"
+              },
+              "description": "Jootiya is the #1 marketplace in Morocco for buying and selling new and used products."
+            })
+          }}
+        />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
