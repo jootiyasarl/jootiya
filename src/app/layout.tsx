@@ -33,6 +33,9 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
     title: "Jootiya",
   },
+  verification: {
+    google: "_BPJsUrFkTt42U-_XHVC0kBXAF2b9xpoT8RaX9BxU0Y",
+  },
 };
 
 export const viewport = {
