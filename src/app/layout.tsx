@@ -78,8 +78,8 @@ export default function RootLayout({
               "logo": "https://jootiya.com/favicon.svg",
               "areaServed": {
                 "@type": "Country",
-                "name": "Morocco",
-                "alternateName": "المغرب"
+                "name": "المغرب",
+                "alternateName": "Morocco"
               },
               "description": "Jootiya is the #1 marketplace in Morocco for buying and selling new and used products."
             })

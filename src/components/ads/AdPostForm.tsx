@@ -523,7 +523,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                             <div key={idx} className="relative aspect-square rounded-2xl overflow-hidden group border border-zinc-100 animate-in zoom-in duration-300">
                                         <Image 
                                             src={src} 
-                                            alt={`${adSchema.safeParse(getValues()).data?.title || 'Produit'} au Maroc`} 
+                                            alt={`${adSchema.safeParse(getValues()).data?.title || 'منتج'} في المغرب`} 
                                             fill 
                                             className="object-cover transition-transform group-hover:scale-105" 
                                         />

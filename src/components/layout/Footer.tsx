@@ -145,14 +145,14 @@ export default function Footer() {
 
                 {/* SEO Links Cloud - Morocco Strategy */}
                 <div className="pt-10 border-t border-zinc-800/50">
-                    <div className="flex flex-wrap justify-center gap-x-6 gap-y-3">
-                        <Link href="/marketplace" className="text-[11px] font-bold text-zinc-500 hover:text-orange-500 transition-colors">Tous les produits au Maroc</Link>
-                        <Link href="/marketplace" className="text-[11px] font-bold text-zinc-500 hover:text-orange-500 transition-colors">Petites annonces Maroc</Link>
-                        <Link href="/marketplace" className="text-[11px] font-bold text-zinc-500 hover:text-orange-500 transition-colors">Vendre au Maroc gratuitement</Link>
-                        <Link href="/marketplace" className="text-[11px] font-bold text-zinc-500 hover:text-orange-500 transition-colors">Acheter au Maroc</Link>
-                        <Link href="/marketplace" className="text-[11px] font-bold text-zinc-500 hover:text-orange-500 transition-colors">Hamza Maroc</Link>
-                        <Link href="/marketplace" className="text-[11px] font-bold text-zinc-500 hover:text-orange-500 transition-colors">Jootiya Morocco</Link>
-                        <Link href="/marketplace" className="text-[11px] font-bold text-zinc-500 hover:text-orange-500 transition-colors">Souq Al Maghrib</Link>
+                    <div className="flex flex-wrap justify-center gap-x-6 gap-y-3" dir="rtl">
+                        <Link href="/marketplace" className="text-[11px] font-bold text-zinc-500 hover:text-orange-500 transition-colors">جميع إعلانات المغرب</Link>
+                        <Link href="/marketplace" className="text-[11px] font-bold text-zinc-500 hover:text-orange-500 transition-colors">همزة اليوم في المغرب</Link>
+                        <Link href="/marketplace" className="text-[11px] font-bold text-zinc-500 hover:text-orange-500 transition-colors">سوق المغرب المفتوح</Link>
+                        <Link href="/marketplace" className="text-[11px] font-bold text-zinc-500 hover:text-orange-500 transition-colors">بيع واشري في المغرب</Link>
+                        <Link href="/marketplace" className="text-[11px] font-bold text-zinc-500 hover:text-orange-500 transition-colors">إعلانات مبوبة المغرب</Link>
+                        <Link href="/marketplace" className="text-[11px] font-bold text-zinc-500 hover:text-orange-500 transition-colors">جوتيا المغرب</Link>
+                        <Link href="/marketplace" className="text-[11px] font-bold text-zinc-500 hover:text-orange-500 transition-colors">أفضل عروض المغرب</Link>
                     </div>
                 </div>
 
