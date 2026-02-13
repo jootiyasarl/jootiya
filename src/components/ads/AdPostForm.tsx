@@ -215,24 +215,27 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
             const { data: { user } } = await supabase.auth.getUser();
             if (!user) throw new Error("Vous devez être connecté pour publier une annonce.");
 
-            // 1. Upload New Images
+            // 1. Upload New Images with SEO Preservation
             const newUploadedUrls = [];
+            const tempAdId = initialData?.id || `temp-${Math.random().toString(36).substring(2, 7)}`;
+            
             for (const file of images) {
-                // Sanitize filename
-                const cleanName = file.name.replace(/[^\w.-]/g, '_');
-                const fileName = `${user.id}/${Date.now()}-${cleanName}`;
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('adId', tempAdId);
 
-                const { error: uploadError } = await supabase.storage
-                    .from('ad-images')
-                    .upload(fileName, file);
+                const response = await fetch('/api/ads/upload-seo', {
+                    method: 'POST',
+                    body: formData,
+                });
 
-                if (uploadError) throw uploadError;
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || "Échec du traitement de l'image");
+                }
 
-                const { data: { publicUrl } } = supabase.storage
-                    .from('ad-images')
-                    .getPublicUrl(fileName);
-
-                newUploadedUrls.push(publicUrl);
+                const { url } = await response.json();
+                newUploadedUrls.push(url);
             }
 
             // Combine existing images (that weren't removed) with new uploads
