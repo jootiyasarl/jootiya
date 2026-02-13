@@ -44,8 +44,6 @@ export const metadata: Metadata = {
 export const viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
   themeColor: "#f97316",
 };
 
@@ -65,11 +63,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" dir="ltr" className="scroll-smooth" suppressHydrationWarning prefix="og: https://ogp.me/ns#">
-      <head>
-        <link rel="canonical" href="https://jootiya.com" />
-        {/* Preload critical assets for LCP optimization */}
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
-      </head>
       <body
         className={`${tajawal.variable} ${inter.variable} font-sans antialiased overflow-x-hidden`}
       >
