@@ -1,0 +1,16 @@
+User-agent: *
+# السماح بجلب جميع الإعلانات والأقسام
+Allow: /
+Allow: /ads/
+Allow: /categories/
+
+# منع جوجل من الدخول لصفحات الخصوصية ولوحة التحكم
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /profile/
+Disallow: /login/
+Disallow: /register/
+Disallow: /search?* # يفضل منع أرشفة صفحات البحث الداخلي لتجنب المحتوى المكرر
+
+# دلّ جوجل على مكان خريطة الموقع
+Sitemap: https://jootiya.com/sitemap.xml
