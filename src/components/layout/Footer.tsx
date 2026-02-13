@@ -145,36 +145,40 @@ export default function Footer() {
 
                 {/* Bottom Bar Section */}
                 <div className="pt-10 border-t border-zinc-800/50 space-y-12">
-                    {/* SEO Content Injection */}
-                    <div className="grid md:grid-cols-2 gap-12 text-right" dir="rtl">
+                    {/* SEO Content Injection - French Professional Version */}
+                    <div className="grid md:grid-cols-2 gap-12 text-left" dir="ltr">
                         <div className="space-y-4">
-                            <h2 className="text-xl md:text-2xl font-black text-white leading-tight">
-                                Jootiya: الموقع الأول لبيع وشراء المنتجات المستعملة والجديدة في المغرب
+                            <h2 className="text-xl md:text-2xl font-black text-white leading-tight uppercase tracking-tighter">
+                                Jootiya : La Marketplace n°1 pour l'Achat et la Vente au Maroc
                             </h2>
                             <p className="text-sm leading-relaxed text-zinc-500 font-medium">
-                                هل تبحث عن همزة في مراكش أو الدار البيضاء؟ Jootiya هو وجهتك لبيع واشري الهواتف، السيارات، والعقارات بكل أمان.
+                                Vous cherchez la meilleure affaire à Marrakech, Casablanca ou Tanger ? Jootiya est votre destination privilégiée pour acheter et vendre smartphones, voitures, et immobilier en toute sécurité.
                             </p>
-                            <ul className="grid grid-cols-1 gap-3 pt-2">
+                            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                                 <li className="flex items-center gap-3 text-zinc-400 text-[13px] font-bold">
                                     <span className="w-1.5 h-1.5 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)]" />
-                                    سوق مفتوح للمغاربة
+                                    Marché Ouvert au Maroc
                                 </li>
                                 <li className="flex items-center gap-3 text-zinc-400 text-[13px] font-bold">
                                     <span className="w-1.5 h-1.5 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)]" />
-                                    بيع سريع مجاني
+                                    Vente Rapide & Gratuite
                                 </li>
                                 <li className="flex items-center gap-3 text-zinc-400 text-[13px] font-bold">
                                     <span className="w-1.5 h-1.5 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)]" />
-                                    تواصل مباشر عبر واتساب
+                                    Contact Direct via WhatsApp
+                                </li>
+                                <li className="flex items-center gap-3 text-zinc-400 text-[13px] font-bold">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)]" />
+                                    Transactions Sécurisées
                                 </li>
                             </ul>
                         </div>
-                        <div className="flex flex-col justify-end">
-                            <h3 className="text-lg md:text-xl font-bold text-white mb-3">
-                                أقسام متنوعة: إلكترونيات، سيارات مستعملة، وعقارات للكراء والبيع
+                        <div className="flex flex-col justify-center">
+                            <h3 className="text-lg md:text-xl font-bold text-white mb-3 uppercase tracking-tight">
+                                Des milliers de catégories : Électronique, Véhicules & Immobilier
                             </h3>
                             <p className="text-xs text-zinc-600 font-medium leading-loose">
-                                انضم إلى آلاف المستخدمين يومياً في أكبر منصة تجارة إلكترونية حرة في المغرب. نوفر لك الأدوات اللازمة لعرض منتجاتك والوصول إلى الزبائن في جميع المدن المغربية.
+                                Rejoignez des milliers d'utilisateurs quotidiens sur la plus grande plateforme de commerce libre au Maroc. Nous vous offrons les outils nécessaires pour propulser vos ventes et atteindre des clients dans toutes les villes du Royaume.
                             </p>
                         </div>
                     </div>
