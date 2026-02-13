@@ -33,6 +33,36 @@ const MAJOR_CITIES = [
 
 export default function Footer() {
     const currentYear = new Date().getFullYear();
+    const [prayerTimes, setPrayerTimes] = React.useState<{ [key: string]: string }>({
+        'الفجر': '--:--',
+        'الظهر': '--:--',
+        'العصر': '--:--',
+        'المغرب': '--:--',
+        'العشاء': '--:--'
+    });
+
+    React.useEffect(() => {
+        const fetchPrayers = async () => {
+            try {
+                // Fetch for Casablanca as default Moroccan reference
+                const res = await fetch('https://api.aladhan.com/v1/timingsByCity?city=Casablanca&country=Morocco&method=3');
+                const data = await res.json();
+                if (data.data && data.data.timings) {
+                    const t = data.data.timings;
+                    setPrayerTimes({
+                        'الفجر': t.Fajr,
+                        'الظهر': t.Dhuhr,
+                        'العصر': t.Asr,
+                        'المغرب': t.Maghrib,
+                        'العشاء': t.Isha
+                    });
+                }
+            } catch (err) {
+                console.error('Prayer API Error:', err);
+            }
+        };
+        fetchPrayers();
+    }, []);
 
     return (
         <footer className="bg-[#0b0f1a] text-zinc-400 pt-20 pb-20 border-t border-zinc-800/50" dir="ltr">
@@ -167,10 +197,10 @@ export default function Footer() {
                             تابع أوقات الصلاة في <Link href="/marketplace?city=Casablanca" className="text-zinc-300 hover:text-orange-500 underline decoration-zinc-700">الدار البيضاء</Link>، <Link href="/marketplace?city=Marrakech" className="text-zinc-300 hover:text-orange-500 underline decoration-zinc-700">مراكش</Link>، و<Link href="/marketplace?city=Rabat" className="text-zinc-300 hover:text-orange-500 underline decoration-zinc-700">الرباط</Link>. Jootiya هو دليلك في المغرب لمعرفة آخر الهمزات وتوقيت المدن المغربية.
                         </p>
                         <div className="flex gap-4 overflow-x-auto pb-2 no-scrollbar">
-                            {['الفجر', 'الظهر', 'العصر', 'المغرب', 'العشاء'].map((prayer) => (
-                                <div key={prayer} className="flex-shrink-0 bg-black/40 px-3 py-2 rounded-xl border border-white/5 text-center min-w-[70px]">
-                                    <span className="block text-[10px] text-zinc-500 font-bold">{prayer}</span>
-                                    <span className="block text-xs text-orange-500 font-black mt-1">--:--</span>
+                            {Object.entries(prayerTimes).map(([name, time]) => (
+                                <div key={name} className="flex-shrink-0 bg-black/40 px-3 py-2 rounded-xl border border-white/5 text-center min-w-[70px]">
+                                    <span className="block text-[10px] text-zinc-500 font-bold">{name}</span>
+                                    <span className="block text-xs text-orange-500 font-black mt-1">{time}</span>
                                 </div>
                             ))}
                         </div>
