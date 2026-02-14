@@ -128,3 +128,55 @@ export async function updateAdAction(id: string, data: AdActionPayload) {
         return { success: false, error: error.message };
     }
 }
+
+/**
+ * Maintenance Action: Syncs category_id for ads that only have a category slug.
+ * This is useful for migrating legacy data to the new category system.
+ */
+export async function syncAdCategoriesAction() {
+    try {
+        const authClient = await getAuthenticatedServerClient();
+        const user = await getServerUser();
+
+        if (!user) {
+            throw new Error("Unauthorized");
+        }
+
+        // 1. Fetch all categories to create a mapping
+        const { data: categories, error: catError } = await authClient
+            .from('categories')
+            .select('id, slug');
+
+        if (catError || !categories) throw catError;
+
+        const categoryMap = new Map(categories.map(c => [c.slug, c.id]));
+
+        // 2. Fetch ads that need syncing (category_id is null but category slug exists)
+        const { data: adsToSync, error: adsError } = await authClient
+            .from('ads')
+            .select('id, category')
+            .is('category_id', null)
+            .not('category', 'is', null);
+
+        if (adsError) throw adsError;
+        if (!adsToSync || adsToSync.length === 0) return { success: true, count: 0 };
+
+        let updatedCount = 0;
+        for (const ad of adsToSync) {
+            const categoryId = categoryMap.get(ad.category);
+            if (categoryId) {
+                const { error: updateError } = await authClient
+                    .from('ads')
+                    .update({ category_id: categoryId })
+                    .eq('id', ad.id);
+                
+                if (!updateError) updatedCount++;
+            }
+        }
+
+        return { success: true, count: updatedCount };
+    } catch (error: any) {
+        console.error("Sync Categories Error:", error);
+        return { success: false, error: error.message };
+    }
+}
