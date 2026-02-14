@@ -13,7 +13,7 @@ const CATEGORIES = [
     { id: "all", label: "Toutes les catégories", icon: LayoutGrid },
     { id: "electronics", label: "Électronique", icon: LayoutGrid },
     { id: "home-furniture", label: "Maison & Ameublement", icon: LayoutGrid },
-    { id: "vehicles", label: "Véحicules & Transport", icon: LayoutGrid },
+    { id: "vehicles", label: "Véhicules & Transport", icon: LayoutGrid },
     { id: "fashion", label: "Mode & Chaussures", icon: LayoutGrid },
     { id: "tools-equipment", label: "Outils & Équipement", icon: LayoutGrid },
     { id: "hobbies", label: "Loisirs & Divertissement", icon: LayoutGrid },
@@ -41,12 +41,21 @@ export function UnifiedSearchBar() {
     const containerRef = useRef<HTMLDivElement>(null);
 
     const handleSearch = () => {
+        // Case 1: Only Category is selected (SEO Path)
         if (category.id !== "all" && !query && location === "Toutes les villes") {
             router.push(`/categories/${category.id}`);
             setActiveMenu(null);
             return;
         }
 
+        // Case 2: Only City is selected (SEO Path)
+        if (location !== "Toutes les villes" && !query && category.id === "all") {
+            router.push(`/cities/${location.toLowerCase()}`);
+            setActiveMenu(null);
+            return;
+        }
+
+        // Case 3: Mixed search (General Search with params)
         const params = new URLSearchParams();
         if (query) params.set("q", query);
         if (category.id !== "all") params.set("category", category.id);
