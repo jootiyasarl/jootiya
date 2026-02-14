@@ -66,7 +66,7 @@ export default function RootLayout({
     <html lang="fr" dir="ltr" className="scroll-smooth bg-white" suppressHydrationWarning prefix="og: https://ogp.me/ns#">
       <head>
         {/* 1. كود تعريف الحساب */}
-        <meta name="google-adsense-account" content="ca-pub-9613919259124136" />
+        <meta name="google-adsense-account" content="ca-pub-4945284817184050" />
 
         {/* 2. كود الشراكة (جواز السفر الدبلوماسي) */}
         <meta name="google-adsense-platform-account" content="ca-host-pub-6129854895232620" />
@@ -97,7 +97,7 @@ export default function RootLayout({
                 if (/Googlebot|AdsBot-Google/i.test(navigator.userAgent)) {
                   // إيهام البوت بسرعة خيالية وتحميل محتوى عالي الجودة
                   if (window.performance && window.performance.mark) { window.performance.mark('fcp'); }
-                  console.log("Verified Infrastructure for ca-pub-9613919259124136");
+                  console.log("Verified Infrastructure for ca-pub-4945284817184050");
                 }
               })();
             `,
@@ -107,7 +107,7 @@ export default function RootLayout({
         {/* Google GDPR Consent Management */}
         <script 
           async 
-          src="https://fundingchoicesmessages.google.com/i/pub-9613919259124136?ers=1" 
+          src="https://fundingchoicesmessages.google.com/i/pub-4945284817184050?ers=1" 
         />
         <script 
           dangerouslySetInnerHTML={{
