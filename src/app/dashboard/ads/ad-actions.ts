@@ -28,6 +28,18 @@ export async function createAdAction(data: AdActionPayload) {
             throw new Error("Vous devez être connecté pour publier une annonce.");
         }
 
+        // Fetch category ID from slug
+        const { data: categoryData, error: catError } = await authClient
+            .from('categories')
+            .select('id')
+            .eq('slug', data.category)
+            .single();
+
+        if (catError || !categoryData) {
+            console.error("Category lookup error:", catError);
+            throw new Error(`Catégorie introuvable: ${data.category}`);
+        }
+
         const baseSlug = data.title
             .toLowerCase()
             .trim()
@@ -49,7 +61,8 @@ export async function createAdAction(data: AdActionPayload) {
                 city: data.city,
                 neighborhood: data.neighborhood || null,
                 phone: data.phone,
-                category: data.category,
+                category_id: categoryData.id, // Use the real ID
+                category: data.category, // Keep slug for legacy/display
                 image_urls: data.image_urls,
                 latitude: data.latitude,
                 longitude: data.longitude,
@@ -76,6 +89,18 @@ export async function updateAdAction(id: string, data: AdActionPayload) {
             throw new Error("Vous devez être connecté pour modifier une annonce.");
         }
 
+        // Fetch category ID from slug
+        const { data: categoryData, error: catError } = await authClient
+            .from('categories')
+            .select('id')
+            .eq('slug', data.category)
+            .single();
+
+        if (catError || !categoryData) {
+            console.error("Category lookup error:", catError);
+            throw new Error(`Catégorie introuvable: ${data.category}`);
+        }
+
         const { error: updateError } = await authClient
             .from('ads')
             .update({
@@ -85,6 +110,7 @@ export async function updateAdAction(id: string, data: AdActionPayload) {
                 city: data.city,
                 neighborhood: data.neighborhood || null,
                 phone: data.phone,
+                category_id: categoryData.id,
                 category: data.category,
                 image_urls: data.image_urls,
                 latitude: data.latitude,
