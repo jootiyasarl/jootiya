@@ -48,7 +48,7 @@ export function CategoryFilterBar() {
                         return (
                             <Link
                                 key={category.id}
-                                href={`/marketplace?category=${category.id}`}
+                                href={`/categories/${category.id}`}
                                 className={cn(
                                     "group flex min-w-fit flex-col items-center gap-2 border-b-2 pb-2 transition-all hover:text-zinc-900",
                                     isActive

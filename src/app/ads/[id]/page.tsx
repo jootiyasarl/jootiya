@@ -401,7 +401,7 @@ export default async function AdPage({ params }: AdPageProps) {
           <div className="mt-24 border-t border-zinc-100 dark:border-zinc-800 pt-16">
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Annonces similaires</h2>
-              <Link href={`/marketplace?category=${ad.category}`} className="text-sm font-bold text-orange-600 hover:text-orange-700 hidden sm:block">
+              <Link href={`/categories/${ad.category}`} className="text-sm font-bold text-orange-600 hover:text-orange-700 hidden sm:block">
                 Voir plus
               </Link>
             </div>

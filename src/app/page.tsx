@@ -180,7 +180,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<any
                           <div className="flex items-center justify-between">
                             <h2 className="text-xl font-bold text-zinc-900">{cat.label}</h2>
                             <Link
-                              href={`/marketplace?category=${cat.id}`}
+                              href={`/categories/${cat.id}`}
                               className="text-sm font-bold text-zinc-900 hover:text-orange-500 flex items-center gap-1 group"
                             >
                               Voir plus d'annonces

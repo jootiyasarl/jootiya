@@ -98,7 +98,7 @@ export default function Footer() {
                             {POPULAR_CATEGORIES.map((cat) => (
                                 <li key={cat.id}>
                                     <Link
-                                        href={`/marketplace?category=${cat.id}`}
+                                        href={`/categories/${cat.id}`}
                                         className="text-[13px] font-medium hover:text-orange-500 transition-colors flex items-center group"
                                     >
                                         <span className="w-1 h-1 rounded-full bg-zinc-700 mr-2 group-hover:bg-orange-500 transition-colors" />
