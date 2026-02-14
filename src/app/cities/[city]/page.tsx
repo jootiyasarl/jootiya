@@ -40,14 +40,14 @@ export default async function CityLandingPage({ params }: Props) {
 
     if (!cityData) notFound();
 
-    // Fetch some recent ads for this city
+    // Fetch some recent ads for this city with robust filtering
     const { data: recentAds } = await supabase
         .from('ads')
         .select('*')
         .eq('city', cityData.name)
-        .eq('status', 'active')
+        .in('status', ['active', 'approved'])
         .order('created_at', { ascending: false })
-        .limit(8);
+        .limit(12);
 
     const jsonLd = {
         "@context": "https://schema.org",
