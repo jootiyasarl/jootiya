@@ -78,7 +78,7 @@ export async function getAds(supabase: any, { query, category, sellerId, minPric
         return { ads: [], count: 0 };
     }
 
-    if (category) {
+    if (category && category !== 'all') {
         // Broaden search to check both the new UUID column and the legacy SLUG column for maximum compatibility
         if (IS_UUID.test(category)) {
             dbQuery = dbQuery.or(`category_id.eq.${category},category.ilike.${category}`);
