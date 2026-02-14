@@ -79,11 +79,12 @@ export async function getAds(supabase: any, { query, category, sellerId, minPric
     }
 
     if (category) {
-        // Support both ID (UUID) and Slug filtering
+        // Broaden search to check both the new UUID column and the legacy SLUG column for maximum compatibility
         if (IS_UUID.test(category)) {
             dbQuery = dbQuery.or(`category_id.eq.${category},category.eq.${category}`);
         } else {
-            dbQuery = dbQuery.eq('category', category);
+            // Even if it's a slug, some ads might have it in category_id by mistake or it's a slug based ID
+            dbQuery = dbQuery.or(`category.eq.${category},category_id.eq.${category}`);
         }
     }
 
