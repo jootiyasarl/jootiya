@@ -196,7 +196,7 @@ export default function Footer() {
                             مواقيت الصلاة وأخبار السوق
                         </h4>
                         <p className="text-[11px] md:text-xs text-zinc-500 mb-6 leading-relaxed">
-                            تابع أوقات الصلاة في <Link href="/marketplace?city=Casablanca" className="text-zinc-300 hover:text-orange-500 underline underline-offset-4 decoration-zinc-700">الدار البيضاء</Link>، <Link href="/marketplace?city=Marrakech" className="text-zinc-300 hover:text-orange-500 underline underline-offset-4 decoration-zinc-700">مراكش</Link>، و<Link href="/marketplace?city=Rabat" className="text-zinc-300 hover:text-orange-500 underline underline-offset-4 decoration-zinc-700">الرباط</Link>. Jootiya هو دليلك في المغرب لمعرفة آخر الهمزات وتوقيت المدن المغربية.
+                            تابع أوقات الصلاة في <Link href="/cities/casablanca" className="text-zinc-300 hover:text-orange-500 underline underline-offset-4 decoration-zinc-700">الدار البيضاء</Link>، <Link href="/cities/marrakech" className="text-zinc-300 hover:text-orange-500 underline underline-offset-4 decoration-zinc-700">مراكش</Link>، و<Link href="/cities/rabat" className="text-zinc-300 hover:text-orange-500 underline underline-offset-4 decoration-zinc-700">الرباط</Link>. Jootiya هو دليلك في المغرب لمعرفة آخر الهمزات وتوقيت المدن المغربية.
                         </p>
                         <div className="flex gap-2.5 overflow-x-auto pb-4 no-scrollbar snap-x">
                             {Object.entries(prayerTimes).map(([name, time]) => (
@@ -213,7 +213,7 @@ export default function Footer() {
                             حالة الطقس في المغرب
                         </h4>
                         <p className="text-[11px] md:text-xs text-zinc-500 mb-6 leading-relaxed">
-                            تعرف على حالة الطقس اليوم قبل خروجك للتسوق في <Link href="/marketplace?city=Tanger" className="text-zinc-300 hover:text-orange-500 underline underline-offset-4 decoration-zinc-700">طنجة</Link>، <Link href="/marketplace?city=Agadir" className="text-zinc-300 hover:text-orange-500 underline underline-offset-4 decoration-zinc-700">أكادير</Link>، و<Link href="/marketplace?city=Fes" className="text-zinc-300 hover:text-orange-500 underline underline-offset-4 decoration-zinc-700">فاس</Link>.
+                            تعرف على حالة الطقس اليوم قبل خروجك للتسوق في <Link href="/cities/tanger" className="text-zinc-300 hover:text-orange-500 underline underline-offset-4 decoration-zinc-700">طنجة</Link>، <Link href="/cities/agadir" className="text-zinc-300 hover:text-orange-500 underline underline-offset-4 decoration-zinc-700">أكادير</Link>، و<Link href="/cities/fes" className="text-zinc-300 hover:text-orange-500 underline underline-offset-4 decoration-zinc-700">فاس</Link>.
                         </p>
                         <div className="flex items-center justify-between bg-black/40 p-4 rounded-2xl border border-white/5 shadow-inner">
                             <div className="flex items-center gap-4">
