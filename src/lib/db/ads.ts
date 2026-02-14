@@ -70,7 +70,7 @@ export async function getAds(supabase: any, { query, category, sellerId, minPric
     let dbQuery = supabase
         .from('ads')
         .select('*, profiles(full_name, avatar_url, username)', { count: 'exact' })
-        .eq('status', 'active');
+        .in('status', ['active', 'approved', 'pending']);
 
     if (sellerId && IS_UUID.test(sellerId)) {
         dbQuery = dbQuery.eq('seller_id', sellerId);
@@ -79,11 +79,11 @@ export async function getAds(supabase: any, { query, category, sellerId, minPric
     }
 
     if (category) {
-        // Support both ID (UUID) and Slug filtering
+        // Support both ID (UUID) and Slug filtering using OR logic
         if (IS_UUID.test(category)) {
-            dbQuery = dbQuery.eq('category_id', category);
+            dbQuery = dbQuery.or(`category.eq.${category},category_id.eq.${category}`);
         } else {
-            dbQuery = dbQuery.eq('category', category);
+            dbQuery = dbQuery.or(`category.eq.${category}`);
         }
     }
 
