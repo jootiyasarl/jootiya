@@ -70,7 +70,7 @@ export async function getAds(supabase: any, { query, category, sellerId, minPric
     let dbQuery = supabase
         .from('ads')
         .select('*, profiles(full_name, avatar_url, username)', { count: 'exact' })
-        .eq('status', 'approved');
+        .eq('status', 'active');
 
     if (sellerId && IS_UUID.test(sellerId)) {
         dbQuery = dbQuery.eq('seller_id', sellerId);
