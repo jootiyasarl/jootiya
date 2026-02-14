@@ -16,7 +16,7 @@ const CATEGORIES = [
 
 export function CategoryGrid() {
     return (
-        <section className="py-12 sm:py-20 bg-white">
+        <section className="py-6 sm:py-10 bg-white">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between mb-10">
                     <h2 className="text-xl sm:text-2xl font-black tracking-tight text-slate-900">
