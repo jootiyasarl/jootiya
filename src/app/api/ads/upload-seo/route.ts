@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { processImageForSEO } from '@/lib/imageUtils';
-import { createSupabaseServerClient } from '@/lib/supabase-server';
+import { getAuthenticatedServerClient, getServerUser } from '@/lib/supabase-server';
 
 export async function POST(request: Request) {
     try {
@@ -12,12 +12,13 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Missing file or adId' }, { status: 400 });
         }
 
-        const supabase = await createSupabaseServerClient();
-        const { data: { user } } = await supabase.auth.getUser();
+        const user = await getServerUser();
 
         if (!user) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
+
+        const supabase = await getAuthenticatedServerClient();
 
         // Convert File to Buffer for Sharp
         const bytes = await file.arrayBuffer();
