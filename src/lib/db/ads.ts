@@ -66,6 +66,21 @@ export async function getAds(supabase: any, { query, category, sellerId, minPric
         }
     }
 
+    // TOTAL RESET FOR DEBUGGING: Fetch every ad in the database to confirm data existence
+    const { data, error, count } = await supabase
+        .from('ads')
+        .select('*, profiles(full_name, avatar_url, username)', { count: 'exact' })
+        .order('created_at', { ascending: false })
+        .limit(50);
+
+    if (error) {
+        console.error('CRITICAL DB ERROR:', error);
+        return { ads: [], count: 0, error };
+    }
+
+    console.log('DEBUG: Found ads in DB:', data?.length);
+    return { ads: data, count };
+}/*
     // Regular query with status filtering
     let dbQuery = supabase
         .from('ads')
@@ -119,3 +134,4 @@ export async function getAds(supabase: any, { query, category, sellerId, minPric
 
     return { ads: data, count };
 }
+*/
