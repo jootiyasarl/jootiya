@@ -306,7 +306,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                         image_urls: finalImageUrls,
                         latitude: data.latitude,
                         longitude: data.longitude,
-                        status: 'pending'
+                        status: 'active'
                     })
                     .select('id')
                     .single();
@@ -336,7 +336,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                 </div>
                 <h2 className="text-4xl font-black text-zinc-900 mb-4 tracking-tight uppercase">Annonce publiée !</h2>
                 <p className="text-zinc-500 text-lg mb-10 max-w-md mx-auto leading-relaxed">
-                    Votre annonce est en cours de révision. Elle sera visible sous peu.
+                    Votre annonce est maintenant en ligne et visible par tous. Elle sera vérifiée par notre équipe sous peu.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <Button onClick={() => window.location.href = '/dashboard/ads'} variant="outline" className="h-14 px-8 rounded-2xl font-bold border-zinc-200 hover:bg-zinc-50 transition-all">
