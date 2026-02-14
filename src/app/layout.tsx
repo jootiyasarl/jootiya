@@ -66,6 +66,7 @@ export default function RootLayout({
     <html lang="fr" dir="ltr" className="scroll-smooth bg-[#0b0f1a]" suppressHydrationWarning prefix="og: https://ogp.me/ns#">
       <body
         className={`${tajawal.variable} ${inter.variable} font-sans antialiased overflow-x-hidden bg-[#fafafa] dark:bg-zinc-950`}
+        style={{ backgroundColor: '#0b0f1a' }}
       >
         <h1 className="sr-only">سوق المغرب المفتوح: همزات، أوقات الصلاة، وأخبار السوق في المغرب</h1>
         <script
