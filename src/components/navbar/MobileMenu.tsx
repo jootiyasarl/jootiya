@@ -75,10 +75,10 @@ export function MobileMenu({ initialUserEmail = null }: MobileMenuProps) {
     };
 
     const navLinks = [
-        { name: "Immobilier", href: "/marketplace?category=real-estate", icon: Home },
-        { name: "Véhicules", href: "/marketplace?category=vehicles", icon: Car },
-        { name: "Électronique", href: "/marketplace?category=electronics", icon: Laptop },
-        { name: "Maison", href: "/marketplace?category=home", icon: Package },
+        { name: "Immobilier", href: "/categories/real-estate", icon: Home },
+        { name: "Véhicules", href: "/categories/vehicles", icon: Car },
+        { name: "Électronique", href: "/categories/electronics", icon: Laptop },
+        { name: "Maison", href: "/categories/home-furniture", icon: Package },
     ];
 
     return (
