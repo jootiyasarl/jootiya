@@ -74,7 +74,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
         .from("ads")
         .select("*, profiles(full_name, avatar_url)", { count: "exact" })
         .eq("category_id", category.id)
-        .eq("status", "active")
+        .in("status", ["active", "approved"])
         .order("created_at", { ascending: false })
         .range(from, to);
 
