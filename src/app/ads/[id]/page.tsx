@@ -304,7 +304,7 @@ export default async function AdPage({ params }: AdPageProps) {
           <div className="lg:col-span-4 space-y-6">
 
             {/* Primary Details Card (Desktop) */}
-            <div className="hidden lg:block rounded-3xl bg-white dark:bg-zinc-900 p-8 shadow-sm border border-zinc-100 dark:border-zinc-800 sticky top-24">
+            <div className="hidden lg:block rounded-3xl bg-white dark:bg-zinc-900 p-8 shadow-sm border border-zinc-100 dark:border-zinc-800">
               <h1 className="text-2xl font-bold leading-tight mb-2 text-zinc-900 dark:text-zinc-100">{ad.title}</h1>
               <div className="flex items-center gap-2 text-sm text-zinc-500 mb-8">
                 <MapPin className="h-4 w-4" />
