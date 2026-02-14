@@ -119,7 +119,7 @@ export default function Footer() {
                             {MAJOR_CITIES.map((city) => (
                                 <li key={city}>
                                     <Link
-                                        href={`/marketplace?city=${city}`}
+                                        href={`/cities/${city.toLowerCase()}`}
                                         className="text-[13px] font-medium hover:text-orange-500 transition-colors flex items-center group"
                                     >
                                         <span className="w-1 h-1 rounded-full bg-zinc-700 mr-2 group-hover:bg-orange-500 transition-colors" />
