@@ -69,19 +69,14 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
     }
     breadcrumbs.push({ label: category.name });
 
-    // 3. Fetch Ads in Category (TOTAL RESET FOR DEBUGGING)
-    let { data: ads, count, error: adsError } = await supabase
+    // 3. Fetch Ads in Category
+    const { data: ads, count, error: adsError } = await supabase
         .from("ads")
         .select("*, profiles(full_name, avatar_url)", { count: "exact" })
-        .limit(100);
-
-    // Fallback logic temporarily disabled for clean debug
-    /*
-    .or(`category_id.eq.${category.id},category.eq.${slug}`)
-    .in("status", ["active", "approved"])
-    .order("created_at", { ascending: false })
-    .range(from, to);
-    */
+        .or(`category_id.eq.${category.id},category.eq.${slug}`)
+        .in("status", ["active", "approved"])
+        .order("created_at", { ascending: false })
+        .range(from, to);
 
     const totalPages = Math.ceil((count || 0) / ITEMS_PER_PAGE);
 
