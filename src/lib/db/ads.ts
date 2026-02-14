@@ -79,7 +79,12 @@ export async function getAds(supabase: any, { query, category, sellerId, minPric
     }
 
     if (category) {
-        dbQuery = dbQuery.eq('category', category);
+        // Support both ID (UUID) and Slug filtering
+        if (IS_UUID.test(category)) {
+            dbQuery = dbQuery.eq('category_id', category);
+        } else {
+            dbQuery = dbQuery.eq('category', category);
+        }
     }
 
     if (city) {
