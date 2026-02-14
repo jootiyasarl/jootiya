@@ -76,6 +76,8 @@ interface AdPostFormProps {
     onSuccess?: () => void;
 }
 
+import { getAuthenticatedServerClient } from '@/lib/supabase-server';
+
 export default function AdPostForm({ mode = 'create', initialData, onSuccess }: AdPostFormProps) {
     const [currentStep, setCurrentStep] = useState(0);
     const [images, setImages] = useState<File[]>([]);
@@ -105,9 +107,10 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
     // Smart Defaults: Fetch user info on mount
     useEffect(() => {
         const fetchUserData = async () => {
-            const { data: { user } } = await supabase.auth.getUser();
+            const authClient = await getAuthenticatedServerClient();
+            const { data: { user } } = await authClient.auth.getUser();
             if (user) {
-                const { data: profile } = await supabase
+                const { data: profile } = await authClient
                     .from('profiles')
                     .select('phone_number, city')
                     .eq('id', user.id)
@@ -212,7 +215,8 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
     const onSubmit = async (data: AdFormValues) => {
         setIsSubmitting(true);
         try {
-            const { data: { user } } = await supabase.auth.getUser();
+            const authClient = await getAuthenticatedServerClient();
+            const { data: { user } } = await authClient.auth.getUser();
             if (!user) throw new Error("Vous devez être connecté pour publier une annonce.");
 
             // 1. Upload New Images with SEO Preservation
@@ -239,9 +243,6 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
             }
 
             // Combine existing images (that weren't removed) with new uploads
-            // For simplicity in this logic, we assume previews contains only valid URLs (old public ones or new blobs)
-            // But actually we have 'images' (File[]) for new ones and initialData?.image_urls for old ones.
-            // Let's filter initialData?.image_urls to only those still in previews.
             const existingUrls = (initialData?.image_urls || []).filter(url => previews.includes(url));
             const finalImageUrls = [...existingUrls, ...newUploadedUrls];
 
@@ -251,7 +252,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
 
             if (mode === 'edit' && initialData?.id) {
                 // UPDATE
-                const { error: updateError } = await supabase
+                const { error: updateError } = await authClient
                     .from('ads')
                     .update({
                         title: data.title,
@@ -290,7 +291,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                 const uniqueId = Math.random().toString(36).substring(2, 7);
                 const slug = `${baseSlug}-${uniqueId}`;
 
-                const { error: insertError } = await supabase
+                const { error: insertError } = await authClient
                     .from('ads')
                     .insert({
                         seller_id: user.id,
