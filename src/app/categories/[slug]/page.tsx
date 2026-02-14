@@ -73,7 +73,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
     const { data: ads, count, error: adsError } = await supabase
         .from("ads")
         .select("*, profiles(full_name, avatar_url)", { count: "exact" })
-        .eq("category_id", category.id)
+        .or(`category_id.eq.${category.id},category.eq.${slug}`)
         .in("status", ["active", "approved"])
         .order("created_at", { ascending: false })
         .range(from, to);

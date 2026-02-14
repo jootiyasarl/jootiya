@@ -79,11 +79,12 @@ export async function getAds(supabase: any, { query, category, sellerId, minPric
     }
 
     if (category) {
-        // Support both ID (UUID) and Slug filtering using OR logic
+        // Broaden search to check both the new UUID column and the legacy SLUG column
         if (IS_UUID.test(category)) {
-            dbQuery = dbQuery.or(`category.eq.${category},category_id.eq.${category}`);
+            dbQuery = dbQuery.or(`category_id.eq.${category},category.eq.${category}`);
         } else {
-            dbQuery = dbQuery.or(`category.eq.${category}`);
+            // If the input is a slug (like 'home-furniture'), search in the category slug column
+            dbQuery = dbQuery.eq('category', category);
         }
     }
 
