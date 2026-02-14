@@ -69,8 +69,8 @@ export async function getAds(supabase: any, { query, category, sellerId, minPric
     // Regular query without search term OR fallback if smart search failed
     let dbQuery = supabase
         .from('ads')
-        .select('*, profiles(full_name, avatar_url, username)', { count: 'exact' });
-        // .in('status', ['active', 'approved', 'pending']);
+        .select('*, profiles(full_name, avatar_url, username)', { count: 'exact' })
+        .in('status', ['active', 'approved']);
 
     if (sellerId && IS_UUID.test(sellerId)) {
         dbQuery = dbQuery.eq('seller_id', sellerId);
