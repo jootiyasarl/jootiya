@@ -66,13 +66,11 @@ export async function getAds(supabase: any, { query, category, sellerId, minPric
         }
     }
 
-    // TEMPORARY DEBUG: Fetch everything without status or category filters
+    // Regular query with status filtering
     let dbQuery = supabase
         .from('ads')
-        .select('*, profiles(full_name, avatar_url, username)', { count: 'exact' });
-
-    /*
-    .in('status', ['active', 'approved']);
+        .select('*, profiles(full_name, avatar_url, username)', { count: 'exact' })
+        .in('status', ['active', 'approved']);
 
     if (sellerId && IS_UUID.test(sellerId)) {
         dbQuery = dbQuery.eq('seller_id', sellerId);
@@ -89,7 +87,6 @@ export async function getAds(supabase: any, { query, category, sellerId, minPric
             dbQuery = dbQuery.or(`category.ilike.${category},category_id.ilike.${category}`);
         }
     }
-    */
 
     if (city) {
         dbQuery = dbQuery.eq('city', city);
