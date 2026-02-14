@@ -69,28 +69,19 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
     }
     breadcrumbs.push({ label: category.name });
 
-    // 3. Fetch Ads in Category
+    // 3. Fetch Ads in Category (TOTAL RESET FOR DEBUGGING)
     let { data: ads, count, error: adsError } = await supabase
         .from("ads")
         .select("*, profiles(full_name, avatar_url)", { count: "exact" })
-        .or(`category_id.eq.${category.id},category.eq.${slug}`)
-        .in("status", ["active", "approved"])
-        .order("created_at", { ascending: false })
-        .range(from, to);
+        .limit(100);
 
-    // Fallback: If no ads found with strict filters, try a broader search to ensure data is visible
-    if (!ads || ads.length === 0) {
-        console.log("Fallback query triggered for slug:", slug);
-        const { data: fallbackAds } = await supabase
-            .from("ads")
-            .select("*, profiles(full_name, avatar_url)")
-            .eq("category", slug)
-            .limit(20);
-        
-        if (fallbackAds && fallbackAds.length > 0) {
-            ads = fallbackAds;
-        }
-    }
+    // Fallback logic temporarily disabled for clean debug
+    /*
+    .or(`category_id.eq.${category.id},category.eq.${slug}`)
+    .in("status", ["active", "approved"])
+    .order("created_at", { ascending: false })
+    .range(from, to);
+    */
 
     const totalPages = Math.ceil((count || 0) / ITEMS_PER_PAGE);
 
