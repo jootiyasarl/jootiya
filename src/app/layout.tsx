@@ -103,6 +103,19 @@ export default function RootLayout({
             `,
           }}
         />
+
+        {/* Google GDPR Consent Management */}
+        <script 
+          async 
+          src="https://fundingchoicesmessages.google.com/i/pub-9613919259124136?ers=1" 
+        />
+        <script 
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {function f(){var a=window.taganality;if(a){var b=a.getConsent();}}f();})();
+            `
+          }}
+        />
       </head>
       <body
         className={`${tajawal.variable} ${inter.variable} font-sans antialiased overflow-x-hidden bg-white dark:bg-zinc-950`}
