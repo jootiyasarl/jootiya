@@ -63,10 +63,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" dir="ltr" className="scroll-smooth bg-[#0b0f1a]" suppressHydrationWarning prefix="og: https://ogp.me/ns#">
+    <html lang="fr" dir="ltr" className="scroll-smooth bg-white" suppressHydrationWarning prefix="og: https://ogp.me/ns#">
       <body
-        className={`${tajawal.variable} ${inter.variable} font-sans antialiased overflow-x-hidden bg-[#fafafa] dark:bg-zinc-950`}
-        style={{ backgroundColor: '#0b0f1a' }}
+        className={`${tajawal.variable} ${inter.variable} font-sans antialiased overflow-x-hidden bg-white dark:bg-zinc-950`}
+        style={{ backgroundColor: '#ffffff' }}
       >
         <h1 className="sr-only">سوق المغرب المفتوح: همزات، أوقات الصلاة، وأخبار السوق في المغرب</h1>
         <script

@@ -12,7 +12,7 @@ export default async function PublicNavbar() {
   const isAdmin = userEmail === "jootiyasarl@gmail.com";
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border-b border-zinc-200 dark:border-zinc-800">
+    <header className="sticky top-0 z-50 w-full bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-800">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         {/* Main Nav Row */}
         <div className="flex h-16 items-center justify-between gap-8 py-2 relative">
