@@ -66,12 +66,12 @@ export async function getAds(supabase: any, { query, category, sellerId, minPric
         }
     }
 
-    // Debug: Fetch ALL ads without any filtering to verify data exists
+    // Regular query without search term OR fallback if smart search failed
     let dbQuery = supabase
         .from('ads')
-        .select('*, profiles(full_name, avatar_url, username)', { count: 'exact' });
+        .select('*, profiles(full_name, avatar_url, username)', { count: 'exact' })
+        .in('status', ['active', 'approved']);
 
-    /*
     if (sellerId && IS_UUID.test(sellerId)) {
         dbQuery = dbQuery.eq('seller_id', sellerId);
     } else if (sellerId) {
@@ -79,11 +79,10 @@ export async function getAds(supabase: any, { query, category, sellerId, minPric
     }
 
     if (category) {
-        // Broaden search to check both the new UUID column and the legacy SLUG column
+        // Support both ID (UUID) and Slug filtering
         if (IS_UUID.test(category)) {
             dbQuery = dbQuery.or(`category_id.eq.${category},category.eq.${category}`);
         } else {
-            // If the input is a slug (like 'home-furniture'), search in the category slug column
             dbQuery = dbQuery.eq('category', category);
         }
     }
@@ -94,7 +93,7 @@ export async function getAds(supabase: any, { query, category, sellerId, minPric
 
     if (minPrice !== undefined) dbQuery = dbQuery.gte('price', minPrice);
     if (maxPrice !== undefined) dbQuery = dbQuery.lte('price', maxPrice);
-    */
+
 
     // Sorting
     switch (sort) {
