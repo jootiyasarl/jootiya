@@ -41,6 +41,12 @@ export function UnifiedSearchBar() {
     const containerRef = useRef<HTMLDivElement>(null);
 
     const handleSearch = () => {
+        if (category.id !== "all" && !query && location === "Toutes les villes") {
+            router.push(`/categories/${category.id}`);
+            setActiveMenu(null);
+            return;
+        }
+
         const params = new URLSearchParams();
         if (query) params.set("q", query);
         if (category.id !== "all") params.set("category", category.id);
