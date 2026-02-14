@@ -69,13 +69,14 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
     }
     breadcrumbs.push({ label: category.name });
 
-    // 3. Fetch Ads in Category (DEBUG: REMOVED ALL FILTERS)
+    // 3. Fetch Ads in Category
     const { data: ads, count, error: adsError } = await supabase
         .from("ads")
         .select("*, profiles(full_name, avatar_url)", { count: "exact" })
-        .limit(50);
-
-    console.log("DEBUG_QUERY:", { slug, adsFound: ads?.length, error: adsError });
+        .or(`category_id.eq.${category.id},category.ilike.${slug}`)
+        .in("status", ["active", "approved"])
+        .order("created_at", { ascending: false })
+        .range(from, to);
 
     const totalPages = Math.ceil((count || 0) / ITEMS_PER_PAGE);
 
