@@ -119,7 +119,19 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
                     <>
                         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6" style={{ gridTemplateColumns: 'repeat(2, minmax(0, 1fr))' }}>
                             {ads.map((ad) => (
-                                <AdCard key={ad.id} ad={ad as any} />
+                                <AdCard 
+                                    key={ad.id} 
+                                    ad={{
+                                        id: ad.id,
+                                        title: ad.title,
+                                        price: ad.price ? `${Number(ad.price).toLocaleString()} ${ad.currency || 'MAD'}` : 'Sur demande',
+                                        location: ad.city || 'Maroc',
+                                        imageUrl: ad.image_urls?.[0] || ad.images?.[0],
+                                        status: ad.status,
+                                        slug: ad.slug,
+                                        createdAt: ad.created_at ? new Date(ad.created_at).toLocaleDateString('fr-FR', { month: 'short', day: 'numeric' }) : undefined
+                                    }} 
+                                />
                             ))}
                         </div>
 
