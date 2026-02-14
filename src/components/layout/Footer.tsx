@@ -192,15 +192,15 @@ export default function Footer() {
                 <div className="pt-12 grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 border-t border-zinc-800/20 mt-10">
                     <div className="bg-white/5 rounded-[2rem] p-5 md:p-8 border border-white/10 text-right" dir="rtl">
                         <h4 className="text-white text-sm font-black mb-4 flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-orange-500" />
+                            <span className="w-2 h-2 rounded-full bg-orange-500"></span>
                             مواقيت الصلاة وأخبار السوق
                         </h4>
                         <p className="text-[11px] md:text-xs text-zinc-500 mb-6 leading-relaxed">
-                            تابع أوقات الصلاة في <Link href="/marketplace?city=Casablanca" className="text-zinc-300 hover:text-orange-500 underline decoration-zinc-700">الدار البيضاء</Link>، <Link href="/marketplace?city=Marrakech" className="text-zinc-300 hover:text-orange-500 underline decoration-zinc-700">مراكش</Link>، و<Link href="/marketplace?city=Rabat" className="text-zinc-300 hover:text-orange-500 underline decoration-zinc-700">الرباط</Link>. Jootiya هو دليلك في المغرب لمعرفة آخر الهمزات وتوقيت المدن المغربية.
+                            تابع أوقات الصلاة في <Link href="/marketplace?city=Casablanca" className="text-zinc-300 hover:text-orange-500 underline underline-offset-4 decoration-zinc-700">الدار البيضاء</Link>، <Link href="/marketplace?city=Marrakech" className="text-zinc-300 hover:text-orange-500 underline underline-offset-4 decoration-zinc-700">مراكش</Link>، و<Link href="/marketplace?city=Rabat" className="text-zinc-300 hover:text-orange-500 underline underline-offset-4 decoration-zinc-700">الرباط</Link>. Jootiya هو دليلك في المغرب لمعرفة آخر الهمزات وتوقيت المدن المغربية.
                         </p>
-                        <div className="flex gap-3 overflow-x-auto pb-4 no-scrollbar snap-x">
+                        <div className="flex gap-2.5 overflow-x-auto pb-4 no-scrollbar snap-x">
                             {Object.entries(prayerTimes).map(([name, time]) => (
-                                <div key={name} className="flex-shrink-0 bg-black/40 px-4 py-3 rounded-2xl border border-white/5 text-center min-w-[80px] snap-center">
+                                <div key={name} className="flex-shrink-0 bg-black/40 px-4 py-3 rounded-2xl border border-white/5 text-center min-w-[85px] snap-center">
                                     <span className="block text-[10px] text-zinc-500 font-bold mb-1">{name}</span>
                                     <span className="block text-sm text-orange-500 font-black tracking-tight">{time}</span>
                                 </div>
@@ -209,15 +209,15 @@ export default function Footer() {
                     </div>
                     <div className="bg-white/5 rounded-[2rem] p-5 md:p-8 border border-white/10 text-right" dir="rtl">
                         <h4 className="text-white text-sm font-black mb-4 flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-blue-500" />
+                            <span className="w-2 h-2 rounded-full bg-blue-500"></span>
                             حالة الطقس في المغرب
                         </h4>
                         <p className="text-[11px] md:text-xs text-zinc-500 mb-6 leading-relaxed">
-                            تعرف على حالة الطقس اليوم قبل خروجك للتسوق في <Link href="/marketplace?city=Tanger" className="text-zinc-300 hover:text-orange-500 underline decoration-zinc-700">طنجة</Link>، <Link href="/marketplace?city=Agadir" className="text-zinc-300 hover:text-orange-500 underline decoration-zinc-700">أكادير</Link>، و<Link href="/marketplace?city=Fes" className="text-zinc-300 hover:text-orange-500 underline decoration-zinc-700">فاس</Link>.
+                            تعرف على حالة الطقس اليوم قبل خروجك للتسوق في <Link href="/marketplace?city=Tanger" className="text-zinc-300 hover:text-orange-500 underline underline-offset-4 decoration-zinc-700">طنجة</Link>، <Link href="/marketplace?city=Agadir" className="text-zinc-300 hover:text-orange-500 underline underline-offset-4 decoration-zinc-700">أكادير</Link>، و<Link href="/marketplace?city=Fes" className="text-zinc-300 hover:text-orange-500 underline underline-offset-4 decoration-zinc-700">فاس</Link>.
                         </p>
-                        <div className="flex items-center justify-between bg-black/40 p-4 rounded-2xl border border-white/5">
+                        <div className="flex items-center justify-between bg-black/40 p-4 rounded-2xl border border-white/5 shadow-inner">
                             <div className="flex items-center gap-4">
-                                <span className="text-3xl">☀️</span>
+                                <span className="text-3xl filter drop-shadow-md">☀️</span>
                                 <div className="text-right">
                                     <span className="block text-sm text-white font-black">مشمس غالباً</span>
                                     <span className="block text-[10px] text-zinc-500 font-bold mt-0.5 uppercase tracking-wider">تحديث مباشر</span>
