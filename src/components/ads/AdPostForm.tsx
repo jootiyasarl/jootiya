@@ -76,7 +76,7 @@ interface AdPostFormProps {
     onSuccess?: () => void;
 }
 
-import { getAuthenticatedServerClient } from '@/lib/supabase-server';
+import { createAdAction, updateAdAction } from '@/app/dashboard/ads/ad-actions';
 
 export default function AdPostForm({ mode = 'create', initialData, onSuccess }: AdPostFormProps) {
     const [currentStep, setCurrentStep] = useState(0);
@@ -107,10 +107,9 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
     // Smart Defaults: Fetch user info on mount
     useEffect(() => {
         const fetchUserData = async () => {
-            const authClient = await getAuthenticatedServerClient();
-            const { data: { user } } = await authClient.auth.getUser();
+            const { data: { user } } = await supabase.auth.getUser();
             if (user) {
-                const { data: profile } = await authClient
+                const { data: profile } = await supabase
                     .from('profiles')
                     .select('phone_number, city')
                     .eq('id', user.id)
@@ -215,10 +214,6 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
     const onSubmit = async (data: AdFormValues) => {
         setIsSubmitting(true);
         try {
-            const authClient = await getAuthenticatedServerClient();
-            const { data: { user } } = await authClient.auth.getUser();
-            if (!user) throw new Error("Vous devez être connecté pour publier une annonce.");
-
             // 1. Upload New Images with SEO Preservation
             const newUploadedUrls = [];
             const tempAdId = initialData?.id || `temp-${Math.random().toString(36).substring(2, 7)}`;
@@ -246,80 +241,25 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
             const existingUrls = (initialData?.image_urls || []).filter(url => previews.includes(url));
             const finalImageUrls = [...existingUrls, ...newUploadedUrls];
 
-            // 2. Map Location (Directly from form now)
-            const city = data.city;
-            const neighborhood = data.neighborhood || null;
+            const adPayload = {
+                ...data,
+                image_urls: finalImageUrls,
+                price: Number(data.price)
+            };
 
+            let result;
             if (mode === 'edit' && initialData?.id) {
-                // UPDATE
-                const { error: updateError } = await authClient
-                    .from('ads')
-                    .update({
-                        title: data.title,
-                        description: data.description,
-                        price: data.price,
-                        city: city,
-                        neighborhood: neighborhood,
-                        phone: data.phone,
-                        category: data.category,
-                        image_urls: finalImageUrls,
-                        latitude: data.latitude,
-                        longitude: data.longitude,
-                        updated_at: new Date().toISOString()
-                    })
-                    .eq('id', initialData.id)
-                    .eq('seller_id', user.id);
-
-                if (updateError) throw updateError;
-
-                // Zero Waste: Cleanup removed images from storage
-                const removedUrls = (initialData?.image_urls || []).filter(url => !finalImageUrls.includes(url));
-                if (removedUrls.length > 0) {
-                    console.log(`Senior/ZeroWaste: Cleaning up ${removedUrls.length} removed images...`);
-                    const { deleteFileByUrl } = await import("@/lib/storageUtils");
-                    removedUrls.forEach(url => deleteFileByUrl(url));
-                }
+                result = await updateAdAction(initialData.id, adPayload as any);
             } else {
-                // INSERT
-                // Generate Slug only on creation
-                const baseSlug = data.title
-                    .toLowerCase()
-                    .trim()
-                    .replace(/[^\w\s-]/g, '')
-                    .replace(/[\s_-]+/g, '-')
-                    .replace(/^-+|-+$/g, '');
-                const uniqueId = Math.random().toString(36).substring(2, 7);
-                const slug = `${baseSlug}-${uniqueId}`;
+                result = await createAdAction(adPayload as any);
+            }
 
-                const { error: insertError } = await authClient
-                    .from('ads')
-                    .insert({
-                        seller_id: user.id,
-                        title: data.title,
-                        slug: slug,
-                        description: data.description,
-                        price: data.price,
-                        currency: 'MAD',
-                        city: city,
-                        neighborhood: neighborhood,
-                        phone: data.phone,
-                        category: data.category,
-                        image_urls: finalImageUrls,
-                        latitude: data.latitude,
-                        longitude: data.longitude,
-                        status: 'active'
-                    })
-                    .select('id')
-                    .single();
-
-                if (insertError) throw insertError;
+            if (!result.success) {
+                throw new Error(result.error);
             }
 
             setIsSuccess(true);
-
-            // Trigger Push Prompt after successful ad post (Positive Action)
             window.dispatchEvent(new CustomEvent('trigger-push-prompt'));
-
             if (onSuccess) onSuccess();
         } catch (error: any) {
             console.error("Ad Publication Error:", error);

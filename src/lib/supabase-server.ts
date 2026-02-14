@@ -1,3 +1,5 @@
+import "server-only";
+
 import { cookies } from "next/headers";
 import { createClient, type Session, type User } from "@supabase/supabase-js";
 
