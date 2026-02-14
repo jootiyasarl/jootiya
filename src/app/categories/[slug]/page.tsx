@@ -69,10 +69,12 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
     }
     breadcrumbs.push({ label: category.name });
 
-    // 3. Fetch Ads in Category (REMOVED ALL FILTERS FOR DEBUGGING)
+    // 3. Fetch Ads in Category
     const { data: ads, count, error: adsError } = await supabase
         .from("ads")
         .select("*, profiles(full_name, avatar_url)", { count: "exact" })
+        .or(`category_id.eq.${category.id},category.eq.${slug}`)
+        .in("status", ["active", "approved"])
         .order("created_at", { ascending: false })
         .range(from, to);
 
