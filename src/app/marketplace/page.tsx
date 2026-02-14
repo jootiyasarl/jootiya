@@ -26,12 +26,12 @@ export default async function MarketplacePage({
   const city = typeof searchParams.city === 'string' ? searchParams.city : undefined;
 
   const { ads, count, error } = await getAds(supabase, {
-    query,
-    category,
-    minPrice,
-    maxPrice,
-    sort,
-    city
+    // query,
+    // category,
+    // minPrice,
+    // maxPrice,
+    // sort,
+    // city
   });
 
   if (error) {
