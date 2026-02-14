@@ -70,6 +70,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
     breadcrumbs.push({ label: category.name });
 
     // 3. Fetch Ads in Category
+    console.log("DEBUG: Category Info:", { id: category.id, slug, name: category.name });
     const { data: ads, count, error: adsError } = await supabase
         .from("ads")
         .select("*, profiles(full_name, avatar_url)", { count: "exact" })
@@ -77,6 +78,11 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
         .in("status", ["active", "approved"])
         .order("created_at", { ascending: false })
         .range(from, to);
+
+    if (adsError) {
+        console.error("DEBUG: DB Error fetching ads:", adsError);
+    }
+    console.log("DEBUG: Ads result:", { count, length: ads?.length, firstAd: ads?.[0]?.title });
 
     const totalPages = Math.ceil((count || 0) / ITEMS_PER_PAGE);
 
