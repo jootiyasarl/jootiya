@@ -8,6 +8,14 @@ export const metadata = {
 
 const blogPosts = [
   {
+    title: "L'Économie Circulaire au Maroc : Pourquoi le Re-commerce est l'Avenir de la Consommation Durable",
+    slug: "economie-circulaire-maroc-durable",
+    excerpt: "Face aux défis environnementaux mondiaux et à la nécessité d'une gestion plus rationnelle des ressources, le Maroc adopte progressivement les principes de l'économie circulaire...",
+    date: "15 Février 2026",
+    category: "Durabilité",
+    image: "https://ssfcfvuosxxmvsdoktws.supabase.co/storage/v1/object/public/blog/blog_post_2.png"
+  },
+  {
     title: "L'Écosystème du Commerce Électronique au Maroc : Infrastructure, Logistique et Perspectives 2026",
     slug: "ecosysteme-commerce-maroc",
     excerpt: "Le paysage du commerce numérique au Maroc connaît une mutation profonde, portée par une accélération sans précédent de la digitalisation...",
