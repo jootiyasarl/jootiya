@@ -6,6 +6,19 @@ import { ChevronLeft, Calendar, Tag, Share2 } from 'lucide-react';
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   
+  if (slug === 'guide-entrepreneuriat-digital-maroc') {
+    return {
+      title: "Guide de l'Entrepreneuriat Digital au Maroc | Jootiya Blog",
+      description: "Comment réussir son projet e-commerce au Maroc en 2026. Stratégies, marketing digital et scalabilité pour les entrepreneurs.",
+      keywords: ["Entrepreneuriat", "Business Maroc", "E-commerce 2026", "Auto-entrepreneur", "Succès Digital"],
+      openGraph: {
+        title: "Guide de l'Entrepreneuriat Digital au Maroc : Comment Réussir dans le Secteur du E-commerce en 2026",
+        description: "L'entrepreneuriat au Maroc vit un âge d'or. Découvrez les clés du succès pour réussir dans le marché numérique...",
+        images: ["https://ssfcfvuosxxmvsdoktws.supabase.co/storage/v1/object/public/blog/blog_post_5.png"],
+      }
+    };
+  }
+
   if (slug === 'paiement-digital-ecommerce-maroc') {
     return {
       title: "La Révolution du Paiement Digital au Maroc | Jootiya Blog",
@@ -61,6 +74,94 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+
+  if (slug === 'guide-entrepreneuriat-digital-maroc') {
+    return (
+      <article dir="ltr" className="min-h-screen bg-white pb-20 font-sans">
+        {/* Hero Header */}
+        <div className="relative h-[60vh] w-full">
+          <Image
+            src="https://ssfcfvuosxxmvsdoktws.supabase.co/storage/v1/object/public/blog/blog_post_5.png"
+            alt="Entrepreneuriat Digital au Maroc"
+            fill
+            priority
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="max-w-4xl px-4 text-center">
+              <Link 
+                href="/blog" 
+                className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-8 transition-colors"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                Retour au blog
+              </Link>
+              <h1 className="text-3xl md:text-5xl font-black text-white leading-tight mb-6">
+                Guide de l'Entrepreneuriat Digital au Maroc : Comment Réussir dans le Secteur du E-commerce en 2026
+              </h1>
+              <div className="flex items-center justify-center gap-6 text-white/90 text-sm font-medium">
+                <span className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-orange-400" />
+                  15 Février 2026
+                </span>
+                <span className="flex items-center gap-2">
+                  <Tag className="w-4 h-4 text-orange-400" />
+                  Entrepreneuriat
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="max-w-3xl mx-auto px-4 mt-12">
+          <div className="prose prose-lg prose-zinc max-w-none">
+            <p className="text-xl text-zinc-600 leading-relaxed font-medium mb-12 border-l-4 border-purple-500 pl-6 py-2 bg-purple-50/30">
+              L'entrepreneuriat au Maroc vit un âge d'or, propulsé par une jeunesse dynamique et un écosystème digital en pleine mutation. Le secteur du commerce électronique, en particulier, offre des opportunités sans précédent pour ceux qui souhaitent lancer leur propre projet. Dans ce guide stratégique, nous explorons les clés du succès pour réussir son insertion dans le marché numérique marocain. À travers des plateformes de référence comme Jootiya, le passage de l'idée à l'action n'a jamais été aussi accessible pour les entrepreneurs locaux.
+            </p>
+
+            <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6">1. Identifier les Opportunités du Marché et le "Product-Market Fit"</h2>
+            <p className="text-zinc-700 leading-relaxed mb-8">
+              La première étape vers la réussite entrepreneuriale est de comprendre les besoins réels du consommateur marocain. Que ce soit dans le secteur des technologies, de la mode ou des services de proximité, l'identification d'une niche spécifique est cruciale. Le concept de "Product-Market Fit" (adéquation produit-marché) repose sur la capacité de l'entrepreneur à offrir une solution concrète à un problème existant, tout en utilisant les outils digitaux pour maximiser sa visibilité.
+            </p>
+
+            <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6">2. Stratégie de Marque et Digital Marketing</h2>
+            <p className="text-zinc-700 leading-relaxed mb-8">
+              À l'ère des réseaux sociaux et du Big Data, construire une marque forte est un impératif. La crédibilité et la transparence sont les deux piliers de la "Consumer Trust". Une présence active sur le web, couplée à une stratégie de contenu pertinente (Content Marketing), permet aux auto-entrepreneurs de bâtir une communauté fidèle. L'utilisation intelligente des données analytiques permet d'ajuster les campagnes publicitaires et d'optimiser le retour sur investissement (ROI).
+            </p>
+
+            <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6">3. Le Rôle des Plateformes de Support dans la Scalabilité</h2>
+            <p className="text-zinc-700 leading-relaxed mb-8">
+              Pour passer d'un petit projet local à une entreprise d'envergure nationale, la "Scalabilité" est essentielle. Les plateformes structurées jouent ici un rôle de catalyseur, offrant l'infrastructure technique, les solutions de paiement et les réseaux logistiques nécessaires. En s'appuyant sur ces écosystèmes, l'entrepreneur marocain peut se concentrer sur l'innovation et la qualité de son offre, laissant la complexité technologique aux experts du secteur.
+            </p>
+
+            <div className="bg-zinc-50 rounded-3xl p-8 mt-16 border border-zinc-100">
+              <h2 className="text-xl font-bold text-zinc-900 mb-4 mt-0">Conclusion</h2>
+              <p className="text-zinc-700 leading-relaxed m-0 italic">
+                Le chemin vers le succès digital au Maroc nécessite de la persévérance, de l'innovation et une utilisation judicieuse des technologies. Avec un cadre économique de plus en plus favorable et des outils digitaux performants, chaque citoyen porteur d'une idée peut devenir un acteur clé de l'économie numérique de demain. Jootiya s'engage à être le partenaire de cette ambition, en offrant un espace où l'entrepreneuriat rencontre la technologie.
+              </p>
+            </div>
+          </div>
+
+          {/* Footer Actions */}
+          <div className="mt-16 pt-8 border-t border-zinc-100 flex items-center justify-between">
+            <div className="flex gap-2">
+              {["Entrepreneuriat", "Business Maroc", "E-commerce 2026", "Auto-entrepreneur", "Succès Digital"].map(tag => (
+                <span key={tag} className="px-3 py-1 bg-zinc-100 text-zinc-500 text-xs font-bold rounded-full uppercase tracking-tighter">
+                  #{tag.replace(' ', '')}
+                </span>
+              ))}
+            </div>
+            <button className="flex items-center gap-2 text-zinc-400 hover:text-zinc-900 transition-colors">
+              <Share2 className="w-5 h-5" />
+              <span className="text-sm font-bold">Partager</span>
+            </button>
+          </div>
+        </div>
+      </article>
+    );
+  }
 
   if (slug === 'paiement-digital-ecommerce-maroc') {
     return (

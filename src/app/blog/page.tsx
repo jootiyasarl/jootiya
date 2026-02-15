@@ -8,6 +8,14 @@ export const metadata = {
 
 const blogPosts = [
   {
+    title: "Guide de l'Entrepreneuriat Digital au Maroc : Comment Réussir dans le Secteur du E-commerce en 2026",
+    slug: "guide-entrepreneuriat-digital-maroc",
+    excerpt: "L'entrepreneuriat au Maroc vit un âge d'or, propulsé par une jeunesse dynamique et un écosystème digital en pleine mutation...",
+    date: "15 Février 2026",
+    category: "Entrepreneuriat",
+    image: "https://ssfcfvuosxxmvsdoktws.supabase.co/storage/v1/object/public/blog/blog_post_5.png"
+  },
+  {
     title: "La Révolution du Paiement Digital au Maroc : Vers un Écosystème de Commerce Sans Cash",
     slug: "paiement-digital-ecommerce-maroc",
     excerpt: "Le secteur financier marocain traverse une phase de transformation historique, marquée par une transition accélérée vers le paiement numérique...",
