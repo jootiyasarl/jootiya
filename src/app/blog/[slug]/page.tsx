@@ -6,6 +6,19 @@ import { ChevronLeft, Calendar, Tag, Share2 } from 'lucide-react';
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   
+  if (slug === 'paiement-digital-ecommerce-maroc') {
+    return {
+      title: "La Révolution du Paiement Digital au Maroc | Jootiya Blog",
+      description: "Analyse de la transition vers le paiement numérique au Maroc. Impact des M-wallets et de l'inclusion financière sur l'e-commerce.",
+      keywords: ["Fintech", "Paiement Electronique", "Banque Digital", "Maroc", "Inclusion Financière"],
+      openGraph: {
+        title: "La Révolution du Paiement Digital au Maroc : Vers un Écosystème de Commerce Sans Cash",
+        description: "Le secteur financier marocain traverse une phase de transformation historique...",
+        images: ["https://ssfcfvuosxxmvsdoktws.supabase.co/storage/v1/object/public/blog/blog_post_4.png"],
+      }
+    };
+  }
+
   if (slug === 'technologie-intelligence-artificielle-commerce-maroc') {
     return {
       title: "L'Impact de la Technologie et de l'IA sur le Commerce au Maroc | Jootiya Blog",
@@ -48,6 +61,94 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+
+  if (slug === 'paiement-digital-ecommerce-maroc') {
+    return (
+      <article dir="ltr" className="min-h-screen bg-white pb-20 font-sans">
+        {/* Hero Header */}
+        <div className="relative h-[60vh] w-full">
+          <Image
+            src="https://ssfcfvuosxxmvsdoktws.supabase.co/storage/v1/object/public/blog/blog_post_4.png"
+            alt="Paiement Digital au Maroc"
+            fill
+            priority
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="max-w-4xl px-4 text-center">
+              <Link 
+                href="/blog" 
+                className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-8 transition-colors"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                Retour au blog
+              </Link>
+              <h1 className="text-3xl md:text-5xl font-black text-white leading-tight mb-6">
+                La Révolution du Paiement Digital au Maroc : Vers un Écosystème de Commerce Sans Cash
+              </h1>
+              <div className="flex items-center justify-center gap-6 text-white/90 text-sm font-medium">
+                <span className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-orange-400" />
+                  15 Février 2026
+                </span>
+                <span className="flex items-center gap-2">
+                  <Tag className="w-4 h-4 text-orange-400" />
+                  Fintech & Économie
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="max-w-3xl mx-auto px-4 mt-12">
+          <div className="prose prose-lg prose-zinc max-w-none">
+            <p className="text-xl text-zinc-600 leading-relaxed font-medium mb-12 border-l-4 border-yellow-500 pl-6 py-2 bg-yellow-50/30">
+              Le paysage financier marocain traverse une phase de transformation historique, marquée par une transition accélérée vers le paiement numérique. Sous l'impulsion de la stratégie nationale d'inclusion financière, les modes de consommation évoluent radicalement. Le passage d'une économie basée sur le "Cash on Delivery" vers des solutions de paiement électronique (E-payment) et de portefeuilles mobiles (M-wallets) redéfinit les règles du commerce en ligne. Des plateformes comme Jootiya se trouvent à l'avant-garde de cette transition, facilitant des échanges plus sécurisés et plus fluides.
+            </p>
+
+            <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6">1. L'Essor des M-Wallets et de l'Inclusion Financière</h2>
+            <p className="text-zinc-700 leading-relaxed mb-8">
+              Le déploiement des portefeuilles mobiles au Maroc a ouvert de nouvelles perspectives pour les acheteurs et les vendeurs. En permettant des transactions instantanées et sécurisées via smartphone, ces outils technologiques réduisent les barrières liées à l'accès aux services bancaires traditionnels. Cette digitalisation du paiement est un levier majeur pour le commerce de proximité et les marketplaces, garantissant une meilleure traçabilité des flux financiers et une sécurité accrue pour les deux parties.
+            </p>
+
+            <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6">2. Sécurité et Confiance dans le Paiement en Ligne</h2>
+            <p className="text-zinc-700 leading-relaxed mb-8">
+              La principale barrière au commerce électronique a longtemps été la méfiance vis-à-vis de la sécurité des données. Aujourd'hui, grâce à l'adoption de protocoles de cryptage avancés (SSL, 3D Secure) et à la supervision rigoureuse des autorités financières, le paiement en ligne est devenu un gage de fiabilité. L'intégration de ces solutions sur des plateformes structurées permet de professionnaliser les échanges et d'offrir aux consommateurs marocains une expérience d'achat conforme aux standards internationaux de "Cybersecurity".
+            </p>
+
+            <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6">3. L'Impact sur l'Économie Locale et la Croissance du PIB</h2>
+            <p className="text-zinc-700 leading-relaxed mb-8">
+              La dématérialisation des paiements ne simplifie pas seulement la vie des citoyens ; elle stimule également l'économie formelle. En facilitant les transactions numériques, le Maroc renforce sa position de hub technologique régional. Pour les entrepreneurs digitaux, cette infrastructure financière moderne est une opportunité unique de scalabilité, permettant de toucher une clientèle nationale de manière plus efficace et transparente.
+            </p>
+
+            <div className="bg-zinc-50 rounded-3xl p-8 mt-16 border border-zinc-100">
+              <h2 className="text-xl font-bold text-zinc-900 mb-4 mt-0">Conclusion</h2>
+              <p className="text-zinc-700 leading-relaxed m-0 italic">
+                Le futur du commerce au Maroc est indissociable du futur du paiement digital. En accompagnant ses utilisateurs dans l'adoption de solutions de paiement modernes et sécurisées, Jootiya participe activement à la modernisation du tissu économique marocain, prouvant que la technologie financière est le moteur indispensable d'un commerce prospère et inclusif.
+              </p>
+            </div>
+          </div>
+
+          {/* Footer Actions */}
+          <div className="mt-16 pt-8 border-t border-zinc-100 flex items-center justify-between">
+            <div className="flex gap-2">
+              {["Fintech", "Paiement Electronique", "Banque Digital", "Maroc", "Inclusion Financière"].map(tag => (
+                <span key={tag} className="px-3 py-1 bg-zinc-100 text-zinc-500 text-xs font-bold rounded-full uppercase tracking-tighter">
+                  #{tag.replace(' ', '')}
+                </span>
+              ))}
+            </div>
+            <button className="flex items-center gap-2 text-zinc-400 hover:text-zinc-900 transition-colors">
+              <Share2 className="w-5 h-5" />
+              <span className="text-sm font-bold">Partager</span>
+            </button>
+          </div>
+        </div>
+      </article>
+    );
+  }
 
   if (slug === 'technologie-intelligence-artificielle-commerce-maroc') {
     return (

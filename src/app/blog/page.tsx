@@ -8,6 +8,14 @@ export const metadata = {
 
 const blogPosts = [
   {
+    title: "La Révolution du Paiement Digital au Maroc : Vers un Écosystème de Commerce Sans Cash",
+    slug: "paiement-digital-ecommerce-maroc",
+    excerpt: "Le secteur financier marocain traverse une phase de transformation historique, marquée par une transition accélérée vers le paiement numérique...",
+    date: "15 Février 2026",
+    category: "Fintech",
+    image: "https://ssfcfvuosxxmvsdoktws.supabase.co/storage/v1/object/public/blog/blog_post_4.png"
+  },
+  {
     title: "L'Impact de la Technologie et de l'Intelligence Artificielle sur le Commerce Mobile au Maroc",
     slug: "technologie-intelligence-artificielle-commerce-maroc",
     excerpt: "Le marché du 'Mobile Commerce' (m-commerce) au Maroc connaît une croissance exponentielle, portée par une pénétration massive des smartphones...",
