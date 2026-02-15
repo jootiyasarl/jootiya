@@ -8,6 +8,14 @@ export const metadata = {
 
 const blogPosts = [
   {
+    title: "L'Impact de la Technologie et de l'Intelligence Artificielle sur le Commerce Mobile au Maroc",
+    slug: "technologie-intelligence-artificielle-commerce-maroc",
+    excerpt: "Le marché du 'Mobile Commerce' (m-commerce) au Maroc connaît une croissance exponentielle, portée par une pénétration massive des smartphones...",
+    date: "15 Février 2026",
+    category: "Technologie",
+    image: "https://ssfcfvuosxxmvsdoktws.supabase.co/storage/v1/object/public/blog/blog_post_3.png"
+  },
+  {
     title: "L'Économie Circulaire au Maroc : Pourquoi le Re-commerce est l'Avenir de la Consommation Durable",
     slug: "economie-circulaire-maroc-durable",
     excerpt: "Face aux défis environnementaux mondiaux et à la nécessité d'une gestion plus rationnelle des ressources, le Maroc adopte progressivement les principes de l'économie circulaire...",

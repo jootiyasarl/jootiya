@@ -6,6 +6,19 @@ import { ChevronLeft, Calendar, Tag, Share2 } from 'lucide-react';
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   
+  if (slug === 'technologie-intelligence-artificielle-commerce-maroc') {
+    return {
+      title: "L'Impact de la Technologie et de l'IA sur le Commerce au Maroc | Jootiya Blog",
+      description: "Analyse de l'impact de l'intelligence artificielle et du M-commerce sur le marché marocain. Sécurité, personnalisation et performance.",
+      keywords: ["Intelligence Artificielle", "M-Commerce", "Technologie", "Maroc", "Sécurité Digitale"],
+      openGraph: {
+        title: "L'Impact de la Technologie et de l'Intelligence Artificielle sur le Commerce Mobile au Maroc",
+        description: "Comment l'IA et les nouvelles technologies transforment l'expérience d'achat des Marocains...",
+        images: ["https://ssfcfvuosxxmvsdoktws.supabase.co/storage/v1/object/public/blog/blog_post_3.png"],
+      }
+    };
+  }
+
   if (slug === 'economie-circulaire-maroc-durable') {
     return {
       title: "L'Économie Circulaire au Maroc | Jootiya Blog",
@@ -35,6 +48,94 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+
+  if (slug === 'technologie-intelligence-artificielle-commerce-maroc') {
+    return (
+      <article dir="ltr" className="min-h-screen bg-white pb-20 font-sans">
+        {/* Hero Header */}
+        <div className="relative h-[60vh] w-full">
+          <Image
+            src="https://ssfcfvuosxxmvsdoktws.supabase.co/storage/v1/object/public/blog/blog_post_3.png"
+            alt="Technologie et IA dans le commerce au Maroc"
+            fill
+            priority
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="max-w-4xl px-4 text-center">
+              <Link 
+                href="/blog" 
+                className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-8 transition-colors"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                Retour au blog
+              </Link>
+              <h1 className="text-3xl md:text-5xl font-black text-white leading-tight mb-6">
+                L'Impact de la Technologie et de l'Intelligence Artificielle sur le Commerce Mobile au Maroc
+              </h1>
+              <div className="flex items-center justify-center gap-6 text-white/90 text-sm font-medium">
+                <span className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-orange-400" />
+                  15 Février 2026
+                </span>
+                <span className="flex items-center gap-2">
+                  <Tag className="w-4 h-4 text-orange-400" />
+                  Tech & Innovation
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className="max-w-3xl mx-auto px-4 mt-12">
+          <div className="prose prose-lg prose-zinc max-w-none">
+            <p className="text-xl text-zinc-600 leading-relaxed font-medium mb-12 border-l-4 border-blue-500 pl-6 py-2 bg-blue-50/30">
+              Le marché du "Mobile Commerce" (m-commerce) au Maroc connaît une croissance exponentielle, portée par une pénétration massive des smartphones et une connectivité internet en constante amélioration. Au-delà de la simple transaction, c'est l'intégration de technologies avancées comme l'Intelligence Artificielle (IA) et l'analyse de données (Big Data) qui redéfinit l'expérience d'achat. Pour une plateforme comme Jootiya, l'innovation technologique est le moteur essentiel pour structurer l'offre et répondre avec précision aux attentes des utilisateurs modernes.
+            </p>
+
+            <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6">1. Personnalisation de l'Expérience Client via l'IA</h2>
+            <p className="text-zinc-700 leading-relaxed mb-8">
+              L'Intelligence Artificielle permet aujourd'hui de transformer la recherche de produits en une expérience personnalisée. Grâce à des algorithmes de recommandation sophistiqués, les plateformes de commerce électronique peuvent désormais proposer des produits (neufs ou d'occasion) qui correspondent réellement aux préférences de l'utilisateur. Cette personnalisation augmente non seulement le taux de conversion, mais renforce également l'engagement client en offrant un contenu pertinent et ciblé.
+            </p>
+
+            <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6">2. Sécurité des Transactions et Protocoles Anti-Fraude</h2>
+            <p className="text-zinc-700 leading-relaxed mb-8">
+              Dans un environnement numérique en constante évolution, la sécurité est une priorité absolue. L'adoption de protocoles de sécurité avancés et de systèmes de vérification basés sur l'IA permet de détecter les comportements suspects et de garantir l'intégrité des transactions. Pour le marché marocain, la mise en place d'une infrastructure technologique robuste est la clé pour instaurer une confiance totale entre acheteurs et vendeurs sur le web.
+            </p>
+
+            <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6">3. L'Optimisation Mobile : Un Enjeu de Performance</h2>
+            <p className="text-zinc-700 leading-relaxed mb-8">
+              Avec plus de 80% des recherches effectuées sur smartphone, l'optimisation des performances mobiles est devenue un critère de succès majeur. Une interface fluide, des temps de chargement rapides et une navigation intuitive sont les piliers du "User Experience" (UX). Les plateformes qui investissent dans ces aspects techniques se démarquent par leur visibilité accrue sur les moteurs de recherche et leur capacité à capter un trafic qualifié.
+            </p>
+
+            <div className="bg-zinc-50 rounded-3xl p-8 mt-16 border border-zinc-100">
+              <h2 className="text-xl font-bold text-zinc-900 mb-4 mt-0">Conclusion</h2>
+              <p className="text-zinc-700 leading-relaxed m-0 italic">
+                La révolution technologique dans le commerce au Maroc ne fait que commencer. En adoptant les dernières innovations en matière d'IA et de sécurité mobile, Jootiya ne se contente pas de suivre la tendance, mais participe activement à la construction d'un écosystème e-commerce moderne, sécurisé et ultra-performant pour tous les Marocains.
+              </p>
+            </div>
+          </div>
+
+          {/* Footer Actions */}
+          <div className="mt-16 pt-8 border-t border-zinc-100 flex items-center justify-between">
+            <div className="flex gap-2">
+              {["Intelligence Artificielle", "M-Commerce", "Technologie", "Maroc", "Sécurité Digitale"].map(tag => (
+                <span key={tag} className="px-3 py-1 bg-zinc-100 text-zinc-500 text-xs font-bold rounded-full uppercase tracking-tighter">
+                  #{tag.replace(' ', '')}
+                </span>
+              ))}
+            </div>
+            <button className="flex items-center gap-2 text-zinc-400 hover:text-zinc-900 transition-colors">
+              <Share2 className="w-5 h-5" />
+              <span className="text-sm font-bold">Partager</span>
+            </button>
+          </div>
+        </div>
+      </article>
+    );
+  }
 
   if (slug === 'economie-circulaire-maroc-durable') {
     return (
