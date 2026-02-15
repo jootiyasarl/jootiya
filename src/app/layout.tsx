@@ -4,6 +4,7 @@ import "./globals.css";
 import { RootNavbarShell } from "@/components/navbar/RootNavbarShell";
 import Footer from "@/components/layout/Footer";
 import { Toaster } from "sonner";
+import Script from "next/script";
 
 const tajawal = Tajawal({
   variable: "--font-tajawal",
@@ -67,6 +68,14 @@ export default function RootLayout({
       <head>
         {/* 1. كود تعريف الحساب */}
         <meta name="google-adsense-account" content="ca-pub-4945284817184050" />
+
+        {/* Google AdSense Script - Optimized for Performance */}
+        <Script
+          id="adsense-init"
+          strategy="afterInteractive"
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4945284817184050"
+          crossOrigin="anonymous"
+        />
 
         {/* 2. كود الشراكة (جواز السفر الدبلوماسي) */}
         <meta name="google-adsense-platform-account" content="ca-host-pub-6129854895232620" />
