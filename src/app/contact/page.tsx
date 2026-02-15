@@ -43,7 +43,7 @@ export default function ContactUsPage() {
                                     <Mail size={32} />
                                 </div>
                                 <div>
-                                    <h3 className="text-xl font-black text-zinc-900 mb-1">Email</h3>
+                                    <h3 className="text-xl font-black text-zinc-900 mb-1">Email Officiel</h3>
                                     <a href="mailto:contact@jootiya.com" className="text-zinc-600 hover:text-orange-600 transition-colors text-lg font-bold">
                                         contact@jootiya.com
                                     </a>
@@ -51,22 +51,26 @@ export default function ContactUsPage() {
                             </div>
 
                             <div className="group flex items-center gap-6 p-6 rounded-[2rem] bg-zinc-50 border border-zinc-100 hover:bg-white hover:shadow-xl hover:shadow-zinc-200/50 transition-all duration-300">
-                                <div className="p-4 bg-orange-100 text-orange-600 rounded-2xl group-hover:bg-orange-600 group-hover:text-white transition-all">
-                                    <Clock size={32} />
+                                <div className="p-4 bg-blue-100 text-blue-600 rounded-2xl group-hover:bg-[#1877F2] group-hover:text-white transition-all">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
                                 </div>
                                 <div>
-                                    <h3 className="text-xl font-black text-zinc-900 mb-1">Temps de réponse</h3>
-                                    <p className="text-zinc-600 text-lg font-medium">Nous promettons de répondre sous 24-48 heures.</p>
+                                    <h3 className="text-xl font-black text-zinc-900 mb-1">Facebook</h3>
+                                    <a href="https://facebook.com/jootiya" target="_blank" rel="noopener noreferrer" className="text-zinc-600 hover:text-blue-600 transition-colors text-lg font-bold">
+                                        @jootiya
+                                    </a>
                                 </div>
                             </div>
 
-                            <div className="group flex items-center gap-6 p-6 rounded-[2rem] bg-orange-50/50 border border-orange-100 hover:bg-white hover:shadow-xl hover:shadow-orange-200/30 transition-all duration-300">
-                                <div className="p-4 bg-orange-100 text-orange-600 rounded-2xl group-hover:bg-orange-600 group-hover:text-white transition-all">
-                                    <MessageSquare size={32} />
+                            <div className="group flex items-center gap-6 p-6 rounded-[2rem] bg-zinc-50 border border-zinc-100 hover:bg-white hover:shadow-xl hover:shadow-zinc-200/50 transition-all duration-300">
+                                <div className="p-4 bg-pink-100 text-pink-600 rounded-2xl group-hover:bg-[#E4405F] group-hover:text-white transition-all">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
                                 </div>
                                 <div>
-                                    <h3 className="text-xl font-black text-zinc-900 mb-1">Support continu</h3>
-                                    <p className="text-zinc-600 text-lg font-medium">Support technique prêt à répondre à toutes vos questions.</p>
+                                    <h3 className="text-xl font-black text-zinc-900 mb-1">Instagram</h3>
+                                    <a href="https://instagram.com/jootiya" target="_blank" rel="noopener noreferrer" className="text-zinc-600 hover:text-pink-600 transition-colors text-lg font-bold">
+                                        @jootiya
+                                    </a>
                                 </div>
                             </div>
                         </div>
