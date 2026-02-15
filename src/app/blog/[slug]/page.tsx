@@ -6,7 +6,7 @@ import { ChevronLeft, Calendar, Tag, Share2 } from 'lucide-react';
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   
-  if (slug === 'guide-entrepreneuriat-digital-maroc') {
+    if (slug === 'guide-entrepreneuriat-digital-maroc') {
     return {
       title: "Guide de l'Entrepreneuriat Digital au Maroc | Jootiya Blog",
       description: "Comment réussir son projet e-commerce au Maroc en 2026. Stratégies, marketing digital et scalabilité pour les entrepreneurs.",
@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       openGraph: {
         title: "Guide de l'Entrepreneuriat Digital au Maroc : Comment Réussir dans le Secteur du E-commerce en 2026",
         description: "L'entrepreneuriat au Maroc vit un âge d'or. Découvrez les clés du succès pour réussir dans le marché numérique...",
-        images: ["/blog/Entrepreneuriat.png"],
+        images: ["/blog/Entrepreneuriat.webp"],
       }
     };
   }
@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       openGraph: {
         title: "La Révolution du Paiement Digital au Maroc : Vers un Écosystème de Commerce Sans Cash",
         description: "Le secteur financier marocain traverse une phase de transformation historique...",
-        images: ["/blog/wallet.png"],
+        images: ["/blog/wallet.webp"],
       }
     };
   }
@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       openGraph: {
         title: "L'Impact de la Technologie et de l'Intelligence Artificielle sur le Commerce Mobile au Maroc",
         description: "Comment l'IA et les nouvelles technologies transforment l'expérience d'achat des Marocains...",
-        images: ["/blog/tech-savvy.jpg"],
+        images: ["/blog/tech-savvy.webp"],
       }
     };
   }
@@ -53,7 +53,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       openGraph: {
         title: "L'Économie Circulaire au Maroc : Pourquoi le Re-commerce est l'Avenir de la Consommation Durable",
         description: "Face aux défis environnementaux mondiaux, le Maroc adopte progressivement les principes de l'économie circulaire...",
-        images: ["/blog/economie-verte.jpg"],
+        images: ["/blog/economie-verte.webp"],
       }
     };
   }
@@ -67,7 +67,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     openGraph: {
       title: "L'Écosystème du Commerce Électronique au Maroc : Infrastructure, Logistique et Perspectives 2026",
       description: "Le paysage du commerce numérique au Maroc connaît une mutation profonde...",
-      images: ["/blog/e commerce.png"],
+      images: ["/blog/e-commerce.webp"],
     }
   };
 }
@@ -81,7 +81,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         {/* Hero Header */}
         <div className="relative h-[60vh] w-full flex items-center justify-center overflow-hidden bg-zinc-900">
           <Image
-            src="/blog/Entrepreneuriat.png"
+            src="/blog/Entrepreneuriat.webp"
             alt="Entrepreneuriat Digital au Maroc"
             fill
             priority
@@ -181,7 +181,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         {/* Hero Header */}
         <div className="relative h-[60vh] w-full flex items-center justify-center overflow-hidden bg-zinc-900">
           <Image
-            src="/blog/wallet.png"
+            src="/blog/wallet.webp"
             alt="Paiement Digital au Maroc"
             fill
             priority
@@ -281,7 +281,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         {/* Hero Header */}
         <div className="relative h-[60vh] w-full flex items-center justify-center overflow-hidden bg-zinc-900">
           <Image
-            src="/blog/tech-savvy.jpg"
+            src="/blog/tech-savvy.webp"
             alt="Technologie et IA dans le commerce au Maroc"
             fill
             priority
@@ -381,7 +381,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         {/* Hero Header */}
         <div className="relative h-[60vh] w-full flex items-center justify-center overflow-hidden bg-zinc-900">
           <Image
-            src="/blog/economie-verte.jpg"
+            src="/blog/economie-verte.webp"
             alt="L'Économie Circulaire au Maroc"
             fill
             priority
@@ -484,7 +484,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       {/* Hero Header */}
       <div className="relative h-[60vh] w-full flex items-center justify-center overflow-hidden bg-zinc-900">
         <Image
-          src="/blog/e commerce.png"
+          src="/blog/e-commerce.webp"
           alt="L'Écosystème du Commerce Électronique au Maroc"
           fill
           priority

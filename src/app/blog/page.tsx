@@ -13,7 +13,7 @@ const blogPosts = [
     excerpt: "L'entrepreneuriat au Maroc vit un âge d'or, propulsé par une jeunesse dynamique et un écosystème digital en pleine mutation...",
     date: "15 Février 2026",
     category: "Entrepreneuriat",
-    image: "/blog/Entrepreneuriat.png"
+    image: "/blog/Entrepreneuriat.webp"
   },
   {
     title: "La Révolution du Paiement Digital au Maroc : Vers un Écosystème de Commerce Sans Cash",
@@ -21,7 +21,7 @@ const blogPosts = [
     excerpt: "Le secteur financier marocain traverse une phase de transformation historique, marquée par une transition accélérée vers le paiement numérique...",
     date: "15 Février 2026",
     category: "Fintech",
-    image: "/blog/wallet.png"
+    image: "/blog/wallet.webp"
   },
   {
     title: "L'Impact de la Technologie et de l'Intelligence Artificielle sur le Commerce Mobile au Maroc",
@@ -29,7 +29,7 @@ const blogPosts = [
     excerpt: "Le marché du 'Mobile Commerce' (m-commerce) au Maroc connaît une croissance exponentielle, portée par une pénétration massive des smartphones...",
     date: "15 Février 2026",
     category: "Technologie",
-    image: "/blog/tech-savvy.jpg"
+    image: "/blog/tech-savvy.webp"
   },
   {
     title: "L'Économie Circulaire au Maroc : Pourquoi le Re-commerce est l'Avenir de la Consommation Durable",
@@ -37,7 +37,7 @@ const blogPosts = [
     excerpt: "Face aux défis environnementaux mondiaux et à la nécessité d'une gestion plus rationnelle des ressources, le Maroc adopte progressivement les principes de l'économie circulaire...",
     date: "15 Février 2026",
     category: "Durabilité",
-    image: "/blog/economie-verte.jpg"
+    image: "/blog/economie-verte.webp"
   },
   {
     title: "L'Écosystème du Commerce Électronique au Maroc : Infrastructure, Logistique et Perspectives 2026",
@@ -45,7 +45,7 @@ const blogPosts = [
     excerpt: "Le paysage du commerce numérique au Maroc connaît une mutation profonde, portée par une accélération sans précédent de la digitalisation...",
     date: "15 Février 2026",
     category: "Analyse",
-    image: "/blog/e commerce.png"
+    image: "/blog/e-commerce.webp"
   }
 ];
 
