@@ -159,13 +159,8 @@ export default async function Home({ searchParams }: { searchParams: Promise<any
                       </h2>
                     </div>
                     <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4">
-                      {ads.map((ad, index) => (
-                        <AdCard 
-                          key={ad.id} 
-                          ad={ad} 
-                          href={`/ads/${ad.id}`} 
-                          priority={index < 4}
-                        />
+                      {ads.map((ad) => (
+                        <AdCard key={ad.id} ad={ad} href={`/ads/${ad.id}`} />
                       ))}
                     </div>
                   </section>
@@ -193,13 +188,8 @@ export default async function Home({ searchParams }: { searchParams: Promise<any
                             </Link>
                           </div>
                           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4">
-                            {catAds.map((ad, index) => (
-                              <AdCard 
-                                key={ad.id} 
-                                ad={ad} 
-                                href={`/ads/${ad.id}`} 
-                                priority={index < 2}
-                              />
+                            {catAds.map((ad) => (
+                              <AdCard key={ad.id} ad={ad} href={`/ads/${ad.id}`} />
                             ))}
                           </div>
                         </section>
@@ -231,13 +221,8 @@ export default async function Home({ searchParams }: { searchParams: Promise<any
                             </Link>
                           </div>
                           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4">
-                            {remainingAds.map((ad, index) => (
-                              <AdCard 
-                                key={ad.id} 
-                                ad={ad} 
-                                href={`/ads/${ad.id}`} 
-                                priority={index < 4}
-                              />
+                            {remainingAds.map((ad) => (
+                              <AdCard key={ad.id} ad={ad} href={`/ads/${ad.id}`} />
                             ))}
                           </div>
                         </section>

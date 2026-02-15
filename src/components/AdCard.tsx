@@ -29,10 +29,9 @@ export interface AdCardProps {
   href?: string;
   canBoost?: boolean;
   onDelete?: (ad: any) => void;
-  priority?: boolean;
 }
 
-export function AdCard({ ad, variant = "default", footerSlot, href, onDelete, priority = false }: AdCardProps) {
+export function AdCard({ ad, variant = "default", footerSlot, href, onDelete }: AdCardProps) {
   const isFeatured = variant === "featured" || ad.isFeatured;
   const linkHref = href || `/ads/${ad.slug || ad.id}`;
 
@@ -52,8 +51,7 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete, pr
             alt={ad.title}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-            loading={priority ? undefined : "lazy"}
-            priority={priority}
+            loading="lazy"
             className="object-cover h-full w-full transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
