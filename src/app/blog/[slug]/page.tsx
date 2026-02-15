@@ -79,37 +79,35 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     return (
       <article dir="ltr" className="min-h-screen bg-white pb-20 font-sans">
         {/* Hero Header */}
-        <div className="relative h-[60vh] w-full">
+        <div className="relative h-[60vh] w-full flex items-center justify-center overflow-hidden bg-zinc-900">
           <Image
             src="/blog/Entrepreneuriat.png"
             alt="Entrepreneuriat Digital au Maroc"
             fill
             priority
-            className="object-cover"
+            className="object-cover opacity-60"
           />
-          <div className="absolute inset-0 bg-black/40" />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="max-w-4xl px-4 text-center">
-              <Link 
-                href="/blog" 
-                className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-8 transition-colors"
-              >
-                <ChevronLeft className="w-4 h-4" />
-                Retour au blog
-              </Link>
-              <h1 className="text-3xl md:text-5xl font-black text-white leading-tight mb-6">
-                Guide de l'Entrepreneuriat Digital au Maroc : Comment Réussir dans le Secteur du E-commerce en 2026
-              </h1>
-              <div className="flex items-center justify-center gap-6 text-white/90 text-sm font-medium">
-                <span className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-orange-400" />
-                  15 Février 2026
-                </span>
-                <span className="flex items-center gap-2">
-                  <Tag className="w-4 h-4 text-orange-400" />
-                  Entrepreneuriat
-                </span>
-              </div>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-white" />
+          <div className="relative z-10 max-w-4xl px-4 text-center">
+            <Link 
+              href="/blog" 
+              className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-8 transition-colors bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              Retour au blog
+            </Link>
+            <h1 className="text-3xl md:text-6xl font-black text-white leading-tight mb-6 drop-shadow-2xl">
+              Guide de l'Entrepreneuriat Digital au Maroc : Comment Réussir dans le Secteur du E-commerce en 2026
+            </h1>
+            <div className="flex items-center justify-center gap-6 text-white/90 text-sm font-bold uppercase tracking-widest">
+              <span className="flex items-center gap-2 bg-orange-500 px-3 py-1 rounded-lg">
+                <Calendar className="w-4 h-4" />
+                15 Février 2026
+              </span>
+              <span className="flex items-center gap-2 bg-white/20 backdrop-blur-md px-3 py-1 rounded-lg border border-white/10">
+                <Tag className="w-4 h-4" />
+                Entrepreneuriat
+              </span>
             </div>
           </div>
         </div>
@@ -167,37 +165,35 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     return (
       <article dir="ltr" className="min-h-screen bg-white pb-20 font-sans">
         {/* Hero Header */}
-        <div className="relative h-[60vh] w-full">
+        <div className="relative h-[60vh] w-full flex items-center justify-center overflow-hidden bg-zinc-900">
           <Image
             src="/blog/wallet.png"
             alt="Paiement Digital au Maroc"
             fill
             priority
-            className="object-cover"
+            className="object-cover opacity-60"
           />
-          <div className="absolute inset-0 bg-black/40" />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="max-w-4xl px-4 text-center">
-              <Link 
-                href="/blog" 
-                className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-8 transition-colors"
-              >
-                <ChevronLeft className="w-4 h-4" />
-                Retour au blog
-              </Link>
-              <h1 className="text-3xl md:text-5xl font-black text-white leading-tight mb-6">
-                La Révolution du Paiement Digital au Maroc : Vers un Écosystème de Commerce Sans Cash
-              </h1>
-              <div className="flex items-center justify-center gap-6 text-white/90 text-sm font-medium">
-                <span className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-orange-400" />
-                  15 Février 2026
-                </span>
-                <span className="flex items-center gap-2">
-                  <Tag className="w-4 h-4 text-orange-400" />
-                  Fintech & Économie
-                </span>
-              </div>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-white" />
+          <div className="relative z-10 max-w-4xl px-4 text-center">
+            <Link 
+              href="/blog" 
+              className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-8 transition-colors bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              Retour au blog
+            </Link>
+            <h1 className="text-3xl md:text-6xl font-black text-white leading-tight mb-6 drop-shadow-2xl">
+              La Révolution du Paiement Digital au Maroc : Vers un Écosystème de Commerce Sans Cash
+            </h1>
+            <div className="flex items-center justify-center gap-6 text-white/90 text-sm font-bold uppercase tracking-widest">
+              <span className="flex items-center gap-2 bg-orange-500 px-3 py-1 rounded-lg">
+                <Calendar className="w-4 h-4" />
+                15 Février 2026
+              </span>
+              <span className="flex items-center gap-2 bg-white/20 backdrop-blur-md px-3 py-1 rounded-lg border border-white/10">
+                <Tag className="w-4 h-4" />
+                Fintech & Économie
+              </span>
             </div>
           </div>
         </div>
@@ -255,37 +251,35 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     return (
       <article dir="ltr" className="min-h-screen bg-white pb-20 font-sans">
         {/* Hero Header */}
-        <div className="relative h-[60vh] w-full">
+        <div className="relative h-[60vh] w-full flex items-center justify-center overflow-hidden bg-zinc-900">
           <Image
             src="/blog/tech-savvy.jpg"
             alt="Technologie et IA dans le commerce au Maroc"
             fill
             priority
-            className="object-cover"
+            className="object-cover opacity-60"
           />
-          <div className="absolute inset-0 bg-black/40" />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="max-w-4xl px-4 text-center">
-              <Link 
-                href="/blog" 
-                className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-8 transition-colors"
-              >
-                <ChevronLeft className="w-4 h-4" />
-                Retour au blog
-              </Link>
-              <h1 className="text-3xl md:text-5xl font-black text-white leading-tight mb-6">
-                L'Impact de la Technologie et de l'Intelligence Artificielle sur le Commerce Mobile au Maroc
-              </h1>
-              <div className="flex items-center justify-center gap-6 text-white/90 text-sm font-medium">
-                <span className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-orange-400" />
-                  15 Février 2026
-                </span>
-                <span className="flex items-center gap-2">
-                  <Tag className="w-4 h-4 text-orange-400" />
-                  Tech & Innovation
-                </span>
-              </div>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-white" />
+          <div className="relative z-10 max-w-4xl px-4 text-center">
+            <Link 
+              href="/blog" 
+              className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-8 transition-colors bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              Retour au blog
+            </Link>
+            <h1 className="text-3xl md:text-6xl font-black text-white leading-tight mb-6 drop-shadow-2xl">
+              L'Impact de la Technologie et de l'Intelligence Artificielle sur le Commerce Mobile au Maroc
+            </h1>
+            <div className="flex items-center justify-center gap-6 text-white/90 text-sm font-bold uppercase tracking-widest">
+              <span className="flex items-center gap-2 bg-orange-500 px-3 py-1 rounded-lg">
+                <Calendar className="w-4 h-4" />
+                15 Février 2026
+              </span>
+              <span className="flex items-center gap-2 bg-white/20 backdrop-blur-md px-3 py-1 rounded-lg border border-white/10">
+                <Tag className="w-4 h-4" />
+                Tech & Innovation
+              </span>
             </div>
           </div>
         </div>
@@ -343,37 +337,35 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     return (
       <article dir="ltr" className="min-h-screen bg-white pb-20 font-sans">
         {/* Hero Header */}
-        <div className="relative h-[60vh] w-full">
+        <div className="relative h-[60vh] w-full flex items-center justify-center overflow-hidden bg-zinc-900">
           <Image
             src="/blog/economie-verte.jpg"
             alt="L'Économie Circulaire au Maroc"
             fill
             priority
-            className="object-cover"
+            className="object-cover opacity-60"
           />
-          <div className="absolute inset-0 bg-black/40" />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="max-w-4xl px-4 text-center">
-              <Link 
-                href="/blog" 
-                className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-8 transition-colors"
-              >
-                <ChevronLeft className="w-4 h-4" />
-                Retour au blog
-              </Link>
-              <h1 className="text-3xl md:text-5xl font-black text-white leading-tight mb-6">
-                L'Économie Circulaire au Maroc : Pourquoi le Re-commerce est l'Avenir de la Consommation Durable
-              </h1>
-              <div className="flex items-center justify-center gap-6 text-white/90 text-sm font-medium">
-                <span className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-orange-400" />
-                  15 Février 2026
-                </span>
-                <span className="flex items-center gap-2">
-                  <Tag className="w-4 h-4 text-orange-400" />
-                  Consommation Durable
-                </span>
-              </div>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-white" />
+          <div className="relative z-10 max-w-4xl px-4 text-center">
+            <Link 
+              href="/blog" 
+              className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-8 transition-colors bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              Retour au blog
+            </Link>
+            <h1 className="text-3xl md:text-6xl font-black text-white leading-tight mb-6 drop-shadow-2xl">
+              L'Économie Circulaire au Maroc : Pourquoi le Re-commerce est l'Avenir de la Consommation Durable
+            </h1>
+            <div className="flex items-center justify-center gap-6 text-white/90 text-sm font-bold uppercase tracking-widest">
+              <span className="flex items-center gap-2 bg-orange-500 px-3 py-1 rounded-lg">
+                <Calendar className="w-4 h-4" />
+                15 Février 2026
+              </span>
+              <span className="flex items-center gap-2 bg-white/20 backdrop-blur-md px-3 py-1 rounded-lg border border-white/10">
+                <Tag className="w-4 h-4" />
+                Consommation Durable
+              </span>
             </div>
           </div>
         </div>
@@ -434,37 +426,35 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   return (
     <article dir="ltr" className="min-h-screen bg-white pb-20 font-sans">
       {/* Hero Header */}
-      <div className="relative h-[60vh] w-full">
+      <div className="relative h-[60vh] w-full flex items-center justify-center overflow-hidden bg-zinc-900">
         <Image
           src="/blog/e commerce.png"
           alt="L'Écosystème du Commerce Électronique au Maroc"
           fill
           priority
-          className="object-cover"
+          className="object-cover opacity-60"
         />
-        <div className="absolute inset-0 bg-black/40" />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="max-w-4xl px-4 text-center">
-            <Link 
-              href="/blog" 
-              className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-8 transition-colors"
-            >
-              <ChevronLeft className="w-4 h-4" />
-              Retour au blog
-            </Link>
-            <h1 className="text-3xl md:text-5xl font-black text-white leading-tight mb-6">
-              L'Écosystème du Commerce Électronique au Maroc : Infrastructure, Logistique et Perspectives 2026
-            </h1>
-            <div className="flex items-center justify-center gap-6 text-white/90 text-sm font-medium">
-              <span className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-orange-400" />
-                15 Février 2026
-              </span>
-              <span className="flex items-center gap-2">
-                <Tag className="w-4 h-4 text-orange-400" />
-                Analyse Stratégique
-              </span>
-            </div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-white" />
+        <div className="relative z-10 max-w-4xl px-4 text-center">
+          <Link 
+            href="/blog" 
+            className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-8 transition-colors bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            Retour au blog
+          </Link>
+          <h1 className="text-3xl md:text-6xl font-black text-white leading-tight mb-6 drop-shadow-2xl">
+            L'Écosystème du Commerce Électronique au Maroc : Infrastructure, Logistique et Perspectives 2026
+          </h1>
+          <div className="flex items-center justify-center gap-6 text-white/90 text-sm font-bold uppercase tracking-widest">
+            <span className="flex items-center gap-2 bg-orange-500 px-3 py-1 rounded-lg">
+              <Calendar className="w-4 h-4" />
+              15 Février 2026
+            </span>
+            <span className="flex items-center gap-2 bg-white/20 backdrop-blur-md px-3 py-1 rounded-lg border border-white/10">
+              <Tag className="w-4 h-4" />
+              Analyse Stratégique
+            </span>
           </div>
         </div>
       </div>
