@@ -116,22 +116,36 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         <div className="max-w-3xl mx-auto px-4 mt-12">
           <div className="prose prose-lg prose-zinc max-w-none">
             <p className="text-xl text-zinc-600 leading-relaxed font-medium mb-12 border-l-4 border-purple-500 pl-6 py-2 bg-purple-50/30">
-              L'entrepreneuriat au Maroc vit un âge d'or, propulsé par une jeunesse dynamique et un écosystème digital en pleine mutation. Le secteur du commerce électronique, en particulier, offre des opportunités sans précédent pour ceux qui souhaitent lancer leur propre projet. Dans ce guide stratégique, nous explorons les clés du succès pour réussir son insertion dans le marché numérique marocain. À travers des plateformes de référence comme Jootiya, le passage de l'idée à l'action n'a jamais été aussi accessible pour les entrepreneurs locaux.
+              L'entrepreneuriat au Maroc vit un âge d'or, propulsé par une jeunesse dynamique et un écosystème digital en pleine mutation. Le secteur du commerce électronique offre des opportunités sans précédent.
             </p>
 
-            <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6">1. Identifier les Opportunités du Marché et le "Product-Market Fit"</h2>
+            <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6 flex items-center gap-3">
+              <span className="w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center text-sm font-black">1</span>
+              Identifier le "Product-Market Fit"
+            </h2>
+            <p className="text-zinc-700 leading-relaxed mb-6">
+              La première étape vers la réussite est de comprendre les besoins réels du consommateur marocain en identifiant :
+            </p>
+            <ul className="list-disc pl-6 space-y-3 text-zinc-700 mb-8">
+              <li><strong>Les niches spécifiques</strong> dans les technologies ou la mode.</li>
+              <li><strong>Les solutions concrètes</strong> aux problèmes existants.</li>
+              <li><strong>Les outils digitaux</strong> pour maximiser la visibilité.</li>
+            </ul>
+
+            <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6 flex items-center gap-3">
+              <span className="w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center text-sm font-black">2</span>
+              Stratégie de Marque et Digital Marketing
+            </h2>
             <p className="text-zinc-700 leading-relaxed mb-8">
-              La première étape vers la réussite entrepreneuriale est de comprendre les besoins réels du consommateur marocain. Que ce soit dans le secteur des technologies, de la mode ou des services de proximité, l'identification d'une niche spécifique est cruciale. Le concept de "Product-Market Fit" (adéquation produit-marché) repose sur la capacité de l'entrepreneur à offrir une solution concrète à un problème existant, tout en utilisant les outils digitaux pour maximiser sa visibilité.
+              Construire une marque forte basée sur la crédibilité et la transparence est essentiel pour bâtir une communauté fidèle et optimiser le ROI.
             </p>
 
-            <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6">2. Stratégie de Marque et Digital Marketing</h2>
+            <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6 flex items-center gap-3">
+              <span className="w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center text-sm font-black">3</span>
+              Scalabilité et Plateformes de Support
+            </h2>
             <p className="text-zinc-700 leading-relaxed mb-8">
-              À l'ère des réseaux sociaux et du Big Data, construire une marque forte est un impératif. La crédibilité et la transparence sont les deux piliers de la "Consumer Trust". Une présence active sur le web, couplée à une stratégie de contenu pertinente (Content Marketing), permet aux auto-entrepreneurs de bâtir une communauté fidèle. L'utilisation intelligente des données analytiques permet d'ajuster les campagnes publicitaires et d'optimiser le retour sur investissement (ROI).
-            </p>
-
-            <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6">3. Le Rôle des Plateformes de Support dans la Scalabilité</h2>
-            <p className="text-zinc-700 leading-relaxed mb-8">
-              Pour passer d'un petit projet local à une entreprise d'envergure nationale, la "Scalabilité" est essentielle. Les plateformes structurées jouent ici un rôle de catalyseur, offrant l'infrastructure technique, les solutions de paiement et les réseaux logistiques nécessaires. En s'appuyant sur ces écosystèmes, l'entrepreneur marocain peut se concentrer sur l'innovation et la qualité de son offre, laissant la complexité technologique aux experts du secteur.
+              Les plateformes structurées jouent un rôle de catalyseur en offrant l'infrastructure nécessaire pour passer d'un projet local à une entreprise d'envergure nationale.
             </p>
 
             <div className="bg-zinc-50 rounded-3xl p-8 mt-16 border border-zinc-100">
@@ -202,22 +216,36 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         <div className="max-w-3xl mx-auto px-4 mt-12">
           <div className="prose prose-lg prose-zinc max-w-none">
             <p className="text-xl text-zinc-600 leading-relaxed font-medium mb-12 border-l-4 border-yellow-500 pl-6 py-2 bg-yellow-50/30">
-              Le paysage financier marocain traverse une phase de transformation historique, marquée par une transition accélérée vers le paiement numérique. Sous l'impulsion de la stratégie nationale d'inclusion financière, les modes de consommation évoluent radicalement. Le passage d'une économie basée sur le "Cash on Delivery" vers des solutions de paiement électronique (E-payment) et de portefeuilles mobiles (M-wallets) redéfinit les règles du commerce en ligne. Des plateformes comme Jootiya se trouvent à l'avant-garde de cette transition, facilitant des échanges plus sécurisés et plus fluides.
+              Le paysage financier marocain traverse une phase de transformation historique, marquée par une transition accélérée vers le paiement numérique et l'inclusion financière.
             </p>
 
-            <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6">1. L'Essor des M-Wallets et de l'Inclusion Financière</h2>
+            <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6 flex items-center gap-3">
+              <span className="w-8 h-8 bg-yellow-500 text-white rounded-full flex items-center justify-center text-sm font-black">1</span>
+              L'Essor des M-Wallets et de l'Inclusion Financière
+            </h2>
+            <p className="text-zinc-700 leading-relaxed mb-6">
+              Le déploiement des portefeuilles mobiles au Maroc a ouvert de nouvelles perspectives grâce à :
+            </p>
+            <ul className="list-disc pl-6 space-y-3 text-zinc-700 mb-8">
+              <li><strong>Transactions instantanées</strong> et sécurisées via smartphone.</li>
+              <li><strong>Réduction des barrières</strong> d'accès aux services bancaires.</li>
+              <li><strong>Meilleure traçabilité</strong> des flux financiers pour les commerçants.</li>
+            </ul>
+
+            <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6 flex items-center gap-3">
+              <span className="w-8 h-8 bg-yellow-500 text-white rounded-full flex items-center justify-center text-sm font-black">2</span>
+              Sécurité et Confiance dans le Paiement en Ligne
+            </h2>
             <p className="text-zinc-700 leading-relaxed mb-8">
-              Le déploiement des portefeuilles mobiles au Maroc a ouvert de nouvelles perspectives pour les acheteurs et les vendeurs. En permettant des transactions instantanées et sécurisées via smartphone, ces outils technologiques réduisent les barrières liées à l'accès aux services bancaires traditionnels. Cette digitalisation du paiement est un levier majeur pour le commerce de proximité et les marketplaces, garantissant une meilleure traçabilité des flux financiers et une sécurité accrue pour les deux parties.
+              L'adoption de protocoles de cryptage avancés (SSL, 3D Secure) garantit une expérience d'achat conforme aux standards internationaux de Cybersecurity.
             </p>
 
-            <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6">2. Sécurité et Confiance dans le Paiement en Ligne</h2>
+            <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6 flex items-center gap-3">
+              <span className="w-8 h-8 bg-yellow-500 text-white rounded-full flex items-center justify-center text-sm font-black">3</span>
+              L'Impact sur l'Économie Locale
+            </h2>
             <p className="text-zinc-700 leading-relaxed mb-8">
-              La principale barrière au commerce électronique a longtemps été la méfiance vis-à-vis de la sécurité des données. Aujourd'hui, grâce à l'adoption de protocoles de cryptage avancés (SSL, 3D Secure) et à la supervision rigoureuse des autorités financières, le paiement en ligne est devenu un gage de fiabilité. L'intégration de ces solutions sur des plateformes structurées permet de professionnaliser les échanges et d'offrir aux consommateurs marocains une expérience d'achat conforme aux standards internationaux de "Cybersecurity".
-            </p>
-
-            <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6">3. L'Impact sur l'Économie Locale et la Croissance du PIB</h2>
-            <p className="text-zinc-700 leading-relaxed mb-8">
-              La dématérialisation des paiements ne simplifie pas seulement la vie des citoyens ; elle stimule également l'économie formelle. En facilitant les transactions numériques, le Maroc renforce sa position de hub technologique régional. Pour les entrepreneurs digitaux, cette infrastructure financière moderne est une opportunité unique de scalabilité, permettant de toucher une clientèle nationale de manière plus efficace et transparente.
+              La dématérialisation des paiements stimule l'économie formelle et renforce la position du Maroc comme hub technologique régional.
             </p>
 
             <div className="bg-zinc-50 rounded-3xl p-8 mt-16 border border-zinc-100">
@@ -288,22 +316,36 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         <div className="max-w-3xl mx-auto px-4 mt-12">
           <div className="prose prose-lg prose-zinc max-w-none">
             <p className="text-xl text-zinc-600 leading-relaxed font-medium mb-12 border-l-4 border-blue-500 pl-6 py-2 bg-blue-50/30">
-              Le marché du "Mobile Commerce" (m-commerce) au Maroc connaît une croissance exponentielle, portée par une pénétration massive des smartphones et une connectivité internet en constante amélioration. Au-delà de la simple transaction, c'est l'intégration de technologies avancées comme l'Intelligence Artificielle (IA) et l'analyse de données (Big Data) qui redéfinit l'expérience d'achat. Pour une plateforme comme Jootiya, l'innovation technologique est le moteur essentiel pour structurer l'offre et répondre avec précision aux attentes des utilisateurs modernes.
+              Le marché du "Mobile Commerce" (m-commerce) au Maroc connaît une croissance exponentielle, portée par une pénétration massive des smartphones. L'IA et l'analyse de données redéfinissent aujourd'hui l'expérience d'achat moderne.
             </p>
 
-            <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6">1. Personnalisation de l'Expérience Client via l'IA</h2>
+            <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6 flex items-center gap-3">
+              <span className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-black">1</span>
+              Personnalisation de l'Expérience Client via l'IA
+            </h2>
+            <p className="text-zinc-700 leading-relaxed mb-6">
+              L'IA permet de transformer la recherche de produits en une expérience sur mesure. Ses piliers incluent :
+            </p>
+            <ul className="list-disc pl-6 space-y-3 text-zinc-700 mb-8">
+              <li><strong>Algorithmes de recommandation</strong> sophistiqués.</li>
+              <li><strong>Analyse prédictive</strong> des comportements d'achat.</li>
+              <li><strong>Contenu ciblé</strong> augmentant l'engagement client.</li>
+            </ul>
+
+            <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6 flex items-center gap-3">
+              <span className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-black">2</span>
+              Sécurité des Transactions
+            </h2>
             <p className="text-zinc-700 leading-relaxed mb-8">
-              L'Intelligence Artificielle permet aujourd'hui de transformer la recherche de produits en une expérience personnalisée. Grâce à des algorithmes de recommandation sophistiqués, les plateformes de commerce électronique peuvent désormais proposer des produits (neufs ou d'occasion) qui correspondent réellement aux préférences de l'utilisateur. Cette personnalisation augmente non seulement le taux de conversion, mais renforce également l'engagement client en offrant un contenu pertinent et ciblé.
+              L'adoption de protocoles de sécurité basés sur l'IA permet de détecter les fraudes en temps réel et de garantir l'intégrité totale des échanges.
             </p>
 
-            <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6">2. Sécurité des Transactions et Protocoles Anti-Fraude</h2>
+            <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6 flex items-center gap-3">
+              <span className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-black">3</span>
+              L'Optimisation Mobile (UX/UI)
+            </h2>
             <p className="text-zinc-700 leading-relaxed mb-8">
-              Dans un environnement numérique en constante évolution, la sécurité est une priorité absolue. L'adoption de protocoles de sécurité avancés et de systèmes de vérification basés sur l'IA permet de détecter les comportements suspects et de garantir l'intégrité des transactions. Pour le marché marocain, la mise en place d'une infrastructure technologique robuste est la clé pour instaurer une confiance totale entre acheteurs et vendeurs sur le web.
-            </p>
-
-            <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6">3. L'Optimisation Mobile : Un Enjeu de Performance</h2>
-            <p className="text-zinc-700 leading-relaxed mb-8">
-              Avec plus de 80% des recherches effectuées sur smartphone, l'optimisation des performances mobiles est devenue un critère de succès majeur. Une interface fluide, des temps de chargement rapides et une navigation intuitive sont les piliers du "User Experience" (UX). Les plateformes qui investissent dans ces aspects techniques se démarquent par leur visibilité accrue sur les moteurs de recherche et leur capacité à capter un trafic qualifié.
+              Avec 80% des recherches effectuées sur mobile, une interface fluide et des temps de chargement rapides sont les clés de la visibilité sur les moteurs de recherche.
             </p>
 
             <div className="bg-zinc-50 rounded-3xl p-8 mt-16 border border-zinc-100">
@@ -374,22 +416,36 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         <div className="max-w-3xl mx-auto px-4 mt-12">
           <div className="prose prose-lg prose-zinc max-w-none">
             <p className="text-xl text-zinc-600 leading-relaxed font-medium mb-12 border-l-4 border-green-500 pl-6 py-2 bg-green-50/30">
-              Face aux défis environnementaux mondiaux et à la nécessité d'une gestion plus rationnelle des ressources, le Maroc adopte progressivement les principes de l'économie circulaire. Ce modèle, fondé sur la réutilisation et la valorisation des produits, trouve un écho particulier dans le secteur du commerce digital. Des initiatives comme Jootiya illustrent parfaitement comment la technologie peut transformer le marché de l'occasion en un levier de développement durable et de croissance économique responsable.
+              Face aux défis environnementaux mondiaux et à la nécessité d'une gestion plus rationnelle des ressources, le Maroc adopte progressivement les principes de l'économie circulaire. Des initiatives comme Jootiya illustrent parfaitement comment la technologie peut transformer le marché de l'occasion en un levier de développement durable.
             </p>
 
-            <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6">1. Réduction de l'Empreinte Carbone et Consommation Responsable</h2>
+            <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6 flex items-center gap-3">
+              <span className="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-black">1</span>
+              Réduction de l'Empreinte Carbone et Consommation Responsable
+            </h2>
+            <p className="text-zinc-700 leading-relaxed mb-6">
+              Le concept de <strong>Re-commerce</strong> joue un rôle crucial dans la stratégie écologique nationale. Ses avantages incluent :
+            </p>
+            <ul className="list-disc pl-6 space-y-3 text-zinc-700 mb-8">
+              <li><strong>Prolongement du cycle de vie</strong> des produits technologiques et textiles.</li>
+              <li><strong>Diminution de la pression</strong> sur les ressources naturelles vierges.</li>
+              <li><strong>Sensibilisation active</strong> des citoyens aux enjeux du recyclage.</li>
+            </ul>
+
+            <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6 flex items-center gap-3">
+              <span className="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-black">2</span>
+              Impact Social et Optimisation du Pouvoir d'Achat
+            </h2>
             <p className="text-zinc-700 leading-relaxed mb-8">
-              Le concept de "Re-commerce" (commerce de seconde main) joue un rôle crucial dans la réduction de l'empreinte carbone au niveau national. En prolongeant le cycle de vie des produits — qu'il s'agisse de textile, d'électronique ou de mobilier — nous diminuons la pression sur la production de nouvelles matières premières. Cette approche de consommation responsable permet non seulement de préserver l'environnement, mais aussi de sensibiliser les citoyens marocains aux enjeux du recyclage et de la valorisation.
+              L'économie circulaire est un puissant vecteur social qui permet d'accéder à des biens de qualité à des tarifs compétitifs, favorisant ainsi l'inclusion numérique.
             </p>
 
-            <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6">2. Impact Social et Optimisation du Pouvoir d'Achat</h2>
+            <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6 flex items-center gap-3">
+              <span className="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-black">3</span>
+              Vers une Standardisation de la Qualité
+            </h2>
             <p className="text-zinc-700 leading-relaxed mb-8">
-              L'économie circulaire au Maroc n'est pas uniquement un enjeu écologique, c'est aussi un puissant vecteur social. En structurant le marché de l'occasion via des plateformes numériques sécurisées, nous permettons à une large frange de la population d'accéder à des biens de qualité à des tarifs compétitifs. Cette optimisation du pouvoir d'achat s'inscrit dans une logique d'inclusion numérique, où chaque transaction contribue à la pérennité d'un écosystème local et solidaire.
-            </p>
-
-            <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6">3. Vers une Standardisation de la Qualité dans le Marché de l'Occasion</h2>
-            <p className="text-zinc-700 leading-relaxed mb-8">
-              L'un des plus grands défis de l'économie circulaire est la garantie de la qualité. Grâce à l'innovation technologique et à la transparence des données, il est désormais possible de standardiser les échanges. Les mécanismes de notation et les descriptions détaillées sur les plateformes modernes permettent de lever les barrières de la méfiance, transformant la "Jootiya" traditionnelle en un marché digitalisé, fiable et conforme aux standards internationaux de "Consumer Trust" (confiance du consommateur).
+              Grâce à l'innovation technologique, il est désormais possible de garantir la transparence des données et de standardiser les échanges sur le marché de l'occasion.
             </p>
 
             <div className="bg-zinc-50 rounded-3xl p-8 mt-16 border border-zinc-100">
@@ -463,22 +519,41 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       <div className="max-w-3xl mx-auto px-4 mt-12">
         <div className="prose prose-lg prose-zinc max-w-none">
           <p className="text-xl text-zinc-600 leading-relaxed font-medium mb-12 border-l-4 border-orange-500 pl-6 py-2 bg-orange-50/30">
-            Le paysage du commerce numérique au Maroc connaît une mutation profonde, portée par une accélération sans précédent de la digitalisation. Dans ce contexte, la structuration des échanges, qu'ils soient de produits neufs ou d'occasion, devient un enjeu économique majeur. Des plateformes comme Jootiya se positionnent désormais au centre de cette transformation, offrant une infrastructure fiable pour dynamiser le marché local tout en répondant aux nouvelles exigences de transparence et de sécurité des consommateurs.
+            Le paysage du commerce numérique au Maroc connaît une mutation profonde, portée par une accélération sans précédent de la digitalisation. Dans ce contexte, la structuration des échanges, qu'ils soient de produits neufs ou d'occasion, devient un enjeu économique majeur.
           </p>
 
-          <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6">1. Infrastructure et Modernisation de la Supply Chain</h2>
-          <p className="text-zinc-700 leading-relaxed mb-8">
-            Le succès de l'e-commerce au Maroc repose sur une "Supply Chain" (chaîne d'approvisionnement) de plus en plus résiliente. L'intégration de solutions logistiques avancées permet aujourd'hui de réduire les délais de livraison et d'optimiser les flux entre les grandes métropoles comme Casablanca, Tanger et Marrakech. Pour une plateforme de "Marketplace", l'efficacité de cette infrastructure est le garant d'une expérience utilisateur fluide, essentielle pour instaurer une confiance durable dans les transactions numériques.
+          <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6 flex items-center gap-3">
+            <span className="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-black">1</span>
+            Infrastructure et Modernisation de la Supply Chain
+          </h2>
+          <p className="text-zinc-700 leading-relaxed mb-6">
+            Le succès de l'e-commerce au Maroc repose sur une "Supply Chain" de plus en plus résiliente. L'intégration de solutions logistiques avancées permet aujourd'hui :
           </p>
+          <ul className="list-disc pl-6 space-y-3 text-zinc-700 mb-8">
+            <li><strong>Réduction des délais</strong> de livraison entre les grandes métropoles.</li>
+            <li><strong>Optimisation des flux</strong> logistiques à Casablanca, Tanger et Marrakech.</li>
+            <li><strong>Amélioration de la traçabilité</strong> des colis pour une transparence totale.</li>
+          </ul>
 
-          <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6">2. Transformation Digitale et Confiance des Consommateurs</h2>
-          <p className="text-zinc-700 leading-relaxed mb-8">
-            La confiance est le pilier de l'économie digitale. Le passage d'un marché traditionnel vers des plateformes structurées permet d'éliminer l'asymétrie d'information. Grâce à des protocoles de vérification et à une meilleure présentation des données produits, le "Market Valuation" (valorisation du marché) devient plus précis. Cette digitalisation n'est pas qu'une simple tendance, mais une nécessité pour les auto-entrepreneurs marocains qui cherchent à élargir leur portée commerciale.
+          <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6 flex items-center gap-3">
+            <span className="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-black">2</span>
+            Transformation Digitale et Confiance des Consommateurs
+          </h2>
+          <p className="text-zinc-700 leading-relaxed mb-6">
+            La confiance est le pilier de l'économie digitale. Le passage d'un marché traditionnel vers des plateformes structurées permet d'éliminer l'asymétrie d'information grâce à :
           </p>
+          <ul className="list-disc pl-6 space-y-3 text-zinc-700 mb-8">
+            <li><strong>Protocoles de vérification</strong> rigoureux pour les vendeurs.</li>
+            <li><strong>Valorisation précise</strong> du marché (Market Valuation).</li>
+            <li><strong>Inclusion des auto-entrepreneurs</strong> dans l'économie formelle.</li>
+          </ul>
 
-          <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6">3. Analyse du Marché et Impact Économique</h2>
+          <h2 className="text-2xl font-bold text-zinc-900 mt-12 mb-6 flex items-center gap-3">
+            <span className="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-black">3</span>
+            Analyse du Marché et Impact Économique
+          </h2>
           <p className="text-zinc-700 leading-relaxed mb-8">
-            En 2026, le secteur de la vente au détail en ligne représente une part croissante du PIB national. L'analyse des tendances montre une forte demande pour les solutions de "Re-commerce" (commerce de seconde main structuré). Ce segment, en pleine expansion, attire des investissements technologiques majeurs, transformant la manière dont les Marocains perçoivent la valeur des biens durables.
+            En 2026, le secteur de la vente au détail en ligne représente une part croissante du PIB national. L'analyse des tendances montre une forte demande pour les solutions de <strong>Re-commerce</strong>.
           </p>
 
           <div className="bg-zinc-50 rounded-3xl p-8 mt-16 border border-zinc-100">
