@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       openGraph: {
         title: "Guide de l'Entrepreneuriat Digital au Maroc : Comment Réussir dans le Secteur du E-commerce en 2026",
         description: "L'entrepreneuriat au Maroc vit un âge d'or. Découvrez les clés du succès pour réussir dans le marché numérique...",
-        images: ["/blog/blog_post_5.png"],
+        images: ["/blog/Entrepreneuriat.png"],
       }
     };
   }
@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       openGraph: {
         title: "La Révolution du Paiement Digital au Maroc : Vers un Écosystème de Commerce Sans Cash",
         description: "Le secteur financier marocain traverse une phase de transformation historique...",
-        images: ["/blog/blog_post_4.png"],
+        images: ["/blog/wallet.png"],
       }
     };
   }
@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       openGraph: {
         title: "L'Impact de la Technologie et de l'Intelligence Artificielle sur le Commerce Mobile au Maroc",
         description: "Comment l'IA et les nouvelles technologies transforment l'expérience d'achat des Marocains...",
-        images: ["/blog/blog_post_3.png"],
+        images: ["/blog/tech-savvy.jpg"],
       }
     };
   }
@@ -53,7 +53,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       openGraph: {
         title: "L'Économie Circulaire au Maroc : Pourquoi le Re-commerce est l'Avenir de la Consommation Durable",
         description: "Face aux défis environnementaux mondiaux, le Maroc adopte progressivement les principes de l'économie circulaire...",
-        images: ["/blog/blog_post_2.png"],
+        images: ["/blog/economie-verte.jpg"],
       }
     };
   }
@@ -67,7 +67,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     openGraph: {
       title: "L'Écosystème du Commerce Électronique au Maroc : Infrastructure, Logistique et Perspectives 2026",
       description: "Le paysage du commerce numérique au Maroc connaît une mutation profonde...",
-      images: ["/blog/blog_post_1.png"],
+      images: ["/blog/e commerce.png"],
     }
   };
 }
@@ -81,7 +81,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         {/* Hero Header */}
         <div className="relative h-[60vh] w-full">
           <Image
-            src="/blog/blog_post_5.png"
+            src="/blog/Entrepreneuriat.png"
             alt="Entrepreneuriat Digital au Maroc"
             fill
             priority
@@ -169,7 +169,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         {/* Hero Header */}
         <div className="relative h-[60vh] w-full">
           <Image
-            src="/blog/blog_post_4.png"
+            src="/blog/wallet.png"
             alt="Paiement Digital au Maroc"
             fill
             priority
@@ -257,7 +257,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         {/* Hero Header */}
         <div className="relative h-[60vh] w-full">
           <Image
-            src="/blog/blog_post_3.png"
+            src="/blog/tech-savvy.jpg"
             alt="Technologie et IA dans le commerce au Maroc"
             fill
             priority
@@ -345,7 +345,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         {/* Hero Header */}
         <div className="relative h-[60vh] w-full">
           <Image
-            src="/blog/blog_post_2.png"
+            src="/blog/economie-verte.jpg"
             alt="L'Économie Circulaire au Maroc"
             fill
             priority
@@ -436,7 +436,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       {/* Hero Header */}
       <div className="relative h-[60vh] w-full">
         <Image
-          src="/blog/blog_post_1.png"
+          src="/blog/e commerce.png"
           alt="L'Écosystème du Commerce Électronique au Maroc"
           fill
           priority
