@@ -137,6 +137,7 @@ export default function Footer() {
                             Aide & Légal
                         </h4>
                         <ul className="space-y-3">
+                            <FooterLink href="/blog">Blog & Actualités</FooterLink>
                             <FooterLink href="/about" rel="nofollow">Notre Concept</FooterLink>
                             <FooterLink href="/safety" rel="nofollow">Conseils de Sécurité</FooterLink>
                             <FooterLink href="/terms" rel="nofollow">CGU & Conditions</FooterLink>
