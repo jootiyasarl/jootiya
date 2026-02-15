@@ -64,8 +64,8 @@ export default function BlogListing() {
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {blogPosts.map((post) => (
-            <article key={post.slug} className="flex flex-col overflow-hidden rounded-2xl shadow-sm border border-zinc-100 hover:shadow-md transition-shadow">
-              <Link href={`/blog/${post.slug}`} className="flex-shrink-0 relative h-48 w-full">
+            <article key={post.slug} className="flex flex-col overflow-hidden rounded-2xl shadow-sm border border-zinc-100 hover:shadow-md transition-shadow bg-white">
+              <Link href={`/blog/${post.slug}`} className="flex-shrink-0 relative h-64 w-full">
                 <Image
                   src={post.image}
                   alt={post.title}
@@ -73,22 +73,22 @@ export default function BlogListing() {
                   className="object-cover"
                 />
               </Link>
-              <div className="flex flex-1 flex-col justify-between p-6">
+              <div className="flex flex-1 flex-col justify-between p-6 bg-white relative z-10">
                 <div className="flex-1">
-                  <p className="text-sm font-bold text-orange-600 uppercase tracking-wider">
+                  <p className="text-sm font-bold text-orange-600 uppercase tracking-wider mb-2">
                     {post.category}
                   </p>
-                  <Link href={`/blog/${post.slug}`} className="mt-2 block">
-                    <h2 className="text-xl font-bold text-zinc-900 hover:text-orange-600 transition-colors">
+                  <Link href={`/blog/${post.slug}`} className="block group">
+                    <h2 className="text-xl font-bold text-zinc-900 group-hover:text-orange-600 transition-colors leading-tight mb-3">
                       {post.title}
                     </h2>
-                    <p className="mt-3 text-base text-zinc-500 line-clamp-3">
+                    <p className="text-sm text-zinc-500 line-clamp-3 leading-relaxed">
                       {post.excerpt}
                     </p>
                   </Link>
                 </div>
-                <div className="mt-6 flex items-center">
-                  <div className="text-sm text-zinc-400">
+                <div className="mt-6 pt-4 border-t border-zinc-50 flex items-center">
+                  <div className="text-xs text-zinc-400 font-medium">
                     <time dateTime="2026-02-15">{post.date}</time>
                   </div>
                 </div>
