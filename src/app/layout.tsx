@@ -10,6 +10,7 @@ import { ServiceWorkerRegistration } from "@/components/notifications/ServiceWor
 import PublicNavbar from "@/components/navbar/PublicNavbar";
 import { ProgressBar } from "@/components/layout/ProgressBar";
 import { PageTransition } from "@/components/layout/PageTransition";
+import { ScrollToTop } from "@/components/layout/ScrollToTop";
 import { Suspense } from "react";
 import { ThemeProvider } from "@/components/theme-provider";
 
@@ -122,6 +123,7 @@ export default function RootLayout({
         <h1 className="sr-only">Jootiya: Analyse du Marché Marocain, Infrastructure Logistique et Opportunités d'Investissement</h1>
 
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <ScrollToTop />
           <Suspense fallback={null}>
             <ProgressBar />
           </Suspense>
