@@ -86,8 +86,8 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
                 <div className="flex flex-col lg:flex-row gap-8">
                     {/* Left Sidebar for Ads (Desktop) */}
                     <div className="hidden lg:block lg:w-[160px] flex-shrink-0">
-                        <div className="sticky top-24 w-full h-[600px] bg-zinc-100 rounded-xl border border-dashed border-zinc-300 flex items-center justify-center text-zinc-400 text-xs text-center p-4">
-                            Ad Space (160x600)
+                        <div className="sticky top-24 w-full h-[600px] bg-white rounded-xl">
+                            {/* AdSense Left */}
                         </div>
                     </div>
 
@@ -203,8 +203,8 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
 
                     {/* Right Sidebar for Ads (Desktop) */}
                     <div className="hidden xl:block xl:w-[160px] flex-shrink-0">
-                        <div className="sticky top-24 w-full h-[600px] bg-zinc-100 rounded-xl border border-dashed border-zinc-300 flex items-center justify-center text-zinc-400 text-xs text-center p-4">
-                            Ad Space (160x600)
+                        <div className="sticky top-24 w-full h-[600px] bg-white rounded-xl">
+                            {/* AdSense Right */}
                         </div>
                     </div>
                 </div>
