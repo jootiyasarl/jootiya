@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import { AdsTable } from "@/components/ads/AdsTable";
 import type { AdminAd, AdsTableFilters } from "@/components/ads/AdsTable";
 import { supabase } from "@/lib/supabaseClient";
+import AISyncManager from "@/components/admin/AISyncManager";
 
 export default function AdminAdsPage() {
   const [ads, setAds] = useState<AdminAd[]>([]);
@@ -131,6 +132,8 @@ export default function AdminAdsPage() {
           isModeratingId={moderatingId}
         />
       </div>
+
+      <AISyncManager />
     </div>
   );
 }
