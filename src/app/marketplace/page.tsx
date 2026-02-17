@@ -1,68 +1,92 @@
-import { Suspense } from 'react';
 import Link from 'next/link';
-import { getAds } from '@/lib/db/ads';
-import MarketplaceManager from '@/components/marketplace/MarketplaceManager';
-import { createSupabaseServerClient } from '@/lib/supabase-server';
-import { ListingSkeleton } from '@/components/ads/ListingSkeleton';
-import { HorizontalCategoriesBar } from '@/components/marketplace/HorizontalCategoriesBar';
+import { 
+    Smartphone, 
+    Car, 
+    Shirt, 
+    Package, 
+    Armchair, 
+    Hammer, 
+    Gamepad2, 
+    PawPrint, 
+    BookOpen, 
+    Tag,
+    ArrowRight
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export const metadata = {
-  title: 'Marché - Jootiya',
-  description: 'Achetez et vendez tout sur le marché Jootiya.',
+  title: 'Catégories - Jootiya',
+  description: 'Explorez toutes les catégories sur le marché Jootiya.',
 };
 
-export default async function MarketplacePage({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | string[] | undefined };
-}) {
-  const supabase = createSupabaseServerClient();
+const CATEGORIES_GRID = [
+    { id: "electronics", label: "Électronique", icon: Smartphone, bg: "bg-blue-50 text-blue-600", border: "border-blue-100", href: "/categories/electronics", count: "Mobiles, PC, TV" },
+    { id: "home-furniture", label: "Maison & Ameublement", icon: Armchair, bg: "bg-green-50 text-green-600", border: "border-green-100", href: "/categories/home-furniture", count: "Salons, Déco" },
+    { id: "vehicles", label: "Véhicules", icon: Car, bg: "bg-orange-50 text-orange-600", border: "border-orange-100", href: "/categories/vehicles", count: "Voitures, Motos" },
+    { id: "fashion", label: "Mode & Chaussures", icon: Shirt, bg: "pink-50 text-pink-600", border: "border-pink-100", href: "/categories/fashion", count: "Vêtements, Acc." },
+    { id: "tools-equipment", label: "Outils & Équipement", icon: Hammer, bg: "bg-zinc-50 text-zinc-600", border: "border-zinc-200", href: "/categories/tools-equipment", count: "Bricolage, Pro" },
+    { id: "hobbies", label: "Loisirs", icon: Gamepad2, bg: "bg-purple-50 text-purple-600", border: "border-purple-100", href: "/categories/hobbies", count: "Jeux, Sport" },
+    { id: "animals", label: "Animaux", icon: PawPrint, bg: "bg-amber-50 text-amber-600", border: "border-amber-100", href: "/categories/animals", count: "Chats, Chiens" },
+    { id: "books", label: "Livres & Études", icon: BookOpen, bg: "bg-sky-50 text-sky-600", border: "border-sky-100", href: "/categories/books", count: "Romans, Scolaire" },
+    { id: "used-clearance", label: "Occasions", icon: Tag, bg: "bg-red-50 text-red-600", border: "border-red-100", href: "/categories/used-clearance", count: "Vide-grenier" },
+    { id: "other", label: "Autres", icon: Package, bg: "bg-slate-50 text-slate-600", border: "border-slate-100", href: "/categories/other", count: "Divers" },
+];
 
-  const query = typeof searchParams.q === 'string' ? searchParams.q : undefined;
-  const category = typeof searchParams.category === 'string' ? searchParams.category : undefined;
-  const minPrice = typeof searchParams.minPrice === 'string' ? Number(searchParams.minPrice) : undefined;
-  const maxPrice = typeof searchParams.maxPrice === 'string' ? Number(searchParams.maxPrice) : undefined;
-  const sort = typeof searchParams.sort === 'string' ? (searchParams.sort as any) : 'newest';
-  const city = typeof searchParams.city === 'string' ? searchParams.city : undefined;
-
-  const { ads, count, error } = await getAds(supabase, {
-    query,
-    category,
-    minPrice,
-    maxPrice,
-    sort,
-    city
-  });
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-950">
-        <div className="text-center p-8 bg-white dark:bg-zinc-900 rounded-3xl shadow-xl border border-zinc-100 dark:border-zinc-800 max-w-md">
-          <h2 className="text-xl font-bold text-zinc-900 mb-2">Erreur de chargement</h2>
-          <p className="text-zinc-500 mb-6">
-            Désolé, une erreur est survenue lors de la récupération des annonces.
+export default function MarketplacePage() {
+  return (
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-zinc-950 pb-24">
+      <div className="mx-auto max-w-7xl px-4 pt-12">
+        <div className="text-center mb-12">
+          <h1 className="text-3xl md:text-4xl font-black text-zinc-900 dark:text-white mb-4">
+            Que recherchez-vous ?
+          </h1>
+          <p className="text-zinc-500 dark:text-zinc-400 font-medium">
+            Parcourez nos catégories pour trouver les meilleures offres
           </p>
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-left overflow-auto max-h-60">
-            <p className="font-mono text-xs text-red-800 font-bold">Message: {error.message}</p>
-            {error.details && <p className="font-mono text-xs text-red-700 mt-1">Details: {error.details}</p>}
-            {error.hint && <p className="font-mono text-xs text-red-700 mt-1">Hint: {error.hint}</p>}
-          </div>
-          <Link href="/marketplace" className="inline-block px-6 py-2 bg-orange-600 text-white rounded-xl font-bold">Ressayer</Link>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
+          {CATEGORIES_GRID.map((cat) => {
+            const Icon = cat.icon;
+            return (
+              <Link
+                key={cat.id}
+                href={cat.href}
+                className="group relative bg-white dark:bg-zinc-900 rounded-[2.5rem] p-6 border border-zinc-100 dark:border-zinc-800 shadow-sm hover:shadow-xl hover:border-orange-200 dark:hover:border-orange-900/30 transition-all duration-300 hover:-translate-y-1 overflow-hidden"
+              >
+                {/* Decorative Background Blob */}
+                <div className={cn(
+                  "absolute -right-4 -top-4 w-24 h-24 rounded-full opacity-0 group-hover:opacity-10 transition-opacity duration-300",
+                  cat.bg
+                )} />
+
+                <div className="flex flex-col items-center text-center relative z-10">
+                  <div className={cn(
+                    "w-16 h-16 rounded-3xl flex items-center justify-center mb-5 transition-transform duration-500 group-hover:rotate-[10deg]",
+                    cat.bg,
+                    cat.border,
+                    "border shadow-sm"
+                  )}>
+                    <Icon size={32} strokeWidth={2} />
+                  </div>
+                  
+                  <h3 className="text-sm font-black text-zinc-900 dark:text-white uppercase tracking-wider mb-1">
+                    {cat.label}
+                  </h3>
+                  <p className="text-[11px] text-zinc-400 font-bold uppercase tracking-tight mb-4">
+                    {cat.count}
+                  </p>
+                  
+                  <div className="mt-auto flex items-center gap-1.5 text-orange-600 text-[10px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
+                    Découvrir
+                    <ArrowRight size={12} />
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </div>
-    );
-  }
-
-  return (
-    <>
-      {/* Horizontal Categories Bar */}
-      <HorizontalCategoriesBar />
-
-      <div className="min-h-screen bg-white dark:bg-zinc-950 pb-24 pt-4">
-        <Suspense fallback={<ListingSkeleton />}>
-          <MarketplaceManager ads={ads || []} />
-        </Suspense>
-      </div>
-    </>
+    </div>
   );
 }
