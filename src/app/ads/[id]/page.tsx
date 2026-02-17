@@ -156,36 +156,22 @@ export default async function AdPage({ params }: AdPageProps) {
     .limit(3);
 
   // 4. Fetch Similar Ads
-  // Strategy: Try Geospatial first (if coords exist), else Category fallback
   let similarAds: any[] = [];
 
-  if (ad.latitude && ad.longitude) {
-    const { data: geoAds } = await supabase.rpc('get_ads_nearby', {
-      user_lat: ad.latitude,
-      user_lon: ad.longitude,
-      radius_km: 20, // 20km radius for similar items
-      limit_count: 5 // Get 5, filter out current
-    });
-    if (geoAds) similarAds = geoAds;
-  }
-
-  // Create a fallback query if geo didn't return enough (or at all)
-  if (similarAds.length < 2) {
+  try {
     const { data: catAds } = await supabase
       .from("ads")
-      .select("id, title, price, currency, city, neighborhood, created_at, is_featured, image_urls, category, status, latitude, longitude")
-      .eq("category", ad.category)
-      .neq("id", ad.id) // Exclude current
+      .select("id, title, price, currency, city, neighborhood, created_at, is_featured, image_urls, category, status, slug")
+      .or(`category.ilike.${ad.category}`)
+      .neq("id", ad.id)
+      .in("status", ["active", "approved"])
+      .order("created_at", { ascending: false })
       .limit(4);
 
-    if (catAds) similarAds = [...similarAds, ...catAds];
+    if (catAds) similarAds = catAds;
+  } catch (err) {
+    console.error("Error fetching similar ads:", err);
   }
-
-  // Deduplicate and filter out current ad
-  similarAds = similarAds.filter((item, index, self) =>
-    index === self.findIndex((t) => t.id === item.id) && item.id !== ad.id
-  ).slice(0, 4);
-
 
   const images = ad.image_urls || [];
   const formattedPrice = ad.price
@@ -431,18 +417,19 @@ export default async function AdPage({ params }: AdPageProps) {
                 Voir plus
               </Link>
             </div>
-            <div className="grid grid-cols-4 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6">
               {similarAds.map((simAd: any) => (
                 <AdCard 
                   key={simAd.id} 
                   priority={true}
                   ad={{
                   id: simAd.id,
+                  slug: simAd.slug,
                   title: simAd.title,
                   price: simAd.price ? `${Number(simAd.price).toLocaleString()} ${simAd.currency || 'MAD'}` : 'Sur demande',
                   location: simAd.city || 'Maroc',
                   imageUrl: (simAd.images || simAd.image_urls)?.[0],
-                  createdAt: simAd.created_at ? `${new Date(simAd.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })} à ${new Date(simAd.created_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}` : undefined
+                  createdAt: simAd.created_at ? `${new Date(simAd.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}` : undefined
                 }} />
               ))}
             </div>
