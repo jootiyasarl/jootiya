@@ -43,74 +43,78 @@ interface AdPageProps {
 export async function generateMetadata({ params }: AdPageProps) {
   const { id } = await params;
   const supabase = createSupabaseServerClient();
-  
-  // Use id as the primary identifier for fetching metadata
-  const { data: ad } = await supabase
-    .from("ads")
-    .select("title, city, description, image_urls, price, currency, images, slug, id")
-    .eq('id', id)
-    .single();
-
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://jootiya.com';
+  
+  try {
+    const { data: ad } = await supabase
+      .from("ads")
+      .select("title, city, description, image_urls, price, currency, images, slug, id")
+      .eq('id', id)
+      .maybeSingle();
 
-  if (!ad) {
-    return { 
+    if (!ad) {
+      return { 
+        title: "Jootiya | Petites Annonces au Maroc",
+        description: "Achetez et vendez en toute sécurité sur Jootiya."
+      };
+    }
+
+    const citySuffix = ad.city ? ` à ${ad.city}` : "";
+    const formattedPrice = ad.price ? ` - ${Number(ad.price).toLocaleString()} ${ad.currency || 'MAD'}` : "";
+    const metaTitle = `${ad.title}${formattedPrice}${citySuffix}`;
+    const metaDescription = ad.description?.slice(0, 160) || `Découvrez cette annonce sur Jootiya: ${ad.title}`;
+    
+    const adSlug = ad.slug || generateSlug(ad.title);
+    const canonicalUrl = `${baseUrl}/ads/${ad.id}/${adSlug}`;
+    
+    // Improved Image handling for WhatsApp
+    let shareImage = `${baseUrl}/og-image.png`; 
+    const rawImage = (ad.image_urls?.[0] || ad.images?.[0]);
+
+    if (rawImage) {
+      if (rawImage.startsWith('http')) {
+        shareImage = rawImage;
+      } else {
+        const cleanPath = rawImage.startsWith('/') ? rawImage.substring(1) : rawImage;
+        shareImage = `${baseUrl}/${cleanPath}`;
+      }
+    }
+
+    return {
+      title: metaTitle,
+      description: metaDescription,
+      metadataBase: new URL(baseUrl),
+      alternates: {
+        canonical: canonicalUrl,
+      },
+      openGraph: {
+        title: metaTitle,
+        description: metaDescription,
+        url: canonicalUrl,
+        siteName: 'Jootiya',
+        images: [
+          {
+            url: shareImage,
+            width: 1200,
+            height: 630,
+            alt: ad.title,
+          }
+        ],
+        type: 'article',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: metaTitle,
+        description: metaDescription,
+        images: [shareImage],
+      },
+    };
+  } catch (error) {
+    return {
       title: "Jootiya | Petites Annonces au Maroc",
       description: "Achetez et vendez en toute sécurité sur Jootiya."
     };
   }
-
-  const citySuffix = ad.city ? ` à ${ad.city}` : "";
-  const formattedPrice = ad.price ? ` - ${Number(ad.price).toLocaleString()} ${ad.currency || 'MAD'}` : "";
-  const metaTitle = `${ad.title}${formattedPrice}${citySuffix}`;
-  const metaDescription = ad.description?.slice(0, 160) || `Découvrez cette annonce sur Jootiya: ${ad.title}`;
-  
-  const adSlug = ad.slug || generateSlug(ad.title);
-  const canonicalUrl = `${baseUrl}/ads/${ad.id}/${adSlug}`;
-  
-  // Get the first image from image_urls or images array
-  let rawImage = (ad.image_urls?.[0] || ad.images?.[0]);
-  let shareImage = `${baseUrl}/og-image.png`; // Default fallback
-
-  if (rawImage) {
-    if (rawImage.startsWith('http')) {
-      shareImage = rawImage;
-    } else {
-      // Clean leading slash and join with baseUrl
-      const cleanPath = rawImage.startsWith('/') ? rawImage.slice(1) : rawImage;
-      shareImage = `${baseUrl}/${cleanPath}`;
-    }
-  }
-
-  return {
-    metadataBase: new URL(baseUrl),
-    title: metaTitle,
-    description: metaDescription,
-    alternates: {
-      canonical: canonicalUrl,
-    },
-    openGraph: {
-      title: metaTitle,
-      description: metaDescription,
-      images: [
-        {
-          url: shareImage,
-          width: 1200,
-          height: 630,
-          alt: ad.title,
-        }
-      ],
-      type: 'article',
-      siteName: 'Jootiya',
-      url: canonicalUrl,
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: metaTitle,
-      description: metaDescription,
-      images: [shareImage],
-    },
-  };
 }
 
 export default async function AdPage({ params }: AdPageProps) {
