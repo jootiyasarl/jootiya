@@ -2,11 +2,14 @@
 create table if not exists public.reports (
     id uuid default gen_random_uuid() primary key,
     reporter_id uuid references auth.users(id) on delete set null,
-    target_id uuid not null,
+    reporter_email text,
+    reporter_name text,
+    ad_id uuid references public.ads(id) on delete cascade,
+    reported_user_id uuid references auth.users(id) on delete cascade,
     target_type text not null check (target_type in ('ad', 'user', 'review')),
     reason text not null,
     description text,
-    status text not null default 'pending' check (status in ('pending', 'investigating', 'resolved', 'dismissed')),
+    status text not null default 'open' check (status in ('open', 'investigating', 'resolved', 'dismissed')),
     created_at timestamptz default now() not null,
     updated_at timestamptz default now() not null
 );
