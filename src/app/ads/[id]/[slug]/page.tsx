@@ -44,16 +44,22 @@ export async function generateMetadata({ params }: AdPageProps) {
   const { id } = await params;
   const supabase = createSupabaseServerClient();
   
-  // Always fetch by ID for metadata to ensure accuracy
+  // Use id as the primary identifier for fetching metadata
   const { data: ad } = await supabase
     .from("ads")
     .select("title, city, description, image_urls, price, currency, images, slug, id")
     .eq('id', id)
     .maybeSingle();
 
-  if (!ad) return { title: "Annonce introuvable | Jootiya" };
-
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://jootiya.com';
+
+  if (!ad) {
+    return { 
+      title: "Jootiya | Petites Annonces au Maroc",
+      description: "Achetez et vendez en toute sécurité sur Jootiya."
+    };
+  }
+
   const citySuffix = ad.city ? ` à ${ad.city}` : "";
   const formattedPrice = ad.price ? ` - ${Number(ad.price).toLocaleString()} ${ad.currency || 'MAD'}` : "";
   const title = `${ad.title}${formattedPrice}${citySuffix}`;
@@ -62,22 +68,23 @@ export async function generateMetadata({ params }: AdPageProps) {
   const adSlug = ad.slug || generateSlug(ad.title);
   const canonicalUrl = `${baseUrl}/ads/${ad.id}/${adSlug}`;
   
-  // Prioritize image_urls (Supabase/Firebase) over images array
+  // Get the first image from image_urls or images array
   let shareImage = (ad.image_urls?.[0] || ad.images?.[0]);
   
-  // Clean URL and ensure it's absolute
+  // Ensure we have a valid absolute URL for social media
   if (shareImage) {
     if (!shareImage.startsWith('http')) {
+      // If it's a relative path, prepend baseUrl
       shareImage = `${baseUrl}${shareImage.startsWith('/') ? '' : '/'}${shareImage}`;
     }
+  } else {
+    // Fallback image if no ad image exists
+    shareImage = `${baseUrl}/og-image.png`; 
   }
 
   return {
     metadataBase: new URL(baseUrl),
-    title: {
-      default: title,
-      template: `%s | Jootiya`
-    },
+    title: title,
     description,
     alternates: {
       canonical: canonicalUrl,
@@ -85,15 +92,15 @@ export async function generateMetadata({ params }: AdPageProps) {
     openGraph: {
       title,
       description,
-      images: shareImage ? [
+      images: [
         {
           url: shareImage,
           width: 1200,
           height: 630,
           alt: ad.title,
         }
-      ] : [],
-      type: 'website',
+      ],
+      type: 'article',
       siteName: 'Jootiya',
       url: canonicalUrl,
     },
@@ -101,7 +108,7 @@ export async function generateMetadata({ params }: AdPageProps) {
       card: 'summary_large_image',
       title,
       description,
-      images: shareImage ? [shareImage] : [],
+      images: [shareImage],
     },
   };
 }
