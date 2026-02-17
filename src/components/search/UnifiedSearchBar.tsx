@@ -41,15 +41,17 @@ export function UnifiedSearchBar() {
     const containerRef = useRef<HTMLDivElement>(null);
 
     const handleSearch = () => {
+        const trimmedQuery = query.trim();
+        
         // Case 1: Only Category is selected (SEO Path)
-        if (category.id !== "all" && !query && location === "Toutes les villes") {
+        if (category.id !== "all" && !trimmedQuery && location === "Toutes les villes") {
             router.push(`/categories/${category.id}`);
             setActiveMenu(null);
             return;
         }
 
         // Case 2: Only City is selected (SEO Path)
-        if (location !== "Toutes les villes" && !query && category.id === "all") {
+        if (location !== "Toutes les villes" && !trimmedQuery && category.id === "all") {
             router.push(`/cities/${location.toLowerCase()}`);
             setActiveMenu(null);
             return;
@@ -57,18 +59,20 @@ export function UnifiedSearchBar() {
 
         // Case 3: Mixed search (General Search with params)
         const params = new URLSearchParams();
-        if (query) params.set("q", query);
+        if (trimmedQuery) params.set("q", trimmedQuery);
         if (category.id !== "all") params.set("category", category.id);
         if (location !== "Toutes les villes") {
             params.set("city", location);
         }
 
-        router.push(`/marketplace?${params.toString()}`);
+        const queryString = params.toString();
+        router.push(`/marketplace${queryString ? `?${queryString}` : ""}`);
         setActiveMenu(null);
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === "Enter") {
+            e.preventDefault();
             handleSearch();
         }
     };
