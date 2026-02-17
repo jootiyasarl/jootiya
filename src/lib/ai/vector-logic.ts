@@ -12,8 +12,8 @@ export async function searchProductsVector(query: string, limit: number = 10) {
     // 1. Generate embedding for the search query
     const queryEmbedding = await generateEmbedding(query);
 
-    // 2. Call the RPC function match_products (defined in 2026_vector_search.sql)
-    const { data: products, error } = await supabase.rpc('match_products', {
+    // 2. Call the RPC function match_ads_2026 (defined in 2026_vector_search.sql)
+    const { data: products, error } = await supabase.rpc('match_ads_2026', {
       query_embedding: queryEmbedding,
       match_threshold: 0.5, // Similarity threshold (0 to 1)
       match_count: limit,
@@ -40,7 +40,7 @@ export async function searchAdsVector(query: string, limit: number = 20) {
   try {
     const queryEmbedding = await generateEmbedding(query);
 
-    const { data: ads, error } = await supabase.rpc('match_ads', {
+    const { data: ads, error } = await supabase.rpc('match_ads_2026', {
       query_embedding: queryEmbedding,
       match_threshold: 0.4,
       match_count: limit,
