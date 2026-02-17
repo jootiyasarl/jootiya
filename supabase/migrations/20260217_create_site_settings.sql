@@ -20,11 +20,13 @@ CREATE TABLE IF NOT EXISTS public.site_settings (
 -- Enable RLS
 ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
 
--- Create Policies
+-- Create Policies (Drop if exists first to avoid errors)
+DROP POLICY IF EXISTS "Public can view site settings" ON public.site_settings;
 CREATE POLICY "Public can view site settings" 
     ON public.site_settings FOR SELECT 
     USING (true);
 
+DROP POLICY IF EXISTS "Admins can manage site settings" ON public.site_settings;
 CREATE POLICY "Admins can manage site settings" 
     ON public.site_settings FOR ALL 
     USING (
