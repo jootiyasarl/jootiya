@@ -58,13 +58,21 @@ export async function generateMetadata({ params }: AdPageProps) {
 
   if (!ad) return { title: "Annonce introuvable | Jootiya" };
 
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://jootiya.com';
   const citySuffix = ad.city ? ` à ${ad.city}` : "";
   const formattedPrice = ad.price ? ` - ${Number(ad.price).toLocaleString()} ${ad.currency || 'MAD'}` : "";
   const title = `${ad.title}${formattedPrice}${citySuffix} | Jootiya`;
   const description = ad.description?.slice(0, 160) || `Découvrez cette annonce sur Jootiya: ${ad.title}`;
-  const shareImage = (ad.image_urls?.[0] || ad.images?.[0]);
+  
+  let shareImage = (ad.image_urls?.[0] || ad.images?.[0]);
+  
+  // Ensure image URL is absolute
+  if (shareImage && !shareImage.startsWith('http')) {
+    shareImage = `${baseUrl}${shareImage.startsWith('/') ? '' : '/'}${shareImage}`;
+  }
 
   return {
+    metadataBase: new URL(baseUrl),
     title,
     description,
     openGraph: {
@@ -72,6 +80,7 @@ export async function generateMetadata({ params }: AdPageProps) {
       description,
       images: shareImage ? [{ url: shareImage, width: 1200, height: 630, alt: ad.title }] : [],
       type: 'article',
+      url: `${baseUrl}/ads/${id}`,
     },
     twitter: {
       card: 'summary_large_image',
