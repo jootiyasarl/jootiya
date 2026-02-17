@@ -1,3 +1,5 @@
+"use server";
+
 import { syncMissingEmbeddings } from "@/lib/ai/sync";
 import { getServerUser, getProfileRole } from "@/lib/supabase-server";
 
