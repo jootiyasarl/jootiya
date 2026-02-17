@@ -1,0 +1,36 @@
+-- Create reports table if it doesn't exist
+create table if not exists public.reports (
+    id uuid default gen_random_uuid() primary key,
+    reporter_id uuid references auth.users(id) on delete set null,
+    target_id uuid not null,
+    target_type text not null check (target_type in ('ad', 'user', 'review')),
+    reason text not null,
+    description text,
+    status text not null default 'pending' check (status in ('pending', 'investigating', 'resolved', 'dismissed')),
+    created_at timestamptz default now() not null,
+    updated_at timestamptz default now() not null
+);
+
+-- Enable RLS
+alter table public.reports enable row level security;
+
+-- Create policies
+create policy "Users can create reports"
+    on public.reports for insert
+    with check (auth.uid() = reporter_id);
+
+create policy "Admins can view and manage all reports"
+    on public.reports for all
+    using (
+        exists (
+            select 1 from public.profiles
+            where id = auth.uid()
+            and (role = 'admin' or role = 'super_admin')
+        )
+    );
+
+-- Create updated_at trigger
+create trigger set_reports_updated_at
+    before update on public.reports
+    for each row
+    execute function public.handle_updated_at();
