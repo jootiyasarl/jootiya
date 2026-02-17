@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: AdPageProps) {
 
   let query = supabase
     .from("ads")
-    .select("title, city, description, image_urls");
+    .select("title, city, description, image_urls, price, currency, images");
 
   if (isUuid) {
     query = query.or(`id.eq.${identifier},slug.eq.${identifier}`);
@@ -59,8 +59,10 @@ export async function generateMetadata({ params }: AdPageProps) {
   if (!ad) return { title: "Annonce introuvable | Jootiya" };
 
   const citySuffix = ad.city ? ` à ${ad.city}` : "";
-  const title = `${ad.title}${citySuffix} | Jootiya`;
+  const formattedPrice = ad.price ? ` - ${Number(ad.price).toLocaleString()} ${ad.currency || 'MAD'}` : "";
+  const title = `${ad.title}${formattedPrice}${citySuffix} | Jootiya`;
   const description = ad.description?.slice(0, 160) || `Découvrez cette annonce sur Jootiya: ${ad.title}`;
+  const shareImage = (ad.image_urls?.[0] || ad.images?.[0]);
 
   return {
     title,
@@ -68,7 +70,14 @@ export async function generateMetadata({ params }: AdPageProps) {
     openGraph: {
       title,
       description,
-      images: ad.image_urls?.[0] ? [{ url: ad.image_urls[0] }] : [],
+      images: shareImage ? [{ url: shareImage, width: 1200, height: 630, alt: ad.title }] : [],
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: shareImage ? [shareImage] : [],
     },
   };
 }
