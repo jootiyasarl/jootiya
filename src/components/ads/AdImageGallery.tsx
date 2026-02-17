@@ -77,14 +77,14 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
     return (
         <div className="flex flex-col gap-4">
             {/* Main Slider Container */}
-            <div className="group relative aspect-[4/3] w-full rounded-3xl bg-zinc-50 border border-zinc-100 shadow-sm md:aspect-video">
+            <div className="group relative aspect-[4/3] w-full rounded-3xl bg-zinc-950 border border-zinc-800 shadow-sm md:aspect-video overflow-hidden">
                 {/* Viewport - Must have overflow-hidden for Embla */}
-                <div className="h-full w-full overflow-hidden rounded-3xl cursor-grab active:cursor-grabbing" ref={emblaRef}>
+                <div className="h-full w-full cursor-grab active:cursor-grabbing" ref={emblaRef}>
                     <div className="flex h-full">
                         {images.map((src, index) => {
                             const blurUrl = getSafeBlurUrl(src);
                             return (
-                                <div key={index} className="relative h-full w-full flex-[0_0_100%] min-w-0">
+                                <div key={index} className="relative h-full w-full flex-[0_0_100%] min-w-0 flex items-center justify-center bg-zinc-900/50">
                                     <Image
                                         src={getOptimizedImageUrl(src, { width: 800, height: 600, quality: 80 })}
                                         alt={`Product view ${index + 1}`}
