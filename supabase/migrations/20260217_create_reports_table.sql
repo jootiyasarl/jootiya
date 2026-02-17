@@ -1,4 +1,4 @@
--- 1. Create or update the table structure
+-- 1. Create or update the table structure with correct column names for the UI
 create table if not exists public.reports (
     id uuid default gen_random_uuid() primary key,
     reporter_id uuid references auth.users(id) on delete set null,
@@ -35,6 +35,15 @@ create policy "Admins can view and manage all reports"
     );
 
 -- 4. Manage Trigger (Drop if exists then create)
+-- First ensure the handle_updated_at function exists (shared)
+create or replace function public.handle_updated_at()
+returns trigger as $$
+begin
+    new.updated_at = now();
+    return new;
+end;
+$$ language plpgsql;
+
 drop trigger if exists set_reports_updated_at on public.reports;
 create trigger set_reports_updated_at
     before update on public.reports
