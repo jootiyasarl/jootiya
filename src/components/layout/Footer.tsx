@@ -82,9 +82,10 @@ export default function Footer() {
                             La plateforme n°1 au Maroc pour l'achat et la vente d'occasion. Nous connectons des milliers d'acheteurs et de vendeurs chaque jour dans un environnement sécurisé.
                         </p>
                         <div className="flex items-center gap-3">
-                            <SocialLink href="https://facebook.com/jootiya" icon={<Facebook size={18} />} color="hover:text-[#1877F2]" />
-                            <SocialLink href="https://instagram.com/jootiya" icon={<Instagram size={18} />} color="hover:text-[#E4405F]" />
+                            <SocialLink href="https://www.facebook.com/Jootiyaa" icon={<Facebook size={18} />} color="hover:text-[#1877F2]" />
+                            <SocialLink href="https://www.instagram.com/jootiya_official/" icon={<Instagram size={18} />} color="hover:text-[#E4405F]" />
                             <SocialLink href="https://x.com/jootiya" icon={<Twitter size={18} />} color="hover:text-[#1DA1F2]" />
+                            <SocialLink href="https://www.tiktok.com/@jootiya.com" icon={<Zap size={18} />} color="hover:text-[#ff0050]" />
                         </div>
                     </div>
 
