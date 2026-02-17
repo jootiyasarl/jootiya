@@ -42,45 +42,53 @@ export async function generateMetadata({ params }: AdPageProps) {
   const { id } = await params;
   const supabase = createSupabaseServerClient();
   const identifier = id;
-  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(identifier);
-
-  let query = supabase
+  
+  // Try to find by slug first, then by ID
+  const { data: ad, error } = await supabase
     .from("ads")
-    .select("title, city, description, image_urls, price, currency, images");
-
-  if (isUuid) {
-    query = query.or(`id.eq.${identifier},slug.eq.${identifier}`);
-  } else {
-    query = query.eq("slug", identifier);
-  }
-
-  const { data: ad } = await query.single();
+    .select("title, city, description, image_urls, price, currency, images, slug, id")
+    .or(`slug.eq.${identifier},id.eq.${identifier}`)
+    .maybeSingle();
 
   if (!ad) return { title: "Annonce introuvable | Jootiya" };
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://jootiya.com';
   const citySuffix = ad.city ? ` à ${ad.city}` : "";
   const formattedPrice = ad.price ? ` - ${Number(ad.price).toLocaleString()} ${ad.currency || 'MAD'}` : "";
-  const title = `${ad.title}${formattedPrice}${citySuffix} | Jootiya`;
+  const title = `${ad.title}${formattedPrice}${citySuffix}`;
   const description = ad.description?.slice(0, 160) || `Découvrez cette annonce sur Jootiya: ${ad.title}`;
   
+  // Prioritize image_urls (Supabase/Firebase) over images array
   let shareImage = (ad.image_urls?.[0] || ad.images?.[0]);
   
-  // Ensure image URL is absolute
-  if (shareImage && !shareImage.startsWith('http')) {
-    shareImage = `${baseUrl}${shareImage.startsWith('/') ? '' : '/'}${shareImage}`;
+  // Clean URL and ensure it's absolute
+  if (shareImage) {
+    if (!shareImage.startsWith('http')) {
+      shareImage = `${baseUrl}${shareImage.startsWith('/') ? '' : '/'}${shareImage}`;
+    }
   }
 
   return {
     metadataBase: new URL(baseUrl),
-    title,
+    title: {
+      default: title,
+      template: `%s | Jootiya`
+    },
     description,
     openGraph: {
       title,
       description,
-      images: shareImage ? [{ url: shareImage, width: 1200, height: 630, alt: ad.title }] : [],
-      type: 'article',
-      url: `${baseUrl}/ads/${id}`,
+      images: shareImage ? [
+        {
+          url: shareImage,
+          width: 800,
+          height: 600,
+          alt: ad.title,
+        }
+      ] : [],
+      type: 'website',
+      siteName: 'Jootiya',
+      url: `${baseUrl}/ads/${ad.slug || ad.id}`,
     },
     twitter: {
       card: 'summary_large_image',
