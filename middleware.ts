@@ -99,14 +99,6 @@ export async function middleware(req: NextRequest) {
     pathname.startsWith("/moderator") ||
     pathname === "/marketplace/post";
 
-  // SEO: Redirect old /ads/[id] to /ads/[id]/[slug]
-  // Pattern: /ads/uuid-or-id (without a second part)
-  const adPathMatch = pathname.match(/^\/ads\/([^\/]+)$/);
-  if (adPathMatch && !pathname.includes('_next') && !pathname.includes('api')) {
-    const adId = adPathMatch[1];
-    return NextResponse.redirect(new URL(`/ads/${adId}/details`, req.url));
-  }
-
   const user = await getUserFromRequest(req);
   const role = user ? await getUserRole(user) : null;
 
