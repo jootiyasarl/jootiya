@@ -49,7 +49,7 @@ export async function generateMetadata({ params }: AdPageProps) {
     .from("ads")
     .select("title, city, description, image_urls, price, currency, images, slug, id")
     .eq('id', id)
-    .maybeSingle();
+    .single();
 
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://jootiya.com';
 
@@ -62,36 +62,36 @@ export async function generateMetadata({ params }: AdPageProps) {
 
   const citySuffix = ad.city ? ` à ${ad.city}` : "";
   const formattedPrice = ad.price ? ` - ${Number(ad.price).toLocaleString()} ${ad.currency || 'MAD'}` : "";
-  const title = `${ad.title}${formattedPrice}${citySuffix}`;
-  const description = ad.description?.slice(0, 160) || `Découvrez cette annonce sur Jootiya: ${ad.title}`;
+  const metaTitle = `${ad.title}${formattedPrice}${citySuffix}`;
+  const metaDescription = ad.description?.slice(0, 160) || `Découvrez cette annonce sur Jootiya: ${ad.title}`;
   
   const adSlug = ad.slug || generateSlug(ad.title);
   const canonicalUrl = `${baseUrl}/ads/${ad.id}/${adSlug}`;
   
   // Get the first image from image_urls or images array
-  let shareImage = (ad.image_urls?.[0] || ad.images?.[0]);
-  
-  // Ensure we have a valid absolute URL for social media
-  if (shareImage) {
-    if (!shareImage.startsWith('http')) {
-      // If it's a relative path, prepend baseUrl
-      shareImage = `${baseUrl}${shareImage.startsWith('/') ? '' : '/'}${shareImage}`;
+  let rawImage = (ad.image_urls?.[0] || ad.images?.[0]);
+  let shareImage = `${baseUrl}/og-image.png`; // Default fallback
+
+  if (rawImage) {
+    if (rawImage.startsWith('http')) {
+      shareImage = rawImage;
+    } else {
+      // Clean leading slash and join with baseUrl
+      const cleanPath = rawImage.startsWith('/') ? rawImage.slice(1) : rawImage;
+      shareImage = `${baseUrl}/${cleanPath}`;
     }
-  } else {
-    // Fallback image if no ad image exists
-    shareImage = `${baseUrl}/og-image.png`; 
   }
 
   return {
     metadataBase: new URL(baseUrl),
-    title: title,
-    description,
+    title: metaTitle,
+    description: metaDescription,
     alternates: {
       canonical: canonicalUrl,
     },
     openGraph: {
-      title,
-      description,
+      title: metaTitle,
+      description: metaDescription,
       images: [
         {
           url: shareImage,
@@ -106,8 +106,8 @@ export async function generateMetadata({ params }: AdPageProps) {
     },
     twitter: {
       card: 'summary_large_image',
-      title,
-      description,
+      title: metaTitle,
+      description: metaDescription,
       images: [shareImage],
     },
   };
