@@ -2,6 +2,7 @@
 
 import { getAuthenticatedServerClient, getServerUser } from "@/lib/supabase-server";
 import { slugify } from "@/lib/slug";
+import { updateAdEmbedding } from "@/lib/ai/sync";
 
 export type AdStatus = "pending" | "active" | "rejected";
 
@@ -73,6 +74,9 @@ export async function createAdAction(data: AdActionPayload) {
 
         if (insertError) throw insertError;
 
+        // Update embedding in background (non-blocking)
+        updateAdEmbedding(result.id).catch(err => console.error("Async embedding update failed:", err));
+
         return { success: true, id: result.id };
     } catch (error: any) {
         console.error("Ad Action Error:", error);
@@ -121,6 +125,9 @@ export async function updateAdAction(id: string, data: AdActionPayload) {
             .eq('seller_id', user.id);
 
         if (updateError) throw updateError;
+
+        // Update embedding in background (non-blocking)
+        updateAdEmbedding(id).catch(err => console.error("Async embedding update failed:", err));
 
         return { success: true };
     } catch (error: any) {
