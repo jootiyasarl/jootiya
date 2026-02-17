@@ -41,38 +41,35 @@ interface AdPageProps {
 }
 
 export async function generateMetadata({ params }: AdPageProps) {
-  const { id } = await params;
+  const { id, slug: urlSlug } = await params;
   const supabase = createSupabaseServerClient();
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://jootiya.com';
   
-  // Debug log for production monitoring
-  console.log(`[Metadata] Generating for ID: ${id}`);
-
   try {
-    // Standardize ID format (ensure it's a valid UUID if possible)
+    // Search by ID or Slug to be safe
     const { data: ad, error } = await supabase
       .from("ads")
       .select("title, city, description, image_urls, price, currency, images, slug, id")
-      .eq('id', id)
+      .or(`id.eq.${id},slug.eq.${id}`)
       .maybeSingle();
 
     if (error || !ad) {
-      console.log(`[Metadata] Ad not found or error for ID: ${id}`, error);
       return { 
-        title: "Jootiya | Petites Annonces au Maroc",
+        title: "Petites Annonces au Maroc | Jootiya",
         description: "Achetez et vendez en toute sécurité sur Jootiya."
       };
     }
 
     const citySuffix = ad.city ? ` à ${ad.city}` : "";
     const formattedPrice = ad.price ? ` - ${Number(ad.price).toLocaleString()} ${ad.currency || 'MAD'}` : "";
-    const metaTitle = `${ad.title}${formattedPrice}${citySuffix}`;
-    const metaDescription = ad.description?.slice(0, 160) || `Découvrez cette annonce sur Jootiya: ${ad.title}`;
     
-    const adSlug = ad.slug || generateSlug(ad.title);
+    // CRITICAL: Construct the ad-specific title without global site name prefix
+    const metaTitle = `${ad.title}${formattedPrice}${citySuffix}`;
+    const metaDescription = ad.description ? ad.description.slice(0, 160) : `Découvrez ${ad.title} sur Jootiya.`;
+    
+    const adSlug = ad.slug || urlSlug || generateSlug(ad.title);
     const canonicalUrl = `${baseUrl}/ads/${ad.id}/${adSlug}`;
     
-    // Improved Image handling for WhatsApp (MUST be absolute URL)
     let shareImage = `${baseUrl}/og-image.png`; 
     const rawImage = (ad.image_urls?.[0] || ad.images?.[0]);
 
@@ -85,17 +82,15 @@ export async function generateMetadata({ params }: AdPageProps) {
       }
     }
 
-    console.log(`[Metadata] Success for ${id}: ${metaTitle}`);
-
     return {
-      title: metaTitle,
+      title: metaTitle, // This sets the browser tab title
       description: metaDescription,
       metadataBase: new URL(baseUrl),
       alternates: {
         canonical: canonicalUrl,
       },
       openGraph: {
-        title: metaTitle,
+        title: metaTitle, // WhatsApp/Facebook Title
         description: metaDescription,
         url: canonicalUrl,
         siteName: 'Jootiya',
@@ -111,15 +106,14 @@ export async function generateMetadata({ params }: AdPageProps) {
       },
       twitter: {
         card: 'summary_large_image',
-        title: metaTitle,
+        title: metaTitle, // X (Twitter) Title
         description: metaDescription,
         images: [shareImage],
       },
     };
   } catch (err) {
-    console.error(`[Metadata] Fatal error for ID: ${id}`, err);
     return {
-      title: "Jootiya | Petites Annonces au Maroc",
+      title: "Petites Annonces au Maroc | Jootiya",
       description: "Achetez et vendez en toute sécurité sur Jootiya."
     };
   }
