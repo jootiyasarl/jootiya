@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
@@ -18,11 +18,30 @@ import { AdCard } from "@/components/ads/AdCard";
 
 interface MyAdsClientProps {
     initialAds: DashboardAd[];
+    currentPage: number;
+    totalPages: number;
+    totalAds: number;
 }
 
-export function MyAdsClient({ initialAds }: MyAdsClientProps) {
+export function MyAdsClient({ 
+    initialAds, 
+    currentPage, 
+    totalPages, 
+    totalAds 
+}: MyAdsClientProps) {
     const router = useRouter();
     const [ads, setAds] = useState<DashboardAd[]>(initialAds);
+    // ... existing state ...
+
+    // Update ads when initialAds changes (on page navigation)
+    useEffect(() => {
+        setAds(initialAds);
+    }, [initialAds]);
+
+    function handlePageChange(page: number) {
+        router.push(`/dashboard/ads?page=${page}`);
+    }
+
     const [adToDelete, setAdToDelete] = useState<DashboardAd | null>(null);
     const [deleteLoading, setDeleteLoading] = useState(false);
     const [lastDeletedAd, setLastDeletedAd] = useState<DashboardAd | null>(null);
@@ -280,6 +299,36 @@ export function MyAdsClient({ initialAds }: MyAdsClientProps) {
                             </tbody>
                         </table>
                     </div>
+
+                    {totalPages > 1 && (
+                        <div className="flex items-center justify-between border-t border-zinc-100 pt-6">
+                            <div className="text-sm text-zinc-500">
+                                Showing <span className="font-medium text-zinc-900">{(currentPage - 1) * 15 + 1}</span> to{" "}
+                                <span className="font-medium text-zinc-900">
+                                    {Math.min(currentPage * 15, totalAds)}
+                                </span>{" "}
+                                of <span className="font-medium text-zinc-900">{totalAds}</span> results
+                            </div>
+                            <div className="flex gap-2">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    disabled={currentPage <= 1}
+                                    onClick={() => handlePageChange(currentPage - 1)}
+                                >
+                                    Previous
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    disabled={currentPage >= totalPages}
+                                    onClick={() => handlePageChange(currentPage + 1)}
+                                >
+                                    Next
+                                </Button>
+                            </div>
+                        </div>
+                    )}
                 </div>
             )}
         </div>

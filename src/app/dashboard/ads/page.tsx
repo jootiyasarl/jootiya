@@ -5,8 +5,15 @@ import Link from "next/link";
 import { MyAdsClient } from "./MyAdsClient";
 import { SubscriptionUpgradeCta } from "@/components/subscription/SubscriptionUpgradeCta";
 
-export default async function MyAdsPage() {
+export default async function MyAdsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
   const user = await getServerUser();
+  const { page } = await searchParams;
+  const currentPage = Math.max(1, parseInt(page || "1"));
+  const pageSize = 15;
 
   if (!user) {
     redirect("/login?redirectTo=/dashboard/ads");
@@ -14,21 +21,32 @@ export default async function MyAdsPage() {
 
   const supabase = createSupabaseServerClient();
 
-  const { data, error } = await supabase
-    .from("ads")
-    .select(
-      "id, title, price, currency, status, image_urls, city, neighborhood, created_at, views_count"
-    )
-    .eq("seller_id", user.id)
-    .neq("status", "deleted")
-    .order("created_at", { ascending: false });
+  // Fetch count and data in parallel
+  const [countResult, adsResult] = await Promise.all([
+    supabase
+      .from("ads")
+      .select("*", { count: "exact", head: true })
+      .eq("seller_id", user.id)
+      .neq("status", "deleted"),
+    supabase
+      .from("ads")
+      .select(
+        "id, title, price, currency, status, image_urls, city, neighborhood, created_at, views_count"
+      )
+      .eq("seller_id", user.id)
+      .neq("status", "deleted")
+      .order("created_at", { ascending: false })
+      .range((currentPage - 1) * pageSize, currentPage * pageSize - 1),
+  ]);
 
-  if (error) {
-    console.error("Error loading ads:", error);
-    // You could show an error state or just empty ads
+  if (adsResult.error) {
+    console.error("Error loading ads:", adsResult.error);
   }
 
-  const mappedAds = (data || []).map((ad: any) => ({
+  const totalAds = countResult.count || 0;
+  const totalPages = Math.ceil(totalAds / pageSize);
+
+  const mappedAds = (adsResult.data || []).map((ad: any) => ({
     id: ad.id,
     title: ad.title,
     price: ad.price,
@@ -58,7 +76,12 @@ export default async function MyAdsPage() {
         <SubscriptionUpgradeCta />
       </div>
 
-      <MyAdsClient initialAds={mappedAds} />
+      <MyAdsClient 
+        initialAds={mappedAds} 
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalAds={totalAds}
+      />
     </div>
   );
 }
