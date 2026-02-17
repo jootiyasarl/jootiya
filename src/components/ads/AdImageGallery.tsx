@@ -157,7 +157,7 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
                             key={index}
                             onClick={() => emblaApi?.scrollTo(index)}
                             className={cn(
-                                "relative aspect-square w-20 flex-shrink-0 overflow-hidden rounded-2xl border-2 transition-all md:w-full",
+                                "relative aspect-square w-20 flex-shrink-0 overflow-hidden rounded-2xl border-2 transition-all md:w-full bg-zinc-900/5",
                                 currentIndex === index
                                     ? "border-orange-600 scale-95"
                                     : "border-transparent opacity-60 hover:opacity-100"
@@ -167,7 +167,7 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
                                 src={getOptimizedImageUrl(image, { width: 150, height: 150 })}
                                 alt={`Thumbnail ${index + 1}`}
                                 fill
-                                className="object-cover"
+                                className="object-contain"
                             />
                         </button>
                     ))}
@@ -177,7 +177,7 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
             {/* Lightbox Modal */}
             {isLightboxOpen && (
                 <div className="fixed inset-0 z-[100] flex flex-col bg-black animate-in fade-in duration-300">
-                    <div className="flex items-center justify-between p-4 z-50 bg-gradient-to-b from-black/50 to-transparent absolute top-0 left-0 right-0">
+                    <div className="flex items-center justify-between p-4 z-50 bg-gradient-to-b from-black/80 to-transparent absolute top-0 left-0 right-0">
                         <span className="text-white text-xs font-black uppercase tracking-[0.3em]">Aperçu des détails</span>
                         <button
                             onClick={() => setIsLightboxOpen(false)}
@@ -190,10 +190,10 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
                     <div className="h-full w-full overflow-hidden" ref={lightboxRef}>
                         <div className="flex h-full touch-pan-y">
                             {images.map((src, index) => (
-                                <div key={index} className="relative h-full w-full flex-[0_0_100%] min-w-0 flex items-center justify-center">
-                                    <div className="relative h-full w-full">
+                                <div key={index} className="relative h-full w-full flex-[0_0_100%] min-w-0 flex items-center justify-center p-4">
+                                    <div className="relative w-full h-full flex items-center justify-center">
                                         <Image
-                                            src={getOptimizedImageUrl(src, { width: 1200, height: 900, quality: 90 })}
+                                            src={getOptimizedImageUrl(src, { width: 1600, height: 1200, quality: 95 })}
                                             alt={`Full screen view ${index + 1}`}
                                             fill
                                             className="object-contain"
