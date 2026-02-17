@@ -142,7 +142,7 @@ export default async function AdPage({ params }: AdPageProps) {
       <div className="flex flex-col items-center justify-center min-h-[60vh] p-4 text-center">
         <h1 className="text-2xl font-bold mb-4">Annonce introuvable</h1>
         <p className="text-muted-foreground mb-6">Cette annonce n'existe plus ou a été supprimée.</p>
-        <Button asChild={true}>
+        <Button variant="outline" className="mt-4">
           <Link href="/marketplace">Retour au marketplace</Link>
         </Button>
       </div>
