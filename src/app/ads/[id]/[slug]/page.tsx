@@ -29,25 +29,26 @@ import {
 } from "lucide-react";
 import { QuickActionFooter } from "@/components/ads/QuickActionFooter";
 import Image from "next/image";
+import { generateSlug } from "@/lib/seo-utils";
 
 export const dynamic = "force-dynamic";
 
 interface AdPageProps {
   params: Promise<{
     id: string;
+    slug: string;
   }>;
 }
 
 export async function generateMetadata({ params }: AdPageProps) {
   const { id } = await params;
   const supabase = createSupabaseServerClient();
-  const identifier = id;
   
-  // Try to find by slug first, then by ID
-  const { data: ad, error } = await supabase
+  // Always fetch by ID for metadata to ensure accuracy
+  const { data: ad } = await supabase
     .from("ads")
     .select("title, city, description, image_urls, price, currency, images, slug, id")
-    .or(`slug.eq.${identifier},id.eq.${identifier}`)
+    .eq('id', id)
     .maybeSingle();
 
   if (!ad) return { title: "Annonce introuvable | Jootiya" };
@@ -57,6 +58,9 @@ export async function generateMetadata({ params }: AdPageProps) {
   const formattedPrice = ad.price ? ` - ${Number(ad.price).toLocaleString()} ${ad.currency || 'MAD'}` : "";
   const title = `${ad.title}${formattedPrice}${citySuffix}`;
   const description = ad.description?.slice(0, 160) || `Découvrez cette annonce sur Jootiya: ${ad.title}`;
+  
+  const adSlug = ad.slug || generateSlug(ad.title);
+  const canonicalUrl = `${baseUrl}/ads/${ad.id}/${adSlug}`;
   
   // Prioritize image_urls (Supabase/Firebase) over images array
   let shareImage = (ad.image_urls?.[0] || ad.images?.[0]);
@@ -75,20 +79,23 @@ export async function generateMetadata({ params }: AdPageProps) {
       template: `%s | Jootiya`
     },
     description,
+    alternates: {
+      canonical: canonicalUrl,
+    },
     openGraph: {
       title,
       description,
       images: shareImage ? [
         {
           url: shareImage,
-          width: 800,
-          height: 600,
+          width: 1200,
+          height: 630,
           alt: ad.title,
         }
       ] : [],
       type: 'website',
       siteName: 'Jootiya',
-      url: `${baseUrl}/ads/${ad.slug || ad.id}`,
+      url: canonicalUrl,
     },
     twitter: {
       card: 'summary_large_image',
@@ -100,27 +107,19 @@ export async function generateMetadata({ params }: AdPageProps) {
 }
 
 export default async function AdPage({ params }: AdPageProps) {
-  const { id } = await params;
+  const { id, slug } = await params;
   const user = await getServerUser();
   const supabase = createSupabaseServerClient();
 
-  const identifier = id;
-  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(identifier);
-
-  // 1. Fetch Main Ad
-  let query = supabase
+  // 1. Fetch Main Ad by ID (The slug in URL is for SEO, but ID is the source of truth)
+  const { data: adData, error } = await supabase
     .from("ads")
     .select(
       "id, title, description, price, currency, city, neighborhood, created_at, image_urls, category, status, views_count, seller_id, slug, condition, phone, latitude, longitude, profiles(phone, full_name, avatar_url, created_at)"
-    );
+    )
+    .eq("id", id)
+    .single();
 
-  if (isUuid) {
-    query = query.or(`id.eq.${identifier},slug.eq.${identifier}`);
-  } else {
-    query = query.eq("slug", identifier);
-  }
-
-  const { data: adData, error } = await query.single();
   const ad = adData as any;
 
   if (error || !ad) {

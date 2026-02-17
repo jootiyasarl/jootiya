@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Heart, User } from "lucide-react";
 import { FavoriteButton } from "./ads/FavoriteButton";
+import { generateSlug } from "@/lib/seo-utils";
 
 export type PublicAdCardAd = {
   id: string;
@@ -34,7 +35,10 @@ export interface AdCardProps {
 
 export function AdCard({ ad, variant = "default", footerSlot, href, onDelete, priority = false }: AdCardProps) {
   const isFeatured = variant === "featured" || ad.isFeatured;
-  const linkHref = href || `/ads/${ad.slug || ad.id}`;
+  
+  // SEO: Generate slug if not provided, then construct the new URL structure /ads/[id]/[slug]
+  const adSlug = ad.slug || generateSlug(ad.title);
+  const linkHref = href || `/ads/${ad.id}/${adSlug}`;
 
   return (
     <article className="group relative flex flex-col gap-2">
