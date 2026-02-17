@@ -1,4 +1,4 @@
--- Create reports table if it doesn't exist
+-- 1. Create or update the table structure
 create table if not exists public.reports (
     id uuid default gen_random_uuid() primary key,
     reporter_id uuid references auth.users(id) on delete set null,
@@ -14,10 +14,10 @@ create table if not exists public.reports (
     updated_at timestamptz default now() not null
 );
 
--- Enable RLS
+-- 2. Enable RLS
 alter table public.reports enable row level security;
 
--- Create policies (drop if exist first to avoid errors)
+-- 3. Manage Policies (Drop if exists then create)
 drop policy if exists "Users can create reports" on public.reports;
 create policy "Users can create reports"
     on public.reports for insert
@@ -34,7 +34,8 @@ create policy "Admins can view and manage all reports"
         )
     );
 
--- Create updated_at trigger
+-- 4. Manage Trigger (Drop if exists then create)
+drop trigger if exists set_reports_updated_at on public.reports;
 create trigger set_reports_updated_at
     before update on public.reports
     for each row
