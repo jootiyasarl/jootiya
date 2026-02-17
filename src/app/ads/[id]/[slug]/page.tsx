@@ -93,27 +93,28 @@ export async function generateMetadata({ params }: AdPageProps) {
         title: metaTitle,
         description: metaDescription,
         url: canonicalUrl,
-        siteName: 'Jootiya Marketplace',
+        siteName: 'Jootiya',
         images: [
           {
             url: shareImage,
-            secureUrl: shareImage,
             width: 1200,
             height: 630,
             alt: ad.title,
-            type: 'image/jpeg',
           }
         ],
         locale: 'fr_FR',
-        type: 'website', // Some platforms prefer website for better title display
+        type: 'website',
       },
       twitter: {
         card: 'summary_large_image',
         title: metaTitle,
         description: metaDescription,
         images: [shareImage],
-        site: '@jootiya',
       },
+      other: {
+        'twitter:image:alt': ad.title,
+        'og:image:alt': ad.title,
+      }
     };
   } catch (err) {
     return {
@@ -127,35 +128,42 @@ export default async function AdPage({ params }: AdPageProps) {
   const { id, slug } = await params;
   const user = await getServerUser();
   const supabase = createSupabaseServerClient();
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://jootiya.com';
 
   // 1. Fetch Main Ad by ID (The slug in URL is for SEO, but ID is the source of truth)
-  const { data: adData, error } = await supabase
+  const { data: ad, error } = await supabase
     .from("ads")
-    .select(
-      "id, title, description, price, currency, city, neighborhood, created_at, image_urls, category, status, views_count, seller_id, slug, condition, phone, latitude, longitude, profiles(phone, full_name, avatar_url, created_at)"
-    )
-    .eq("id", id)
-    .single();
-
-  const ad = adData as any;
+    .select("*, profiles!inner(*)")
+    .or(`id.eq.${id},slug.eq.${id}`)
+    .maybeSingle();
 
   if (error || !ad) {
-    if (error?.code !== "PGRST116") console.error("Error loading ad:", error);
-    notFound();
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] p-4 text-center">
+        <h1 className="text-2xl font-bold mb-4">Annonce introuvable</h1>
+        <p className="text-muted-foreground mb-6">Cette annonce n'existe plus ou a été supprimée.</p>
+        <Button asChild={true}>
+          <Link href="/marketplace">Retour au marketplace</Link>
+        </Button>
+      </div>
+    );
   }
 
-  // 2. Increment Views (Simple Unique Logic)
-  const { cookies } = await import("next/headers");
-  const cookieStore = await cookies();
-  const viewedCookie = cookieStore.get(`v_${ad.id}`);
-
-  if (!viewedCookie) {
-    // Fire and forget RPC (handled by Supabase DB function)
-    supabase.rpc('increment_ad_views', { ad_id: ad.id }).then(() => {
-      // We can't set cookies in a RSC body, but the DB will handle the count.
-      // For perfect uniqueness, we'd use a client component or middleware.
-    });
+  const citySuffix = ad.city ? ` à ${ad.city}` : "";
+  const formattedPriceRaw = ad.price ? ` - ${Number(ad.price).toLocaleString()} ${ad.currency || 'MAD'}` : "";
+  const metaTitle = `${ad.title}${formattedPriceRaw}${citySuffix}`;
+  const metaDescription = ad.description ? ad.description.slice(0, 160) : `Découvrez ${ad.title} sur Jootiya.`;
+  const adSlug = ad.slug || slug || generateSlug(ad.title);
+  const canonicalUrl = `${baseUrl}/ads/${ad.id}/${adSlug}`;
+  
+  let shareImage = `${baseUrl}/og-image.png`; 
+  const rawImage = (ad.image_urls?.[0] || ad.images?.[0]);
+  if (rawImage) {
+    shareImage = rawImage.startsWith('http') ? rawImage : `${baseUrl}/${rawImage.startsWith('/') ? rawImage.substring(1) : rawImage}`;
   }
+
+  // 2. Increment views (background)
+  supabase.rpc('increment_ad_views', { ad_id: ad.id }).then(() => {});
 
   // 3. Fetch Seller Stats & Reviews
   const { data: stats } = await supabase.rpc('get_seller_stats', { target_seller_id: ad.seller_id });
@@ -206,7 +214,33 @@ export default async function AdPage({ params }: AdPageProps) {
   const memberSince = sellerProfile?.created_at ? new Date(sellerProfile.created_at).getFullYear() : "2024";
 
   return (
-    <div dir="ltr" className="min-h-screen bg-[#F8FAFC] dark:bg-zinc-950 pb-32 font-sans text-zinc-900 dark:text-zinc-100">
+    <>
+      {/* 
+        FAILSAFE: Injected Meta Tags 
+        This ensures that scrapers see the metadata even if Next.js metadata API 
+        is being overridden by a parent layout or delayed.
+      */}
+      <head>
+        <title>{metaTitle}</title>
+        <meta name="description" content={metaDescription} />
+        <link rel="canonical" href={canonicalUrl} />
+        
+        {/* Open Graph */}
+        <meta property="og:title" content={metaTitle} />
+        <meta property="og:description" content={metaDescription} />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:image" content={shareImage} />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Jootiya" />
+        
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={metaTitle} />
+        <meta name="twitter:description" content={metaDescription} />
+        <meta name="twitter:image" content={shareImage} />
+      </head>
+
+      <div dir="ltr" className="min-h-screen bg-[#F8FAFC] dark:bg-zinc-950 pb-32 font-sans text-zinc-900 dark:text-zinc-100">
 
       {/* Top Header / Breadcrumbs */}
       <div className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 sticky top-0 z-40 backdrop-blur-md bg-white/90 dark:bg-zinc-900/90 supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-zinc-900/60">
@@ -464,5 +498,6 @@ export default async function AdPage({ params }: AdPageProps) {
       />
 
     </div>
+    </>
   );
 }
