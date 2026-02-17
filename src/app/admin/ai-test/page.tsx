@@ -13,15 +13,27 @@ export default async function AISearchTestPage({
 }) {
   const query = searchParams.q || '';
   let results: any[] = [];
+  let error: string | null = null;
 
   if (query) {
-    results = await searchAdsVector(query);
+    try {
+      results = await searchAdsVector(query);
+      console.log(`AI Search Results for "${query}":`, results.length);
+    } catch (e: any) {
+      console.error('AI Search Page Error:', e);
+      error = e.message || 'An unexpected error occurred during search.';
+    }
   }
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">AI Search Test 🔍</h1>
+      <h1 className="text-3xl font-bold mb-6 text-zinc-100">AI Search Test 🔍</h1>
       
+      {error && (
+        <div className="mb-6 p-4 bg-red-500/10 border border-red-500/50 rounded-xl text-red-500 text-sm">
+          <strong>Error:</strong> {error}
+        </div>
+      )}
       <form action="/admin/ai-test" method="GET" className="mb-8">
         <div className="flex gap-2">
           <input
