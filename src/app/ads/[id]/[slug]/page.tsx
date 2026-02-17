@@ -45,14 +45,19 @@ export async function generateMetadata({ params }: AdPageProps) {
   const supabase = createSupabaseServerClient();
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://jootiya.com';
   
+  // Debug log for production monitoring
+  console.log(`[Metadata] Generating for ID: ${id}`);
+
   try {
-    const { data: ad } = await supabase
+    // Standardize ID format (ensure it's a valid UUID if possible)
+    const { data: ad, error } = await supabase
       .from("ads")
       .select("title, city, description, image_urls, price, currency, images, slug, id")
       .eq('id', id)
       .maybeSingle();
 
-    if (!ad) {
+    if (error || !ad) {
+      console.log(`[Metadata] Ad not found or error for ID: ${id}`, error);
       return { 
         title: "Jootiya | Petites Annonces au Maroc",
         description: "Achetez et vendez en toute sécurité sur Jootiya."
@@ -67,7 +72,7 @@ export async function generateMetadata({ params }: AdPageProps) {
     const adSlug = ad.slug || generateSlug(ad.title);
     const canonicalUrl = `${baseUrl}/ads/${ad.id}/${adSlug}`;
     
-    // Improved Image handling for WhatsApp
+    // Improved Image handling for WhatsApp (MUST be absolute URL)
     let shareImage = `${baseUrl}/og-image.png`; 
     const rawImage = (ad.image_urls?.[0] || ad.images?.[0]);
 
@@ -79,6 +84,8 @@ export async function generateMetadata({ params }: AdPageProps) {
         shareImage = `${baseUrl}/${cleanPath}`;
       }
     }
+
+    console.log(`[Metadata] Success for ${id}: ${metaTitle}`);
 
     return {
       title: metaTitle,
@@ -109,7 +116,8 @@ export async function generateMetadata({ params }: AdPageProps) {
         images: [shareImage],
       },
     };
-  } catch (error) {
+  } catch (err) {
+    console.error(`[Metadata] Fatal error for ID: ${id}`, err);
     return {
       title: "Jootiya | Petites Annonces au Maroc",
       description: "Achetez et vendez en toute sécurité sur Jootiya."

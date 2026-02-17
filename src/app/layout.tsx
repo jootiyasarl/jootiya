@@ -44,9 +44,6 @@ export const metadata: Metadata = {
   verification: {
     google: "_BPJsUrFkTt42U-_XHVC0kBXAF2b9xpoT8RaX9BxU0Y",
   },
-  alternates: {
-    canonical: "https://jootiya.com",
-  },
 };
 
 export const viewport = {
