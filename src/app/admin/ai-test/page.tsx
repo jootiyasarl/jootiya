@@ -11,17 +11,24 @@ export default async function AISearchTestPage({
 }: {
   searchParams: { q?: string };
 }) {
-  const query = searchParams.q || '';
+  const query = searchParams.q;
   let results: any[] = [];
-  let error: string | null = null;
+  let errorMsg: string | null = null;
 
-  if (query) {
+  if (query && typeof query === 'string') {
     try {
-      results = await searchAdsVector(query);
-      console.log(`AI Search Results for "${query}":`, results.length);
-    } catch (e: any) {
-      console.error('AI Search Page Error:', e);
-      error = e.message || 'An unexpected error occurred during search.';
+      console.log('Starting AI search for:', query);
+      const searchResults = await searchAdsVector(query);
+      
+      if (searchResults && Array.isArray(searchResults)) {
+        results = searchResults;
+        console.log('Search successful, results found:', results.length);
+      } else {
+        console.log('Search returned no results or invalid format');
+      }
+    } catch (err: any) {
+      console.error('Detailed search error:', err);
+      errorMsg = err.message || 'Search failed';
     }
   }
 
@@ -29,9 +36,9 @@ export default async function AISearchTestPage({
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6 text-zinc-100">AI Search Test 🔍</h1>
       
-      {error && (
+      {errorMsg && (
         <div className="mb-6 p-4 bg-red-500/10 border border-red-500/50 rounded-xl text-red-500 text-sm">
-          <strong>Error:</strong> {error}
+          <strong>Search Error:</strong> {errorMsg}
         </div>
       )}
       <form action="/admin/ai-test" method="GET" className="mb-8">
