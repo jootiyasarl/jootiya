@@ -1,5 +1,5 @@
 import { createSupabaseServerClient } from '@/lib/supabase-server';
-import { generateEmbedding } from './embedding-service';
+import { generateEmbedding } from '@/lib/ai';
 
 /**
  * Performs a vector similarity search for products.
