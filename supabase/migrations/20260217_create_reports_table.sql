@@ -14,11 +14,13 @@ create table if not exists public.reports (
 -- Enable RLS
 alter table public.reports enable row level security;
 
--- Create policies
+-- Create policies (drop if exist first to avoid errors)
+drop policy if exists "Users can create reports" on public.reports;
 create policy "Users can create reports"
     on public.reports for insert
     with check (auth.uid() = reporter_id);
 
+drop policy if exists "Admins can view and manage all reports" on public.reports;
 create policy "Admins can view and manage all reports"
     on public.reports for all
     using (
