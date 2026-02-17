@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect } from "react";
 import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight, Maximize2, X } from "lucide-react";
 import { getOptimizedImageUrl } from "@/lib/storageUtils";
@@ -189,36 +190,36 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
                         </button>
                     </div>
 
-                    <div className="h-full w-full overflow-hidden" ref={lightboxRef}>
-                        <div className="flex h-full touch-pan-y">
-                            {images.map((src, index) => (
-                                <div key={index} className="relative h-full w-full flex-[0_0_100%] min-w-0 flex items-center justify-center p-4">
-                                    <div className="relative w-full h-full flex items-center justify-center">
-                                        <Image
-                                            src={getOptimizedImageUrl(src, { width: 1600, height: 1200, quality: 95 })}
-                                            alt={`Full screen view ${index + 1}`}
-                                            fill
-                                            className="object-contain"
-                                            priority={index === currentIndex}
-                                            sizes="100vw"
-                                        />
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+                    <div className="flex-1 relative flex items-center justify-center p-4 md:p-12 overflow-hidden">
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={currentIndex}
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.9 }}
+                                transition={{ duration: 0.2 }}
+                                className="relative w-full h-full flex items-center justify-center"
+                            >
+                                <img
+                                    src={getOptimizedImageUrl(images[currentIndex], { width: 1600, height: 1200, quality: 95 })}
+                                    alt={`Full screen view ${currentIndex + 1}`}
+                                    className="max-w-full max-h-[85vh] object-contain shadow-2xl rounded-lg"
+                                />
+                            </motion.div>
+                        </AnimatePresence>
                     </div>
 
                     {images.length > 1 && (
                         <>
                             <button
-                                onClick={scrollPrevLightbox}
-                                className="absolute left-4 top-1/2 -translate-y-1/2 p-4 text-white/50 hover:text-white transition-colors z-50"
+                                onClick={(e) => { e.stopPropagation(); scrollPrevLightbox(); }}
+                                className="absolute left-4 top-1/2 -translate-y-1/2 p-4 text-white/50 hover:text-white transition-colors z-50 bg-black/20 hover:bg-black/40 rounded-full"
                             >
                                 <ChevronLeft className="h-10 w-10" />
                             </button>
                             <button
-                                onClick={scrollNextLightbox}
-                                className="absolute right-4 top-1/2 -translate-y-1/2 p-4 text-white/50 hover:text-white transition-colors z-50"
+                                onClick={(e) => { e.stopPropagation(); scrollNextLightbox(); }}
+                                className="absolute right-4 top-1/2 -translate-y-1/2 p-4 text-white/50 hover:text-white transition-colors z-50 bg-black/20 hover:bg-black/40 rounded-full"
                             >
                                 <ChevronRight className="h-10 w-10" />
                             </button>
