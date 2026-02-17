@@ -46,7 +46,6 @@ export async function generateMetadata({ params }: AdPageProps) {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://jootiya.com';
   
   try {
-    // Search by ID or Slug to be safe
     const { data: ad, error } = await supabase
       .from("ads")
       .select("title, city, description, image_urls, price, currency, images, slug, id")
@@ -63,13 +62,14 @@ export async function generateMetadata({ params }: AdPageProps) {
     const citySuffix = ad.city ? ` à ${ad.city}` : "";
     const formattedPrice = ad.price ? ` - ${Number(ad.price).toLocaleString()} ${ad.currency || 'MAD'}` : "";
     
-    // CRITICAL: Construct the ad-specific title without global site name prefix
+    // Construct robust metadata values
     const metaTitle = `${ad.title}${formattedPrice}${citySuffix}`;
     const metaDescription = ad.description ? ad.description.slice(0, 160) : `Découvrez ${ad.title} sur Jootiya.`;
     
     const adSlug = ad.slug || urlSlug || generateSlug(ad.title);
     const canonicalUrl = `${baseUrl}/ads/${ad.id}/${adSlug}`;
     
+    // Image MUST be absolute for WhatsApp
     let shareImage = `${baseUrl}/og-image.png`; 
     const rawImage = (ad.image_urls?.[0] || ad.images?.[0]);
 
@@ -83,32 +83,36 @@ export async function generateMetadata({ params }: AdPageProps) {
     }
 
     return {
-      title: metaTitle, // This sets the browser tab title
+      title: metaTitle,
       description: metaDescription,
       metadataBase: new URL(baseUrl),
       alternates: {
         canonical: canonicalUrl,
       },
       openGraph: {
-        title: metaTitle, // WhatsApp/Facebook Title
+        title: metaTitle,
         description: metaDescription,
         url: canonicalUrl,
-        siteName: 'Jootiya',
+        siteName: 'Jootiya Marketplace',
         images: [
           {
             url: shareImage,
+            secureUrl: shareImage,
             width: 1200,
             height: 630,
             alt: ad.title,
+            type: 'image/jpeg',
           }
         ],
-        type: 'article',
+        locale: 'fr_FR',
+        type: 'website', // Some platforms prefer website for better title display
       },
       twitter: {
         card: 'summary_large_image',
-        title: metaTitle, // X (Twitter) Title
+        title: metaTitle,
         description: metaDescription,
         images: [shareImage],
+        site: '@jootiya',
       },
     };
   } catch (err) {
