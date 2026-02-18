@@ -24,6 +24,7 @@ export function MobileBottomNav() {
                         "inline-flex flex-col items-center justify-center min-h-[44px] min-w-[44px] px-2 hover:bg-gray-50 group gap-1",
                         pathname === "/" ? "text-orange-600" : "text-zinc-400"
                     )}
+                    aria-label="Accueil"
                 >
                     <Home className="w-6 h-6 group-hover:text-orange-600" />
                     <span className="text-[10px] font-bold uppercase tracking-tighter group-hover:text-orange-600">
@@ -37,6 +38,7 @@ export function MobileBottomNav() {
                         "inline-flex flex-col items-center justify-center min-h-[44px] min-w-[44px] px-2 hover:bg-gray-50 group gap-1",
                         pathname === "/dashboard/favorites" ? "text-orange-600" : "text-zinc-400"
                     )}
+                    aria-label="Vos favoris"
                 >
                     <Heart className="w-6 h-6 group-hover:text-orange-600" />
                     <span className="text-[10px] font-bold uppercase tracking-tighter group-hover:text-orange-600">
@@ -47,6 +49,7 @@ export function MobileBottomNav() {
                 <Link
                     href="/marketplace/post"
                     className="inline-flex flex-col items-center justify-center min-h-[44px] min-w-[44px] px-2 group relative -top-5"
+                    aria-label="Vendre un article"
                 >
                     <div className="p-3 bg-orange-500 rounded-full shadow-lg shadow-orange-200 group-hover:bg-orange-600 transition-all border-4 border-white active:scale-95">
                         <PlusCircle className="w-6 h-6 text-white" />
@@ -60,6 +63,7 @@ export function MobileBottomNav() {
                         "inline-flex flex-col items-center justify-center min-h-[44px] min-w-[44px] px-2 hover:bg-gray-50 group gap-1",
                         pathname === "/dashboard/messages" ? "text-orange-600" : "text-zinc-400"
                     )}
+                    aria-label="Vos messages"
                 >
                     <MessageCircle className="w-6 h-6 group-hover:text-orange-600" />
                     <span className="text-[10px] font-bold uppercase tracking-tighter group-hover:text-orange-600">
@@ -73,6 +77,7 @@ export function MobileBottomNav() {
                         "inline-flex flex-col items-center justify-center min-h-[44px] min-w-[44px] px-2 hover:bg-gray-50 group gap-1",
                         pathname === "/dashboard" ? "text-orange-600" : "text-zinc-400"
                     )}
+                    aria-label="Votre profil"
                 >
                     <User className="w-6 h-6 group-hover:text-orange-600" />
                     <span className="text-[10px] font-bold uppercase tracking-tighter group-hover:text-orange-600">

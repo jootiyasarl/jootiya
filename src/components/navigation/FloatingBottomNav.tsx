@@ -32,6 +32,7 @@ export function FloatingBottomNav() {
                                         key={item.id}
                                         href={item.href}
                                         className="flex flex-col items-center justify-center group relative z-[110] -mt-6"
+                                        aria-label={item.label}
                                     >
                                         {/* Hero Circle Button with Pro Design */}
                                         <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-[0_8px_20px_rgba(249,115,22,0.3)] flex items-center justify-center transition-all duration-300 group-active:scale-90 group-hover:rotate-6">
@@ -53,6 +54,7 @@ export function FloatingBottomNav() {
                                         "active:scale-90",
                                         isActive ? "translate-y-[-2px]" : ""
                                     )}
+                                    aria-label={item.label}
                                 >
                                     <div className={cn(
                                         "transition-all duration-300 rounded-xl p-1",
