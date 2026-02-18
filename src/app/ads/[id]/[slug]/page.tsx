@@ -151,13 +151,22 @@ export default async function AdPage({ params }: AdPageProps) {
   }
 
   // Fetch Seller Profile separately to avoid join issues
-  const { data: sellerProfileData } = await supabase
-    .from("profiles")
-    .select("phone, full_name, avatar_url, created_at")
-    .eq("id", ad.seller_id)
-    .maybeSingle();
-  
-  const sellerProfile = sellerProfileData;
+  let sellerProfile = null;
+  try {
+    const { data: sellerProfileData, error: sellerError } = await supabase
+      .from("profiles")
+      .select("phone, full_name, avatar_url, created_at")
+      .eq("id", ad.seller_id)
+      .maybeSingle();
+    
+    if (sellerError) {
+      console.error("Error fetching seller profile:", sellerError);
+    } else {
+      sellerProfile = sellerProfileData;
+    }
+  } catch (err) {
+    console.error("Critical error fetching seller profile:", err);
+  }
 
   // 2. Increment Views (Simple Unique Logic)
   const { cookies } = await import("next/headers");
