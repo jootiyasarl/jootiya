@@ -33,6 +33,7 @@ import {
 import { QuickActionFooter } from "@/components/ads/QuickActionFooter";
 import Image from "next/image";
 import { generateSlug } from "@/lib/seo-utils";
+import { cn } from "@/lib/utils";
 
 export const revalidate = 3600; // Revalidate every hour
 
@@ -363,40 +364,48 @@ export default async function AdPage({ params }: AdPageProps) {
             </div>
 
             {/* Description Card */}
-            <div className="rounded-3xl bg-white dark:bg-zinc-900 p-6 shadow-sm border border-zinc-100 dark:border-zinc-800 sm:p-8">
-              <h2 className="text-lg font-bold flex items-center gap-2 mb-6 text-zinc-900 dark:text-zinc-100">
-                <Sparkles className="w-5 h-5 text-orange-500" />
-                Description
+            <div className="rounded-[2.5rem] bg-white dark:bg-zinc-900 p-8 shadow-sm border border-zinc-100 dark:border-zinc-800 sm:p-10 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 rounded-bl-[100px] -mr-8 -mt-8" />
+              
+              <h2 className="text-xl font-black flex items-center gap-3 mb-8 text-zinc-900 dark:text-zinc-100 uppercase tracking-tight">
+                <div className="w-10 h-10 rounded-2xl bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
+                  <Sparkles className="w-5 h-5 text-orange-600" />
+                </div>
+                Description détaillée
               </h2>
-              <div className="prose prose-zinc prose-p:text-zinc-600 prose-headings:text-zinc-900 max-w-none">
-                <p className="whitespace-pre-wrap leading-relaxed text-[15px]">{ad.description || "Aucune description fournie."}</p>
+
+              <div className="prose prose-zinc dark:prose-invert max-w-none">
+                <p className="whitespace-pre-wrap leading-relaxed text-zinc-600 dark:text-zinc-400 text-base md:text-lg font-medium">
+                  {ad.description || "Aucune description fournie."}
+                </p>
               </div>
 
-              {/* Specs Grid */}
-              <div className="mt-10 grid grid-cols-2 gap-4 pt-8 border-t border-zinc-50 sm:grid-cols-3">
-                <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700">
-                  <span className="text-[10px] uppercase tracking-wider text-zinc-400 font-bold block mb-1">Catégorie</span>
-                  <p className="font-semibold text-zinc-900 dark:text-zinc-100 text-sm">{ad.category || "Autre"}</p>
+              {/* Specs Grid - Enhanced */}
+              <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 pt-10 border-t border-zinc-100 dark:border-zinc-800">
+                <div className="group p-5 rounded-[2rem] bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-800 transition-all hover:bg-white dark:hover:bg-zinc-800 hover:shadow-xl hover:shadow-zinc-200/50 dark:hover:shadow-none hover:-translate-y-1">
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 block mb-2">Catégorie</span>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-orange-500" />
+                    <p className="font-black text-zinc-900 dark:text-zinc-100 text-sm uppercase tracking-tight">{ad.category || "Autre"}</p>
+                  </div>
                 </div>
-                <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700">
-                  <span className="text-[10px] uppercase tracking-wider text-zinc-400 font-bold block mb-1">État</span>
-                  <p className="font-semibold text-zinc-900 dark:text-zinc-100 text-sm flex items-center gap-1.5">
-                    {ad.condition === 'new' ? (
-                      <>
-                        <span className="w-2 h-2 rounded-full bg-green-500" /> Neuf
-                      </>
-                    ) : (
-                      <>
-                        <span className="w-2 h-2 rounded-full bg-amber-500" /> Occasion
-                      </>
-                    )}
-                  </p>
+
+                <div className="group p-5 rounded-[2rem] bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-800 transition-all hover:bg-white dark:hover:bg-zinc-800 hover:shadow-xl hover:shadow-zinc-200/50 dark:hover:shadow-none hover:-translate-y-1">
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 block mb-2">État de l'objet</span>
+                  <div className="flex items-center gap-2">
+                    <div className={cn("w-2 h-2 rounded-full", ad.condition === 'new' ? "bg-emerald-500" : "bg-amber-500")} />
+                    <p className="font-black text-zinc-900 dark:text-zinc-100 text-sm uppercase tracking-tight">
+                      {ad.condition === 'new' ? "Neuf" : "Occasion"}
+                    </p>
+                  </div>
                 </div>
-                <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700">
-                  <span className="text-[10px] uppercase tracking-wider text-zinc-400 font-bold block mb-1">Vues</span>
-                  <p className="font-semibold text-zinc-900 dark:text-zinc-100 text-sm flex items-center gap-1.5">
-                    <Eye className="w-3.5 h-3.5 text-zinc-400" /> {ad.views_count || 1}
-                  </p>
+
+                <div className="group p-5 rounded-[2rem] bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-800 transition-all hover:bg-white dark:hover:bg-zinc-800 hover:shadow-xl hover:shadow-zinc-200/50 dark:hover:shadow-none hover:-translate-y-1">
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 block mb-2">Popularité</span>
+                  <div className="flex items-center gap-2">
+                    <Eye className="w-4 h-4 text-orange-500" />
+                    <p className="font-black text-zinc-900 dark:text-zinc-100 text-sm uppercase tracking-tight">{ad.views_count || 1} Vues</p>
+                  </div>
                 </div>
               </div>
             </div>
