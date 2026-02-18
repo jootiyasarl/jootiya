@@ -66,19 +66,27 @@ export default function RootLayout({
         <style dangerouslySetInnerHTML={{ __html: `
           :root { --primary: 25 95% 53%; --background: 0 0% 100%; --foreground: 222 47% 11%; }
           .dark { --background: 224 71% 4%; --foreground: 213 31% 91%; }
-          body { background-color: hsl(var(--background)); color: hsl(var(--foreground)); font-family: sans-serif; }
-          .sticky { position: sticky; }
+          body { background-color: #fff; color: #0f172a; font-family: sans-serif; margin: 0; }
+          .dark body { background-color: #020617; color: #e2e8f0; }
+          .sticky { position: sticky; position: -webkit-sticky; }
           .top-0 { top: 0; }
           .z-40 { z-index: 40; }
-          .bg-white { background-color: #fff; }
-          .border-b { border-bottom-width: 1px; }
+          .w-full { width: 100%; }
+          .h-16 { height: 4rem; }
           .flex { display: flex; }
           .items-center { align-items: center; }
           .justify-between { justify-content: space-between; }
-          .h-16 { height: 4rem; }
-          .mx-auto { margin-left: auto; margin-right: auto; }
-          .max-w-7xl { max-width: 80rem; }
-          .px-4 { padding-left: 1rem; padding-right: 1rem; }
+          .container { width: 100%; margin-right: auto; margin-left: auto; padding-right: 1rem; padding-left: 1rem; }
+          @media (min-width: 1280px) { .container { max-width: 1280px; } }
+          .bg-white/80 { background-color: rgba(255, 255, 255, 0.8); }
+          .backdrop-blur-md { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+          .border-b { border-bottom-width: 1px; }
+          .border-zinc-200 { border-color: #e4e4e7; }
+          .dark .border-zinc-800 { border-color: #27272a; }
+          .text-orange-600 { color: #ea580c; }
+          .font-black { font-weight: 900; }
+          .uppercase { text-transform: uppercase; }
+          .tracking-tighter { letter-spacing: -0.05em; }
         `}} />
         {/* 1. أوراق الاعتماد السيادية */}
         <meta name="google-adsense-account" content="ca-pub-4945284817184050" />
