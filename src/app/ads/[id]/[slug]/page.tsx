@@ -139,7 +139,7 @@ export default async function AdPage({ params }: AdPageProps) {
       id, title, description, price, currency, city, neighborhood, created_at, 
       image_urls, category, status, views_count, seller_id, slug, condition, phone, 
       latitude, longitude, 
-      profiles:seller_id (phone, full_name, avatar_url, created_at)
+      profiles!ads_seller_id_fkey (phone, full_name, avatar_url, created_at)
     `)
     .or(`id.eq.${id},slug.eq.${id}`)
     .maybeSingle();
