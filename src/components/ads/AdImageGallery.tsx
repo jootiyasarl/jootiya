@@ -27,7 +27,11 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
         },
         [AutoPlay({ delay: 5000, stopOnInteraction: false })]
     );
-    const [lightboxRef, lightboxApi] = useEmblaCarousel({ loop: true });
+    const [lightboxRef, lightboxApi] = useEmblaCarousel({ 
+        loop: true,
+        skipSnaps: false,
+        watchDrag: true
+    });
 
     const onSelect = useCallback(() => {
         if (!emblaApi) return;
@@ -201,23 +205,18 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
                         </button>
                     </div>
 
-                    <div className="flex-1 relative flex items-center justify-center p-4 md:p-12 overflow-hidden">
-                        <AnimatePresence mode="wait">
-                            <motion.div
-                                key={currentIndex}
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.9 }}
-                                transition={{ duration: 0.2 }}
-                                className="relative w-full h-full flex items-center justify-center"
-                            >
-                                <img
-                                    src={getOptimizedImageUrl(images[currentIndex], { width: 1600, height: 1200, quality: 95 })}
-                                    alt={`Full screen view ${currentIndex + 1}`}
-                                    className="max-w-full max-h-[85vh] object-contain shadow-2xl rounded-lg"
-                                />
-                            </motion.div>
-                        </AnimatePresence>
+                    <div className="flex-1 relative flex items-center justify-center p-4 md:p-12 overflow-hidden touch-none" ref={lightboxRef}>
+                        <div className="flex h-full w-full">
+                            {images.map((src, index) => (
+                                <div key={index} className="relative h-full w-full flex-[0_0_100%] min-w-0 flex items-center justify-center">
+                                    <img
+                                        src={getOptimizedImageUrl(src, { width: 1600, height: 1200, quality: 95 })}
+                                        alt={`Full screen view ${index + 1}`}
+                                        className="max-w-full max-h-[85vh] object-contain shadow-2xl rounded-lg pointer-events-none"
+                                    />
+                                </div>
+                            ))}
+                        </div>
                     </div>
 
                     {images.length > 1 && (
