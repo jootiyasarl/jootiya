@@ -261,9 +261,7 @@ export function MyAdsClient({
                             <AdCard
                                 key={ad.id}
                                 ad={ad}
-                                footerSlot={
-                                    () => handleEdit(ad)
-                                }
+                                onEdit={() => handleEdit(ad)}
                                 onDelete={() => handleRequestDelete(ad)}
                             />
                         ))}
