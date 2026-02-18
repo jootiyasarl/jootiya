@@ -4,7 +4,6 @@ import { cookies } from "next/headers";
 import { createClient } from "@supabase/supabase-js";
 import { createSupabaseServerClient, getServerUser, getProfileRole } from "@/lib/supabase-server";
 import { slugify } from "@/lib/slug";
-import { updateAdEmbedding } from "@/lib/ai";
 
 const DEFAULT_SEARCH_RADIUS_KM = 3;
 
@@ -125,11 +124,6 @@ export async function createAd(input: CreateAdPayload): Promise<CreateAdResult> 
   if (insertError) {
     throw insertError;
   }
-
-  // Generate embedding in the background (fire and forget)
-  updateAdEmbedding(data.id, title, normalizedDescription).catch(err => {
-    console.error(`Background embedding generation failed for ad ${data.id}:`, err);
-  });
 
   return {
     adId: data.id as string,
