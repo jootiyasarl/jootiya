@@ -325,12 +325,7 @@ export default async function AdPage({ params }: AdPageProps) {
           {/* Column Left: Media & Details (8/12) */}
           <div className="lg:col-span-8 space-y-8">
 
-            {/* Image Gallery Component */}
-            <section className="rounded-3xl overflow-hidden shadow-sm bg-white dark:bg-zinc-900 lg:sticky lg:top-24">
-              <AdImageGallery images={images} />
-            </section>
-
-            {/* Mobile Title & Price (Visible only on mobile) */}
+            {/* Mobile Title & Price (Moved Above Image for immediate visibility) */}
             <div className="lg:hidden space-y-4 px-1">
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
@@ -362,6 +357,11 @@ export default async function AdPage({ params }: AdPageProps) {
                 </div>
               </div>
             </div>
+
+            {/* Image Gallery Component */}
+            <section className="rounded-3xl overflow-hidden shadow-sm bg-white dark:bg-zinc-900 lg:sticky lg:top-24">
+              <AdImageGallery images={images} />
+            </section>
 
             {/* Description Card */}
             <div className="rounded-[2.5rem] bg-white dark:bg-zinc-900 p-8 shadow-sm border border-zinc-100 dark:border-zinc-800 sm:p-10 relative overflow-hidden">
