@@ -37,27 +37,29 @@ export default function AdminAdsPage() {
           currency, 
           created_at,
           image_urls,
-          seller_id,
-          profiles (
-            full_name,
-            avatar_url
-          )
-        `);
-      
-      // Removed .order("created_at", { ascending: false }) temporarily to test if it's causing issues
-      // and changed back to standard select to ensure RLS/Views are not an issue.
+          seller_id
+        `)
+        .order("created_at", { ascending: false });
 
       if (error) {
         console.error("Supabase Error fetching ads:", error);
         throw error;
       }
+
+      // Fetch profiles separately to avoid join issues
+      const sellerIds = Array.from(new Set((data || []).map(ad => ad.seller_id)));
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("id, full_name, avatar_url")
+        .in("id", sellerIds);
+
+      const profileMap = new Map((profiles || []).map(p => [p.id, p]));
       
-      console.log(`Fetched ${data?.length || 0} ads data:`, data?.[0]);
+      console.log(`Fetched ${data?.length || 0} ads data.`);
 
       // Map DB ads to AdminAd type
       const mappedAds: AdminAd[] = (data || []).map((ad: any) => {
-        // Handle seller profile which might be an object or an array depending on Supabase mapping
-        const profile = Array.isArray(ad.profiles) ? ad.profiles[0] : ad.profiles;
+        const profile = profileMap.get(ad.seller_id);
         
         return {
           id: ad.id,
@@ -70,7 +72,10 @@ export default function AdminAdsPage() {
           is_featured: false,
           created_at: ad.created_at,
           image_url: ad.image_urls?.[0] || null,
-          seller: profile || null,
+          seller: profile ? {
+            full_name: profile.full_name,
+            avatar_url: profile.avatar_url
+          } : undefined,
         };
       });
 
