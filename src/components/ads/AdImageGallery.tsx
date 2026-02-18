@@ -194,8 +194,8 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
 
             {/* Lightbox Modal */}
             {isLightboxOpen && (
-                <div className="fixed inset-0 z-[100] flex flex-col bg-black animate-in fade-in duration-300">
-                    <div className="flex items-center justify-between p-4 z-50 bg-gradient-to-b from-black/80 to-transparent absolute top-0 left-0 right-0">
+                <div className="fixed inset-0 z-[9999] flex flex-col bg-black animate-in fade-in duration-300">
+                    <div className="flex items-center justify-between p-4 z-[10001] bg-gradient-to-b from-black/80 to-transparent absolute top-0 left-0 right-0">
                         <span className="text-white text-xs font-black uppercase tracking-[0.3em]">Aperçu des détails</span>
                         <button
                             onClick={() => setIsLightboxOpen(false)}
@@ -223,20 +223,20 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
                         <>
                             <button
                                 onClick={(e) => { e.stopPropagation(); scrollPrevLightbox(); }}
-                                className="absolute left-4 top-1/2 -translate-y-1/2 p-4 text-white/50 hover:text-white transition-colors z-50 bg-black/20 hover:bg-black/40 rounded-full"
+                                className="absolute left-4 top-1/2 -translate-y-1/2 p-4 text-white/50 hover:text-white transition-colors z-[10001] bg-black/20 hover:bg-black/40 rounded-full"
                             >
                                 <ChevronLeft className="h-10 w-10" />
                             </button>
                             <button
                                 onClick={(e) => { e.stopPropagation(); scrollNextLightbox(); }}
-                                className="absolute right-4 top-1/2 -translate-y-1/2 p-4 text-white/50 hover:text-white transition-colors z-50 bg-black/20 hover:bg-black/40 rounded-full"
+                                className="absolute right-4 top-1/2 -translate-y-1/2 p-4 text-white/50 hover:text-white transition-colors z-[10001] bg-black/20 hover:bg-black/40 rounded-full"
                             >
                                 <ChevronRight className="h-10 w-10" />
                             </button>
                         </>
                     )}
 
-                    <div className="absolute bottom-10 left-0 right-0 flex justify-center gap-2 z-50">
+                    <div className="absolute bottom-10 left-0 right-0 flex justify-center gap-2 z-[10001]">
                         {images.map((_, i) => (
                             <div
                                 key={i}
