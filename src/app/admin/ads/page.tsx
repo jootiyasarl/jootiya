@@ -35,7 +35,9 @@ export default function AdminAdsPage() {
           price, 
           currency, 
           created_at,
-          seller:profiles!ads_seller_id_fkey (
+          image_urls,
+          seller_id,
+          profiles:seller_id (
             full_name,
             avatar_url
           )
@@ -43,6 +45,7 @@ export default function AdminAdsPage() {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
+      console.log("Fetched ads data:", data?.[0]); // Debug first item
 
       // Map DB ads to AdminAd type
       const mappedAds: AdminAd[] = (data || []).map((ad: any) => ({
@@ -56,7 +59,7 @@ export default function AdminAdsPage() {
         is_featured: false,
         created_at: ad.created_at,
         image_url: ad.image_urls?.[0] || null,
-        seller: ad.seller,
+        seller: ad.profiles, // Profiles is the object returned by Supabase
       }));
 
       setAds(mappedAds);
