@@ -1,4 +1,5 @@
 import { Configuration, OpenAIApi } from 'openai-edge';
+import { createSupabaseServerClient } from './supabase-server';
 
 const apiKey = process.env.OPENAI_API_KEY;
 
@@ -41,5 +42,27 @@ export async function generateEmbedding(text: string): Promise<number[]> {
   } catch (error) {
     console.error('Failed to generate embedding:', error);
     throw error;
+  }
+}
+
+/**
+ * Updates the embedding for a specific ad.
+ */
+export async function updateAdEmbedding(adId: string, title: string, description?: string | null) {
+  try {
+    const supabase = createSupabaseServerClient();
+    const combinedText = `${title} ${description || ''}`.trim();
+    const embedding = await generateEmbedding(combinedText);
+
+    const { error } = await supabase
+      .from('ads')
+      .update({ embedding })
+      .eq('id', adId);
+
+    if (error) {
+      console.error(`Failed to update embedding for ad ${adId}:`, error);
+    }
+  } catch (err) {
+    console.error(`Error in updateAdEmbedding for ad ${adId}:`, err);
   }
 }
