@@ -90,8 +90,8 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
             {/* Main Slider Container */}
             <div className="group relative w-full rounded-3xl bg-zinc-950 border border-zinc-800 shadow-sm overflow-hidden h-[350px] md:h-[500px] lg:h-[600px]">
                 {/* Viewport - Must have overflow-hidden for Embla */}
-                <div className="h-full w-full cursor-grab active:cursor-grabbing" ref={emblaRef}>
-                    <div className="flex h-full">
+                <div className="h-full w-full cursor-grab active:cursor-grabbing overflow-hidden" ref={emblaRef}>
+                    <div className="flex h-full touch-pan-y">
                         {images.map((src, index) => {
                             const blurUrl = getSafeBlurUrl(src);
                             return (
