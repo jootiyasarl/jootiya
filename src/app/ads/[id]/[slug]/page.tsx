@@ -323,7 +323,7 @@ export default async function AdPage({ params }: AdPageProps) {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
 
           {/* Column Left: Media & Details (8/12) */}
-          <div className="lg:col-span-8 space-y-8 flex flex-col">
+          <div className="lg:col-span-8 space-y-8 flex flex-col min-w-0">
 
             {/* Mobile Title & Price (Moved Above Image for immediate visibility) */}
             <div className="lg:hidden space-y-4 px-1">
@@ -432,7 +432,7 @@ export default async function AdPage({ params }: AdPageProps) {
           </div>
 
           {/* Column Right: Sticky Sidebar (4/12) */}
-          <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-24 h-fit">
+          <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-24 h-fit min-w-0">
 
             {/* Primary Details Card (Desktop) */}
             <div className="hidden lg:block rounded-3xl bg-white dark:bg-zinc-900 p-8 shadow-sm border border-zinc-100 dark:border-zinc-800">
