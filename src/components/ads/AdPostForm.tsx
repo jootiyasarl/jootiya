@@ -605,13 +605,30 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                                 {/* Map Location Picker */}
                                 <div className="space-y-4">
                                     <AdLocationPicker
-                                        latitude={watch('latitude') || null}
-                                        longitude={watch('longitude') || null}
-                                        onChange={(lat, lng) => {
-                                            setValue('latitude', lat);
-                                            setValue('longitude', lng);
-                                        }}
-                                    />
+                                    latitude={watch('latitude') || null}
+                                    longitude={watch('longitude') || null}
+                                    onChange={(lat, lng) => {
+                                        setValue('latitude', lat);
+                                        setValue('longitude', lng);
+                                    }}
+                                    onAddressSelect={(address) => {
+                                        if (address.city) {
+                                            // Check if city exists in our constants to avoid invalid values
+                                            const cityExists = MOROCCAN_CITIES.some(region => 
+                                                region.cities.some(c => c.toLowerCase() === address.city.toLowerCase())
+                                            );
+                                            if (cityExists) {
+                                                const normalizedCity = MOROCCAN_CITIES
+                                                    .flatMap(r => r.cities)
+                                                    .find(c => c.toLowerCase() === address.city.toLowerCase());
+                                                if (normalizedCity) setValue('city', normalizedCity, { shouldValidate: true });
+                                            }
+                                        }
+                                        if (address.neighborhood) {
+                                            setValue('neighborhood', address.neighborhood, { shouldValidate: true });
+                                        }
+                                    }}
+                                />
                                 </div>
 
                                 <div className="mt-16 bg-orange-50 p-8 rounded-[2rem] border border-orange-100">
