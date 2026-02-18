@@ -17,7 +17,13 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
     const [emblaRef, emblaApi] = useEmblaCarousel(
-        { loop: true, skipSnaps: false, align: "start" },
+        { 
+            loop: true, 
+            skipSnaps: false, 
+            align: "start",
+            dragFree: false,
+            containScroll: "trimSnaps"
+        },
         [AutoPlay({ delay: 5000, stopOnInteraction: true })]
     );
     const [lightboxRef, lightboxApi] = useEmblaCarousel({ loop: true });
