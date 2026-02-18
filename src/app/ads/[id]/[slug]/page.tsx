@@ -432,7 +432,7 @@ export default async function AdPage({ params }: AdPageProps) {
           </div>
 
           {/* Column Right: Sticky Sidebar (4/12) */}
-          <div className="lg:col-span-4 space-y-6">
+          <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-24 h-fit">
 
             {/* Primary Details Card (Desktop) */}
             <div className="hidden lg:block rounded-3xl bg-white dark:bg-zinc-900 p-8 shadow-sm border border-zinc-100 dark:border-zinc-800">
