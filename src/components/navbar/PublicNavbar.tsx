@@ -12,24 +12,24 @@ export default async function PublicNavbar() {
   const isAdmin = userEmail === "jootiyasarl@gmail.com";
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-800">
+    <header className="sticky top-0 z-50 w-full bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-800 shadow-sm">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         {/* Main Nav Row */}
         <div className="flex h-16 items-center justify-between gap-8 py-2 relative">
           {/* Left: Logo (Centered on Mobile, Left on Desktop) */}
-          <div className="flex items-center md:relative absolute left-1/2 md:left-0 -translate-x-1/2 md:translate-x-0">
+          <div className="flex items-center md:relative absolute left-1/2 md:left-0 -translate-x-1/2 md:translate-x-0 shrink-0">
             <NavbarLogo />
           </div>
 
           {/* Center: Search Bar (Desktop Only) */}
-          <div className="hidden md:flex flex-1 justify-center max-w-2xl px-4">
-            <div className="w-full max-w-xl">
+          <div className="hidden lg:flex flex-1 justify-center max-w-2xl px-4">
+            <div className="w-full">
               <UnifiedSearchBar />
             </div>
           </div>
 
           {/* Right: User Actions / Info */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 shrink-0">
             <Link
                 href="/marketplace/post"
                 className="hidden lg:block shrink-0"
@@ -50,8 +50,8 @@ export default async function PublicNavbar() {
           </div>
         </div>
 
-        {/* Mobile Unified Search Bar */}
-        <div className="pb-3 md:hidden">
+        {/* Mobile Unified Search Bar - Ensure it pushes content down */}
+        <div className="pb-4 lg:hidden relative z-10">
           <UnifiedSearchBar />
         </div>
       </div>

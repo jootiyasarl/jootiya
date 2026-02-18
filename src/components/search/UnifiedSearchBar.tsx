@@ -204,7 +204,7 @@ export function UnifiedSearchBar() {
             </div>
 
             {/* Mobile Version - Sleek & Premium Search Bar */}
-            <div className="flex flex-col gap-2.5 lg:hidden">
+            <div className="flex flex-col gap-2.5 lg:hidden relative">
                 {/* Main Search Input */}
                 <div className="relative group">
                     <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center pointer-events-none">
