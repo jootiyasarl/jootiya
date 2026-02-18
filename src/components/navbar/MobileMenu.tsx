@@ -123,16 +123,18 @@ export function MobileMenu({ initialUserEmail = null }: MobileMenuProps) {
                                         const Icon = opt.icon;
                                         const isActive = theme === opt.id;
                                         return (
-                                            <button
-                                                key={opt.id}
-                                                onClick={() => setTheme(opt.id)}
-                                                className={cn(
-                                                    "p-2 rounded-lg transition-all",
-                                                    isActive ? "bg-white dark:bg-zinc-700 text-orange-600 shadow-sm" : "text-zinc-400"
-                                                )}
-                                            >
-                                                <Icon className="w-4 h-4" />
-                                            </button>
+                                        <button
+                                            key={opt.id}
+                                            onClick={() => setTheme(opt.id)}
+                                            className={cn(
+                                                "p-2 rounded-lg transition-all",
+                                                isActive ? "bg-white dark:bg-zinc-700 text-orange-600 shadow-sm" : "text-zinc-400"
+                                            )}
+                                            aria-label={`Changer le thème en ${opt.id}`}
+                                            title={`Thème ${opt.id}`}
+                                        >
+                                            <Icon className="w-4 h-4" />
+                                        </button>
                                         );
                                     })}
                                 </div>

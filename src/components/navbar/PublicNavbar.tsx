@@ -31,14 +31,15 @@ export default async function PublicNavbar() {
           {/* Right: User Actions / Info */}
           <div className="flex items-center gap-3">
             <Link
-              href="/marketplace/post"
-              className="hidden lg:block shrink-0"
-              rel="nofollow"
+                href="/marketplace/post"
+                className="hidden lg:block shrink-0"
+                rel="nofollow"
+                aria-label="Déposer une annonce"
             >
-              <div className="rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-black h-10 px-5 text-[10px] uppercase tracking-wider shadow-lg shadow-orange-200/40 dark:shadow-orange-900/40 transition-all hover:scale-[1.03] active:scale-[0.97] flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap border border-orange-400/20">
-                <PlusCircle className="w-4 h-4 shrink-0" />
-                <span>Déposer une annonce</span>
-              </div>
+                <div className="rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-black h-10 px-5 text-[10px] uppercase tracking-wider shadow-lg shadow-orange-200/40 dark:shadow-orange-900/40 transition-all hover:scale-[1.03] active:scale-[0.97] flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap border border-orange-400/20">
+                    <PlusCircle className="w-4 h-4 shrink-0" />
+                    <span>Déposer une annonce</span>
+                </div>
             </Link>
 
             {/* Client-side actions (Auth, Notifications, Theme) */}

@@ -163,7 +163,11 @@ export default function Footer() {
                                     placeholder="Votre email..."
                                     className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-orange-500/50 focus:ring-4 focus:ring-orange-500/10 transition-all text-white pr-12"
                                 />
-                                <button className="absolute right-1 top-1 bottom-1 px-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors flex items-center justify-center">
+                                <button 
+                                    className="absolute right-1 top-1 bottom-1 px-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors flex items-center justify-center"
+                                    aria-label="S'abonner à la newsletter"
+                                    title="S'abonner"
+                                >
                                     <Send className="w-3.5 h-3.5" />
                                 </button>
                             </div>
