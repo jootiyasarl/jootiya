@@ -324,8 +324,8 @@ export default async function AdPage({ params }: AdPageProps) {
 
           <div className="lg:col-span-8 space-y-8 flex flex-col min-w-0 order-1 lg:order-none relative">
 
-            {/* Mobile Title & Price (Moved Above Image for immediate visibility) */}
-            <div className="lg:hidden space-y-4 px-1">
+            {/* Mobile Title & Price (Moved ABOVE Image for immediate visibility) */}
+            <div className="lg:hidden space-y-4 px-1 pb-4">
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
                   <span className="px-2 py-0.5 rounded-md bg-orange-100 text-orange-700 text-[10px] font-black uppercase tracking-wider">
@@ -357,8 +357,8 @@ export default async function AdPage({ params }: AdPageProps) {
               </div>
             </div>
 
-            {/* Unified Title for Desktop (Top Header) */}
-            <div className="hidden lg:block mb-4 px-1 relative z-20">
+            {/* Title Section for Desktop (Moved inside main column but at top) */}
+            <div className="hidden lg:block mb-6 px-1 relative z-20 bg-white dark:bg-zinc-950 pb-2">
               <div className="flex items-center gap-2 mb-3">
                 <span className="px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-[11px] font-black uppercase tracking-widest">
                   {ad.category}
@@ -373,7 +373,7 @@ export default async function AdPage({ params }: AdPageProps) {
             </div>
 
             {/* Image Gallery Component */}
-            <section className="rounded-3xl overflow-hidden shadow-sm bg-white dark:bg-zinc-900 lg:sticky lg:top-24 z-10">
+            <section className="rounded-3xl overflow-hidden shadow-sm bg-white dark:bg-zinc-900 relative z-10">
               <AdImageGallery images={images} />
             </section>
 
