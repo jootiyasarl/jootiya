@@ -82,10 +82,10 @@ export default function Footer() {
                             La plateforme n°1 au Maroc pour l'achat et la vente d'occasion. Nous connectons des milliers d'acheteurs et de vendeurs chaque jour dans un environnement sécurisé.
                         </p>
                         <div className="flex items-center gap-3">
-                            <SocialLink href="https://www.facebook.com/Jootiyaa" icon={<Facebook size={18} />} color="hover:text-[#1877F2]" />
-                            <SocialLink href="https://www.instagram.com/jootiya_official/" icon={<Instagram size={18} />} color="hover:text-[#E4405F]" />
-                            <SocialLink href="https://x.com/jootiya" icon={<Twitter size={18} />} color="hover:text-[#1DA1F2]" />
-                            <SocialLink href="https://www.tiktok.com/@jootiya.com" icon={<Zap size={18} />} color="hover:text-[#ff0050]" />
+                            <SocialLink href="https://www.facebook.com/Jootiyaa" icon={<Facebook size={18} />} color="hover:text-[#1877F2]" ariaLabel="Suivez-nous sur Facebook" />
+                            <SocialLink href="https://www.instagram.com/jootiya_official/" icon={<Instagram size={18} />} color="hover:text-[#E4405F]" ariaLabel="Suivez-nous sur Instagram" />
+                            <SocialLink href="https://x.com/jootiya" icon={<Twitter size={18} />} color="hover:text-[#1DA1F2]" ariaLabel="Suivez-nous sur X" />
+                            <SocialLink href="https://www.tiktok.com/@jootiya.com" icon={<Zap size={18} />} color="hover:text-[#ff0050]" ariaLabel="Suivez-nous sur TikTok" />
                         </div>
                     </div>
 
@@ -290,11 +290,12 @@ export default function Footer() {
     );
 }
 
-function SocialLink({ href, icon, color }: { href: string; icon: React.ReactNode; color: string }) {
+function SocialLink({ href, icon, color, ariaLabel }: { href: string; icon: React.ReactNode; color: string; ariaLabel: string }) {
     return (
         <a
             href={href}
             rel="nofollow"
+            aria-label={ariaLabel}
             className={`w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center text-zinc-400 transition-all duration-300 ${color} hover:bg-white/10 hover:translate-y-[-2px]`}
         >
             {icon}
