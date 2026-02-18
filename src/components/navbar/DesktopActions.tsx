@@ -92,6 +92,7 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
             <Link
                 href="/dashboard/favorites"
                 className="p-2 rounded-xl text-zinc-500 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all relative"
+                aria-label="Voir vos annonces favorites"
                 title="Favoris"
                 rel="nofollow"
             >
@@ -101,6 +102,7 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
             <Link
                 href="/dashboard/messages"
                 className="p-2.5 rounded-xl text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all relative"
+                aria-label="Voir vos messages"
                 title="Messages"
                 rel="nofollow"
             >
@@ -130,14 +132,15 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                         </button>
                     </>
                 ) : (
-                    <Link
-                        href="/login"
-                        className="p-2.5 rounded-xl text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all"
-                        title="Connexion"
-                        rel="nofollow"
-                    >
-                        <User className="w-5 h-5" />
-                    </Link>
+            <Link
+                href="/login"
+                className="p-2.5 rounded-xl text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all"
+                aria-label="Se connecter à votre compte"
+                title="Connexion"
+                rel="nofollow"
+            >
+                <User className="w-5 h-5" />
+            </Link>
                 )}
             </div>
         </div>
