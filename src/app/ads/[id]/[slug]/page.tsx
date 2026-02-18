@@ -306,16 +306,16 @@ export default async function AdPage({ params }: AdPageProps) {
         </div>
       </div>
 
-      <main className="mx-auto max-w-[1600px] px-4 py-8 sm:px-6 lg:px-8">
-        <div className="flex flex-col xl:flex-row gap-8 justify-center items-start">
+      <main className="mx-auto max-w-screen-2xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="flex flex-col xl:flex-row gap-6 justify-between items-start">
           
           {/* Left Ad Sidebar (Desktop Only) */}
-          <aside className="hidden xl:block w-[160px] sticky top-24 shrink-0 h-[600px]">
+          <aside className="hidden xl:block w-[160px] sticky top-24 shrink-0 h-[600px] border border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl">
             {/* Google Adsense Code Here */}
           </aside>
 
           {/* Main Content Area */}
-          <div className="flex-1 max-w-7xl">
+          <div className="flex-1 w-full min-w-0">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
 
           {/* Column Left: Media & Details (8/12) */}
@@ -526,7 +526,7 @@ export default async function AdPage({ params }: AdPageProps) {
           </div>
 
           {/* Right Ad Sidebar (Desktop Only) */}
-          <aside className="hidden xl:block w-[160px] sticky top-24 shrink-0 h-[600px]">
+          <aside className="hidden xl:block w-[160px] sticky top-24 shrink-0 h-[600px] border border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl">
             {/* Google Adsense Code Here */}
           </aside>
 
