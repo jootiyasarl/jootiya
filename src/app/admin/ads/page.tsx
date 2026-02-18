@@ -35,7 +35,7 @@ export default function AdminAdsPage() {
           price, 
           currency, 
           created_at,
-          seller:profiles (
+          seller:profiles!ads_seller_id_fkey (
             full_name,
             avatar_url
           )
