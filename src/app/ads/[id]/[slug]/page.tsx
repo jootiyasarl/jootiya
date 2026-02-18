@@ -321,7 +321,7 @@ export default async function AdPage({ params }: AdPageProps) {
           {/* Main Content Area */}
           <div className="flex-1 w-full min-w-0">
             {/* Unified Title & Price for Desktop (Top Header) */}
-            <div className="hidden lg:block mb-8 px-1">
+            <div className="hidden lg:block mb-8 px-1 relative z-10">
               <div className="flex items-center gap-2 mb-3">
                 <span className="px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-[11px] font-black uppercase tracking-widest">
                   {ad.category}
@@ -335,10 +335,10 @@ export default async function AdPage({ params }: AdPageProps) {
               <h1 className="text-4xl font-black leading-tight text-zinc-900 dark:text-zinc-100 tracking-tight">{ad.title}</h1>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start relative">
 
           {/* Column Left: Media & Details (8/12) */}
-          <div className="lg:col-span-8 space-y-8 flex flex-col min-w-0 order-1 lg:order-none">
+          <div className="lg:col-span-8 space-y-8 flex flex-col min-w-0 order-1 lg:order-none relative">
 
             {/* Mobile Title & Price (Moved Above Image for immediate visibility) */}
             <div className="lg:hidden space-y-4 px-1">
@@ -374,12 +374,12 @@ export default async function AdPage({ params }: AdPageProps) {
             </div>
 
             {/* Image Gallery Component */}
-            <section className="rounded-3xl overflow-hidden shadow-sm bg-white dark:bg-zinc-900 lg:sticky lg:top-24">
+            <section className="rounded-3xl overflow-hidden shadow-sm bg-white dark:bg-zinc-900 lg:sticky lg:top-24 z-10">
               <AdImageGallery images={images} />
             </section>
 
             {/* Description Card */}
-            <div className="rounded-[2.5rem] bg-white dark:bg-zinc-900 p-8 shadow-sm border border-zinc-100 dark:border-zinc-800 sm:p-10 relative overflow-hidden">
+            <div className="rounded-[2.5rem] bg-white dark:bg-zinc-900 p-8 shadow-sm border border-zinc-100 dark:border-zinc-800 sm:p-10 relative overflow-hidden z-0">
               <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 rounded-bl-[100px] -mr-8 -mt-8" />
               
               <h2 className="text-xl font-black flex items-center gap-3 mb-8 text-zinc-900 dark:text-zinc-100 uppercase tracking-tight">
