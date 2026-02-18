@@ -320,6 +320,21 @@ export default async function AdPage({ params }: AdPageProps) {
 
           {/* Main Content Area */}
           <div className="flex-1 w-full min-w-0">
+            {/* Unified Title & Price for Desktop (Top Header) */}
+            <div className="hidden lg:block mb-8 px-1">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-[11px] font-black uppercase tracking-widest">
+                  {ad.category}
+                </span>
+                {ad.condition === 'new' && (
+                  <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[11px] font-black uppercase tracking-widest">
+                    Neuf
+                  </span>
+                )}
+              </div>
+              <h1 className="text-4xl font-black leading-tight text-zinc-900 dark:text-zinc-100 tracking-tight">{ad.title}</h1>
+            </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
 
           {/* Column Left: Media & Details (8/12) */}
@@ -434,17 +449,19 @@ export default async function AdPage({ params }: AdPageProps) {
           {/* Column Right: Sticky Sidebar (4/12) */}
           <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-24 h-fit min-w-0 order-2 lg:order-none">
 
-            {/* Primary Details Card (Desktop) */}
+            {/* Primary Details Card (Desktop - PRICE ONLY NOW) */}
             <div className="hidden lg:block rounded-3xl bg-white dark:bg-zinc-900 p-8 shadow-sm border border-zinc-100 dark:border-zinc-800">
-              <h1 className="text-2xl font-bold leading-tight mb-2 text-zinc-900 dark:text-zinc-100">{ad.title}</h1>
-              <div className="flex items-center gap-2 text-sm text-zinc-500 mb-8">
+              <div className="flex items-center gap-2 text-sm text-zinc-500 mb-6">
                 <MapPin className="h-4 w-4" />
-                <span>{ad.city}</span>
+                <span className="font-bold">{ad.city}</span>
                 <span className="text-zinc-300">•</span>
-                <span>{formattedDate}</span>
+                <span className="font-bold">{formattedDate}</span>
               </div>
 
-              <div className="text-4xl font-black text-zinc-900 dark:text-zinc-100 mb-8 tracking-tight">{formattedPrice}</div>
+              <div className="text-4xl font-black text-orange-600 mb-8 tracking-tight">
+                {formattedPrice}
+                {ad.price && <span className="ml-2 text-xs text-zinc-400 font-bold uppercase">TTC</span>}
+              </div>
 
               <div className="space-y-4">
                 <ContactActions
