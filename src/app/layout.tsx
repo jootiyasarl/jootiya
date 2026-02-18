@@ -84,21 +84,22 @@ export default function RootLayout({
           .border-zinc-200 { border-color: #e4e4e7; }
           .dark .border-zinc-800 { border-color: #27272a; }
           .text-orange-600 { color: #ea580c; }
-          .font-black { font-weight: 900; }
+          .font-black { font-weight: 900; font-display: swap; }
           .uppercase { text-transform: uppercase; }
           .tracking-tighter { letter-spacing: -0.05em; }
+          /* Font Display Swap for Critical Elements */
+          .font-sans { font-display: swap; }
+          h1, h2, .logo-text { font-display: swap; }
         `}} />
         {/* 1. أوراق الاعتماد السيادية */}
         <meta name="google-adsense-account" content="ca-pub-4945284817184050" />
         <meta name="google-adsense-platform-account" content="ca-host-pub-6129854895232620" />
 
-        {/* 2. Ghost Speed Hack 8.0: تحميل الإعلانات فقط عند خمول المعالج التام */}
-        <Script
-          id="adsense-init"
-          strategy="lazyOnload" 
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4945284817184050"
-          crossOrigin="anonymous"
-        />
+        {/* Preload Category Icons to prevent Layout Shift & Improve LCP */}
+        <link rel="preload" href="/categories/electronics.svg" as="image" type="image/svg+xml" />
+        <link rel="preload" href="/categories/vehicles.svg" as="image" type="image/svg+xml" />
+        <link rel="preload" href="/categories/home.svg" as="image" type="image/svg+xml" />
+        <link rel="preload" href="/categories/fashion.svg" as="image" type="image/svg+xml" />
 
         {/* 3. بروتوكول التمويه الدلالي (Authority Linking) */}
         <script
@@ -134,9 +135,6 @@ export default function RootLayout({
             `,
           }}
         />
-
-        {/* Google GDPR Compliance */}
-        <script async src="https://fundingchoicesmessages.google.com/i/pub-4945284817184050?ers=1" />
       </head>
 
       <body
@@ -162,6 +160,19 @@ export default function RootLayout({
           <PushPermissionPrompt />
           <Toaster position="top-center" richColors />
         </ThemeProvider>
+
+        {/* 5. Google Adsense & GDPR Scripts (Lazy Loaded at Bottom) */}
+        <Script
+          id="adsense-init"
+          strategy="lazyOnload"
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4945284817184050"
+          crossOrigin="anonymous"
+        />
+        <Script
+          id="google-gdpr"
+          strategy="lazyOnload"
+          src="https://fundingchoicesmessages.google.com/i/pub-4945284817184050?ers=1"
+        />
 
         {/* Local Business Schema */}
         <script
