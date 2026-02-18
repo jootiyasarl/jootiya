@@ -55,6 +55,7 @@ export default function AdminAdsPage() {
         currency: ad.currency,
         is_featured: false,
         created_at: ad.created_at,
+        image_url: ad.image_urls?.[0] || null,
         seller: ad.seller,
       }));
 

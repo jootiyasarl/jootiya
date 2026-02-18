@@ -21,6 +21,7 @@ export interface AdminAd {
   currency: string | null;
   is_featured: boolean | null;
   created_at: string | null;
+  image_url?: string | null;
   seller?: {
     full_name: string | null;
     avatar_url: string | null;
@@ -291,6 +292,21 @@ export function AdsTable({
                     <TableCell className="align-top text-sm text-zinc-50">
                       <div className="flex flex-col gap-2">
                         <div className="flex items-center gap-3">
+                          {/* Ad Image Preview */}
+                          <div className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900">
+                            {ad.image_url ? (
+                              <img
+                                src={ad.image_url}
+                                alt={ad.title}
+                                className="h-full w-full object-cover"
+                              />
+                            ) : (
+                              <div className="flex h-full w-full items-center justify-center bg-zinc-800 text-[10px] text-zinc-600">
+                                No img
+                              </div>
+                            )}
+                          </div>
+
                           {/* Seller Avatar */}
                           <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-full border border-zinc-800 bg-zinc-900">
                             {ad.seller?.avatar_url ? (
