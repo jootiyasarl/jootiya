@@ -25,7 +25,10 @@ import {
   AlertTriangle,
   Award,
   Sparkles,
-  Star
+  Star,
+  Clock,
+  ShieldAlert,
+  ArrowRight
 } from "lucide-react";
 import { QuickActionFooter } from "@/components/ads/QuickActionFooter";
 import Image from "next/image";
@@ -327,16 +330,35 @@ export default async function AdPage({ params }: AdPageProps) {
             </section>
 
             {/* Mobile Title & Price (Visible only on mobile) */}
-            <div className="lg:hidden space-y-3 px-1">
-              <div className="flex items-start justify-between gap-4">
-                <h1 className="text-2xl font-bold leading-tight sm:text-3xl text-zinc-900 dark:text-zinc-100">{ad.title}</h1>
-                <div className="text-xl font-black text-orange-600 whitespace-nowrap">{formattedPrice}</div>
+            <div className="lg:hidden space-y-4 px-1">
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-0.5 rounded-md bg-orange-100 text-orange-700 text-[10px] font-black uppercase tracking-wider">
+                    {ad.category}
+                  </span>
+                  {ad.condition === 'new' && (
+                    <span className="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase tracking-wider">
+                      Neuf
+                    </span>
+                  )}
+                </div>
+                <h1 className="text-2xl font-black leading-tight text-zinc-900 dark:text-zinc-100">{ad.title}</h1>
               </div>
-              <div className="flex items-center gap-2 text-sm text-zinc-500">
-                <MapPin className="h-4 w-4" />
-                <span>{ad.city}, {ad.neighborhood || "Maroc"}</span>
-                <span className="w-1 h-1 rounded-full bg-zinc-300" />
-                <span>{formattedDate}</span>
+              
+              <div className="flex items-baseline gap-2">
+                <div className="text-3xl font-black text-orange-600">{formattedPrice}</div>
+                {ad.price && <span className="text-xs text-zinc-400 font-bold uppercase">TTC</span>}
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 py-4 border-y border-zinc-100 dark:border-zinc-800">
+                <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+                  <MapPin className="h-4 w-4 text-orange-500" />
+                  <span className="font-bold">{ad.city}</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+                  <Clock className="h-4 w-4 text-orange-500" />
+                  <span className="font-bold">{formattedDate}</span>
+                </div>
               </div>
             </div>
 
@@ -427,48 +449,48 @@ export default async function AdPage({ params }: AdPageProps) {
 
             {/* Verified Seller Card */}
             <div className="rounded-3xl bg-white dark:bg-zinc-900 p-6 shadow-sm border border-zinc-100 dark:border-zinc-800 relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-orange-50 rounded-bl-[80px] -mr-4 -mt-4 z-0 transition-transform group-hover:scale-110" />
+              <div className="absolute top-0 right-0 w-24 h-24 bg-orange-50 dark:bg-orange-900/10 rounded-bl-[80px] -mr-4 -mt-4 z-0 transition-transform group-hover:scale-110" />
 
               <div className="relative z-10 flex items-center gap-4 mb-6">
-                <div className="h-16 w-16 rounded-full bg-zinc-100 border-2 border-white shadow-md flex items-center justify-center text-xl font-bold text-zinc-400 overflow-hidden">
+                <div className="h-16 w-16 rounded-full bg-zinc-100 dark:bg-zinc-800 border-2 border-white dark:border-zinc-700 shadow-md flex items-center justify-center text-xl font-bold text-zinc-400 overflow-hidden">
                   {sellerProfile?.avatar_url ? (
                     <Image src={sellerProfile.avatar_url} alt={sellerName} width={64} height={64} className="w-full h-full object-cover" />
                   ) : (
-                    sellerInitial
+                    <span className="text-zinc-500 dark:text-zinc-400">{sellerInitial}</span>
                   )}
                 </div>
                 <div>
-                  <h3 className="font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
+                  <h3 className="font-black text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5 uppercase tracking-tight">
                     {sellerName}
                     {isTrusted && (
-                      <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-blue-100 text-[10px] text-blue-700 font-extrabold tracking-wide border border-blue-200">
+                      <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-[10px] text-blue-700 dark:text-blue-400 font-extrabold tracking-wide border border-blue-200 dark:border-blue-800">
                         <Award className="w-3 h-3" />
                         TOP
                       </span>
                     )}
                   </h3>
-                  <p className="text-xs text-zinc-500 font-medium">Membre depuis {memberSince}</p>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400 font-bold">Membre depuis {memberSince}</p>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3 relative z-10">
-                <div className="bg-zinc-50 dark:bg-zinc-800 p-3 rounded-2xl text-center border border-zinc-100 dark:border-zinc-700">
+                <div className="bg-zinc-50 dark:bg-zinc-800/50 p-3 rounded-2xl text-center border border-zinc-100 dark:border-zinc-800">
                   <span className="block text-lg font-black text-zinc-900 dark:text-zinc-100">100%</span>
-                  <span className="text-[10px] text-zinc-400 uppercase font-bold tracking-wider">Réponse</span>
+                  <span className="text-[10px] text-zinc-400 dark:text-zinc-500 uppercase font-black tracking-widest">Réponse</span>
                 </div>
-                <div className="bg-zinc-50 dark:bg-zinc-800 p-3 rounded-2xl text-center border border-zinc-100 dark:border-zinc-700">
+                <div className="bg-zinc-50 dark:bg-zinc-800/50 p-3 rounded-2xl text-center border border-zinc-100 dark:border-zinc-800">
                   <span className="block text-lg font-black text-zinc-900 dark:text-zinc-100 flex items-center justify-center gap-1">
                     {avgRating > 0 ? avgRating : '-'}
                     <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
                   </span>
-                  <span className="text-[10px] text-zinc-400 uppercase font-bold tracking-wider">{totalReviews} Avis</span>
+                  <span className="text-[10px] text-zinc-400 dark:text-zinc-500 uppercase font-black tracking-widest">{totalReviews} Avis</span>
                 </div>
               </div>
 
-              <div className="mt-6 pt-4 border-t border-zinc-50 text-center">
-                <Link href={`/profile/${ad.seller_id}`} className="text-xs font-bold text-orange-600 hover:underline flex items-center justify-center gap-1">
+              <div className="mt-6 pt-4 border-t border-zinc-50 dark:border-zinc-800 text-center">
+                <Link href={`/profile/${ad.seller_id}`} className="group/link text-xs font-black text-orange-600 dark:text-orange-500 uppercase tracking-widest flex items-center justify-center gap-2 hover:opacity-80 transition-opacity">
                   Voir le profil complet
-                  <ChevronRight className="w-3 h-3" />
+                  <ArrowRight className="w-3 h-3 transition-transform group-hover/link:translate-x-1" />
                 </Link>
               </div>
             </div>
