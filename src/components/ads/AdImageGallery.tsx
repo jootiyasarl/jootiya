@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect } from "react";
 import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
+import AutoPlay from "embla-carousel-autoplay";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronRight, Maximize2, X } from "lucide-react";
@@ -15,7 +16,10 @@ interface AdImageGalleryProps {
 export function AdImageGallery({ images }: AdImageGalleryProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
-    const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, skipSnaps: false });
+    const [emblaRef, emblaApi] = useEmblaCarousel(
+        { loop: true, skipSnaps: false, align: "start" },
+        [AutoPlay({ delay: 5000, stopOnInteraction: true })]
+    );
     const [lightboxRef, lightboxApi] = useEmblaCarousel({ loop: true });
 
     const onSelect = useCallback(() => {
