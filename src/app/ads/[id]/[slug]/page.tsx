@@ -306,8 +306,22 @@ export default async function AdPage({ params }: AdPageProps) {
         </div>
       </div>
 
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+      <main className="mx-auto max-w-[1600px] px-4 py-8 sm:px-6 lg:px-8">
+        <div className="flex flex-col xl:flex-row gap-8 justify-center items-start">
+          
+          {/* Left Ad Sidebar (Desktop Only) */}
+          <aside className="hidden xl:block w-[160px] sticky top-24 shrink-0">
+            <div className="bg-zinc-100 dark:bg-zinc-900/50 rounded-2xl border border-dashed border-zinc-300 dark:border-zinc-800 h-[600px] flex items-center justify-center overflow-hidden">
+              <div className="text-center p-4">
+                <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2">Publicité</p>
+                <div className="w-full h-full bg-zinc-200/50 dark:bg-zinc-800/50 animate-pulse rounded-lg" />
+              </div>
+            </div>
+          </aside>
+
+          {/* Main Content Area */}
+          <div className="flex-1 max-w-7xl">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
 
           {/* Column Left: Media & Details (8/12) */}
           <div className="lg:col-span-8 space-y-8">
@@ -487,34 +501,46 @@ export default async function AdPage({ params }: AdPageProps) {
           </div>
         </div>
 
-        {/* Similar Ads Section */}
-        {similarAds.length > 0 && (
-          <div className="mt-24 border-t border-zinc-100 dark:border-zinc-800 pt-16">
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Annonces similaires</h2>
-              <Link href={`/categories/${ad.category}`} className="text-sm font-bold text-orange-600 hover:text-orange-700 hidden sm:block">
-                Voir plus
-              </Link>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6">
-              {similarAds.map((simAd: any) => (
-                <AdCard 
-                  key={simAd.id} 
-                  priority={true}
-                  ad={{
-                  id: simAd.id,
-                  slug: simAd.slug,
-                  title: simAd.title,
-                  price: simAd.price ? `${Number(simAd.price).toLocaleString()} ${simAd.currency || 'MAD'}` : 'Sur demande',
-                  location: simAd.city || 'Maroc',
-                  imageUrl: (simAd.images || simAd.image_urls)?.[0],
-                  createdAt: simAd.created_at ? `${new Date(simAd.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}` : undefined
-                }} />
-              ))}
-            </div>
+            {/* Similar Ads Section */}
+            {similarAds.length > 0 && (
+              <div className="mt-24 border-t border-zinc-100 dark:border-zinc-800 pt-16">
+                <div className="flex items-center justify-between mb-8">
+                  <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Annonces similaires</h2>
+                  <Link href={`/categories/${ad.category}`} className="text-sm font-bold text-orange-600 hover:text-orange-700 hidden sm:block">
+                    Voir plus
+                  </Link>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6">
+                  {similarAds.map((simAd: any) => (
+                    <AdCard 
+                      key={simAd.id} 
+                      priority={true}
+                      ad={{
+                      id: simAd.id,
+                      slug: simAd.slug,
+                      title: simAd.title,
+                      price: simAd.price ? `${Number(simAd.price).toLocaleString()} ${simAd.currency || 'MAD'}` : 'Sur demande',
+                      location: simAd.city || 'Maroc',
+                      imageUrl: (simAd.images || simAd.image_urls)?.[0],
+                      createdAt: simAd.created_at ? `${new Date(simAd.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}` : undefined
+                    }} />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
-        )}
 
+          {/* Right Ad Sidebar (Desktop Only) */}
+          <aside className="hidden xl:block w-[160px] sticky top-24 shrink-0">
+            <div className="bg-zinc-100 dark:bg-zinc-900/50 rounded-2xl border border-dashed border-zinc-300 dark:border-zinc-800 h-[600px] flex items-center justify-center overflow-hidden">
+              <div className="text-center p-4">
+                <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2">Publicité</p>
+                <div className="w-full h-full bg-zinc-200/50 dark:bg-zinc-800/50 animate-pulse rounded-lg" />
+              </div>
+            </div>
+          </aside>
+
+        </div>
       </main>
 
       <QuickActionFooter
