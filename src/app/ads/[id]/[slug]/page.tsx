@@ -320,7 +320,7 @@ export default async function AdPage({ params }: AdPageProps) {
 
           {/* Main Content Area */}
           <div className="flex-1 w-full min-w-0">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
 
           {/* Column Left: Media & Details (8/12) */}
           <div className="lg:col-span-8 space-y-8 flex flex-col min-w-0 order-1 lg:order-none">
