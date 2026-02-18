@@ -1,5 +1,6 @@
 import type React from "react";
 import type { ReactNode } from "react";
+import Image from "next/image";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -295,9 +296,11 @@ export function AdsTable({
                           {/* Ad Image Preview */}
                           <div className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900">
                             {ad.image_url ? (
-                              <img
+                              <Image
                                 src={ad.image_url}
                                 alt={ad.title}
+                                width={48}
+                                height={48}
                                 className="h-full w-full object-cover"
                               />
                             ) : (
@@ -310,9 +313,11 @@ export function AdsTable({
                           {/* Seller Avatar */}
                           <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-full border border-zinc-800 bg-zinc-900">
                             {ad.seller?.avatar_url ? (
-                              <img
+                              <Image
                                 src={ad.seller.avatar_url}
                                 alt={ad.seller.full_name || "Seller"}
+                                width={40}
+                                height={40}
                                 className="h-full w-full object-cover"
                               />
                             ) : (
