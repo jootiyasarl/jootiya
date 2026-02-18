@@ -16,7 +16,7 @@ export function NavbarLogo() {
     const classes = "text-xl md:text-2xl font-black tracking-tighter text-[#0F172A] dark:text-white";
 
     return (
-        <Link href="/" className="flex items-center shrink-0">
+        <Link href="/" className="flex items-center shrink-0" aria-label="Jootiya - Retour à l'accueil">
             {isHome ? (
                 <h1 className={classes}>{content}</h1>
             ) : (
