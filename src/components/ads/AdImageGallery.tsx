@@ -21,10 +21,11 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
             loop: true, 
             skipSnaps: false, 
             align: "start",
+            containScroll: "trimSnaps",
             dragFree: false,
-            containScroll: "trimSnaps"
+            watchDrag: true
         },
-        [AutoPlay({ delay: 5000, stopOnInteraction: true })]
+        [AutoPlay({ delay: 5000, stopOnInteraction: false })]
     );
     const [lightboxRef, lightboxApi] = useEmblaCarousel({ loop: true });
 
@@ -88,10 +89,10 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
     return (
         <div className="flex flex-col gap-4">
             {/* Main Slider Container */}
-            <div className="group relative w-full rounded-3xl bg-zinc-950 border border-zinc-800 shadow-sm overflow-hidden h-[350px] md:h-[500px] lg:h-[600px]">
+            <div className="group relative w-full rounded-3xl bg-zinc-950 border border-zinc-800 shadow-sm overflow-hidden h-[350px] md:h-[500px] lg:h-[600px] touch-none">
                 {/* Viewport - Must have overflow-hidden for Embla */}
                 <div className="h-full w-full cursor-grab active:cursor-grabbing overflow-hidden" ref={emblaRef}>
-                    <div className="flex h-full touch-pan-y">
+                    <div className="flex h-full">
                         {images.map((src, index) => {
                             const blurUrl = getSafeBlurUrl(src);
                             return (
