@@ -259,18 +259,18 @@ export function ProfileForm() {
     try {
       const fileExt = file.name.split('.').pop();
       const fileName = `${userId}-${Math.random()}.${fileExt}`;
-      const filePath = `avatars/${fileName}`;
+      const filePath = `${fileName}`; // Using root of ad-images since avatars folder might not exist
 
-      // 1. Upload to Supabase Storage
+      // 1. Upload to Supabase Storage (Using existing ad-images bucket)
       const { error: uploadError } = await supabase.storage
-        .from('avatars')
+        .from('ad-images')
         .upload(filePath, file);
 
       if (uploadError) throw uploadError;
 
       // 2. Get Public URL
       const { data: { publicUrl } } = supabase.storage
-        .from('avatars')
+        .from('ad-images')
         .getPublicUrl(filePath);
 
       // 3. Update Profile locally and in DB
