@@ -257,11 +257,10 @@ export function MyAdsClient({
             ) : (
                 <div className="space-y-4">
                     <div className="md:hidden space-y-3">
-                        {ads.map((ad, index) => (
+                        {ads.map((ad) => (
                             <AdCard
                                 key={ad.id}
                                 ad={ad}
-                                priority={index < 4}
                                 footerSlot={
                                     () => handleEdit(ad)
                                 }
