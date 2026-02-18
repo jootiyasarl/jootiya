@@ -55,7 +55,8 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete, pr
             src={ad.imageUrl}
             alt={ad.title}
             fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 320px"
+            quality={70}
             loading={priority ? undefined : "lazy"}
             priority={priority}
             className="object-cover h-full w-full transition-transform duration-500 group-hover:scale-105"
