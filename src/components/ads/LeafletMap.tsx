@@ -2,6 +2,7 @@
 
 import React from "react";
 import { MapContainer, TileLayer, Circle } from "react-leaflet";
+import type { LatLngExpression } from "leaflet";
 import "leaflet/dist/leaflet.css";
 
 interface LeafletMapProps {
