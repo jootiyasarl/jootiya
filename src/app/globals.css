@@ -85,12 +85,7 @@
   }
 }
 
-/*
-  The default border color has changed to `currentColor` in Tailwind CSS v4,
-  so we've added these compatibility styles to sure everything still looks the same as it did with v3.
-*/
 @layer base {
-
   *,
   ::after,
   ::before,
@@ -103,16 +98,13 @@
 :root {
   --background: 0 0% 100%;
   --foreground: 222 47% 11%;
-  /* Deep Navy for text */
   --card: 0 0% 100%;
   --card-foreground: 222 47% 11%;
   --popover: 0 0% 100%;
   --popover-foreground: 222 47% 11%;
   --primary: 25 95% 53%;
-  /* VIBRANT ORANGE */
   --primary-foreground: 0 0% 100%;
   --secondary: 222 47% 11%;
-  /* Navy Blue */
   --secondary-foreground: 0 0% 100%;
   --muted: 210 40% 96.1%;
   --muted-foreground: 215 16% 47%;
@@ -123,7 +115,6 @@
   --border: 214 32% 91%;
   --input: 214 32% 91%;
   --ring: 25 95% 53%;
-  /* Orange Ring */
   --chart-1: 12 76% 61%;
   --chart-2: 173 58% 39%;
   --chart-3: 197 37% 24%;
@@ -150,7 +141,6 @@
   --popover: 224 71% 4%;
   --popover-foreground: 213 31% 91%;
   --primary: 25 95% 53%;
-  /* Keep vibrant orange */
   --primary-foreground: 0 0% 100%;
   --secondary: 222 47% 11%;
   --secondary-foreground: 210 40% 98%;
@@ -179,7 +169,6 @@
 }
 
 @layer base {
-
   *,
   *::before,
   *::after {
@@ -197,7 +186,6 @@
     position: relative;
   }
 
-  /* Global Image Responsibility */
   img {
     max-width: 100% !important;
     height: auto !important;
@@ -210,57 +198,17 @@
     }
   }
 
-  /* Minimalist Design System - Typography */
-  .font-arabic {
-    font-family: var(--font-tajawal), sans-serif;
-  }
-
-  .font-latin {
-    font-family: var(--font-inter), sans-serif;
-  }
-
-  /* Default to Inter for mixed content */
   body {
     font-family: var(--font-inter), var(--font-tajawal), sans-serif;
   }
 
-  /* Arabic content uses Tajawal */
   [lang="ar"],
   [dir="rtl"] {
     font-family: var(--font-tajawal), var(--font-inter), sans-serif;
   }
 }
 
-/* Minimalist Spacing Scale (8px grid) */
 @layer utilities {
-  /* NProgress custom styles */
-  #nprogress {
-    pointer-events: none;
-  }
-
-  #nprogress .bar {
-    background: #f97316;
-    position: fixed;
-    z-index: 1031;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 3px;
-  }
-
-  #nprogress .peg {
-    display: block;
-    position: absolute;
-    right: 0px;
-    width: 100px;
-    height: 100%;
-    box-shadow: 0 0 10px #f97316, 0 0 5px #f97316;
-    opacity: 1.0;
-    -webkit-transform: rotate(3deg) translate(0px, -4px);
-        -ms-transform: rotate(3deg) translate(0px, -4px);
-            transform: rotate(3deg) translate(0px, -4px);
-  }
-
   .pb-safe {
     padding-bottom: env(safe-area-inset-bottom);
   }
@@ -277,91 +225,5 @@
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
-  }
-  /* 8px */
-  .space-2 {
-    @apply gap-4;
-  }
-  /* 16px */
-  .space-3 {
-    @apply gap-6;
-  }
-  /* 24px */
-  .space-4 {
-    @apply gap-8;
-  }
-
-  /* 32px */
-  .space-6 {
-    @apply gap-12;
-  }
-
-  /* 48px */
-  .space-8 {
-    @apply gap-16;
-  }
-
-  /* 64px */
-
-  /* Generous White Space Utilities */
-  .breathing-room {
-    @apply px-6 py-8;
-  }
-
-  .breathing-room-sm {
-    @apply px-4 py-6;
-  }
-
-  .breathing-room-lg {
-    @apply px-8 py-12;
-  }
-
-  /* Minimalist Shadows */
-  .shadow-minimal {
-    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  }
-
-  .shadow-soft {
-    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.07);
-  }
-
-  .shadow-floating {
-    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-  }
-
-  /* Pill Shape Utility */
-  .pill {
-    border-radius: 9999px;
-  }
-
-  /* Premium Layered Shadows */
-  .shadow-premium {
-    box-shadow:
-      0 1px 2px rgba(0, 0, 0, 0.02),
-      0 4px 12px rgba(0, 0, 0, 0.05),
-      0 12px 24px rgba(0, 0, 0, 0.1);
-  }
-
-  .shadow-inner-soft {
-    box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
-  }
-
-  /* Frosted Glass Utilities */
-  .glass-frosted {
-    @apply bg-white/70 dark:bg-zinc-900/70 backdrop-blur-2xl border border-white/20 dark:border-white/5;
-  }
-
-  .glass-frosted-dark {
-    @apply bg-zinc-950/60 backdrop-blur-2xl border border-white/5;
-  }
-
-  /* Hide Scrollbar but Keep Functionality */
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
   }
 }
