@@ -357,8 +357,8 @@ export default async function AdPage({ params }: AdPageProps) {
               </div>
             </div>
 
-            {/* Title Section for Desktop (Moved inside main column but at top) */}
-            <div className="hidden lg:block mb-6 px-1 relative z-20 bg-white dark:bg-zinc-950 pb-2">
+            {/* Title Section for Desktop (Non-sticky Header) */}
+            <div className="hidden lg:block mb-6 px-1 bg-white dark:bg-zinc-950 pb-2">
               <div className="flex items-center gap-2 mb-3">
                 <span className="px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-[11px] font-black uppercase tracking-widest">
                   {ad.category}
@@ -372,8 +372,8 @@ export default async function AdPage({ params }: AdPageProps) {
               <h1 className="text-4xl font-black leading-tight text-zinc-900 dark:text-zinc-100 tracking-tight">{ad.title}</h1>
             </div>
 
-            {/* Image Gallery Component */}
-            <section className="rounded-3xl overflow-hidden shadow-sm bg-white dark:bg-zinc-900 relative z-10">
+            {/* Image Gallery Component - Fixed Sticky Conflict */}
+            <section className="rounded-3xl overflow-hidden shadow-sm bg-white dark:bg-zinc-900 relative z-10 lg:sticky lg:top-24">
               <AdImageGallery images={images} />
             </section>
 
