@@ -72,6 +72,7 @@ export default function AdminAdsPage() {
           is_featured: false,
           created_at: ad.created_at,
           image_url: ad.image_urls?.[0] || null,
+          seller_id: ad.seller_id,
           seller: profile ? {
             full_name: profile.full_name,
             avatar_url: profile.avatar_url
@@ -129,7 +130,34 @@ export default function AdminAdsPage() {
         await supabase.from('ads').delete().eq('id', id);
         setAds(prev => prev.filter(a => a.id !== id));
       } else {
-        await supabase.from('ads').update({ status: newStatus }).eq('id', id);
+        const { error: updateError } = await supabase.from('ads').update({ status: newStatus }).eq('id', id);
+        if (updateError) throw updateError;
+
+        // If rejected, create a notification for the user
+        if (action === 'reject') {
+          const ad = ads.find(a => a.id === id);
+          if (ad && ad.seller_id) {
+            await supabase.from('notifications').insert({
+              user_id: ad.seller_id,
+              title: "Annonce refusée",
+              content: `Votre annonce "${ad.title}" a été refusée par la modération.`,
+              type: "ad_rejected",
+              data: { ad_id: id }
+            });
+          }
+        } else if (action === 'approve') {
+          const ad = ads.find(a => a.id === id);
+          if (ad && ad.seller_id) {
+            await supabase.from('notifications').insert({
+              user_id: ad.seller_id,
+              title: "Annonce approuvée",
+              content: `Félicitations ! Votre annonce "${ad.title}" est maintenant en ligne.`,
+              type: "ad_approved",
+              data: { ad_id: id }
+            });
+          }
+        }
+
         setAds(prev => prev.map(a => a.id === id ? { ...a, status: newStatus || a.status } : a));
       }
     } catch (err) {

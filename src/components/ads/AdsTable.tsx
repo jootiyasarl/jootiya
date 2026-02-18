@@ -23,6 +23,7 @@ export interface AdminAd {
   is_featured: boolean | null;
   created_at: string | null;
   image_url?: string | null;
+  seller_id?: string;
   seller?: {
     full_name: string | null;
     avatar_url: string | null;
