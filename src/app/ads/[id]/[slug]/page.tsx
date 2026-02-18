@@ -138,8 +138,7 @@ export default async function AdPage({ params }: AdPageProps) {
     .select(`
       id, title, description, price, currency, city, neighborhood, created_at, 
       image_urls, category, status, views_count, seller_id, slug, condition, phone, 
-      latitude, longitude, 
-      profiles!ads_seller_id_fkey (phone, full_name, avatar_url, created_at)
+      latitude, longitude
     `)
     .or(`id.eq.${id},slug.eq.${id}`)
     .maybeSingle();
@@ -150,6 +149,15 @@ export default async function AdPage({ params }: AdPageProps) {
     if (error?.code !== "PGRST116") console.error("Error loading ad:", error);
     notFound();
   }
+
+  // Fetch Seller Profile separately to avoid join issues
+  const { data: sellerProfileData } = await supabase
+    .from("profiles")
+    .select("phone, full_name, avatar_url, created_at")
+    .eq("id", ad.seller_id)
+    .maybeSingle();
+  
+  const sellerProfile = sellerProfileData;
 
   // 2. Increment Views (Simple Unique Logic)
   const { cookies } = await import("next/headers");
@@ -207,7 +215,6 @@ export default async function AdPage({ params }: AdPageProps) {
     year: "numeric",
   });
 
-  const sellerProfile = Array.isArray(ad.profiles) ? ad.profiles[0] : ad.profiles;
   const sellerName = sellerProfile?.full_name || "Utilisateur Jootiya";
   const sellerInitial = sellerName.charAt(0).toUpperCase();
   const memberSince = sellerProfile?.created_at ? new Date(sellerProfile.created_at).getFullYear() : "2024";
