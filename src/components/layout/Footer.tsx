@@ -78,7 +78,7 @@ export default function Footer() {
                                 JOOTIYA<span className="text-orange-500">.</span>
                             </span>
                         </Link>
-                        <p className="text-sm leading-relaxed text-zinc-500 max-w-xs">
+                        <p className="text-sm leading-relaxed text-zinc-500 dark:text-zinc-400 max-w-xs">
                             La plateforme n°1 au Maroc pour l'achat et la vente d'occasion. Nous connectons des milliers d'acheteurs et de vendeurs chaque jour dans un environnement sécurisé.
                         </p>
                         <div className="flex items-center gap-3">
@@ -154,14 +154,14 @@ export default function Footer() {
                             Newsletter
                         </h4>
                         <div className="space-y-4">
-                            <p className="text-[12px] text-zinc-500 font-medium italic">
+                            <p className="text-[12px] text-zinc-500 dark:text-zinc-400 font-medium italic">
                                 Recevez les meilleures offres de votre ville.
                             </p>
                             <div className="relative group">
                                 <input
                                     type="email"
                                     placeholder="Votre email..."
-                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-orange-500/50 focus:ring-4 focus:ring-orange-500/10 transition-all text-white pr-12"
+                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-orange-500/50 focus:ring-4 focus:ring-orange-500/10 transition-all text-white pr-12 placeholder:text-zinc-500"
                                 />
                                 <button 
                                     className="absolute right-1 top-1 bottom-1 px-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors flex items-center justify-center"
