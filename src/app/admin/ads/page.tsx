@@ -23,6 +23,7 @@ export default function AdminAdsPage() {
   const fetchAds = async () => {
     setLoading(true);
     try {
+      console.log("Fetching ads for admin...");
       const { data, error } = await supabase
         .from("ads")
         .select(`
@@ -37,15 +38,19 @@ export default function AdminAdsPage() {
           created_at,
           image_urls,
           seller_id,
-          profiles:seller_id (
+          profiles (
             full_name,
             avatar_url
           )
         `)
         .order("created_at", { ascending: false });
 
-      if (error) throw error;
-      console.log("Fetched ads data:", data?.[0]); // Debug first item
+      if (error) {
+        console.error("Supabase Error fetching ads:", error);
+        throw error;
+      }
+      
+      console.log(`Fetched ${data?.length || 0} ads data:`, data?.[0]);
 
       // Map DB ads to AdminAd type
       const mappedAds: AdminAd[] = (data || []).map((ad: any) => {
