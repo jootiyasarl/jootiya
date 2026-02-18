@@ -91,11 +91,6 @@ export default function SellerDashboard({ initialStats, initialAds, initialCount
                 </div>
             </div>
 
-            {/* Main Content: Ads Table */}
-            <div className="space-y-4">
-                <h2 className="text-xl font-semibold text-gray-800 dark:text-white">Vos annonces</h2>
-                <AdsTable ads={ads} onDelete={handleDelete} onEdit={handleEdit} />
-            </div>
 
         </div>
     );
