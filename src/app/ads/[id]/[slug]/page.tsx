@@ -320,8 +320,12 @@ export default async function AdPage({ params }: AdPageProps) {
 
           {/* Main Content Area */}
           <div className="flex-1 w-full min-w-0">
-            {/* Unified Title & Price for Desktop (Top Header) */}
-            <div className="hidden lg:block mb-8 px-1 relative z-10">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start relative">
+
+          <div className="lg:col-span-8 space-y-8 flex flex-col min-w-0 order-1 lg:order-none relative">
+
+            {/* Unified Title & Price for Desktop (Moved inside main column but at top) */}
+            <div className="hidden lg:block mb-4 px-1 relative z-20">
               <div className="flex items-center gap-2 mb-3">
                 <span className="px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-[11px] font-black uppercase tracking-widest">
                   {ad.category}
@@ -334,11 +338,6 @@ export default async function AdPage({ params }: AdPageProps) {
               </div>
               <h1 className="text-4xl font-black leading-tight text-zinc-900 dark:text-zinc-100 tracking-tight">{ad.title}</h1>
             </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start relative">
-
-          {/* Column Left: Media & Details (8/12) */}
-          <div className="lg:col-span-8 space-y-8 flex flex-col min-w-0 order-1 lg:order-none relative">
 
             {/* Mobile Title & Price (Moved Above Image for immediate visibility) */}
             <div className="lg:hidden space-y-4 px-1">
