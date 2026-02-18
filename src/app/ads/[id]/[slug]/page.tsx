@@ -310,13 +310,8 @@ export default async function AdPage({ params }: AdPageProps) {
         <div className="flex flex-col xl:flex-row gap-8 justify-center items-start">
           
           {/* Left Ad Sidebar (Desktop Only) */}
-          <aside className="hidden xl:block w-[160px] sticky top-24 shrink-0">
-            <div className="bg-zinc-100 dark:bg-zinc-900/50 rounded-2xl border border-dashed border-zinc-300 dark:border-zinc-800 h-[600px] flex items-center justify-center overflow-hidden">
-              <div className="text-center p-4">
-                <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2">Publicité</p>
-                <div className="w-full h-full bg-zinc-200/50 dark:bg-zinc-800/50 animate-pulse rounded-lg" />
-              </div>
-            </div>
+          <aside className="hidden xl:block w-[160px] sticky top-24 shrink-0 h-[600px]">
+            {/* Google Adsense Code Here */}
           </aside>
 
           {/* Main Content Area */}
@@ -531,13 +526,8 @@ export default async function AdPage({ params }: AdPageProps) {
           </div>
 
           {/* Right Ad Sidebar (Desktop Only) */}
-          <aside className="hidden xl:block w-[160px] sticky top-24 shrink-0">
-            <div className="bg-zinc-100 dark:bg-zinc-900/50 rounded-2xl border border-dashed border-zinc-300 dark:border-zinc-800 h-[600px] flex items-center justify-center overflow-hidden">
-              <div className="text-center p-4">
-                <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-2">Publicité</p>
-                <div className="w-full h-full bg-zinc-200/50 dark:bg-zinc-800/50 animate-pulse rounded-lg" />
-              </div>
-            </div>
+          <aside className="hidden xl:block w-[160px] sticky top-24 shrink-0 h-[600px]">
+            {/* Google Adsense Code Here */}
           </aside>
 
         </div>
