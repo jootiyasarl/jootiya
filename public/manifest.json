@@ -1,7 +1,7 @@
 {
-    "name": "Jootiya",
+    "name": "Jootiya | Achat et Vente au Maroc",
     "short_name": "Jootiya",
-    "description": "Plateforme n°1 au Maroc pour l'achat et la vente d'occasion",
+    "description": "La plateforme n°1 au Maroc pour l'achat et la vente d'articles neufs et d'occasion.",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#ffffff",
@@ -9,7 +9,24 @@
     "orientation": "portrait",
     "categories": [
         "shopping",
-        "marketplace"
+        "marketplace",
+        "lifestyle"
+    ],
+    "screenshots": [
+        {
+            "src": "/icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "Jootiya Marketplace"
+        },
+        {
+            "src": "/icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "Jootiya Marketplace"
+        }
     ],
     "icons": [
         {
