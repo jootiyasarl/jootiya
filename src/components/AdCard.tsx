@@ -103,11 +103,11 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete, pr
           </h3>
         </div>
         
-        <p className="text-[12px] text-zinc-500 dark:text-zinc-400 font-medium truncate">
+        <p className="text-[12px] text-zinc-600 dark:text-zinc-300 font-medium truncate">
           {ad.location}
         </p>
         
-        <p className="text-[12px] text-zinc-500 dark:text-zinc-400 font-medium">
+        <p className="text-[12px] text-zinc-600 dark:text-zinc-300 font-medium">
           {ad.createdAt || "Aujourd'hui"}
         </p>
         
