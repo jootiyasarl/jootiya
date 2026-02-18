@@ -110,7 +110,7 @@ export function UnifiedSearchBar() {
                         onChange={(e) => setQuery(e.target.value)}
                         onKeyDown={handleKeyDown}
                         placeholder="Que recherchez-vous ?"
-                        className="w-full bg-transparent outline-none text-[13px] font-semibold text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400 placeholder:font-medium"
+                        className="w-full bg-transparent outline-none text-[13px] font-semibold text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 placeholder:font-medium"
                     />
                 </div>
 
@@ -128,10 +128,10 @@ export function UnifiedSearchBar() {
                         className="flex items-center justify-between w-full h-full px-4 gap-2 text-zinc-700 dark:text-zinc-300 hover:text-orange-600 transition-colors z-10"
                     >
                         <div className="flex items-center gap-2 overflow-hidden pointer-events-none text-[10px] font-black uppercase tracking-wider">
-                            <LayoutGrid className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+                            <LayoutGrid className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400 shrink-0" />
                             <span className="truncate">{category.label}</span>
                         </div>
-                        <ChevronDown className={cn("w-3.5 h-3.5 text-zinc-400 transition-transform duration-300 pointer-events-none", activeMenu === 'category' && "rotate-180")} />
+                        <ChevronDown className={cn("w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400 transition-transform duration-300 pointer-events-none", activeMenu === 'category' && "rotate-180")} />
                     </button>
                     <AnimatePresence>
                         {activeMenu === 'category' && (
@@ -168,10 +168,10 @@ export function UnifiedSearchBar() {
                         className="flex items-center justify-between w-full h-full px-4 gap-2 text-zinc-700 dark:text-zinc-300 hover:text-orange-600 transition-colors z-10"
                     >
                         <div className="flex items-center gap-2 overflow-hidden pointer-events-none text-[10px] font-black uppercase tracking-wider">
-                            <MapPin className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+                            <MapPin className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400 shrink-0" />
                             <span className="truncate">{location}</span>
                         </div>
-                        <ChevronDown className={cn("w-3.5 h-3.5 text-zinc-400 transition-transform duration-300 pointer-events-none", activeMenu === 'location' && "rotate-180")} />
+                        <ChevronDown className={cn("w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400 transition-transform duration-300 pointer-events-none", activeMenu === 'location' && "rotate-180")} />
                     </button>
                     <AnimatePresence>
                         {activeMenu === 'location' && (
