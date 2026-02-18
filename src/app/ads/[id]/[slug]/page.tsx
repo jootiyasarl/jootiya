@@ -324,31 +324,23 @@ export default async function AdPage({ params }: AdPageProps) {
 
           <div className="lg:col-span-8 space-y-8 flex flex-col min-w-0 order-1 lg:order-none relative">
 
-            {/* Mobile Title & Price Section (Visible only on mobile) */}
-            <div className="lg:hidden space-y-4 px-1 pb-4">
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center gap-2">
-                  <span className="px-2 py-0.5 rounded-md bg-orange-100 text-orange-700 text-[10px] font-black uppercase tracking-wider">{ad.category}</span>
-                  {ad.condition === 'new' && <span className="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase tracking-wider">Neuf</span>}
-                </div>
-                <h1 className="text-2xl font-black leading-tight text-zinc-900 dark:text-zinc-100">{ad.title}</h1>
+            {/* Unified Title for Desktop (Top Header) */}
+            <div className="hidden lg:block mb-4 px-1 relative z-20">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-[11px] font-black uppercase tracking-widest">
+                  {ad.category}
+                </span>
+                {ad.condition === 'new' && (
+                  <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[11px] font-black uppercase tracking-widest">
+                    Neuf
+                  </span>
+                )}
               </div>
-              <div className="flex items-baseline gap-2">
-                <div className="text-3xl font-black text-orange-600">{formattedPrice}</div>
-                {ad.price && <span className="text-xs text-zinc-400 font-bold uppercase">TTC</span>}
-              </div>
-              <div className="grid grid-cols-2 gap-3 py-4 border-y border-zinc-100 dark:border-zinc-800">
-                <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
-                  <MapPin className="h-4 w-4 text-orange-500" /><span className="font-bold">{ad.city}</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
-                  <Clock className="h-4 w-4 text-orange-500" /><span className="font-bold">{formattedDate}</span>
-                </div>
-              </div>
+              <h1 className="text-4xl font-black leading-tight text-zinc-900 dark:text-zinc-100 tracking-tight">{ad.title}</h1>
             </div>
 
-            {/* Image Gallery Component - Sticky on Desktop */}
-            <section className="rounded-3xl overflow-hidden shadow-sm bg-white dark:bg-zinc-900 relative z-10 lg:sticky lg:top-24">
+            {/* Image Gallery Component */}
+            <section className="rounded-3xl overflow-hidden shadow-sm bg-white dark:bg-zinc-900 lg:sticky lg:top-24 z-10">
               <AdImageGallery images={images} />
             </section>
 
@@ -421,18 +413,10 @@ export default async function AdPage({ params }: AdPageProps) {
           </div>
 
           {/* Column Right: Sticky Sidebar (4/12) */}
-          <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-24 h-fit min-w-0 order-2 lg:order-none z-0">
+          <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-24 h-fit min-w-0 order-2 lg:order-none">
 
-            {/* Primary Details Card (Desktop - Includes Title & Price) */}
+            {/* Primary Details Card (Desktop - PRICE ONLY NOW) */}
             <div className="hidden lg:block rounded-3xl bg-white dark:bg-zinc-900 p-8 shadow-sm border border-zinc-100 dark:border-zinc-800">
-              <div className="flex flex-col gap-2 mb-6">
-                <div className="flex items-center gap-2">
-                  <span className="px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-[11px] font-black uppercase tracking-widest">{ad.category}</span>
-                  {ad.condition === 'new' && <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[11px] font-black uppercase tracking-widest">Neuf</span>}
-                </div>
-                <h1 className="text-3xl font-black leading-tight text-zinc-900 dark:text-zinc-100 tracking-tight">{ad.title}</h1>
-              </div>
-
               <div className="flex items-center gap-2 text-sm text-zinc-500 mb-6">
                 <MapPin className="h-4 w-4" />
                 <span className="font-bold">{ad.city}</span>
