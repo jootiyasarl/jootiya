@@ -4,9 +4,9 @@ import { createSupabaseServerClient, getServerUser } from "@/lib/supabase-server
 import { Button } from "@/components/ui/button";
 import { AdImageGallery } from "@/components/ads/AdImageGallery";
 import { ContactActions } from "@/components/ads/ContactActions";
-import dynamicImport from "next/dynamic";
+import dynamic from "next/dynamic";
 
-const AdLocationMap = dynamicImport(
+const AdLocationMap = dynamic(
   () => import("@/components/ads/AdLocationMap").then((mod) => mod.AdLocationMap),
   { 
     ssr: false, 
@@ -39,7 +39,7 @@ import { QuickActionFooter } from "@/components/ads/QuickActionFooter";
 import Image from "next/image";
 import { generateSlug } from "@/lib/seo-utils";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600; // Revalidate every hour
 
 interface AdPageProps {
   params: Promise<{
