@@ -128,9 +128,10 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
                         ) : (
                             <>
                                 <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-                                    {ads.map((ad) => (
+                                    {ads.map((ad, index) => (
                                         <AdCard 
                                             key={ad.id} 
+                                            priority={index < 4}
                                             ad={{
                                                 id: ad.id,
                                                 title: ad.title,
