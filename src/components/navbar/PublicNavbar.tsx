@@ -21,11 +21,9 @@ export default async function PublicNavbar() {
             <NavbarLogo />
           </div>
 
-          {/* Center: Search Bar (Desktop Only) */}
+          {/* Center: Search Bar removed per user request */}
           <div className="hidden lg:flex flex-1 justify-center max-w-2xl px-4">
-            <div className="w-full">
-              <UnifiedSearchBar />
-            </div>
+            {/* UnifiedSearchBar removed */}
           </div>
 
           {/* Right: User Actions / Info */}
@@ -50,10 +48,7 @@ export default async function PublicNavbar() {
           </div>
         </div>
 
-        {/* Mobile Unified Search Bar - Ensure it pushes content down */}
-        <div className="pb-4 lg:hidden relative z-10">
-          <UnifiedSearchBar />
-        </div>
+        {/* Mobile Unified Search Bar removed per user request */}
       </div>
     </header>
   );
