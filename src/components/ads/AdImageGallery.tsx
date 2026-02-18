@@ -93,7 +93,7 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
     return (
         <div className="flex flex-col gap-4">
             {/* Main Slider Container */}
-            <div className="group relative w-full rounded-3xl bg-zinc-950 border border-zinc-800 shadow-sm overflow-hidden h-[300px] md:h-[500px] lg:h-[600px] touch-pan-y">
+            <div className="group relative w-full rounded-3xl bg-zinc-950 border border-zinc-800 shadow-sm overflow-hidden h-[300px] md:h-[450px] lg:h-[500px] touch-pan-y">
                 {/* Viewport - Must have overflow-hidden for Embla */}
                 <div className="h-full w-full cursor-grab active:cursor-grabbing overflow-hidden" ref={emblaRef}>
                     <div className="flex h-full">
