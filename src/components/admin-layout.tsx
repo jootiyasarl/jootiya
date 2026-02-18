@@ -1,9 +1,9 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   Users,
@@ -18,7 +18,8 @@ import {
   Menu,
   PanelLeft,
   Star,
-  LifeBuoy
+  LifeBuoy,
+  Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -30,6 +31,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/lib/supabaseClient";
+import { toast } from "sonner";
 
 export interface AdminLayoutProps {
   children: ReactNode;
@@ -133,6 +136,45 @@ function AdminSidebarNav({ collapsed, onItemClick }: AdminSidebarNavProps) {
 export function AdminLayout({ children }: AdminLayoutProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [adminData, setAdminData] = useState<{ name: string; email: string } | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    async function getAdminData() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('full_name')
+          .eq('id', user.id)
+          .single();
+        
+        setAdminData({
+          name: profile?.full_name || 'Admin',
+          email: user.email || ''
+        });
+      }
+    }
+    getAdminData();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      
+      toast.success("Déconnexion réussie");
+      router.push("/login");
+      router.refresh();
+    } catch (error: any) {
+      console.error("Logout error:", error);
+      toast.error("Erreur lors de la déconnexion");
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
   return (
     <div className="flex min-h-screen bg-zinc-950 text-zinc-50">
@@ -253,22 +295,36 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                 <DropdownMenu>
                   <DropdownMenuTrigger className="flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900 px-2 py-1.5 text-left text-xs md:text-sm">
                     <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-sky-500 text-[11px] font-semibold text-zinc-950">
-                      SA
+                      {adminData?.name?.charAt(0).toUpperCase() || "A"}
                     </div>
                     <div className="hidden flex-col text-xs text-zinc-100 sm:flex">
-                      <span className="font-medium">Super Admin</span>
+                      <span className="font-medium">{adminData?.name || "Chargement..."}</span>
                       <span className="text-[11px] text-zinc-400">
-                        superadmin@jootiya.com
+                        {adminData?.email || ""}
                       </span>
                     </div>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="mt-2 min-w-[190px] border-zinc-800 bg-zinc-950 text-zinc-50">
                     <DropdownMenuLabel>Compte</DropdownMenuLabel>
-                    <DropdownMenuItem>Profil</DropdownMenuItem>
-                    <DropdownMenuItem>Facturation</DropdownMenuItem>
+                    <DropdownMenuItem 
+                      className="cursor-pointer"
+                      onClick={() => router.push("/dashboard/profile")}
+                    >
+                      Profil
+                    </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem className="text-red-400">
-                      Déconnexion
+                    <DropdownMenuItem 
+                      className="text-red-400 focus:text-red-400 cursor-pointer"
+                      onClick={() => !isLoggingOut && handleLogout()}
+                    >
+                      {isLoggingOut ? (
+                        <div className="flex items-center">
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          <span>Déconnexion...</span>
+                        </div>
+                      ) : (
+                        "Déconnexion"
+                      )}
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
