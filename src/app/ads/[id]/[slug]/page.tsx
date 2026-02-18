@@ -135,9 +135,12 @@ export default async function AdPage({ params }: AdPageProps) {
   // 1. Fetch Main Ad by ID (The slug in URL is for SEO, but ID is the source of truth)
   const { data: adData, error } = await supabase
     .from("ads")
-    .select(
-      "id, title, description, price, currency, city, neighborhood, created_at, image_urls, category, status, views_count, seller_id, slug, condition, phone, latitude, longitude, profiles(phone, full_name, avatar_url, created_at)"
-    )
+    .select(`
+      id, title, description, price, currency, city, neighborhood, created_at, 
+      image_urls, category, status, views_count, seller_id, slug, condition, phone, 
+      latitude, longitude, 
+      profiles:seller_id (phone, full_name, avatar_url, created_at)
+    `)
     .eq("id", id)
     .single();
 
