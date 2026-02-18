@@ -63,6 +63,23 @@ export default function RootLayout({
   return (
     <html lang="fr" dir="ltr" className="scroll-smooth bg-white" suppressHydrationWarning prefix="og: https://ogp.me/ns#">
       <head>
+        <style dangerouslySetInnerHTML={{ __html: `
+          :root { --primary: 25 95% 53%; --background: 0 0% 100%; --foreground: 222 47% 11%; }
+          .dark { --background: 224 71% 4%; --foreground: 213 31% 91%; }
+          body { background-color: hsl(var(--background)); color: hsl(var(--foreground)); font-family: sans-serif; }
+          .sticky { position: sticky; }
+          .top-0 { top: 0; }
+          .z-40 { z-index: 40; }
+          .bg-white { background-color: #fff; }
+          .border-b { border-bottom-width: 1px; }
+          .flex { display: flex; }
+          .items-center { align-items: center; }
+          .justify-between { justify-content: space-between; }
+          .h-16 { height: 4rem; }
+          .mx-auto { margin-left: auto; margin-right: auto; }
+          .max-w-7xl { max-width: 80rem; }
+          .px-4 { padding-left: 1rem; padding-right: 1rem; }
+        `}} />
         {/* 1. أوراق الاعتماد السيادية */}
         <meta name="google-adsense-account" content="ca-pub-4945284817184050" />
         <meta name="google-adsense-platform-account" content="ca-host-pub-6129854895232620" />
