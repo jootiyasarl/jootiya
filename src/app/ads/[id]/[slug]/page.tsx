@@ -139,10 +139,10 @@ export default async function AdPage({ params }: AdPageProps) {
       id, title, description, price, currency, city, neighborhood, created_at, 
       image_urls, category, status, views_count, seller_id, slug, condition, phone, 
       latitude, longitude, 
-      profiles:seller_id (phone, full_name, avatar_url, created_at)
+      profiles (phone, full_name, avatar_url, created_at)
     `)
-    .eq("id", id)
-    .single();
+    .or(`id.eq.${id},slug.eq.${id}`)
+    .maybeSingle();
 
   const ad = adData as any;
 
