@@ -29,7 +29,10 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Jootiya - Le n°1 de l'achat et de la vente au Maroc",
+  title: {
+    template: "%s | Jootiya",
+    default: "Jootiya - Le n°1 de l'achat et de la vente au Maroc",
+  },
   description: "Jootiya, la première plateforme au Maroc pour acheter et vendre en toute sécurité.",
   manifest: "/manifest.json",
   icons: {
