@@ -198,7 +198,7 @@ export default function Footer() {
                 <div className="pt-12 grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 border-t border-zinc-800/20 mt-10">
                     <div className="bg-white/5 rounded-[2rem] p-5 md:p-8 border border-white/10 text-right" dir="rtl">
                         <h4 className="text-white text-sm font-black mb-4 flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-orange-500"></span>
+                            <span className="w-2 h-2 rounded-full bg-orange-500" aria-hidden="true"></span>
                             مواقيت الصلاة وأخبار السوق
                         </h4>
                         <p className="text-[11px] md:text-xs text-zinc-500 mb-6 leading-relaxed">
@@ -215,7 +215,7 @@ export default function Footer() {
                     </div>
                     <div className="bg-white/5 rounded-[2rem] p-5 md:p-8 border border-white/10 text-right" dir="rtl">
                         <h4 className="text-white text-sm font-black mb-4 flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                            <span className="w-2 h-2 rounded-full bg-blue-500" aria-hidden="true"></span>
                             حالة الطقس في المغرب
                         </h4>
                         <p className="text-[11px] md:text-xs text-zinc-500 mb-6 leading-relaxed">
