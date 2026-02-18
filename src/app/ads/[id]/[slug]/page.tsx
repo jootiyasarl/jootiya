@@ -53,6 +53,7 @@ export async function generateMetadata({ params }: AdPageProps) {
       .maybeSingle();
 
     if (error || !ad) {
+      console.log(`[Metadata] Ad not found for identifier: ${id}`);
       return { 
         title: "Petites Annonces au Maroc | Jootiya",
         description: "Achetez et vendez en toute sécurité sur Jootiya."
@@ -62,14 +63,12 @@ export async function generateMetadata({ params }: AdPageProps) {
     const citySuffix = ad.city ? ` à ${ad.city}` : "";
     const formattedPrice = ad.price ? ` - ${Number(ad.price).toLocaleString()} ${ad.currency || 'MAD'}` : "";
     
-    // Construct robust metadata values
     const metaTitle = `${ad.title}${formattedPrice}${citySuffix}`;
     const metaDescription = ad.description ? ad.description.slice(0, 160) : `Découvrez ${ad.title} sur Jootiya.`;
     
     const adSlug = ad.slug || urlSlug || generateSlug(ad.title);
     const canonicalUrl = `${baseUrl}/ads/${ad.id}/${adSlug}`;
     
-    // Image MUST be absolute for WhatsApp
     let shareImage = `${baseUrl}/og-image.png`; 
     const rawImage = (ad.image_urls?.[0] || ad.images?.[0]);
 
@@ -93,7 +92,7 @@ export async function generateMetadata({ params }: AdPageProps) {
         title: metaTitle,
         description: metaDescription,
         url: canonicalUrl,
-        siteName: 'Jootiya Marketplace',
+        siteName: 'Jootiya',
         images: [
           {
             url: shareImage,
@@ -114,8 +113,13 @@ export async function generateMetadata({ params }: AdPageProps) {
         images: [shareImage],
         site: '@jootiya',
       },
+      other: {
+        'twitter:image:alt': ad.title,
+        'og:image:alt': ad.title,
+      }
     };
   } catch (err) {
+    console.error("[Metadata] Error generating metadata:", err);
     return {
       title: "Petites Annonces au Maroc | Jootiya",
       description: "Achetez et vendez en toute sécurité sur Jootiya."
