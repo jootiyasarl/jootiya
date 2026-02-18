@@ -48,19 +48,24 @@ export default function AdminAdsPage() {
       console.log("Fetched ads data:", data?.[0]); // Debug first item
 
       // Map DB ads to AdminAd type
-      const mappedAds: AdminAd[] = (data || []).map((ad: any) => ({
-        id: ad.id,
-        title: ad.title,
-        location: ad.neighborhood ? `${ad.neighborhood}, ${ad.city}` : ad.city || "Maroc",
-        category: ad.category,
-        status: ad.status,
-        price: ad.price,
-        currency: ad.currency,
-        is_featured: false,
-        created_at: ad.created_at,
-        image_url: ad.image_urls?.[0] || null,
-        seller: ad.profiles, // Profiles is the object returned by Supabase
-      }));
+      const mappedAds: AdminAd[] = (data || []).map((ad: any) => {
+        // Handle seller profile which might be an object or an array depending on Supabase mapping
+        const profile = Array.isArray(ad.profiles) ? ad.profiles[0] : ad.profiles;
+        
+        return {
+          id: ad.id,
+          title: ad.title,
+          location: ad.neighborhood ? `${ad.neighborhood}, ${ad.city}` : ad.city || "Maroc",
+          category: ad.category,
+          status: ad.status,
+          price: ad.price,
+          currency: ad.currency,
+          is_featured: false,
+          created_at: ad.created_at,
+          image_url: ad.image_urls?.[0] || null,
+          seller: profile || null,
+        };
+      });
 
       setAds(mappedAds);
     } catch (err) {
