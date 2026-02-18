@@ -4,7 +4,15 @@ import { createSupabaseServerClient, getServerUser } from "@/lib/supabase-server
 import { Button } from "@/components/ui/button";
 import { AdImageGallery } from "@/components/ads/AdImageGallery";
 import { ContactActions } from "@/components/ads/ContactActions";
-import { AdLocationMap } from "@/components/ads/AdLocationMap";
+import dynamicImport from "next/dynamic";
+
+const AdLocationMap = dynamicImport(
+  () => import("@/components/ads/AdLocationMap").then((mod) => mod.AdLocationMap),
+  { 
+    ssr: false, 
+    loading: () => <div className="h-[400px] w-full bg-zinc-100 animate-pulse rounded-2xl flex items-center justify-center text-zinc-400 text-xs font-bold uppercase tracking-widest">Chargement de la carte...</div> 
+  }
+);
 import { AdCard } from "@/components/AdCard";
 import { RecentReviews } from "@/components/ads/RecentReviews";
 import { ReportModal } from "@/components/ads/ReportModal";
