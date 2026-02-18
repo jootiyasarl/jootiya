@@ -29,7 +29,7 @@ export default function AdminUsersPage() {
         const { data, error: profilesError } = await supabase
           .from("profiles")
           .select(
-            "id, full_name, city, phone, role, is_verified, is_banned, created_at",
+            "id, full_name, city, phone, role, is_verified, is_banned, created_at, avatar_url",
           )
           .order("created_at", { ascending: false })
           .returns<AdminUser[]>();

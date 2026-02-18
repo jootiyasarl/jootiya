@@ -1,4 +1,5 @@
 import type React from "react";
+import Image from "next/image";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,6 +20,7 @@ export interface AdminUser {
   is_verified: boolean | null;
   is_banned: boolean | null;
   created_at: string | null;
+  avatar_url?: string | null;
 }
 
 export interface UsersTableFilters {
@@ -202,21 +204,40 @@ export function UsersTable({
                 return (
                   <TableRow key={user.id} className="border-zinc-800/60">
                     <TableCell className="align-top text-sm text-zinc-50">
-                      <div className="flex flex-col gap-1">
-                        <div className="flex items-center gap-2">
-                          <span className="line-clamp-1 text-sm font-medium">
-                            {user.full_name || "No name"}
-                          </span>
-                          <span className="rounded-full bg-zinc-900 px-2 py-0.5 text-[10px] font-mono text-zinc-400">
-                            {user.id.slice(0, 6)}
-                          </span>
+                      <div className="flex items-center gap-3">
+                        {/* Avatar */}
+                        <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-full border border-zinc-800 bg-zinc-900">
+                          {user.avatar_url ? (
+                            <Image
+                              src={user.avatar_url}
+                              alt={user.full_name || "User"}
+                              width={40}
+                              height={40}
+                              className="h-full w-full object-cover"
+                            />
+                          ) : (
+                            <div className="flex h-full w-full items-center justify-center text-xs font-bold text-zinc-600">
+                              {user.full_name?.charAt(0).toUpperCase() || "U"}
+                            </div>
+                          )}
                         </div>
-                        <p className="text-[11px] text-zinc-500">
-                          {user.phone || "No phone"}
-                        </p>
-                        <p className="text-[11px] text-zinc-500">
-                          Joined {formatDate(user.created_at)}
-                        </p>
+
+                        <div className="flex flex-col gap-1">
+                          <div className="flex items-center gap-2">
+                            <span className="line-clamp-1 text-sm font-medium">
+                              {user.full_name || "No name"}
+                            </span>
+                            <span className="rounded-full bg-zinc-900 px-2 py-0.5 text-[10px] font-mono text-zinc-400">
+                              {user.id.slice(0, 6)}
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-zinc-500">
+                            {user.phone || "No phone"}
+                          </p>
+                          <p className="text-[11px] text-zinc-500">
+                            Joined {formatDate(user.created_at)}
+                          </p>
+                        </div>
                       </div>
                     </TableCell>
 
