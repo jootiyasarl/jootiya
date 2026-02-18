@@ -128,7 +128,7 @@ export function UsersTable({
     <div className="space-y-4">
       <div className="flex flex-col gap-3 md:flex-row md:items-end">
         <div className="flex-1 space-y-1.5">
-          <Label className="text-xs text-zinc-400">Search</Label>
+          <Label className="text-xs text-zinc-500 dark:text-zinc-400">Search</Label>
           <Input
             placeholder="Search by name, city, phone, or ID"
             value={filters.query}
@@ -138,7 +138,7 @@ export function UsersTable({
         </div>
 
         <div className="w-full space-y-1.5 md:w-64">
-          <Label className="text-xs text-zinc-400">Role</Label>
+          <Label className="text-xs text-zinc-500 dark:text-zinc-400">Role</Label>
           <Select value={filters.role} onValueChange={handleRoleFilterChange}>
             <SelectTrigger className="h-9 border-zinc-800 bg-zinc-900/60 text-xs text-zinc-100">
               <span className="truncate text-left text-xs">
@@ -227,14 +227,14 @@ export function UsersTable({
                             <span className="line-clamp-1 text-sm font-medium">
                               {user.full_name || "No name"}
                             </span>
-                            <span className="rounded-full bg-zinc-900 px-2 py-0.5 text-[10px] font-mono text-zinc-400">
+                            <span className="rounded-full bg-zinc-900 px-2 py-0.5 text-[10px] font-mono text-zinc-500">
                               {user.id.slice(0, 6)}
                             </span>
                           </div>
-                          <p className="text-[11px] text-zinc-500">
+                          <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
                             {user.phone || "No phone"}
                           </p>
-                          <p className="text-[11px] text-zinc-500">
+                          <p className="text-[11px] text-zinc-500 dark:text-zinc-400">
                             Joined {formatDate(user.created_at)}
                           </p>
                         </div>

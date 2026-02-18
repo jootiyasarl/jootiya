@@ -103,7 +103,7 @@ export function DashboardSidebar({ onItemClick }: DashboardSidebarProps) {
       <nav className="flex-1 overflow-y-auto py-8 px-4 space-y-9 no-scrollbar">
         {sections.map((section, idx) => (
           <div key={idx} className="space-y-3">
-            <h3 className="px-3 text-[11px] font-black uppercase tracking-[0.2em] text-zinc-400 dark:text-zinc-500">
+            <h3 className="px-3 text-[11px] font-black uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-400">
               {section.title}
             </h3>
             <div className="space-y-1">
@@ -120,7 +120,7 @@ export function DashboardSidebar({ onItemClick }: DashboardSidebarProps) {
                       "flex items-center justify-between group rounded-xl px-3 py-2.5 text-sm font-bold transition-all duration-200 select-none active:scale-[0.97]",
                       isActive
                         ? "bg-orange-600 text-white shadow-lg shadow-orange-100 dark:shadow-none"
-                        : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-100"
+                        : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-900 dark:hover:text-zinc-100"
                     )}
                   >
                     <div className="flex items-center gap-3">
@@ -157,7 +157,7 @@ export function DashboardSidebar({ onItemClick }: DashboardSidebarProps) {
               </div>
               <h4 className="text-sm font-black uppercase tracking-wider">Passer au Pro</h4>
             </div>
-            <p className="text-[11px] text-zinc-400 leading-relaxed mb-4">
+            <p className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed mb-4">
               Boostez vos ventes avec des analyses détaillées et une visibilité prioritaire.
             </p>
             <button
