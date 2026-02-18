@@ -18,6 +18,8 @@ import { supabase } from "@/lib/supabaseClient";
 
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { Camera, User, Loader2 } from "lucide-react";
+import Image from "next/image";
 
 interface PersonalInfoForm {
   name: string;
@@ -25,6 +27,7 @@ interface PersonalInfoForm {
   city: string;
   email?: string;
   push_enabled: boolean;
+  avatar_url?: string;
 }
 
 interface PasswordForm {
@@ -51,6 +54,7 @@ export function ProfileForm() {
   const [savingProfile, setSavingProfile] = useState(false);
   const [changingPassword, setChangingPassword] = useState(false);
   const [deletingAccount, setDeletingAccount] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
@@ -91,7 +95,7 @@ export function ProfileForm() {
 
         const { data: profile, error: profileError } = await supabase
           .from("profiles")
-          .select("full_name, phone, city, push_enabled")
+          .select("full_name, phone, city, push_enabled, avatar_url")
           .eq("id", user.id)
           .maybeSingle();
 
@@ -102,6 +106,7 @@ export function ProfileForm() {
             phone: profile.phone ?? "",
             city: profile.city ?? "",
             push_enabled: profile.push_enabled ?? true,
+            avatar_url: profile.avatar_url ?? "",
           };
         }
 
@@ -146,6 +151,7 @@ export function ProfileForm() {
             phone: personalInfo.phone,
             city: personalInfo.city,
             email: personalInfo.email,
+            avatar_url: personalInfo.avatar_url,
             updated_at: new Date().toISOString(),
           },
           { onConflict: "id" },
@@ -234,6 +240,57 @@ export function ProfileForm() {
     }
   }
 
+  async function handleAvatarUpload(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file || !userId) return;
+
+    // Basic validation
+    if (!file.type.startsWith('image/')) {
+      toast.error("Veuillez sélectionner une image valide.");
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) { // 2MB limit
+      toast.error("L'image est trop volumineuse (max 2MB).");
+      return;
+    }
+
+    setUploadingAvatar(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${userId}-${Math.random()}.${fileExt}`;
+      const filePath = `avatars/${fileName}`;
+
+      // 1. Upload to Supabase Storage
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      // 2. Get Public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
+
+      // 3. Update Profile locally and in DB
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ avatar_url: publicUrl })
+        .eq('id', userId);
+
+      if (updateError) throw updateError;
+
+      setPersonalInfo(prev => ({ ...prev, avatar_url: publicUrl }));
+      toast.success("Photo de profil mise à jour.");
+    } catch (err: any) {
+      console.error("Error uploading avatar:", err);
+      toast.error("Échec du téléchargement de l'image.");
+    } finally {
+      setUploadingAvatar(false);
+    }
+  }
+
   return (
     <div className="space-y-8">
       {error ? (
@@ -251,6 +308,86 @@ export function ProfileForm() {
         onSubmit={handleProfileSubmit}
         className="rounded-2xl border bg-white p-4 sm:p-6"
       >
+        <div className="flex flex-col gap-6 mb-8 border-b pb-8">
+          <div className="flex flex-col gap-1">
+            <h2 className="text-sm font-semibold text-zinc-900">
+              Photo de profil
+            </h2>
+            <p className="text-xs text-zinc-500">
+              Ajoutez une photo pour inspirer confiance à vos acheteurs.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-6">
+            <div className="relative group">
+              <div className="h-24 w-24 rounded-full border-4 border-zinc-50 bg-zinc-100 overflow-hidden flex items-center justify-center shadow-sm">
+                {personalInfo.avatar_url ? (
+                  <Image 
+                    src={personalInfo.avatar_url} 
+                    alt="Avatar" 
+                    width={96} 
+                    height={96} 
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <User className="h-10 w-10 text-zinc-300" />
+                )}
+                
+                {uploadingAvatar && (
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-full">
+                    <Loader2 className="h-6 w-6 text-white animate-spin" />
+                  </div>
+                )}
+              </div>
+              
+              <label 
+                htmlFor="avatar-upload" 
+                className="absolute -bottom-1 -right-1 h-8 w-8 bg-orange-600 rounded-full flex items-center justify-center text-white shadow-lg cursor-pointer hover:bg-orange-700 transition-colors"
+              >
+                <Camera className="h-4 w-4" />
+                <input 
+                  type="file" 
+                  id="avatar-upload" 
+                  className="hidden" 
+                  accept="image/*"
+                  onChange={handleAvatarUpload}
+                  disabled={uploadingAvatar}
+                />
+              </label>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <p className="text-[11px] text-zinc-400 max-w-[200px]">
+                Format JPG, PNG ou WebP. Max 2MB.
+              </p>
+              {personalInfo.avatar_url && (
+                <button
+                  type="button"
+                  onClick={async () => {
+                    setUploadingAvatar(true);
+                    try {
+                      const { error } = await supabase
+                        .from('profiles')
+                        .update({ avatar_url: null })
+                        .eq('id', userId);
+                      if (error) throw error;
+                      setPersonalInfo(prev => ({ ...prev, avatar_url: "" }));
+                      toast.success("Photo supprimée.");
+                    } catch (e) {
+                      toast.error("Échec de la suppression.");
+                    } finally {
+                      setUploadingAvatar(false);
+                    }
+                  }}
+                  className="text-[11px] font-bold text-red-500 hover:text-red-600 text-left"
+                >
+                  Supprimer la photo
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+
         <div className="flex flex-col gap-1">
           <h2 className="text-sm font-semibold text-zinc-900">
             Personal information
