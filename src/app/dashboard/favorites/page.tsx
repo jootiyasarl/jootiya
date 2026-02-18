@@ -88,8 +88,8 @@ export default async function FavoritesPage() {
                 </div>
             ) : (
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                    {mappedAds.map((ad: any) => (
-                        <AdCard key={ad.id} ad={ad} />
+                    {mappedAds.map((ad: any, index: number) => (
+                        <AdCard key={ad.id} ad={ad} priority={index < 4} />
                     ))}
                 </div>
             )}

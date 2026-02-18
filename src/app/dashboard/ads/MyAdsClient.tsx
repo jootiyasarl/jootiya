@@ -257,11 +257,14 @@ export function MyAdsClient({
             ) : (
                 <div className="space-y-4">
                     <div className="md:hidden space-y-3">
-                        {ads.map((ad) => (
+                        {ads.map((ad, index) => (
                             <AdCard
                                 key={ad.id}
                                 ad={ad}
-                                onEdit={() => handleEdit(ad)}
+                                priority={index < 4}
+                                footerSlot={
+                                    () => handleEdit(ad)
+                                }
                                 onDelete={() => handleRequestDelete(ad)}
                             />
                         ))}
