@@ -11,11 +11,14 @@ import {
     Sparkles, Info, Star, Laptop, Package, Armchair, Hammer, Gamepad2, PawPrint, BookOpen
 } from 'lucide-react';
 import Image from 'next/image';
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 
 const AdLocationPicker = dynamic(
     () => import('./AdLocationPicker').then((mod) => mod.AdLocationPicker),
-    { ssr: false, loading: () => <div className="h-[300px] w-full bg-zinc-100 animate-pulse rounded-2xl" /> }
+    { 
+        ssr: false, 
+        loading: () => <div className="h-[300px] w-full bg-zinc-100 animate-pulse rounded-2xl flex items-center justify-center text-zinc-400 text-xs font-bold uppercase tracking-widest">Chargement de la carte...</div> 
+    }
 );
 
 import { Button } from '@/components/ui/button';
