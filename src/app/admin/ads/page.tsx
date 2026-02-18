@@ -42,8 +42,10 @@ export default function AdminAdsPage() {
             full_name,
             avatar_url
           )
-        `)
-        .order("created_at", { ascending: false });
+        `);
+      
+      // Removed .order("created_at", { ascending: false }) temporarily to test if it's causing issues
+      // and changed back to standard select to ensure RLS/Views are not an issue.
 
       if (error) {
         console.error("Supabase Error fetching ads:", error);
