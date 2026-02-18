@@ -313,7 +313,7 @@ export default async function AdPage({ params }: AdPageProps) {
           <div className="lg:col-span-8 space-y-8">
 
             {/* Image Gallery Component */}
-            <section className="rounded-3xl overflow-hidden shadow-sm bg-white dark:bg-zinc-900">
+            <section className="rounded-3xl overflow-hidden shadow-sm bg-white dark:bg-zinc-900 lg:sticky lg:top-24">
               <AdImageGallery images={images} />
             </section>
 
