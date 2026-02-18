@@ -21,6 +21,10 @@ export interface AdminAd {
   currency: string | null;
   is_featured: boolean | null;
   created_at: string | null;
+  seller?: {
+    full_name: string | null;
+    avatar_url: string | null;
+  };
 }
 
 export interface AdsTableFilters {
@@ -285,18 +289,43 @@ export function AdsTable({
                 return (
                   <TableRow key={ad.id} className="border-zinc-800/60">
                     <TableCell className="align-top text-sm text-zinc-50">
-                      <div className="flex flex-col gap-1">
-                        <div className="flex items-center gap-2">
-                          <span className="line-clamp-2 text-sm font-medium">
-                            {ad.title}
-                          </span>
-                          <span className="rounded-full bg-zinc-900 px-2 py-0.5 text-[10px] font-mono text-zinc-400">
-                            {ad.id.slice(0, 6)}
-                          </span>
+                      <div className="flex flex-col gap-2">
+                        <div className="flex items-center gap-3">
+                          {/* Seller Avatar */}
+                          <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-full border border-zinc-800 bg-zinc-900">
+                            {ad.seller?.avatar_url ? (
+                              <img
+                                src={ad.seller.avatar_url}
+                                alt={ad.seller.full_name || "Seller"}
+                                className="h-full w-full object-cover"
+                              />
+                            ) : (
+                              <div className="flex h-full w-full items-center justify-center text-[10px] font-bold text-zinc-600">
+                                {ad.seller?.full_name?.charAt(0).toUpperCase() || "U"}
+                              </div>
+                            )}
+                          </div>
+                          
+                          <div className="flex flex-col gap-0.5">
+                            <div className="flex items-center gap-2">
+                              <span className="line-clamp-1 text-sm font-medium">
+                                {ad.title}
+                              </span>
+                              <span className="rounded-full bg-zinc-900 px-2 py-0.5 text-[10px] font-mono text-zinc-400">
+                                {ad.id.slice(0, 6)}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-[11px] font-semibold text-orange-500/90">
+                                {ad.seller?.full_name || "Utilisateur Jootiya"}
+                              </span>
+                              <span className="text-[10px] text-zinc-600">•</span>
+                              <span className="text-[11px] text-zinc-500">
+                                Créée le {formatDate(ad.created_at)}
+                              </span>
+                            </div>
+                          </div>
                         </div>
-                        <span className="text-[11px] text-zinc-500">
-                          Créée le {formatDate(ad.created_at)}
-                        </span>
                       </div>
                     </TableCell>
 

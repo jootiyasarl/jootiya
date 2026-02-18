@@ -25,7 +25,21 @@ export default function AdminAdsPage() {
     try {
       const { data, error } = await supabase
         .from("ads")
-        .select("id, title, city, neighborhood, category, status, price, currency, created_at")
+        .select(`
+          id, 
+          title, 
+          city, 
+          neighborhood, 
+          category, 
+          status, 
+          price, 
+          currency, 
+          created_at,
+          seller:profiles (
+            full_name,
+            avatar_url
+          )
+        `)
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -35,12 +49,13 @@ export default function AdminAdsPage() {
         id: ad.id,
         title: ad.title,
         location: ad.neighborhood ? `${ad.neighborhood}, ${ad.city}` : ad.city || "Maroc",
-        category: ad.category, // Ensure your DB has this or you mocked it
+        category: ad.category,
         status: ad.status,
         price: ad.price,
         currency: ad.currency,
-        is_featured: false, // Default or fetch if exists
+        is_featured: false,
         created_at: ad.created_at,
+        seller: ad.seller,
       }));
 
       setAds(mappedAds);
