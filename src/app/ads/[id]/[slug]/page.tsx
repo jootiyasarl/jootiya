@@ -324,6 +324,39 @@ export default async function AdPage({ params }: AdPageProps) {
 
           <div className="lg:col-span-8 space-y-8 flex flex-col min-w-0 order-1 lg:order-none relative">
 
+            {/* Mobile Title & Price (Moved Above Image for immediate visibility) */}
+            <div className="lg:hidden space-y-4 px-1">
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-0.5 rounded-md bg-orange-100 text-orange-700 text-[10px] font-black uppercase tracking-wider">
+                    {ad.category}
+                  </span>
+                  {ad.condition === 'new' && (
+                    <span className="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase tracking-wider">
+                      Neuf
+                    </span>
+                  )}
+                </div>
+                <h1 className="text-2xl font-black leading-tight text-zinc-900 dark:text-zinc-100">{ad.title}</h1>
+              </div>
+              
+              <div className="flex items-baseline gap-2">
+                <div className="text-3xl font-black text-orange-600">{formattedPrice}</div>
+                {ad.price && <span className="text-xs text-zinc-400 font-bold uppercase">TTC</span>}
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 py-4 border-y border-zinc-100 dark:border-zinc-800">
+                <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+                  <MapPin className="h-4 w-4 text-orange-500" />
+                  <span className="font-bold">{ad.city}</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+                  <Clock className="h-4 w-4 text-orange-500" />
+                  <span className="font-bold">{formattedDate}</span>
+                </div>
+              </div>
+            </div>
+
             {/* Unified Title for Desktop (Top Header) */}
             <div className="hidden lg:block mb-4 px-1 relative z-20">
               <div className="flex items-center gap-2 mb-3">
