@@ -25,15 +25,11 @@ import {
   AlertTriangle,
   Award,
   Sparkles,
-  Star,
-  Clock,
-  ShieldAlert,
-  ArrowRight
+  Star
 } from "lucide-react";
 import { QuickActionFooter } from "@/components/ads/QuickActionFooter";
 import Image from "next/image";
 import { generateSlug } from "@/lib/seo-utils";
-import { cn } from "@/lib/utils";
 
 export const revalidate = 3600; // Revalidate every hour
 
@@ -52,7 +48,7 @@ export async function generateMetadata({ params }: AdPageProps) {
   try {
     const { data: ad, error } = await supabase
       .from("ads")
-      .select("title, city, description, image_urls, price, currency, images, slug, id")
+      .select("title, city, description, image_urls, price, currency, slug, id")
       .or(`id.eq.${id},slug.eq.${id}`)
       .maybeSingle();
 
@@ -74,7 +70,7 @@ export async function generateMetadata({ params }: AdPageProps) {
     const canonicalUrl = `${baseUrl}/ads/${ad.id}/${adSlug}`;
     
     let shareImage = `${baseUrl}/og-image.png`; 
-    const rawImage = (ad.image_urls?.[0] || ad.images?.[0]);
+    const rawImage = ad.image_urls?.[0];
 
     if (rawImage) {
       if (rawImage.startsWith('http')) {
@@ -217,7 +213,11 @@ export default async function AdPage({ params }: AdPageProps) {
     console.error("Error fetching similar ads:", err);
   }
 
-  const images = ad.image_urls || [];
+  const images = (ad.image_urls && Array.isArray(ad.image_urls) && ad.image_urls.length > 0) 
+    ? ad.image_urls 
+    : (ad.images && Array.isArray(ad.images) && ad.images.length > 0) 
+      ? ad.images 
+      : [];
   const formattedPrice = ad.price
     ? Number(ad.price).toLocaleString() + " " + (ad.currency?.trim() || "MAD")
     : "Sur demande";
@@ -241,38 +241,13 @@ export default async function AdPage({ params }: AdPageProps) {
   const canonicalUrl = `${baseUrl}/ads/${ad.id}/${adSlug}`;
   
   let shareImage = `${baseUrl}/og-image.png`; 
-  const rawImage = (ad.image_urls?.[0] || ad.images?.[0]);
+  const rawImage = ad.image_urls?.[0];
   if (rawImage) {
     shareImage = rawImage.startsWith('http') ? rawImage : `${baseUrl}/${rawImage.startsWith('/') ? rawImage.substring(1) : rawImage}`;
   }
 
   return (
     <>
-      {/* 
-        FAILSAFE: Injected Meta Tags 
-        This ensures that scrapers see the metadata even if Next.js metadata API 
-        is being overridden by a parent layout or delayed.
-      */}
-      <head>
-        <title>{metaTitle}</title>
-        <meta name="description" content={metaDescription} />
-        <link rel="canonical" href={canonicalUrl} />
-        
-        {/* Open Graph */}
-        <meta property="og:title" content={metaTitle} />
-        <meta property="og:description" content={metaDescription} />
-        <meta property="og:url" content={canonicalUrl} />
-        <meta property="og:image" content={shareImage} />
-        <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="Jootiya" />
-        
-        {/* Twitter */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={metaTitle} />
-        <meta name="twitter:description" content={metaDescription} />
-        <meta name="twitter:image" content={shareImage} />
-      </head>
-
       <div dir="ltr" className="min-h-screen bg-[#F8FAFC] dark:bg-zinc-950 pb-32 font-sans text-zinc-900 dark:text-zinc-100">
 
       {/* Top Header / Breadcrumbs */}
@@ -320,73 +295,65 @@ export default async function AdPage({ params }: AdPageProps) {
 
           {/* Main Content Area */}
           <div className="flex-1 w-full min-w-0">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start relative">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
 
-          <div className="lg:col-span-8 space-y-8 flex flex-col min-w-0 order-1 lg:order-none relative">
-
-            {/* Unified Title for Desktop (Top Header) */}
-            <div className="hidden lg:block mb-4 px-1 relative z-20">
-              <div className="flex items-center gap-2 mb-3">
-                <span className="px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-[11px] font-black uppercase tracking-widest">
-                  {ad.category}
-                </span>
-                {ad.condition === 'new' && (
-                  <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-[11px] font-black uppercase tracking-widest">
-                    Neuf
-                  </span>
-                )}
-              </div>
-              <h1 className="text-4xl font-black leading-tight text-zinc-900 dark:text-zinc-100 tracking-tight">{ad.title}</h1>
-            </div>
+          {/* Column Left: Media & Details (8/12) */}
+          <div className="lg:col-span-8 space-y-8">
 
             {/* Image Gallery Component */}
-            <section className="rounded-3xl overflow-hidden shadow-sm bg-white dark:bg-zinc-900 lg:sticky lg:top-24 z-10">
+            <section className="rounded-3xl overflow-hidden shadow-sm bg-white dark:bg-zinc-900 lg:sticky lg:top-24">
               <AdImageGallery images={images} />
             </section>
 
-            {/* Description Card */}
-            <div className="rounded-[2.5rem] bg-white dark:bg-zinc-900 p-8 shadow-sm border border-zinc-100 dark:border-zinc-800 sm:p-10 relative overflow-hidden z-0">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 rounded-bl-[100px] -mr-8 -mt-8" />
-              
-              <h2 className="text-xl font-black flex items-center gap-3 mb-8 text-zinc-900 dark:text-zinc-100 uppercase tracking-tight">
-                <div className="w-10 h-10 rounded-2xl bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
-                  <Sparkles className="w-5 h-5 text-orange-600" />
-                </div>
-                Description détaillée
-              </h2>
+            {/* Mobile Title & Price (Visible only on mobile) */}
+            <div className="lg:hidden space-y-3 px-1">
+              <div className="flex items-start justify-between gap-4">
+                <h1 className="text-2xl font-bold leading-tight sm:text-3xl text-zinc-900 dark:text-zinc-100">{ad.title}</h1>
+                <div className="text-xl font-black text-orange-600 whitespace-nowrap">{formattedPrice}</div>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-zinc-500">
+                <MapPin className="h-4 w-4" />
+                <span>{ad.city}, {ad.neighborhood || "Maroc"}</span>
+                <span className="w-1 h-1 rounded-full bg-zinc-300" />
+                <span>{formattedDate}</span>
+              </div>
+            </div>
 
-              <div className="prose prose-zinc dark:prose-invert max-w-none">
-                <p className="whitespace-pre-wrap leading-relaxed text-zinc-600 dark:text-zinc-400 text-base md:text-lg font-medium">
-                  {ad.description || "Aucune description fournie."}
-                </p>
+            {/* Description Card */}
+            <div className="rounded-3xl bg-white dark:bg-zinc-900 p-6 shadow-sm border border-zinc-100 dark:border-zinc-800 sm:p-8">
+              <h2 className="text-lg font-bold flex items-center gap-2 mb-6 text-zinc-900 dark:text-zinc-100">
+                <Sparkles className="w-5 h-5 text-orange-500" />
+                Description
+              </h2>
+              <div className="prose prose-zinc prose-p:text-zinc-600 prose-headings:text-zinc-900 max-w-none">
+                <p className="whitespace-pre-wrap leading-relaxed text-[15px]">{ad.description || "Aucune description fournie."}</p>
               </div>
 
-              {/* Specs Grid - Enhanced */}
-              <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 pt-10 border-t border-zinc-100 dark:border-zinc-800">
-                <div className="group p-5 rounded-[2rem] bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-800 transition-all hover:bg-white dark:hover:bg-zinc-800 hover:shadow-xl hover:shadow-zinc-200/50 dark:hover:shadow-none hover:-translate-y-1">
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 block mb-2">Catégorie</span>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-orange-500" />
-                    <p className="font-black text-zinc-900 dark:text-zinc-100 text-sm uppercase tracking-tight">{ad.category || "Autre"}</p>
-                  </div>
+              {/* Specs Grid */}
+              <div className="mt-10 grid grid-cols-2 gap-4 pt-8 border-t border-zinc-50 sm:grid-cols-3">
+                <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700">
+                  <span className="text-[10px] uppercase tracking-wider text-zinc-400 font-bold block mb-1">Catégorie</span>
+                  <p className="font-semibold text-zinc-900 dark:text-zinc-100 text-sm">{ad.category || "Autre"}</p>
                 </div>
-
-                <div className="group p-5 rounded-[2rem] bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-800 transition-all hover:bg-white dark:hover:bg-zinc-800 hover:shadow-xl hover:shadow-zinc-200/50 dark:hover:shadow-none hover:-translate-y-1">
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 block mb-2">État de l'objet</span>
-                  <div className="flex items-center gap-2">
-                    <div className={cn("w-2 h-2 rounded-full", ad.condition === 'new' ? "bg-emerald-500" : "bg-amber-500")} />
-                    <p className="font-black text-zinc-900 dark:text-zinc-100 text-sm uppercase tracking-tight">
-                      {ad.condition === 'new' ? "Neuf" : "Occasion"}
-                    </p>
-                  </div>
+                <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700">
+                  <span className="text-[10px] uppercase tracking-wider text-zinc-400 font-bold block mb-1">État</span>
+                  <p className="font-semibold text-zinc-900 dark:text-zinc-100 text-sm flex items-center gap-1.5">
+                    {ad.condition === 'new' ? (
+                      <>
+                        <span className="w-2 h-2 rounded-full bg-green-500" /> Neuf
+                      </>
+                    ) : (
+                      <>
+                        <span className="w-2 h-2 rounded-full bg-amber-500" /> Occasion
+                      </>
+                    )}
+                  </p>
                 </div>
-
-                <div className="group p-5 rounded-[2rem] bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-100 dark:border-zinc-800 transition-all hover:bg-white dark:hover:bg-zinc-800 hover:shadow-xl hover:shadow-zinc-200/50 dark:hover:shadow-none hover:-translate-y-1">
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400 block mb-2">Popularité</span>
-                  <div className="flex items-center gap-2">
-                    <Eye className="w-4 h-4 text-orange-500" />
-                    <p className="font-black text-zinc-900 dark:text-zinc-100 text-sm uppercase tracking-tight">{ad.views_count || 1} Vues</p>
-                  </div>
+                <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700">
+                  <span className="text-[10px] uppercase tracking-wider text-zinc-400 font-bold block mb-1">Vues</span>
+                  <p className="font-semibold text-zinc-900 dark:text-zinc-100 text-sm flex items-center gap-1.5">
+                    <Eye className="w-3.5 h-3.5 text-zinc-400" /> {ad.views_count || 1}
+                  </p>
                 </div>
               </div>
             </div>
@@ -413,21 +380,19 @@ export default async function AdPage({ params }: AdPageProps) {
           </div>
 
           {/* Column Right: Sticky Sidebar (4/12) */}
-          <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-24 h-fit min-w-0 order-2 lg:order-none">
+          <div className="lg:col-span-4 space-y-6">
 
-            {/* Primary Details Card (Desktop - PRICE ONLY NOW) */}
+            {/* Primary Details Card (Desktop) */}
             <div className="hidden lg:block rounded-3xl bg-white dark:bg-zinc-900 p-8 shadow-sm border border-zinc-100 dark:border-zinc-800">
-              <div className="flex items-center gap-2 text-sm text-zinc-500 mb-6">
+              <h1 className="text-2xl font-bold leading-tight mb-2 text-zinc-900 dark:text-zinc-100">{ad.title}</h1>
+              <div className="flex items-center gap-2 text-sm text-zinc-500 mb-8">
                 <MapPin className="h-4 w-4" />
-                <span className="font-bold">{ad.city}</span>
+                <span>{ad.city}</span>
                 <span className="text-zinc-300">•</span>
-                <span className="font-bold">{formattedDate}</span>
+                <span>{formattedDate}</span>
               </div>
 
-              <div className="text-4xl font-black text-orange-600 mb-8 tracking-tight">
-                {formattedPrice}
-                {ad.price && <span className="ml-2 text-xs text-zinc-400 font-bold uppercase">TTC</span>}
-              </div>
+              <div className="text-4xl font-black text-zinc-900 dark:text-zinc-100 mb-8 tracking-tight">{formattedPrice}</div>
 
               <div className="space-y-4">
                 <ContactActions
@@ -441,48 +406,48 @@ export default async function AdPage({ params }: AdPageProps) {
 
             {/* Verified Seller Card */}
             <div className="rounded-3xl bg-white dark:bg-zinc-900 p-6 shadow-sm border border-zinc-100 dark:border-zinc-800 relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-orange-50 dark:bg-orange-900/10 rounded-bl-[80px] -mr-4 -mt-4 z-0 transition-transform group-hover:scale-110" />
+              <div className="absolute top-0 right-0 w-24 h-24 bg-orange-50 rounded-bl-[80px] -mr-4 -mt-4 z-0 transition-transform group-hover:scale-110" />
 
               <div className="relative z-10 flex items-center gap-4 mb-6">
-                <div className="h-16 w-16 rounded-full bg-zinc-100 dark:bg-zinc-800 border-2 border-white dark:border-zinc-700 shadow-md flex items-center justify-center text-xl font-bold text-zinc-400 overflow-hidden">
+                <div className="h-16 w-16 rounded-full bg-zinc-100 border-2 border-white shadow-md flex items-center justify-center text-xl font-bold text-zinc-400 overflow-hidden">
                   {sellerProfile?.avatar_url ? (
                     <Image src={sellerProfile.avatar_url} alt={sellerName} width={64} height={64} className="w-full h-full object-cover" />
                   ) : (
-                    <span className="text-zinc-500 dark:text-zinc-400">{sellerInitial}</span>
+                    sellerInitial
                   )}
                 </div>
                 <div>
-                  <h3 className="font-black text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5 uppercase tracking-tight">
+                  <h3 className="font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
                     {sellerName}
                     {isTrusted && (
-                      <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-[10px] text-blue-700 dark:text-blue-400 font-extrabold tracking-wide border border-blue-200 dark:border-blue-800">
+                      <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-blue-100 text-[10px] text-blue-700 font-extrabold tracking-wide border border-blue-200">
                         <Award className="w-3 h-3" />
                         TOP
                       </span>
                     )}
                   </h3>
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400 font-bold">Membre depuis {memberSince}</p>
+                  <p className="text-xs text-zinc-500 font-medium">Membre depuis {memberSince}</p>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3 relative z-10">
-                <div className="bg-zinc-50 dark:bg-zinc-800/50 p-3 rounded-2xl text-center border border-zinc-100 dark:border-zinc-800">
+                <div className="bg-zinc-50 dark:bg-zinc-800 p-3 rounded-2xl text-center border border-zinc-100 dark:border-zinc-700">
                   <span className="block text-lg font-black text-zinc-900 dark:text-zinc-100">100%</span>
-                  <span className="text-[10px] text-zinc-400 dark:text-zinc-500 uppercase font-black tracking-widest">Réponse</span>
+                  <span className="text-[10px] text-zinc-400 uppercase font-bold tracking-wider">Réponse</span>
                 </div>
-                <div className="bg-zinc-50 dark:bg-zinc-800/50 p-3 rounded-2xl text-center border border-zinc-100 dark:border-zinc-800">
+                <div className="bg-zinc-50 dark:bg-zinc-800 p-3 rounded-2xl text-center border border-zinc-100 dark:border-zinc-700">
                   <span className="block text-lg font-black text-zinc-900 dark:text-zinc-100 flex items-center justify-center gap-1">
                     {avgRating > 0 ? avgRating : '-'}
                     <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
                   </span>
-                  <span className="text-[10px] text-zinc-400 dark:text-zinc-500 uppercase font-black tracking-widest">{totalReviews} Avis</span>
+                  <span className="text-[10px] text-zinc-400 uppercase font-bold tracking-wider">{totalReviews} Avis</span>
                 </div>
               </div>
 
-              <div className="mt-6 pt-4 border-t border-zinc-50 dark:border-zinc-800 text-center">
-                <Link href={`/profile/${ad.seller_id}`} className="group/link text-xs font-black text-orange-600 dark:text-orange-500 uppercase tracking-widest flex items-center justify-center gap-2 hover:opacity-80 transition-opacity">
+              <div className="mt-6 pt-4 border-t border-zinc-50 text-center">
+                <Link href={`/profile/${ad.seller_id}`} className="text-xs font-bold text-orange-600 hover:underline flex items-center justify-center gap-1">
                   Voir le profil complet
-                  <ArrowRight className="w-3 h-3 transition-transform group-hover/link:translate-x-1" />
+                  <ChevronRight className="w-3 h-3" />
                 </Link>
               </div>
             </div>

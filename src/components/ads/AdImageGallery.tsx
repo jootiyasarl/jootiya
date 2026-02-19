@@ -93,107 +93,85 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
 
     return (
         <div className="flex flex-col gap-4">
-            {/* Main Slider Container */}
-            <div className="group relative w-full rounded-3xl bg-zinc-950 border border-zinc-800 shadow-sm overflow-hidden h-[300px] md:h-[450px] lg:h-[500px] touch-pan-y">
-                {/* Viewport - Must have overflow-hidden for Embla */}
+            {/* Clean Modern Slider Layout */}
+            <div className="group relative w-full rounded-[2.5rem] bg-zinc-50 dark:bg-zinc-900 border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm overflow-hidden h-[400px] md:h-[500px] lg:h-[600px] touch-pan-y">
+                {/* Viewport */}
                 <div className="h-full w-full cursor-grab active:cursor-grabbing overflow-hidden" ref={emblaRef}>
                     <div className="flex h-full">
-                        {images.map((src, index) => {
-                            const blurUrl = getSafeBlurUrl(src);
-                            return (
-                                <div key={index} className="relative h-full w-full flex-[0_0_100%] min-w-0 flex items-center justify-center bg-zinc-900/20">
-                                    <div className="relative w-full h-full p-2 flex items-center justify-center">
-                                        <Image
-                                            src={getOptimizedImageUrl(src, { width: 1200, height: 900, quality: 85 })}
-                                            alt={`Product view ${index + 1}`}
-                                            fill
-                                            placeholder={blurUrl ? "blur" : "empty"}
-                                            blurDataURL={blurUrl || undefined}
-                                            priority={index === 0}
-                                            className="object-contain"
-                                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
-                                            onClick={() => setIsLightboxOpen(true)}
-                                        />
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-
-                {/* Mobile Pagination Dots */}
-                {images.length > 1 && (
-                    <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-1.5 md:hidden">
-                        {images.map((_, i) => (
-                            <div
-                                key={i}
-                                className={cn(
-                                    "h-1.5 rounded-full transition-all duration-300",
-                                    currentIndex === i ? "w-4 bg-white shadow-md" : "w-1.5 bg-white/50"
-                                )}
-                            />
+                        {images.map((src, index) => (
+                            <div key={index} className="relative h-full w-full flex-[0_0_100%] min-w-0 flex items-center justify-center">
+                                <Image
+                                    src={getOptimizedImageUrl(src, { width: 1200, height: 900, quality: 95 })}
+                                    alt={`Product view ${index + 1}`}
+                                    fill
+                                    priority={index === 0}
+                                    className="object-contain p-4 md:p-8"
+                                    sizes="(max-width: 768px) 100vw, 70vw"
+                                    onClick={() => setIsLightboxOpen(true)}
+                                />
+                            </div>
                         ))}
                     </div>
-                )}
-
-                {/* Numerical Counter */}
-                <div className="absolute right-4 bottom-4 rounded-xl bg-black/60 px-3 py-1.5 text-[10px] font-black text-white backdrop-blur-md pointer-events-none uppercase tracking-widest border border-white/10">
-                    {currentIndex + 1} / {images.length}
                 </div>
 
-                {/* Desktop Navigation Arrows */}
+                {/* Navigation Arrows */}
                 {images.length > 1 && (
                     <>
                         <button
                             onClick={scrollPrev}
-                            className="absolute left-4 top-1/2 hidden -translate-y-1/2 rounded-full bg-white/90 p-3 text-zinc-800 shadow-xl backdrop-blur-md transition-all hover:bg-white active:scale-95 group-hover:flex md:flex"
+                            className="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-2xl bg-white/90 dark:bg-zinc-800/90 flex items-center justify-center text-zinc-900 dark:text-zinc-100 shadow-xl backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all hover:bg-white dark:hover:bg-zinc-700 z-20"
                         >
-                            <ChevronLeft className="h-5 w-5" />
+                            <ChevronLeft className="h-6 w-6" />
                         </button>
                         <button
                             onClick={scrollNext}
-                            className="absolute right-4 top-1/2 hidden -translate-y-1/2 rounded-full bg-white/90 p-3 text-zinc-800 shadow-xl backdrop-blur-md transition-all hover:bg-white active:scale-95 group-hover:flex md:flex"
+                            className="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-2xl bg-white/90 dark:bg-zinc-800/90 flex items-center justify-center text-zinc-900 dark:text-zinc-100 shadow-xl backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all hover:bg-white dark:hover:bg-zinc-700 z-20"
                         >
-                            <ChevronRight className="h-5 w-5" />
+                            <ChevronRight className="h-6 w-6" />
                         </button>
                     </>
                 )}
 
-                {/* Full Screen Trigger */}
-                <button
-                    onClick={() => setIsLightboxOpen(true)}
-                    className="absolute left-4 bottom-4 rounded-full bg-white/90 p-2.5 text-zinc-800 shadow-xl backdrop-blur-md transition-all hover:bg-white active:scale-95 z-10 hidden md:flex"
-                >
-                    <Maximize2 className="h-5 w-5" />
-                </button>
+                {/* Counter & Zoom Badge */}
+                <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between pointer-events-none">
+                    <button
+                        onClick={() => setIsLightboxOpen(true)}
+                        className="pointer-events-auto w-10 h-10 rounded-xl bg-white/90 dark:bg-zinc-800/90 flex items-center justify-center text-zinc-900 dark:text-zinc-100 shadow-lg backdrop-blur-md border border-white/20"
+                    >
+                        <Maximize2 className="h-5 w-5" />
+                    </button>
+                    <div className="px-4 py-2 rounded-xl bg-black/60 backdrop-blur-md text-[10px] font-black text-white uppercase tracking-[0.2em] border border-white/10">
+                        {currentIndex + 1} / {images.length}
+                    </div>
+                </div>
             </div>
 
-            {/* Thumbnails Row (Airbnb Style) */}
+            {/* Premium Thumbnails Row */}
             {images.length > 1 && (
-                <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide md:grid md:grid-cols-5 md:overflow-visible">
+                <div className="flex gap-3 overflow-x-auto pb-4 pt-2 scrollbar-hide px-1">
                     {images.map((image, index) => (
                         <button
                             key={index}
                             onClick={() => emblaApi?.scrollTo(index)}
                             className={cn(
-                                "relative aspect-square w-20 flex-shrink-0 overflow-hidden rounded-2xl border-2 transition-all md:w-full bg-zinc-900/5",
+                                "relative aspect-square w-20 md:w-24 flex-shrink-0 overflow-hidden rounded-2xl border-2 transition-all duration-300",
                                 currentIndex === index
-                                    ? "border-orange-600 scale-95"
-                                    : "border-transparent opacity-60 hover:opacity-100"
+                                    ? "border-orange-500 shadow-lg shadow-orange-500/20 scale-105"
+                                    : "border-transparent opacity-50 hover:opacity-100 hover:scale-105"
                             )}
                         >
                             <Image
                                 src={getOptimizedImageUrl(image, { width: 150, height: 150 })}
                                 alt={`Thumbnail ${index + 1}`}
                                 fill
-                                className="object-contain"
+                                className="object-cover"
                             />
                         </button>
                     ))}
                 </div>
             )}
 
-            {/* Lightbox Modal - Using Portal for Absolute Top Level Rendering */}
+            {/* Lightbox Modal */}
             {isLightboxOpen && typeof document !== "undefined" && createPortal(
                 <div className="fixed inset-0 z-[999999] flex flex-col bg-black/95 backdrop-blur-sm animate-in fade-in duration-300">
                     <div className="flex items-center justify-between p-4 md:p-6 z-[1000001] bg-gradient-to-b from-black/80 to-transparent absolute top-0 left-0 right-0">

@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { PlusCircle } from "lucide-react";
-import { UnifiedSearchBar } from "@/components/search/UnifiedSearchBar";
+import { SimpleSearchBar } from "@/components/search/SimpleSearchBar";
 import { DesktopActions } from "./DesktopActions";
 import { MobileMenu } from "./MobileMenu";
 import { getServerUser } from "@/lib/supabase-server";
 import { NavbarLogo } from "./NavbarLogo";
+import { HeaderCategories } from "./HeaderCategories";
 
 export default async function PublicNavbar() {
   const user = await getServerUser();
@@ -12,18 +13,18 @@ export default async function PublicNavbar() {
   const isAdmin = userEmail === "jootiyasarl@gmail.com";
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-800 shadow-sm">
+    <header className="fixed top-0 left-0 right-0 z-50 w-full bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md border-b border-zinc-100 dark:border-zinc-800 shadow-sm">
       <div className="mx-auto max-w-7xl px-4 md:px-6">
         {/* Main Nav Row */}
-        <div className="flex h-16 items-center justify-between gap-8 py-2 relative">
+        <div className="flex h-16 items-center justify-between gap-8 py-2 relative border-b border-zinc-50 dark:border-zinc-900/50">
           {/* Left: Logo (Centered on Mobile, Left on Desktop) */}
           <div className="flex items-center md:relative absolute left-1/2 md:left-0 -translate-x-1/2 md:translate-x-0 shrink-0">
             <NavbarLogo />
           </div>
 
-          {/* Center: Search Bar removed per user request */}
+          {/* Center: Search Bar */}
           <div className="hidden lg:flex flex-1 justify-center max-w-2xl px-4">
-            {/* UnifiedSearchBar removed */}
+            <SimpleSearchBar />
           </div>
 
           {/* Right: User Actions / Info */}
@@ -34,7 +35,7 @@ export default async function PublicNavbar() {
                 rel="nofollow"
                 aria-label="Déposer une annonce"
             >
-                <div className="rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-black h-10 px-5 text-[10px] uppercase tracking-wider shadow-lg shadow-orange-200/40 dark:shadow-orange-900/40 transition-all hover:scale-[1.03] active:scale-[0.97] flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap border border-orange-400/20">
+                <div className="rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-black h-9 px-4 text-[9px] uppercase tracking-wider shadow-lg shadow-orange-200/40 dark:shadow-orange-900/40 transition-all hover:scale-[1.03] active:scale-[0.97] flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap border border-orange-400/20">
                     <PlusCircle className="w-4 h-4 shrink-0" />
                     <span>Déposer une annonce</span>
                 </div>
@@ -48,7 +49,10 @@ export default async function PublicNavbar() {
           </div>
         </div>
 
-        {/* Mobile Unified Search Bar removed per user request */}
+        {/* Categories Row */}
+        <div className="hidden md:block">
+          <HeaderCategories />
+        </div>
       </div>
     </header>
   );
