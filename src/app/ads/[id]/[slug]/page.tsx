@@ -1,10 +1,16 @@
+import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createSupabaseServerClient, getServerUser } from "@/lib/supabase-server";
 import { Button } from "@/components/ui/button";
 import { AdImageGallery } from "@/components/ads/AdImageGallery";
 import { ContactActions } from "@/components/ads/ContactActions";
-import { AdLocationMapDynamic } from "@/components/ads/AdLocationMapDynamic";
+
+const AdLocationMapDynamic = dynamic(() => import("@/components/ads/AdLocationMapDynamic").then(mod => mod.AdLocationMapDynamic), {
+  ssr: false,
+  loading: () => <div className="h-[300px] w-full bg-zinc-100 animate-pulse rounded-2xl" />
+});
+
 import { AdCard } from "@/components/AdCard";
 import { RecentReviews } from "@/components/ads/RecentReviews";
 import { ReportModal } from "@/components/ads/ReportModal";
@@ -189,7 +195,7 @@ export default async function AdPage({ params }: AdPageProps) {
 
   const { data: reviews } = await supabase
     .from('reviews')
-    .select('id, rating, comment, created_at, profiles(full_name, avatar_url)')
+    .select('id, rating, comment, created_at, profiles!inner(full_name, avatar_url)')
     .eq('seller_id', ad.seller_id)
     .eq('status', 'approved')
     .order('created_at', { ascending: false })
@@ -248,7 +254,7 @@ export default async function AdPage({ params }: AdPageProps) {
 
   return (
     <>
-      <div dir="ltr" className="min-h-screen bg-[#F8FAFC] dark:bg-zinc-950 pb-32 font-sans text-zinc-900 dark:text-zinc-100 pt-10 md:pt-6">
+      <div dir="ltr" className="min-h-screen bg-[#F8FAFC] dark:bg-zinc-950 pb-32 font-sans text-zinc-900 dark:text-zinc-100 pt-10 md:pt-8">
 
       {/* Top Header / Breadcrumbs */}
       <div className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 z-40">
