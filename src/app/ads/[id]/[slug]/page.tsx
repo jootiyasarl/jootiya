@@ -248,7 +248,7 @@ export default async function AdPage({ params }: AdPageProps) {
 
   return (
     <>
-      <div dir="ltr" className="min-h-screen bg-[#F8FAFC] dark:bg-zinc-950 pb-32 font-sans text-zinc-900 dark:text-zinc-100 pt-4 md:pt-2">
+      <div dir="ltr" className="min-h-screen bg-[#F8FAFC] dark:bg-zinc-950 pb-32 font-sans text-zinc-900 dark:text-zinc-100 pt-10 md:pt-6">
 
       {/* Top Header / Breadcrumbs */}
       <div className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 z-40">
