@@ -94,7 +94,7 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
     return (
         <div className="flex flex-col gap-4">
             {/* Clean Modern Slider Layout */}
-            <div className="group relative w-full rounded-[2.5rem] bg-zinc-50 dark:bg-zinc-900 border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm overflow-hidden h-[400px] md:h-[500px] lg:h-[600px] touch-pan-y">
+            <div className="group relative w-full rounded-3xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200/50 dark:border-zinc-800/50 shadow-sm overflow-hidden aspect-[4/3] md:aspect-[16/10] touch-pan-y">
                 {/* Viewport */}
                 <div className="h-full w-full cursor-grab active:cursor-grabbing overflow-hidden" ref={emblaRef}>
                     <div className="flex h-full">
@@ -105,7 +105,7 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
                                     alt={`Product view ${index + 1}`}
                                     fill
                                     priority={index === 0}
-                                    className="object-contain p-4 md:p-8"
+                                    className="object-cover"
                                     sizes="(max-width: 768px) 100vw, 70vw"
                                     onClick={() => setIsLightboxOpen(true)}
                                 />
