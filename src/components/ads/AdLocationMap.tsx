@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import { MapPin, Navigation, ExternalLink, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getBrowserGeolocation } from "@/lib/adLocation";
@@ -100,7 +101,13 @@ export function AdLocationMap({ lat, lng, city, neighborhood }: AdLocationMapPro
                 rel="noopener noreferrer"
                 className="flex items-center justify-center w-full h-11 bg-zinc-900 hover:bg-zinc-800 text-white rounded-xl font-bold text-sm gap-2 transition-all shadow-lg shadow-zinc-200 active:scale-[0.98]"
             >
-                <img src="https://www.google.com/images/branding/product/ico/maps15_bnuw3a_32dp.ico" alt="Google Maps" className="w-5 h-5" />
+                <Image 
+                    src="https://www.google.com/images/branding/product/ico/maps15_bnuw3a_32dp.ico" 
+                    alt="Google Maps" 
+                    width={20} 
+                    height={20} 
+                    className="w-5 h-5" 
+                />
                 Ouvrir dans Google Maps
             </a>
 

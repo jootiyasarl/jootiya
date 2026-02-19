@@ -16,6 +16,9 @@ export interface HomepageAdCardProps {
   className?: string;
 }
 
+import Image from "next/image";
+import { getOptimizedImageUrl } from "@/lib/storageUtils";
+
 export function HomepageAdCard({
   imageUrl,
   title,
@@ -35,10 +38,12 @@ export function HomepageAdCard({
     >
       <div className="relative h-40 w-full bg-zinc-100">
         {imageUrl ? (
-          <img
-            src={imageUrl}
+          <Image
+            src={getOptimizedImageUrl(imageUrl, { width: 400, height: 300, quality: 75 })}
             alt={title}
-            className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-105"
+            fill
+            className="object-cover transition-transform duration-200 group-hover:scale-105"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-xs font-medium text-zinc-400">

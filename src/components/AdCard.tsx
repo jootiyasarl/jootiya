@@ -6,6 +6,22 @@ import Link from "next/link";
 import { Heart, User } from "lucide-react";
 import { FavoriteButton } from "./ads/FavoriteButton";
 import { generateSlug } from "@/lib/seo-utils";
+import { getOptimizedImageUrl } from "@/lib/storageUtils";
+
+// Optimized Image Component for Ad Cards
+const OptimizedAdImage = ({ src, alt, priority = false }: { src: string, alt: string, priority?: boolean }) => (
+  <div className="relative h-full w-full">
+    <Image
+      src={getOptimizedImageUrl(src, { width: 400, height: 400, quality: 75 })}
+      alt={alt}
+      fill
+      priority={priority}
+      className="object-cover transition-transform duration-500 group-hover:scale-105"
+      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+      loading={priority ? "eager" : "lazy"}
+    />
+  </div>
+);
 
 export type PublicAdCardAd = {
   id: string;
@@ -51,15 +67,10 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete, pr
         )}
         
         {ad.imageUrl ? (
-          <Image
-            src={ad.imageUrl}
-            alt={ad.title}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 320px"
-            quality={70}
-            loading={priority ? undefined : "lazy"}
-            priority={priority}
-            className="object-cover h-full w-full transition-transform duration-500 group-hover:scale-105"
+          <OptimizedAdImage 
+            src={ad.imageUrl} 
+            alt={ad.title} 
+            priority={priority} 
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-zinc-100 dark:bg-zinc-800 text-zinc-400">

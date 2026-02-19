@@ -7,6 +7,9 @@ import { cn } from "@/lib/utils";
 import { getBrowserGeolocation } from "@/lib/adLocation";
 import { fetchNearbyAds, type NearbyAd } from "@/lib/nearbyAds";
 
+import Image from "next/image";
+import { getOptimizedImageUrl } from "@/lib/storageUtils";
+
 export interface NearYouSectionProps {
   radiusKm?: number;
   maxItems?: number;
@@ -100,10 +103,12 @@ function NearbyAdCard({ ad, className }: NearbyAdCardProps) {
       <Link href={`/ads/${ad.id}`} className="flex flex-1 flex-col">
         <div className="relative h-36 w-full bg-zinc-100">
           {imageUrl ? (
-            <img
-              src={imageUrl}
+            <Image
+              src={getOptimizedImageUrl(imageUrl, { width: 400, height: 300, quality: 75 })}
               alt={ad.title}
-              className="h-full w-full object-cover"
+              fill
+              className="object-cover"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center text-xs font-medium text-zinc-400">

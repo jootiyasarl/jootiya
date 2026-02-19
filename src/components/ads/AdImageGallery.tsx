@@ -101,13 +101,14 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
                         {images.map((src, index) => (
                             <div key={index} className="relative h-full w-full flex-[0_0_100%] min-w-0 flex items-center justify-center">
                                 <Image
-                                    src={getOptimizedImageUrl(src, { width: 1200, height: 900, quality: 95 })}
+                                    src={getOptimizedImageUrl(src, { width: 1200, height: 900, quality: 75 })}
                                     alt={`Product view ${index + 1}`}
                                     fill
                                     priority={index === 0}
                                     className="object-cover"
                                     sizes="(max-width: 768px) 100vw, 70vw"
                                     onClick={() => setIsLightboxOpen(true)}
+                                    loading={index === 0 ? "eager" : "lazy"}
                                 />
                             </div>
                         ))}

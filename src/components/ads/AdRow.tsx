@@ -80,6 +80,9 @@ function formatPrice(price: number | null, currency: string | null) {
   return `${price} ${trimmedCurrency}`;
 }
 
+import Image from "next/image";
+import { getOptimizedImageUrl } from "@/lib/storageUtils";
+
 export function AdRow({ ad, canBoost = false, onEdit, onDelete, onBoost, onStatusUpdate }: AdRowProps) {
   const { label, badgeClass, dotClass } = getStatusMeta(ad.status);
   const priceLabel = formatPrice(ad.price, ad.currency);
@@ -92,12 +95,14 @@ export function AdRow({ ad, canBoost = false, onEdit, onDelete, onBoost, onStatu
     <tr className="border-b last:border-b-0">
       <td className="whitespace-nowrap py-3 pl-4 pr-3 text-sm sm:pl-0">
         <div className="flex items-center gap-3">
-          <div className="h-12 w-12 overflow-hidden rounded-md border bg-zinc-100">
+          <div className="h-12 w-12 overflow-hidden rounded-md border bg-zinc-100 relative">
             {thumbnail ? (
-              <img
-                src={thumbnail}
+              <Image
+                src={getOptimizedImageUrl(thumbnail, { width: 100, height: 100, quality: 75 })}
                 alt={ad.title}
-                className="h-full w-full object-cover"
+                fill
+                className="object-cover"
+                sizes="48px"
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center text-[10px] font-medium text-zinc-400">

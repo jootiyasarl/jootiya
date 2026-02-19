@@ -11,8 +11,11 @@ const AdLocationMapDynamic = dynamic(() => import("@/components/ads/AdLocationMa
   loading: () => <div className="h-[300px] w-full bg-zinc-100 animate-pulse rounded-2xl" />
 });
 
+const RecentReviews = dynamic(() => import("@/components/ads/RecentReviews").then(mod => mod.RecentReviews), {
+  ssr: false
+});
+
 import { AdCard } from "@/components/AdCard";
-import { RecentReviews } from "@/components/ads/RecentReviews";
 import { ReportModal } from "@/components/ads/ReportModal";
 import { ReportButton } from "@/components/ads/ReportButton";
 import { FavoriteButton } from "@/components/ads/FavoriteButton";

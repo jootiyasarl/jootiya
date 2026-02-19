@@ -5,6 +5,9 @@ import { createSupabaseBrowserClient } from "@/lib/supabase";
 import { Sparkles } from "lucide-react";
 import Link from "next/link";
 
+import Image from "next/image";
+import { getOptimizedImageUrl } from "@/lib/storageUtils";
+
 interface NoResultsFallbackProps {
     searchQuery?: string;
     category?: string;
@@ -103,10 +106,12 @@ export function NoResultsFallback({ searchQuery, category, city }: NoResultsFall
                                 {/* Image */}
                                 {ad.image_urls && ad.image_urls.length > 0 && (
                                     <div className="relative aspect-square">
-                                        <img
-                                            src={ad.image_urls[0]}
+                                        <Image
+                                            src={getOptimizedImageUrl(ad.image_urls[0], { width: 400, height: 400, quality: 75 })}
                                             alt={ad.title}
-                                            className="w-full h-full object-cover"
+                                            fill
+                                            className="object-cover"
+                                            sizes="(max-width: 640px) 100vw, 25vw"
                                         />
                                     </div>
                                 )}

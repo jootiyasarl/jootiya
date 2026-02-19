@@ -4,6 +4,9 @@ import { useState, useEffect, useRef } from "react";
 import type { MarketplaceSearchBarProps } from "@/types/components/marketplace";
 import { Search, Loader2 } from "lucide-react";
 
+import Image from "next/image";
+import { getOptimizedImageUrl } from "@/lib/storageUtils";
+
 interface AutocompleteSuggestion {
   id: string;
   title: string;
@@ -138,11 +141,15 @@ export function MarketplaceSearchBar({
                 }`}
             >
               {suggestion.image_url && (
-                <img
-                  src={suggestion.image_url}
-                  alt={suggestion.title}
-                  className="w-12 h-12 object-cover rounded-lg"
-                />
+                <div className="relative w-12 h-12 shrink-0">
+                  <Image
+                    src={getOptimizedImageUrl(suggestion.image_url, { width: 100, height: 100, quality: 75 })}
+                    alt={suggestion.title}
+                    fill
+                    className="object-cover rounded-lg"
+                    sizes="48px"
+                  />
+                </div>
               )}
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-zinc-900 truncate">
