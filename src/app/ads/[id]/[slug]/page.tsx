@@ -251,15 +251,17 @@ export default async function AdPage({ params }: AdPageProps) {
       <div dir="ltr" className="min-h-screen bg-[#F8FAFC] dark:bg-zinc-950 pb-32 font-sans text-zinc-900 dark:text-zinc-100">
 
       {/* Top Header / Breadcrumbs */}
-      <div className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 z-40 backdrop-blur-md bg-white/90 dark:bg-zinc-900/90 supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-zinc-900/60">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center justify-between text-sm">
-            <nav className="flex items-center gap-2 text-zinc-500 overflow-hidden">
+      <div className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 z-40">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <nav className="flex items-center gap-2 text-sm text-zinc-500 min-w-0">
               <Link href="/" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors flex-shrink-0">Accueil</Link>
               <ChevronRight className="h-4 w-4 flex-shrink-0" />
               <Link href="/marketplace" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors flex-shrink-0">Marché</Link>
               <ChevronRight className="h-4 w-4 flex-shrink-0" />
-              <span className="text-zinc-900 dark:text-zinc-100 font-medium truncate">{ad.title}</span>
+              <span className="text-zinc-900 dark:text-zinc-100 font-medium truncate">
+                {ad.title}
+              </span>
             </nav>
 
             <div className="flex items-center gap-3 flex-shrink-0">
