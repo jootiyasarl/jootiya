@@ -1,20 +1,11 @@
-import dynamic from "next/dynamic";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createSupabaseServerClient, getServerUser } from "@/lib/supabase-server";
 import { Button } from "@/components/ui/button";
 import { AdImageGallery } from "@/components/ads/AdImageGallery";
 import { ContactActions } from "@/components/ads/ContactActions";
-
-const AdLocationMapDynamic = dynamic(() => import("@/components/ads/AdLocationMapDynamic").then(mod => mod.AdLocationMapDynamic), {
-  ssr: false,
-  loading: () => <div className="h-[300px] w-full bg-zinc-100 animate-pulse rounded-2xl" />
-});
-
-const RecentReviews = dynamic(() => import("@/components/ads/RecentReviews").then(mod => mod.RecentReviews), {
-  ssr: false
-});
-
+import { AdLocationMapDynamic } from "@/components/ads/AdLocationMapDynamic";
+import { RecentReviews } from "@/components/ads/RecentReviews";
 import { AdCard } from "@/components/AdCard";
 import { ReportModal } from "@/components/ads/ReportModal";
 import { ReportButton } from "@/components/ads/ReportButton";
