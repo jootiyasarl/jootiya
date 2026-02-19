@@ -251,7 +251,7 @@ export default async function AdPage({ params }: AdPageProps) {
       <div dir="ltr" className="min-h-screen bg-[#F8FAFC] dark:bg-zinc-950 pb-32 font-sans text-zinc-900 dark:text-zinc-100">
 
       {/* Top Header / Breadcrumbs */}
-      <div className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 sticky top-0 z-40 backdrop-blur-md bg-white/90 dark:bg-zinc-900/90 supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-zinc-900/60">
+      <div className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 z-40 backdrop-blur-md bg-white/90 dark:bg-zinc-900/90 supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-zinc-900/60">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between text-sm">
             <nav className="flex items-center gap-2 text-zinc-500 overflow-hidden">
@@ -289,7 +289,7 @@ export default async function AdPage({ params }: AdPageProps) {
         <div className="flex flex-col xl:flex-row gap-6 justify-between items-start">
           
           {/* Left Ad Sidebar (Desktop Only) */}
-          <aside className="hidden xl:block w-[160px] sticky top-24 shrink-0 h-[600px] border border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl">
+          <aside className="hidden xl:block w-[160px] shrink-0 h-[600px] border border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl">
             {/* Google Adsense Code Here */}
           </aside>
 
@@ -301,7 +301,7 @@ export default async function AdPage({ params }: AdPageProps) {
           <div className="lg:col-span-8 space-y-8">
 
             {/* Image Gallery Component */}
-            <section className="rounded-3xl overflow-hidden shadow-sm bg-white dark:bg-zinc-900 lg:sticky lg:top-24">
+            <section className="rounded-3xl overflow-hidden shadow-sm bg-white dark:bg-zinc-900">
               <AdImageGallery images={images} />
             </section>
 
@@ -505,7 +505,7 @@ export default async function AdPage({ params }: AdPageProps) {
           </div>
 
           {/* Right Ad Sidebar (Desktop Only) */}
-          <aside className="hidden xl:block w-[160px] sticky top-24 shrink-0 h-[600px] border border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl">
+          <aside className="hidden xl:block w-[160px] shrink-0 h-[600px] border border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl">
             {/* Google Adsense Code Here */}
           </aside>
 
