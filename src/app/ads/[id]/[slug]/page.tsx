@@ -248,11 +248,11 @@ export default async function AdPage({ params }: AdPageProps) {
 
   return (
     <>
-      <div dir="ltr" className="min-h-screen bg-[#F8FAFC] dark:bg-zinc-950 pb-32 font-sans text-zinc-900 dark:text-zinc-100 pt-8 md:pt-4">
+      <div dir="ltr" className="min-h-screen bg-[#F8FAFC] dark:bg-zinc-950 pb-32 font-sans text-zinc-900 dark:text-zinc-100 pt-12 md:pt-10">
 
       {/* Top Header / Breadcrumbs */}
       <div className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 z-40">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-1">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-2">
           <div className="flex flex-wrap items-center justify-between gap-6">
             <nav className="flex flex-wrap items-center gap-2 text-sm text-zinc-500 min-w-0">
               <Link href="/" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors flex-shrink-0">Accueil</Link>
