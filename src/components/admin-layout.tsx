@@ -163,7 +163,13 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       }
     }
     getAdminData();
-  }, []);
+
+    // Force dark background on body for admin pages to eliminate white footer
+    document.body.style.backgroundColor = "#09090b"; // zinc-950
+    return () => {
+      document.body.style.backgroundColor = "";
+    };
+  }, [router]);
 
   const handleLogout = async () => {
     try {
