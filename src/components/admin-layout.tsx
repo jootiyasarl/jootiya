@@ -339,7 +339,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           </div>
         </header>
 
-        <main className="flex-1 px-4 py-4 md:px-6 md:py-6">
+        <main className="flex-1 px-4 py-4 md:px-6 md:py-6 bg-zinc-950">
           <div className="mx-auto max-w-6xl space-y-4">{children}</div>
         </main>
       </div>
