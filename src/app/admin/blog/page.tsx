@@ -40,14 +40,18 @@ export default function BlogAdminPage() {
     console.log("Starting auth check...");
     async function checkAdmin() {
       try {
-        const { data: { user }, error: userError } = await supabase.auth.getUser();
-        console.log("User:", user, "Error:", userError);
-        
-        if (userError || !user) {
-          console.log("No user found, redirecting to login");
+        // Force checking for a session first
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        console.log("Session:", session, "Session Error:", sessionError);
+
+        if (!session) {
+          console.log("No active session, redirecting to login");
           router.push("/login?redirectTo=/admin/blog");
           return;
         }
+
+        const user = session.user;
+        console.log("User from session:", user);
 
         const { data: profile, error: profileError } = await supabase
           .from("profiles")
@@ -55,22 +59,25 @@ export default function BlogAdminPage() {
           .eq("id", user.id)
           .maybeSingle();
 
-        console.log("Profile:", profile, "Error:", profileError);
+        console.log("Profile Data:", profile, "Profile Error:", profileError);
 
         if (profileError) throw profileError;
 
-        if (profile?.role !== "admin" && profile?.role !== "super_admin") {
-          console.log("Access denied: role is", profile?.role);
-          toast.error("Access denied. Admin only.");
+        const userRole = profile?.role?.trim().toLowerCase();
+        if (userRole !== "admin" && userRole !== "super_admin") {
+          console.log("Access denied: role is", userRole);
+          toast.error(`Access denied. Role: ${userRole || 'none'}`);
           router.push("/");
           return;
         }
 
-        console.log("Admin verified");
+        console.log("Admin verified successfully");
         setIsAdmin(true);
       } catch (err) {
         console.error("Auth check critical error:", err);
-        router.push("/");
+        toast.error("An error occurred during authentication");
+        // Don't redirect immediately to allow seeing logs if needed
+        // router.push("/"); 
       } finally {
         setCheckingAuth(false);
       }
