@@ -8,20 +8,32 @@ import { FavoriteButton } from "./ads/FavoriteButton";
 import { generateSlug } from "@/lib/seo-utils";
 import { getOptimizedImageUrl } from "@/lib/storageUtils";
 
+// Helper to ensure full URL for images
+const ensureFullUrl = (url: string | null) => {
+  if (!url) return '/placeholder-ad.png';
+  if (url.startsWith('http')) return url;
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://jootiya.com';
+  const cleanPath = url.startsWith('/') ? url.substring(1) : url;
+  return `${baseUrl}/${cleanPath}`;
+};
+
 // Optimized Image Component for Ad Cards
-const OptimizedAdImage = ({ src, alt, priority = false }: { src: string, alt: string, priority?: boolean }) => (
-  <div className="relative h-full w-full">
-    <Image
-      src={getOptimizedImageUrl(src, { width: 400, height: 400, quality: 75 })}
-      alt={alt}
-      fill
-      priority={priority}
-      className="object-cover transition-transform duration-500 group-hover:scale-105"
-      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-      loading={priority ? "eager" : "lazy"}
-    />
-  </div>
-);
+const OptimizedAdImage = ({ src, alt, priority = false }: { src: string, alt: string, priority?: boolean }) => {
+  const fullUrl = ensureFullUrl(src);
+  return (
+    <div className="relative h-full w-full">
+      <Image
+        src={getOptimizedImageUrl(fullUrl, { width: 400, height: 400, quality: 75 })}
+        alt={alt}
+        fill
+        priority={priority}
+        className="object-cover transition-transform duration-500 group-hover:scale-105"
+        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+        loading={priority ? "eager" : "lazy"}
+      />
+    </div>
+  );
+};
 
 export type PublicAdCardAd = {
   id: string;

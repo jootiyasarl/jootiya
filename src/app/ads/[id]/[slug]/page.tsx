@@ -213,11 +213,20 @@ export default async function AdPage({ params }: AdPageProps) {
     console.error("Error fetching similar ads:", err);
   }
 
-  const images = (ad.image_urls && Array.isArray(ad.image_urls) && ad.image_urls.length > 0) 
+  // 5. Image Processing Logic
+  // Check both image_urls and images fields to ensure no data is missed
+  const rawImages = (ad.image_urls && Array.isArray(ad.image_urls) && ad.image_urls.length > 0) 
     ? ad.image_urls 
     : (ad.images && Array.isArray(ad.images) && ad.images.length > 0) 
       ? ad.images 
       : [];
+
+  // Ensure all image URLs are properly formatted (full URLs)
+  const images = rawImages.map((img: string) => {
+    if (img.startsWith('http')) return img;
+    const cleanPath = img.startsWith('/') ? img.substring(1) : img;
+    return `${baseUrl}/${cleanPath}`;
+  });
   const formattedPrice = ad.price
     ? Number(ad.price).toLocaleString() + " " + (ad.currency?.trim() || "MAD")
     : "Sur demande";
