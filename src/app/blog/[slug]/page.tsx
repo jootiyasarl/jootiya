@@ -100,6 +100,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const { slug } = await params;
   const supabase = createSupabaseServerClient();
 
+  // 1. Try to fetch dynamic post from Supabase
   const { data: post } = await supabase
     .from("posts")
     .select("*")
@@ -117,7 +118,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       "dateModified": post.updated_at,
       "author": [{
           "@type": "Person",
-          "name": post.author_name,
+          "name": post.author_name || "L'équipe Jootiya",
           "url": "https://jootiya.com/about"
         }],
       "publisher": {
@@ -156,7 +157,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                 </Link>
                 <h1 className="text-3xl md:text-5xl font-black text-white leading-tight mb-6">{post.title}</h1>
                 <div className="flex flex-wrap items-center gap-6 text-white/90 text-sm md:text-base font-medium">
-                  <div className="flex items-center gap-2"><User className="h-4 w-4 text-orange-500" />{post.author_name}</div>
+                  <div className="flex items-center gap-2"><User className="h-4 w-4 text-orange-500" />{post.author_name || "L'équipe Jootiya"}</div>
                   <div className="flex items-center gap-2"><Calendar className="h-4 w-4 text-orange-500" />{formattedDate}</div>
                 </div>
               </div>
@@ -189,6 +190,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     );
   }
 
+  // 2. Handle hardcoded fallback logic
   if (slug === 'guide-entrepreneuriat-digital-maroc') {
     return (
       <article dir="ltr" className="min-h-screen bg-white pb-20 font-sans">
