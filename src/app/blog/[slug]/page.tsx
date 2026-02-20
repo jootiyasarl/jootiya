@@ -41,7 +41,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const { data: post, error } = await supabase
     .from("posts")
     .select("*")
-    .or(`slug.ilike.${decodedSlug},slug.ilike.${decodedSlug.replace(/,/g, '')},slug.ilike.${decodedSlug.replace(/ /g, '-')}`)
+    .or(`slug.ilike."${decodedSlug}",slug.ilike."${decodedSlug.replace(/,/g, '')}",slug.ilike."${decodedSlug.replace(/ /g, '-')}"`)
     .maybeSingle();
 
   // Debug section for Admin or development
