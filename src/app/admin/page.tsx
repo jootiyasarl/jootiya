@@ -1,4 +1,5 @@
 import { getAdminStats, getRecentActivity } from "@/lib/db/admin";
+import { getPageViewsStats } from "@/lib/db/analytics";
 import { AdminStats } from "@/components/admin/AdminStats";
 import { RecentActivity } from "@/components/admin/RecentActivity";
 import { DashboardCharts } from "@/components/dashboard/DashboardCharts";
@@ -12,17 +13,7 @@ export const metadata = {
 export default async function AdminPage() {
   const stats = await getAdminStats();
   const activity = await getRecentActivity();
-
-  // Mock analytics data for the last 7 days (would normally fetch from page_views)
-  const analyticsData = [
-    { date: '14 Feb', views: 450 },
-    { date: '15 Feb', views: 520 },
-    { date: '16 Feb', views: 480 },
-    { date: '17 Feb', views: 610 },
-    { date: '18 Feb', views: 590 },
-    { date: '19 Feb', views: 720 },
-    { date: '20 Feb', views: 850 },
-  ];
+  const analyticsData = await getPageViewsStats();
 
   return (
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
