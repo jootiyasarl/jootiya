@@ -37,53 +37,73 @@ export default function BlogAdminPage() {
   });
 
   useEffect(() => {
-    console.log("Starting auth check...");
+    console.log("DEBUG: Admin Blog Page mounted");
     async function checkAdmin() {
       try {
-        // Force checking for a session first
+        console.log("DEBUG: Fetching session...");
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        console.log("Session:", session, "Session Error:", sessionError);
+        
+        if (sessionError) {
+          console.error("DEBUG: Session error:", sessionError);
+          setCheckingAuth(false);
+          return;
+        }
 
         if (!session) {
-          console.log("No active session, redirecting to login");
+          console.log("DEBUG: No session, redirecting...");
           router.push("/login?redirectTo=/admin/blog");
           return;
         }
 
-        const user = session.user;
-        console.log("User from session:", user);
-
+        console.log("DEBUG: User ID:", session.user.id);
         const { data: profile, error: profileError } = await supabase
           .from("profiles")
           .select("role")
-          .eq("id", user.id)
+          .eq("id", session.user.id)
           .maybeSingle();
 
-        console.log("Profile Data:", profile, "Profile Error:", profileError);
-
-        if (profileError) throw profileError;
-
-        const userRole = profile?.role?.trim().toLowerCase();
-        if (userRole !== "admin" && userRole !== "super_admin") {
-          console.log("Access denied: role is", userRole);
-          toast.error(`Access denied. Role: ${userRole || 'none'}`);
-          router.push("/");
+        if (profileError) {
+          console.error("DEBUG: Profile error:", profileError);
+          setCheckingAuth(false);
           return;
         }
 
-        console.log("Admin verified successfully");
-        setIsAdmin(true);
+        console.log("DEBUG: Profile Role:", profile?.role);
+        const role = profile?.role?.toLowerCase();
+        if (role === "admin" || role === "super_admin") {
+          setIsAdmin(true);
+        } else {
+          console.log("DEBUG: Access denied for role:", role);
+          toast.error("Access denied. Admin only.");
+          router.push("/");
+        }
       } catch (err) {
-        console.error("Auth check critical error:", err);
-        toast.error("An error occurred during authentication");
-        // Don't redirect immediately to allow seeing logs if needed
-        // router.push("/"); 
+        console.error("DEBUG: Unexpected error:", err);
       } finally {
         setCheckingAuth(false);
       }
     }
     checkAdmin();
   }, [supabase, router]);
+
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-zinc-950 text-white">
+        <Loader2 className="h-8 w-8 animate-spin text-orange-600 mb-4" />
+        <p>Verifying Admin access...</p>
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-zinc-950 text-white p-4 text-center">
+        <h1 className="text-2xl font-bold text-red-500 mb-2">Access Denied</h1>
+        <p className="text-zinc-400 mb-6">You do not have the required permissions to view this page.</p>
+        <Button onClick={() => router.push("/")} className="bg-orange-600">Back to Home</Button>
+      </div>
+    );
+  }
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
