@@ -79,8 +79,9 @@ export const ImageUploader = ({ onUploadComplete, currentImage, label = "Image d
       const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
       const filePath = `blog/${fileName}`;
 
+      const bucketName = "images"; // Changed from blog_content to images
       const { data, error } = await supabase.storage
-        .from("blog_content")
+        .from(bucketName)
         .upload(filePath, file, {
           cacheControl: "3600",
           upsert: false
@@ -88,13 +89,13 @@ export const ImageUploader = ({ onUploadComplete, currentImage, label = "Image d
 
       if (error) {
         if (error.message.includes("bucket not found")) {
-          toast.error("Bucket 'blog_content' non trouvé. Veuillez le créer dans Supabase Storage.");
+          toast.error(`Bucket '${bucketName}' non trouvé. Veuillez le créer dans Supabase Storage.`);
         }
         throw error;
       }
 
       const { data: { publicUrl } } = supabase.storage
-        .from("blog_content")
+        .from(bucketName)
         .getPublicUrl(filePath);
 
       onUploadComplete(publicUrl);
