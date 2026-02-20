@@ -11,6 +11,7 @@ import { Loader2, Save, ArrowLeft, Globe, FileText, CheckCircle2, AlertCircle, P
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { generateSlug } from "@/lib/seo-utils";
+import { cn } from "@/lib/utils";
 
 const BlogEditor = dynamic(() => import("@/components/admin/blog/BlogEditor").then(mod => mod.BlogEditor), {
   ssr: false,
@@ -218,8 +219,8 @@ export default function BlogAdminPage() {
                     <Button variant="ghost" size="sm" onClick={() => handleEdit(post)} className="rounded-xl hover:bg-zinc-800 text-zinc-400 hover:text-white">
                       <Edit className="h-4 w-4" />
                     </Button>
-                    <Button asChild variant="ghost" size="sm" className="rounded-xl hover:bg-zinc-800 text-zinc-400 hover:text-white">
-                      <Link href={`/blog/${post.slug}`} target="_blank">
+                    <Button variant="ghost" size="sm" className="rounded-xl hover:bg-zinc-800 text-zinc-400 hover:text-white">
+                      <Link href={`/blog/${post.slug}`} target="_blank" className="flex items-center justify-center w-full h-full">
                         <ExternalLink className="h-4 w-4" />
                       </Link>
                     </Button>
