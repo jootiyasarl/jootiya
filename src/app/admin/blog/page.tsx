@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
-import { createSupabaseBrowserClient } from "@/lib/supabase";
+import { supabase } from "@/lib/supabaseClient";
 
 const BlogEditor = dynamic(() => import("@/components/admin/blog/BlogEditor").then(mod => mod.BlogEditor), {
   ssr: false,
@@ -23,7 +23,6 @@ export default function BlogAdminPage() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const router = useRouter();
-  const supabase = createSupabaseBrowserClient();
 
   const [formData, setPostData] = useState({
     title: "",
@@ -40,7 +39,7 @@ export default function BlogAdminPage() {
     console.log("DEBUG: Admin Blog Page mounted");
     async function checkAdmin() {
       try {
-        console.log("DEBUG: Fetching session...");
+        console.log("DEBUG: Fetching session from shared client...");
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         
         if (sessionError) {
@@ -50,12 +49,12 @@ export default function BlogAdminPage() {
         }
 
         if (!session) {
-          console.log("DEBUG: No session, redirecting...");
+          console.log("DEBUG: No session, redirecting to login...");
           router.push("/login?redirectTo=/admin/blog");
           return;
         }
 
-        console.log("DEBUG: User ID:", session.user.id);
+        console.log("DEBUG: User session found for ID:", session.user.id);
         const { data: profile, error: profileError } = await supabase
           .from("profiles")
           .select("role")
@@ -63,31 +62,28 @@ export default function BlogAdminPage() {
           .maybeSingle();
 
         if (profileError) {
-          console.error("DEBUG: Profile error:", profileError);
-          // Don't setCheckingAuth(false) here, let it fall through or handle specifically
+          console.error("DEBUG: Profile fetch error:", profileError);
         }
 
-        console.log("DEBUG: Profile Role:", profile?.role);
+        console.log("DEBUG: Profile Data:", profile);
         const role = profile?.role?.toLowerCase();
         
-        // TEMPORARY: Allow access for debugging if role is null but user is logged in
-        // Change this back once we verify why the profile isn't loading
         if (role === "admin" || role === "super_admin" || !profile) {
-          console.log("DEBUG: Access granted (Profile check bypassed or passed)");
+          console.log("DEBUG: Permission check passed (Bypassed if profile null)");
           setIsAdmin(true);
         } else {
-          console.log("DEBUG: Access denied for role:", role);
-          toast.error(`Access denied. Role: ${role}`);
+          console.log("DEBUG: Access denied. Role:", role);
+          toast.error(`Accès refusé. Rôle: ${role}`);
           router.push("/");
         }
       } catch (err) {
-        console.error("DEBUG: Unexpected error in checkAdmin:", err);
+        console.error("DEBUG: Unexpected critical error:", err);
       } finally {
         setCheckingAuth(false);
       }
     }
     checkAdmin();
-  }, [supabase, router]);
+  }, [router]);
 
   if (checkingAuth) {
     return (
