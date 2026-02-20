@@ -3,8 +3,10 @@
 import { v4 as uuidv4 } from 'uuid';
 
 export interface ShadowEvent {
-  type: 'search' | 'view';
+  type: 'search' | 'view' | 'category_visit';
   adId?: string;
+  categoryId?: string;
+  categoryName?: string;
   category?: string;
   query?: string;
   duration?: number;
@@ -13,7 +15,7 @@ export interface ShadowEvent {
 
 class ShadowTracker {
   private guestId: string | null = null;
-  private interests: Record<string, number> = {};
+  private categoryScores: Record<string, number> = {}; // categorySlug -> score
 
   constructor() {
     if (typeof window !== 'undefined') {
@@ -22,46 +24,45 @@ class ShadowTracker {
   }
 
   private init() {
-    // 1. Initial Setup: Check or create guest_id
+    // ... existing guestId logic ...
     const storedId = localStorage.getItem('_st_id');
     if (!storedId) {
       const newId = uuidv4();
-      this.guestId = btoa(newId); // Base64 encoding
+      this.guestId = btoa(newId);
       localStorage.setItem('_st_id', this.guestId);
     } else {
       this.guestId = storedId;
     }
 
-    // Load interests
-    const storedInterests = localStorage.getItem('_st_interests');
-    if (storedInterests) {
+    // Load Category Scores
+    const storedScores = localStorage.getItem('_st_scores');
+    if (storedScores) {
       try {
-        this.interests = JSON.parse(storedInterests);
+        this.categoryScores = JSON.parse(storedScores);
       } catch (e) {
-        this.interests = {};
+        this.categoryScores = {};
       }
     }
   }
 
-  // 2. Event Capture: Search and View
   public trackEvent(event: Omit<ShadowEvent, 'timestamp'>) {
     if (typeof window === 'undefined') return;
 
-    // Use requestIdleCallback to optimize performance (LCP protection)
     const track = () => {
       const shadowEvent: ShadowEvent = {
         ...event,
         timestamp: new Date().toISOString()
       };
 
-      // Store in buffer
       const buffer = JSON.parse(localStorage.getItem('_st_buffer') || '[]');
       buffer.push(shadowEvent);
       localStorage.setItem('_st_buffer', JSON.stringify(buffer));
 
-      // 3. Smart Profiling Logic: Detect interests
+      // 2. Weight System: Update scores based on category visits
       if (event.type === 'view' && event.category) {
-        this.updateInterests(event.category);
+        this.updateScore(event.category, 2); // View = 2 points
+      } else if (event.type === 'category_visit' && event.category) {
+        this.updateScore(event.category, 5); // Direct Category Visit = 5 points
       }
     };
 
@@ -72,12 +73,12 @@ class ShadowTracker {
     }
   }
 
-  private updateInterests(category: string) {
-    this.interests[category] = (this.interests[category] || 0) + 1;
-    localStorage.setItem('_st_interests', JSON.stringify(this.interests));
+  private updateScore(category: string, weight: number) {
+    this.categoryScores[category] = (this.categoryScores[category] || 0) + weight;
+    localStorage.setItem('_st_scores', JSON.stringify(this.categoryScores));
 
-    // If category seen > 3 times, it's an interest
-    if (this.interests[category] >= 3) {
+    // Smart Profiling: Add tag if score > 10
+    if (this.categoryScores[category] >= 10) {
       const tags = JSON.parse(localStorage.getItem('_st_tags') || '[]');
       const interestTag = `interest:${category.toLowerCase()}`;
       if (!tags.includes(interestTag)) {
@@ -85,6 +86,10 @@ class ShadowTracker {
         localStorage.setItem('_st_tags', JSON.stringify(tags));
       }
     }
+  }
+
+  public getCategoryScores() {
+    return this.categoryScores;
   }
 
   public getGuestId() {

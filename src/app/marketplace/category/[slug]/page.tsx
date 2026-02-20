@@ -3,8 +3,8 @@ import { getAds } from '@/lib/db/ads';
 import MarketplaceManager from '@/components/marketplace/MarketplaceManager';
 import { createSupabaseServerClient } from '@/lib/supabase-server';
 import { ListingSkeleton } from '@/components/ads/ListingSkeleton';
-import { HorizontalCategoriesBar } from '@/components/marketplace/HorizontalCategoriesBar';
-import { Metadata } from 'next';
+import { HorizontalCategoriesBar } from "@/components/marketplace/HorizontalCategoriesBar";
+import { ShadowCategoryTracker } from "@/components/ads/ShadowCategoryTracker";
 
 const CATEGORY_LABELS: Record<string, string> = {
     "electronics": "Électronique",
@@ -60,6 +60,7 @@ export default async function CategoryPage({
 
     return (
         <>
+            <ShadowCategoryTracker categorySlug={category} />
             <HorizontalCategoriesBar />
             
             <div className="min-h-screen bg-white dark:bg-zinc-950 pb-24 pt-4">
