@@ -1,12 +1,36 @@
-import Link from 'next/link';
-import Image from 'next/image';
-import { notFound } from 'next/navigation';
-import { ChevronLeft, Calendar, Tag, Share2 } from 'lucide-react';
+import { createSupabaseServerClient } from "@/lib/supabase-server";
+import { notFound } from "next/navigation";
+import Image from "next/image";
+import { ChevronLeft, Calendar, Tag, Share2, User, ArrowLeft } from 'lucide-react';
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+  const supabase = createSupabaseServerClient();
   
-    if (slug === 'guide-entrepreneuriat-digital-maroc') {
+  const { data: post } = await supabase
+    .from("posts")
+    .select("title, seo_title, excerpt, featured_image")
+    .eq("slug", slug)
+    .eq("status", "published")
+    .maybeSingle();
+
+  if (post) {
+    return {
+      title: post.seo_title || post.title,
+      description: post.excerpt,
+      openGraph: {
+        title: post.seo_title || post.title,
+        description: post.excerpt,
+        images: post.featured_image ? [{ url: post.featured_image }] : [],
+        type: 'article',
+      }
+    };
+  }
+  
+  // Fallback for hardcoded posts
+  if (slug === 'guide-entrepreneuriat-digital-maroc') {
     return {
       title: "Guide de l'Entrepreneuriat Digital au Maroc | Jootiya Blog",
       description: "Comment réussir son projet e-commerce au Maroc en 2026. Stratégies, marketing digital et scalabilité pour les entrepreneurs.",
@@ -74,6 +98,96 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+  const supabase = createSupabaseServerClient();
+
+  const { data: post } = await supabase
+    .from("posts")
+    .select("*")
+    .eq("slug", slug)
+    .eq("status", "published")
+    .maybeSingle();
+
+  if (post) {
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "NewsArticle",
+      "headline": post.seo_title || post.title,
+      "image": post.featured_image ? [post.featured_image] : [],
+      "datePublished": post.published_at || post.created_at,
+      "dateModified": post.updated_at,
+      "author": [{
+          "@type": "Person",
+          "name": post.author_name,
+          "url": "https://jootiya.com/about"
+        }],
+      "publisher": {
+        "@type": "Organization",
+        "name": "Jootiya",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://jootiya.com/logo.png"
+        }
+      }
+    };
+
+    const formattedDate = new Date(post.published_at || post.created_at).toLocaleDateString("fr-FR", {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    });
+
+    return (
+      <>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        <article className="min-h-screen bg-white dark:bg-zinc-950 pb-20">
+          <div className="relative h-[40vh] md:h-[60vh] w-full bg-zinc-900">
+            {post.featured_image && (
+              <Image src={post.featured_image} alt={post.title} fill className="object-cover opacity-60" priority />
+            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+            <div className="absolute inset-0 flex items-end">
+              <div className="max-w-4xl mx-auto px-4 w-full pb-12">
+                <Link href="/blog" className="inline-flex items-center text-white/80 hover:text-white mb-6 text-sm font-medium">
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Retour au blog
+                </Link>
+                <h1 className="text-3xl md:text-5xl font-black text-white leading-tight mb-6">{post.title}</h1>
+                <div className="flex flex-wrap items-center gap-6 text-white/90 text-sm md:text-base font-medium">
+                  <div className="flex items-center gap-2"><User className="h-4 w-4 text-orange-500" />{post.author_name}</div>
+                  <div className="flex items-center gap-2"><Calendar className="h-4 w-4 text-orange-500" />{formattedDate}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="max-w-4xl mx-auto px-4 -mt-10 relative z-10">
+            <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 md:p-12 shadow-xl border border-zinc-100 dark:border-zinc-800">
+              {post.excerpt && (
+                <p className="text-xl md:text-2xl text-zinc-600 dark:text-zinc-400 font-medium italic border-l-4 border-orange-500 pl-6 mb-10 leading-relaxed">
+                  {post.excerpt}
+                </p>
+              )}
+              <div 
+                className="prose prose-lg md:prose-xl prose-orange dark:prose-invert max-w-none
+                  prose-headings:font-black prose-headings:tracking-tight
+                  prose-p:leading-relaxed prose-p:text-zinc-700 dark:prose-p:text-zinc-300
+                  prose-img:rounded-2xl prose-img:shadow-lg"
+                dangerouslySetInnerHTML={{ __html: post.content }}
+              />
+              <div className="mt-16 pt-8 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
+                <div className="text-sm font-bold uppercase text-zinc-400 tracking-widest">Partager cet article</div>
+                <Button variant="outline" size="sm" className="rounded-full gap-2 font-bold">
+                  <Share2 className="h-4 w-4" /> Partager
+                </Button>
+              </div>
+            </div>
+          </div>
+        </article>
+      </>
+    );
+  }
 
   if (slug === 'guide-entrepreneuriat-digital-maroc') {
     return (
