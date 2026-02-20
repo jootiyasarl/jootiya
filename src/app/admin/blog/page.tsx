@@ -31,31 +31,39 @@ export default function BlogAdminPage() {
   });
 
   useEffect(() => {
+    console.log("Starting auth check...");
     async function checkAdmin() {
       try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) {
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
+        console.log("User:", user, "Error:", userError);
+        
+        if (userError || !user) {
+          console.log("No user found, redirecting to login");
           router.push("/login?redirectTo=/admin/blog");
           return;
         }
 
-        const { data: profile, error } = await supabase
+        const { data: profile, error: profileError } = await supabase
           .from("profiles")
           .select("role")
           .eq("id", user.id)
           .maybeSingle();
 
-        if (error) throw error;
+        console.log("Profile:", profile, "Error:", profileError);
+
+        if (profileError) throw profileError;
 
         if (profile?.role !== "admin" && profile?.role !== "super_admin") {
+          console.log("Access denied: role is", profile?.role);
           toast.error("Access denied. Admin only.");
           router.push("/");
           return;
         }
 
+        console.log("Admin verified");
         setIsAdmin(true);
       } catch (err) {
-        console.error("Auth check error:", err);
+        console.error("Auth check critical error:", err);
         router.push("/");
       } finally {
         setCheckingAuth(false);
