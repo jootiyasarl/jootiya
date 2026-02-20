@@ -139,23 +139,24 @@ export default function BlogAdminPage() {
       const { data: { session } } = await supabase.auth.getSession();
       const slug = formData.slug || generateSlug(formData.title);
       
+      const { id, ...dataWithoutId } = formData;
       const payload = {
-        ...formData,
+        ...dataWithoutId,
         slug,
         author_id: session?.user.id,
         published_at: formData.status === "published" ? new Date().toISOString() : null
       };
 
       let error;
-      if (formData.id) {
+      if (id) {
         // Update
         const { error: updateError } = await supabase
           .from("posts")
           .update(payload)
-          .eq("id", formData.id);
+          .eq("id", id);
         error = updateError;
       } else {
-        // Insert
+        // Insert - let Supabase generate the ID
         const { error: insertError } = await supabase
           .from("posts")
           .insert([payload]);
