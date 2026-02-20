@@ -34,3 +34,48 @@ export async function getPageViewsStats() {
 
   return Object.entries(counts).map(([date, views]) => ({ date, views }));
 }
+
+export async function getTopPagesStats(limit: number = 5) {
+  const { data, error } = await supabase
+    .from("page_views")
+    .select("page_path");
+
+  if (error) {
+    console.error("Error fetching top pages:", error);
+    return [];
+  }
+
+  const pathCounts: { [key: string]: number } = {};
+  data.forEach((view) => {
+    pathCounts[view.page_path] = (pathCounts[view.page_path] || 0) + 1;
+  });
+
+  return Object.entries(pathCounts)
+    .map(([path, views]) => ({ path, views }))
+    .sort((a, b) => b.views - a.views)
+    .slice(0, limit);
+}
+
+export async function getDeviceStats() {
+  const { data, error } = await supabase
+    .from("page_views")
+    .select("device_type");
+
+  if (error) {
+    console.error("Error fetching device stats:", error);
+    return { mobile: 0, desktop: 0 };
+  }
+
+  const stats = { mobile: 0, desktop: 0 };
+  data.forEach((view) => {
+    if (view.device_type === "mobile") stats.mobile++;
+    else stats.desktop++;
+  });
+
+  const total = stats.mobile + stats.desktop || 1;
+  return {
+    mobile: Math.round((stats.mobile / total) * 100),
+    desktop: Math.round((stats.desktop / total) * 100),
+  };
+}
+

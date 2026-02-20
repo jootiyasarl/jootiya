@@ -1,9 +1,10 @@
 import { getAdminStats, getRecentActivity } from "@/lib/db/admin";
-import { getPageViewsStats } from "@/lib/db/analytics";
+import { getPageViewsStats, getTopPagesStats, getDeviceStats } from "@/lib/db/analytics";
 import { AdminStats } from "@/components/admin/AdminStats";
 import { RecentActivity } from "@/components/admin/RecentActivity";
 import { DashboardCharts } from "@/components/dashboard/DashboardCharts";
 import { AnalyticsChart } from "@/components/admin/AnalyticsChart";
+import { TopStats } from "@/components/admin/TopStats";
 import { Megaphone } from "lucide-react";
 
 export const metadata = {
@@ -14,6 +15,8 @@ export default async function AdminPage() {
   const stats = await getAdminStats();
   const activity = await getRecentActivity();
   const analyticsData = await getPageViewsStats();
+  const topPages = await getTopPagesStats(5);
+  const deviceStats = await getDeviceStats();
 
   return (
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -41,6 +44,7 @@ export default async function AdminPage() {
             <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 rounded-bl-[5rem] transition-transform group-hover:scale-110" />
             <AnalyticsChart data={analyticsData} />
           </div>
+          <TopStats topPages={topPages} deviceStats={deviceStats} />
         </div>
         
         <div className="col-span-7 lg:col-span-3">
