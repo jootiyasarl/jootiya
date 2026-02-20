@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Loader2, Save, ArrowLeft, Globe, FileText, CheckCircle2, AlertCircle } from "lucide-react";
+import { Loader2, Save, ArrowLeft, Globe, FileText, CheckCircle2, AlertCircle, Plus, Edit, Trash2, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { generateSlug } from "@/lib/seo-utils";
@@ -25,9 +25,12 @@ export default function BlogAdminPage() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [keyword, setKeyword] = useState("");
+  const [view, setView] = useState<"list" | "editor">("list");
+  const [posts, setPosts] = useState<any[]>([]);
   const router = useRouter();
 
   const [formData, setPostData] = useState({
+    id: null,
     title: "",
     seo_title: "",
     slug: "",
@@ -37,8 +40,6 @@ export default function BlogAdminPage() {
     category: "Actualités",
     status: "draft"
   });
-
-  // ... (checkAdmin logic remains the same)
 
   useEffect(() => {
     async function checkAdmin() {
@@ -58,6 +59,7 @@ export default function BlogAdminPage() {
         const role = profile?.role?.toLowerCase();
         if (role === "admin" || role === "super_admin" || !profile) {
           setIsAdmin(true);
+          fetchPosts();
         } else {
           router.push("/");
         }
@@ -71,6 +73,59 @@ export default function BlogAdminPage() {
     checkAdmin();
   }, [router]);
 
+  async function fetchPosts() {
+    const { data, error } = await supabase
+      .from("posts")
+      .select("*")
+      .order("created_at", { ascending: false });
+    
+    if (!error && data) {
+      setPosts(data);
+    }
+  }
+
+  const handleEdit = (post: any) => {
+    setPostData({
+      id: post.id,
+      title: post.title,
+      seo_title: post.seo_title || "",
+      slug: post.slug,
+      content: post.content,
+      excerpt: post.excerpt || "",
+      featured_image: post.featured_image || "",
+      category: post.category || "Actualités",
+      status: post.status
+    });
+    setView("editor");
+  };
+
+  const handleNew = () => {
+    setPostData({
+      id: null,
+      title: "",
+      seo_title: "",
+      slug: "",
+      content: "",
+      excerpt: "",
+      featured_image: "",
+      category: "Actualités",
+      status: "draft"
+    });
+    setView("editor");
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Voulez-vous vraiment supprimer cet article ?")) return;
+    
+    const { error } = await supabase.from("posts").delete().eq("id", id);
+    if (error) {
+      toast.error("Erreur lors de la suppression");
+    } else {
+      toast.success("Article supprimé");
+      fetchPosts();
+    }
+  };
+
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.title || !formData.content) {
@@ -80,18 +135,36 @@ export default function BlogAdminPage() {
 
     setLoading(true);
     try {
+      const { data: { session } } = await supabase.auth.getSession();
       const slug = formData.slug || generateSlug(formData.title);
-      const { error } = await supabase
-        .from("posts")
-        .insert([{
-          ...formData,
-          slug,
-          published_at: formData.status === "published" ? new Date().toISOString() : null
-        }]);
+      
+      const payload = {
+        ...formData,
+        slug,
+        author_id: session?.user.id,
+        published_at: formData.status === "published" ? new Date().toISOString() : null
+      };
+
+      let error;
+      if (formData.id) {
+        // Update
+        const { error: updateError } = await supabase
+          .from("posts")
+          .update(payload)
+          .eq("id", formData.id);
+        error = updateError;
+      } else {
+        // Insert
+        const { error: insertError } = await supabase
+          .from("posts")
+          .insert([payload]);
+        error = insertError;
+      }
 
       if (error) throw error;
       toast.success("Article enregistré avec succès !");
-      router.push("/blog");
+      fetchPosts();
+      setView("list");
     } catch (error: any) {
       toast.error(error.message || "Erreur lors de l'enregistrement");
     } finally {
@@ -99,16 +172,74 @@ export default function BlogAdminPage() {
     }
   };
 
-  if (checkingAuth) {
+  if (!isAdmin) return null;
+
+  if (view === "list") {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-zinc-950 text-white">
-        <Loader2 className="h-10 w-10 animate-spin text-orange-500 mb-4" />
-        <p className="text-zinc-400 font-medium animate-pulse">Vérification des accès administrateur...</p>
+      <div className="min-h-screen bg-zinc-950 text-zinc-100 p-8">
+        <div className="max-w-6xl mx-auto space-y-8">
+          <div className="flex justify-between items-center">
+            <div className="space-y-1">
+              <h1 className="text-4xl font-black tracking-tighter text-white">Gestion du Blog</h1>
+              <p className="text-zinc-500 text-sm font-medium">Gérez vos articles et optimisez votre SEO.</p>
+            </div>
+            <Button onClick={handleNew} className="rounded-xl bg-orange-600 hover:bg-orange-700 font-bold px-6">
+              <Plus className="mr-2 h-4 w-4" /> Nouvel Article
+            </Button>
+          </div>
+
+          <div className="grid gap-4">
+            {posts.length > 0 ? (
+              posts.map((post) => (
+                <div key={post.id} className="group flex items-center justify-between p-6 bg-zinc-900/40 backdrop-blur-xl border border-zinc-800/50 rounded-[2rem] hover:border-orange-500/30 transition-all">
+                  <div className="flex items-center gap-6">
+                    <div className="h-16 w-16 rounded-2xl bg-zinc-800 overflow-hidden border border-zinc-700">
+                      {post.featured_image ? (
+                        <img src={post.featured_image} alt="" className="h-full w-full object-cover" />
+                      ) : (
+                        <div className="h-full w-full flex items-center justify-center text-zinc-600 font-black text-[10px]">NO IMG</div>
+                      )}
+                    </div>
+                    <div className="space-y-1">
+                      <h3 className="font-bold text-zinc-100 group-hover:text-orange-500 transition-colors">{post.title}</h3>
+                      <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-zinc-500">
+                        <span className={cn(
+                          "px-2 py-0.5 rounded-md border",
+                          post.status === 'published' ? "text-emerald-500 border-emerald-500/20 bg-emerald-500/5" : "text-amber-500 border-amber-500/20 bg-amber-500/5"
+                        )}>
+                          {post.status === 'published' ? "Publié" : "Brouillon"}
+                        </span>
+                        <span>{new Date(post.created_at).toLocaleDateString()}</span>
+                        <span>{post.category}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button variant="ghost" size="sm" onClick={() => handleEdit(post)} className="rounded-xl hover:bg-zinc-800 text-zinc-400 hover:text-white">
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button asChild variant="ghost" size="sm" className="rounded-xl hover:bg-zinc-800 text-zinc-400 hover:text-white">
+                      <Link href={`/blog/${post.slug}`} target="_blank">
+                        <ExternalLink className="h-4 w-4" />
+                      </Link>
+                    </Button>
+                    <Button variant="ghost" size="sm" onClick={() => handleDelete(post.id)} className="rounded-xl hover:bg-red-500/10 text-zinc-400 hover:text-red-500">
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-20 bg-zinc-900/20 border border-dashed border-zinc-800 rounded-[3rem]">
+                <FileText className="h-12 w-12 text-zinc-700 mx-auto mb-4" />
+                <p className="text-zinc-500 font-bold uppercase tracking-widest text-xs">Aucun article trouvé</p>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     );
   }
-
-  if (!isAdmin) return null;
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
@@ -118,20 +249,21 @@ export default function BlogAdminPage() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
           <div className="space-y-1">
             <div className="flex items-center gap-3 text-zinc-500 mb-2">
-              <Link href="/admin" className="hover:text-orange-500 transition-colors">Administration</Link>
-              <span className="text-zinc-800">/</span>
-              <span className="text-zinc-300">Blog</span>
+              <button onClick={() => setView("list")} className="hover:text-orange-500 transition-colors uppercase text-[10px] font-black tracking-widest flex items-center gap-2">
+                <ArrowLeft className="h-3 w-3" />
+                Retour à la liste
+              </button>
             </div>
             <h1 className="text-4xl font-black tracking-tight text-white flex items-center gap-3">
               <FileText className="h-8 w-8 text-orange-500" />
-              Nouvel Article
+              {formData.id ? "Modifier l'article" : "Nouvel Article"}
             </h1>
           </div>
           
           <div className="flex items-center gap-3">
             <Button 
               variant="outline" 
-              onClick={() => router.back()}
+              onClick={() => setView("list")}
               className="rounded-xl border-zinc-800 bg-zinc-900/50 hover:bg-zinc-800 hover:text-white transition-all"
             >
               Annuler
@@ -142,7 +274,7 @@ export default function BlogAdminPage() {
               className="rounded-xl bg-orange-600 hover:bg-orange-700 text-white px-6 font-bold shadow-lg shadow-orange-900/20 transition-all active:scale-95"
             >
               {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
-              Publier l'article
+              {formData.id ? "Mettre à jour" : "Publier l'article"}
             </Button>
           </div>
         </div>
