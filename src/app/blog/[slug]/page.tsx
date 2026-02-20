@@ -37,37 +37,35 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const decodedSlug = decodeURIComponent(slug);
   const supabase = createSupabaseServerClient();
 
-  // جلب المقال من قاعدة البيانات
+  // Try different variations of the slug to ensure match
+  const slugVariations = [
+    decodedSlug,
+    decodedSlug.replace(/,/g, ''),
+    decodedSlug.replace(/ /g, '-'),
+    decodedSlug.split('-').slice(0, 5).join('-') + '%' // Partial match
+  ];
+
   const { data: post, error } = await supabase
     .from("posts")
     .select("*")
-    .ilike("slug", decodedSlug)
+    .or(`slug.ilike."${slugVariations[0]}",slug.ilike."${slugVariations[1]}",slug.ilike."${slugVariations[2]}",slug.ilike."${slugVariations[3]}"`)
     .maybeSingle();
 
   // Debug section for Admin or development
   if (!post) {
-    // Try one more time with simple sanitization
-    const sanitizedSlug = decodedSlug.replace(/[^a-zA-Z0-9-]/g, '%');
-    const { data: retryPost } = await supabase
-      .from("posts")
-      .select("*")
-      .ilike("slug", sanitizedSlug)
-      .maybeSingle();
-
-    if (retryPost) {
-      // If found via retry, proceed with retryPost
-      return <article className="min-h-screen bg-white dark:bg-zinc-950 pb-20">
-        {/* ... similar rendering logic ... */}
-      </article>;
-    }
-
     return (
       <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6 text-center">
         <h1 className="text-2xl font-bold mb-4">Debug Info</h1>
-        <p className="mb-2">Decoded Slug: {decodedSlug}</p>
+        <p className="mb-2">Slug: {decodedSlug}</p>
         <p className="mb-2">Post Found: No</p>
-        {error && <p className="text-red-500 mb-4">Error: {error.message}</p>}
-        <Link href="/blog" className="text-orange-500 font-bold underline">Retour au blog</Link>
+        <div className="mt-4 p-4 bg-zinc-50 rounded-xl text-left font-mono text-xs">
+          <p>Variations checked:</p>
+          <ul className="list-disc ml-4">
+            {slugVariations.map(v => <li key={v}>{v}</li>)}
+          </ul>
+        </div>
+        {error && <p className="text-red-500 mt-4">Error: {error.message}</p>}
+        <Link href="/blog" className="text-orange-500 font-bold underline mt-6">Retour au blog</Link>
       </div>
     );
   }
