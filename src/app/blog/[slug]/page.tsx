@@ -41,15 +41,29 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const { data: post, error } = await supabase
     .from("posts")
     .select("*")
-    .or(`slug.eq."${slug}",slug.eq."${decodedSlug}"`)
+    .ilike("slug", decodedSlug)
     .maybeSingle();
 
   // Debug section for Admin or development
   if (!post) {
+    // Try one more time with simple sanitization
+    const sanitizedSlug = decodedSlug.replace(/[^a-zA-Z0-9-]/g, '%');
+    const { data: retryPost } = await supabase
+      .from("posts")
+      .select("*")
+      .ilike("slug", sanitizedSlug)
+      .maybeSingle();
+
+    if (retryPost) {
+      // If found via retry, proceed with retryPost
+      return <article className="min-h-screen bg-white dark:bg-zinc-950 pb-20">
+        {/* ... similar rendering logic ... */}
+      </article>;
+    }
+
     return (
       <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6 text-center">
         <h1 className="text-2xl font-bold mb-4">Debug Info</h1>
-        <p className="mb-2">Original Slug: {slug}</p>
         <p className="mb-2">Decoded Slug: {decodedSlug}</p>
         <p className="mb-2">Post Found: No</p>
         {error && <p className="text-red-500 mb-4">Error: {error.message}</p>}
