@@ -138,7 +138,7 @@ export default async function AdPage({ params }: AdPageProps) {
     .select(`
       id, title, description, price, currency, city, neighborhood, created_at, 
       image_urls, category, status, views_count, seller_id, slug, condition, phone, 
-      latitude, longitude
+      latitude, longitude, is_featured, referral_count
     `)
     .or(`id.eq.${id},slug.eq.${id}`)
     .maybeSingle();
@@ -304,8 +304,20 @@ export default async function AdPage({ params }: AdPageProps) {
             {/* Google Adsense Code Here */}
           </aside>
 
-          {/* Main Content Area */}
+import { ViralProgressBar } from "@/components/ads/ViralProgressBar";
+import { Share2, MessageCircle } from "lucide-react";
+
+// ... inside the return statement, before Column Left ...
           <div className="flex-1 w-full min-w-0">
+            <div className="mb-6">
+              <ViralProgressBar 
+                adId={ad.id} 
+                initialCount={ad.referral_count || 0} 
+                isFeatured={ad.is_featured} 
+                sellerId={ad.seller_id}
+                currentUserId={user?.id}
+              />
+            </div>
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
 
           {/* Column Left: Media & Details (8/12) */}
@@ -393,6 +405,9 @@ export default async function AdPage({ params }: AdPageProps) {
           {/* Column Right: Sticky Sidebar (4/12) */}
           <div className="lg:col-span-4 space-y-6">
 
+import { ViralShareButton } from "@/components/ads/ViralShareButton";
+
+// ... inside the Sidebar (Right Column) ...
             {/* Primary Details Card (Desktop) */}
             <div className="hidden lg:block rounded-3xl bg-white dark:bg-zinc-900 p-8 shadow-sm border border-zinc-100 dark:border-zinc-800">
               <h1 className="text-2xl font-bold leading-tight mb-2 text-zinc-900 dark:text-zinc-100">{ad.title}</h1>
@@ -405,13 +420,24 @@ export default async function AdPage({ params }: AdPageProps) {
 
               <div className="text-4xl font-black text-zinc-900 dark:text-zinc-100 mb-8 tracking-tight">{formattedPrice}</div>
 
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <ContactActions
                   adId={ad.id}
                   sellerId={ad.seller_id}
                   currentUser={user}
                   sellerPhone={ad.phone || (Array.isArray(ad.profiles) ? ad.profiles[0]?.phone : ad.profiles?.phone)}
                 />
+                
+                {user?.id === ad.seller_id && !ad.is_featured && (
+                  <div className="pt-6 border-t border-zinc-50 dark:border-zinc-800">
+                    <ViralShareButton 
+                      adId={ad.id} 
+                      adTitle={ad.title} 
+                      adPrice={formattedPrice} 
+                      sellerId={ad.seller_id} 
+                    />
+                  </div>
+                )}
               </div>
             </div>
 
