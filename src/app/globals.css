@@ -179,23 +179,10 @@
   html,
   body {
     @apply bg-background text-foreground;
-    padding-bottom: calc(5rem + env(safe-area-inset-bottom));
     width: 100vw;
     max-width: 100%;
     overflow-x: hidden;
     position: relative;
-  }
-
-  img {
-    max-width: 100% !important;
-    height: auto !important;
-    display: block;
-  }
-
-  @media (min-width: 1024px) {
-    body {
-      padding-bottom: 0px;
-    }
   }
 
   body {
@@ -205,6 +192,12 @@
   [lang="ar"],
   [dir="rtl"] {
     font-family: var(--font-tajawal), var(--font-inter), sans-serif;
+  }
+
+  img {
+    max-width: 100% !important;
+    height: auto !important;
+    display: block;
   }
 }
 
