@@ -36,7 +36,10 @@ export function RootNavbarShell({ children, navbar, footer }: RootNavbarShellPro
           <MobileBottomNav />
         </div>
       </div>
-      <main className="min-h-screen pt-32">
+      <main className={cn(
+        "min-h-screen",
+        !isSpecialPath && "pt-32"
+      )}>
         {children}
       </main>
       <div className={cn(isSpecialPath && "hidden")}>
