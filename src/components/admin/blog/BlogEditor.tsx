@@ -1,6 +1,6 @@
 "use client";
 
-import { useEditor, EditorContent, BubbleMenu } from "@tiptap/react";
+import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
@@ -182,37 +182,6 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
     <div className="group relative border border-zinc-800 rounded-[2rem] overflow-hidden bg-zinc-950 shadow-2xl transition-all duration-300 focus-within:border-orange-500/50 focus-within:ring-4 focus-within:ring-orange-500/10">
       <MenuBar editor={editor} />
       
-      {editor && (
-        <div className="bubble-menu-wrapper">
-          <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }} className="flex items-center gap-1 p-1 bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => editor.chain().focus().toggleBold().run()}
-              className={cn("h-8 w-8 p-0 rounded-lg", editor.isActive("bold") ? "text-orange-500 bg-orange-500/10" : "text-zinc-400")}
-            >
-              <Bold className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => editor.chain().focus().toggleItalic().run()}
-              className={cn("h-8 w-8 p-0 rounded-lg", editor.isActive("italic") ? "text-orange-500 bg-orange-500/10" : "text-zinc-400")}
-            >
-              <Italic className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-              className={cn("h-8 w-8 p-0 rounded-lg", editor.isActive("heading", { level: 2 }) ? "text-orange-500 bg-orange-500/10" : "text-zinc-400")}
-            >
-              <Heading2 className="h-4 w-4" />
-            </Button>
-          </BubbleMenu>
-        </div>
-      )}
-
       <EditorContent 
         editor={editor} 
         className="prose prose-lg md:prose-xl prose-orange dark:prose-invert max-w-none p-8 md:p-12 min-h-[500px] outline-none
