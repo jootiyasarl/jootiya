@@ -19,7 +19,8 @@ import {
   PanelLeft,
   Star,
   LifeBuoy,
-  Loader2
+  Loader2,
+  FileText
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -84,6 +85,11 @@ const adminNavItems: AdminNavItem[] = [
     label: "Analyses",
     href: "/admin/analytics",
     icon: BarChart3,
+  },
+  {
+    label: "Blog",
+    href: "/admin/blog",
+    icon: FileText,
   },
   {
     label: "Avis",
