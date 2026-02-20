@@ -14,7 +14,7 @@ const getSupabaseAdmin = () => {
   return createClient(url, key);
 };
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const url = new URL(request.url);
   const ref = url.searchParams.get('ref');
   const adId = url.pathname.split('/ads/')[1]?.split('/')[0];
