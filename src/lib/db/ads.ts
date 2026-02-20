@@ -118,3 +118,18 @@ export async function getAds(supabase: any, { query, category, sellerId, minPric
 
     return { ads: data, count };
 }
+
+export async function getRelatedAds(supabase: any, category: string, limit: number = 4) {
+  const { data, error } = await supabase
+    .from("ads")
+    .select("*, profiles(full_name, avatar_url, username)")
+    .in('status', ['active', 'approved'])
+    .or(`category.ilike.${category},category_id.ilike.${category}`)
+    .limit(limit);
+
+  if (error) {
+    console.error("Error fetching related ads:", error);
+    return [];
+  }
+  return data;
+}

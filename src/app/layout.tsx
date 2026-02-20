@@ -13,6 +13,7 @@ import { PageTransition } from "@/components/layout/PageTransition";
 import { ScrollToTop } from "@/components/layout/ScrollToTop";
 import { Suspense } from "react";
 import { ThemeProvider } from "@/components/theme-provider";
+import { PageViewTracker } from "@/components/analytics/PageViewTracker";
 
 const tajawal = Tajawal({
   variable: "--font-tajawal",
@@ -145,6 +146,7 @@ export default function RootLayout({
         <h1 className="sr-only">Jootiya: Analyse du Marché Marocain, Infrastructure Logistique et Opportunités d'Investissement</h1>
 
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <PageViewTracker />
           <ScrollToTop />
           <Suspense fallback={null}>
             <ProgressBar />

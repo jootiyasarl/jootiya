@@ -141,6 +141,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                 prose-blockquote:border-l-4 prose-blockquote:border-orange-500 prose-blockquote:bg-orange-50/50 prose-blockquote:py-4 prose-blockquote:px-8 prose-blockquote:rounded-r-2xl prose-blockquote:italic"
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
+
+            {/* Related Ads Section */}
+            <RelatedAdsSection category={post.category} />
           </div>
 
           {/* Sidebar */}

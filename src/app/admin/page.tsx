@@ -2,6 +2,7 @@ import { getAdminStats, getRecentActivity } from "@/lib/db/admin";
 import { AdminStats } from "@/components/admin/AdminStats";
 import { RecentActivity } from "@/components/admin/RecentActivity";
 import { DashboardCharts } from "@/components/dashboard/DashboardCharts";
+import { AnalyticsChart } from "@/components/admin/AnalyticsChart";
 import { Megaphone } from "lucide-react";
 
 export const metadata = {
@@ -11,6 +12,17 @@ export const metadata = {
 export default async function AdminPage() {
   const stats = await getAdminStats();
   const activity = await getRecentActivity();
+
+  // Mock analytics data for the last 7 days (would normally fetch from page_views)
+  const analyticsData = [
+    { date: '14 Feb', views: 450 },
+    { date: '15 Feb', views: 520 },
+    { date: '16 Feb', views: 480 },
+    { date: '17 Feb', views: 610 },
+    { date: '18 Feb', views: 590 },
+    { date: '19 Feb', views: 720 },
+    { date: '20 Feb', views: 850 },
+  ];
 
   return (
     <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -36,13 +48,7 @@ export default async function AdminPage() {
         <div className="col-span-7 lg:col-span-4 space-y-6">
           <div className="rounded-[2.5rem] border border-zinc-800/50 bg-zinc-900/40 backdrop-blur-xl p-8 shadow-2xl overflow-hidden relative group">
             <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 rounded-bl-[5rem] transition-transform group-hover:scale-110" />
-            <h3 className="mb-8 text-xl font-black text-white flex items-center gap-3 relative z-10">
-              <span className="h-2 w-2 rounded-full bg-orange-500" />
-              Tendances du Marché
-            </h3>
-            <div className="relative z-10 h-[300px]">
-              <DashboardCharts />
-            </div>
+            <AnalyticsChart data={analyticsData} />
           </div>
         </div>
         
