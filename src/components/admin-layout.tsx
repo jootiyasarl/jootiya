@@ -164,10 +164,18 @@ export function AdminLayout({ children }: AdminLayoutProps) {
     }
     getAdminData();
 
-    // Force dark background on body for admin pages to eliminate white footer
-    document.body.style.backgroundColor = "#09090b"; // zinc-950
+    // Force dark background on body AND html for admin pages to eliminate white footer
+    const elements = [document.body, document.documentElement];
+    elements.forEach(el => {
+      el.style.backgroundColor = "#09090b";
+      el.style.colorScheme = "dark";
+    });
+
     return () => {
-      document.body.style.backgroundColor = "";
+      elements.forEach(el => {
+        el.style.backgroundColor = "";
+        el.style.colorScheme = "";
+      });
     };
   }, [router]);
 
