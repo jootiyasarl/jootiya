@@ -40,9 +40,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   // Try different variations of the slug to ensure match
   const slugVariations = [
     decodedSlug,
-    decodedSlug.replace(/,/g, '-'), // Replace commas with dashes
+    decodedSlug.replace(/,/g, '-'), 
     decodedSlug.replace(/ /g, '-'),
-    decodedSlug.split('-').slice(0, 3).join('-') + '%'
+    decodedSlug.split(/[,-]/).slice(0, 3).join('-') + '%' // Clean slice with regex
   ];
 
   const { data: post, error } = await supabase
@@ -51,23 +51,23 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     .or(`slug.ilike."${slugVariations[0]}",slug.ilike."${slugVariations[1]}",slug.ilike."${slugVariations[2]}",slug.ilike."${slugVariations[3]}"`)
     .maybeSingle();
 
-  // Debug section for Admin or development
-  if (!post) {
+  // If found but status is not published, we might want to handle it (e.g. for admins)
+  if (post && post.status !== "published") {
+    // If you want to allow admins to see it, you can add check here
+    // For now, let's treat as not found to avoid 404 for public users
     return (
       <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6 text-center">
-        <h1 className="text-2xl font-bold mb-4">Debug Info</h1>
-        <p className="mb-2">Slug: {decodedSlug}</p>
-        <p className="mb-2">Post Found: No</p>
-        <div className="mt-4 p-4 bg-zinc-50 rounded-xl text-left font-mono text-xs">
-          <p>Variations checked:</p>
-          <ul className="list-disc ml-4">
-            {slugVariations.map(v => <li key={v}>{v}</li>)}
-          </ul>
-        </div>
-        {error && <p className="text-red-500 mt-4">Error: {error.message}</p>}
-        <Link href="/blog" className="text-orange-500 font-bold underline mt-6">Retour au blog</Link>
+        <h1 className="text-2xl font-bold mb-4 text-zinc-900">Article en attente</h1>
+        <p className="mb-6 text-zinc-600 text-lg font-medium">Cet article n'est pas encore publié ou a été archivé.</p>
+        <Link href="/blog" className="text-orange-500 font-bold hover:underline">
+          Retour au blog
+        </Link>
       </div>
     );
+  }
+
+  if (!post) {
+    notFound();
   }
 
   const formattedDate = new Date(post.published_at || post.created_at).toLocaleDateString("fr-FR", {
