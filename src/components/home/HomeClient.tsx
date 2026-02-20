@@ -3,6 +3,7 @@
 import React, { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { HeroSection } from "@/components/home/HeroSection";
+import { BlogSection } from "@/components/home/BlogSection";
 import { AdCard } from "@/components/AdCard";
 import { LocationFilterSidebar } from "@/components/home/LocationFilterSidebar";
 import { Package, ArrowRight, WifiOff } from "lucide-react";
@@ -193,6 +194,8 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
                 )}
               </>
             )}
+            
+            <BlogSection />
           </div>
         </div>
       </main>
