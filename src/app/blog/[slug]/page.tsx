@@ -40,7 +40,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   // جلب المقال من قاعدة البيانات
   const { data: post, error } = await supabase
     .from("posts")
-    .select("*, profiles(full_name, avatar_url)")
+    .select("*")
     .eq("slug", decodedSlug)
     .maybeSingle();
 
@@ -90,9 +90,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             <div className="flex flex-wrap items-center gap-6 text-white/90 text-sm md:text-base font-bold">
               <div className="flex items-center gap-2">
                 <div className="h-8 w-8 rounded-full bg-orange-500 flex items-center justify-center text-[10px] text-white">
-                  {post.profiles?.full_name?.charAt(0) || 'J'}
+                  {post.author_name?.charAt(0) || 'J'}
                 </div>
-                {post.profiles?.full_name || "L'équipe Jootiya"}
+                <div className="flex items-center gap-2"><User className="h-4 w-4 text-orange-500" />{post.author_name || "L'équipe Jootiya"}</div>
               </div>
               <div className="flex items-center gap-2 text-white/60">
                 <Calendar className="h-4 w-4 text-orange-500" />
