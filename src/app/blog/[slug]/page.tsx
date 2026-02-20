@@ -40,9 +40,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   // Try different variations of the slug to ensure match
   const slugVariations = [
     decodedSlug,
-    decodedSlug.replace(/,/g, ''),
+    decodedSlug.replace(/,/g, '-'), // Replace commas with dashes
     decodedSlug.replace(/ /g, '-'),
-    decodedSlug.split('-').slice(0, 3).join('-') + '%' // Broader partial match
+    decodedSlug.split('-').slice(0, 3).join('-') + '%'
   ];
 
   const { data: post, error } = await supabase
