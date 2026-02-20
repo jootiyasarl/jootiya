@@ -17,7 +17,10 @@ export async function GET() {
 
   const baseUrl = 'https://jootiya.com';
 
-  // 2. Build the XML structure
+  // 2. جلب الأقسام (يمكن جلبها ديناميكياً إذا كانت في قاعدة البيانات)
+  const categories = ['immobilier', 'vehicules', 'electronique', 'maison', 'loisirs', 'emploi', 'services'];
+
+  // 3. بناء هيكل الـ XML
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
@@ -32,6 +35,12 @@ export async function GET() {
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
+  ${categories.map((cat) => `
+  <url>
+    <loc>${baseUrl}/marketplace?category=${cat}</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>`).join('')}
   ${ads?.map((ad) => `
   <url>
     <loc>${baseUrl}/ads/${ad.id}/${ad.slug || 'details'}</loc>
