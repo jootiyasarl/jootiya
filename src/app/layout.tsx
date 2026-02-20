@@ -146,7 +146,9 @@ export default function RootLayout({
         <h1 className="sr-only">Jootiya: Analyse du Marché Marocain, Infrastructure Logistique et Opportunités d'Investissement</h1>
 
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <PageViewTracker />
+          <Suspense fallback={null}>
+            <PageViewTracker />
+          </Suspense>
           <ScrollToTop />
           <Suspense fallback={null}>
             <ProgressBar />
