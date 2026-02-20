@@ -51,7 +51,16 @@ export default function MarketplaceManager({ ads }: { ads: any[] }) {
     const activeCategory = searchParams.get("category") || "";
     const [query, setQuery] = useState(initialQuery);
 
+import { shadowTracker } from "@/lib/shadow-tracker";
+
+// ... inside handleSearch ...
     const handleSearch = () => {
+        if (query) {
+            shadowTracker.trackEvent({
+                type: 'search',
+                query: query
+            });
+        }
         const params = new URLSearchParams(searchParams.toString());
         if (query) {
             params.set("q", query);
