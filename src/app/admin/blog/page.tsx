@@ -18,11 +18,13 @@ const BlogEditor = dynamic(() => import("@/components/admin/blog/BlogEditor").th
 });
 
 import { ImageUploader } from "@/components/admin/blog/ImageUploader";
+import { SEOAnalyzerSidebar } from "@/components/admin/blog/SEOAnalyzerSidebar";
 
 export default function BlogAdminPage() {
   const [loading, setLoading] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
+  const [keyword, setKeyword] = useState("");
   const router = useRouter();
 
   const [formData, setPostData] = useState({
@@ -177,14 +179,33 @@ export default function BlogAdminPage() {
           <div className="lg:col-span-4 space-y-6">
             <div className="sticky top-24 space-y-6">
               
+              {/* SEO Analysis Sidebar */}
+              <SEOAnalyzerSidebar 
+                title={formData.title}
+                content={formData.content}
+                description={formData.excerpt}
+                keyword={keyword}
+                slug={formData.slug}
+              />
+              
               {/* SEO Card */}
               <div className="p-8 bg-zinc-900/40 backdrop-blur-xl rounded-[2.5rem] border border-zinc-800/50 shadow-2xl space-y-8">
                 <h2 className="text-lg font-black flex items-center gap-3 text-white border-b border-zinc-800/50 pb-5">
                   <Globe className="h-5 w-5 text-orange-500" />
-                  Optimisation SEO
+                  Paramètres SEO
                 </h2>
                 
                 <div className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.2em]">Mot-clé principal</label>
+                    <Input 
+                      placeholder="Ex: immobilier maroc" 
+                      value={keyword}
+                      onChange={(e) => setKeyword(e.target.value)}
+                      className="bg-zinc-950/50 border-zinc-800 focus:border-orange-500/50 rounded-xl transition-all"
+                    />
+                  </div>
+
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.2em]">SEO Title (Google)</label>
                     <Input 
