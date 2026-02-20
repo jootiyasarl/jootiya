@@ -56,6 +56,7 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
+DROP TRIGGER IF EXISTS update_posts_updated_at ON public.posts;
 CREATE TRIGGER update_posts_updated_at
     BEFORE UPDATE ON public.posts
     FOR EACH ROW
