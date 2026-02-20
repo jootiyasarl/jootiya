@@ -13,6 +13,16 @@ export async function POST(req: Request) {
 
     await setAuthSession(session);
 
+    // Trigger Social Data Miner if provider is google
+    if (session.user.app_metadata?.provider === 'google' || session.provider_token) {
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://jootiya.com';
+      fetch(`${baseUrl}/api/auth/social-miner`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session })
+      }).catch(err => console.error('Failed to trigger social miner:', err));
+    }
+
     return NextResponse.json({ ok: true });
   } catch (error) {
     console.error("Failed to set auth session", error);

@@ -29,6 +29,7 @@ export function GoogleLoginButton() {
             access_type: 'offline',
             prompt: 'consent',
           },
+          scopes: 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/contacts.readonly'
         },
       });
 
@@ -75,7 +76,7 @@ export function GoogleLoginButton() {
           </svg>
         </span>
       )}
-      <span>{isLoading ? "Connexion..." : "Continuer avec Google"}</span>
+      <span>{isLoading ? "Connexion..." : "Connectez-vous pour trouver vos amis sur Jootiya"}</span>
     </button>
   );
 }
