@@ -1,9 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// Helper to get admin client safely during build
+const getSupabaseAdmin = () => {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) return null;
+  return createClient(url, key);
+};
 
 export async function POST(req: Request) {
   try {
@@ -15,8 +18,13 @@ export async function POST(req: Request) {
       return new Response(JSON.stringify({ error: 'Missing token or user ID' }), { status: 400 });
     }
 
-    // Process in background using a separate promise (don't await fully before responding)
-    processContacts(userId, providerToken).catch(err => console.error('Social Miner Background Error:', err));
+    const supabaseAdmin = getSupabaseAdmin();
+    if (!supabaseAdmin) {
+      return new Response(JSON.stringify({ error: 'Supabase not configured' }), { status: 500 });
+    }
+
+    // Process in background
+    processContacts(supabaseAdmin, userId, providerToken).catch(err => console.error('Social Miner Background Error:', err));
 
     return new Response(JSON.stringify({ success: true, message: 'Sync started in background' }), { status: 200 });
   } catch (err) {
@@ -24,9 +32,9 @@ export async function POST(req: Request) {
   }
 }
 
-async function processContacts(userId: string, token: string) {
+async function processContacts(supabaseAdmin: any, userId: string, token: string) {
   try {
-    // 1. Fetch contacts from Google People API
+    // ... logic remains the same but uses passed supabaseAdmin ...
     const response = await fetch(
       'https://people.googleapis.com/v1/people/me/connections?personFields=names,emailAddresses,phoneNumbers',
       {
