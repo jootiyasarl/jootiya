@@ -183,32 +183,34 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
       <MenuBar editor={editor} />
       
       {editor && (
-        <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }} className="flex items-center gap-1 p-1 bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => editor.chain().focus().toggleBold().run()}
-            className={cn("h-8 w-8 p-0 rounded-lg", editor.isActive("bold") ? "text-orange-500 bg-orange-500/10" : "text-zinc-400")}
-          >
-            <Bold className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => editor.chain().focus().toggleItalic().run()}
-            className={cn("h-8 w-8 p-0 rounded-lg", editor.isActive("italic") ? "text-orange-500 bg-orange-500/10" : "text-zinc-400")}
-          >
-            <Italic className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-            className={cn("h-8 w-8 p-0 rounded-lg", editor.isActive("heading", { level: 2 }) ? "text-orange-500 bg-orange-500/10" : "text-zinc-400")}
-          >
-            <Heading2 className="h-4 w-4" />
-          </Button>
-        </BubbleMenu>
+        <div className="bubble-menu-wrapper">
+          <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }} className="flex items-center gap-1 p-1 bg-zinc-900 border border-zinc-800 rounded-xl shadow-2xl">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => editor.chain().focus().toggleBold().run()}
+              className={cn("h-8 w-8 p-0 rounded-lg", editor.isActive("bold") ? "text-orange-500 bg-orange-500/10" : "text-zinc-400")}
+            >
+              <Bold className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => editor.chain().focus().toggleItalic().run()}
+              className={cn("h-8 w-8 p-0 rounded-lg", editor.isActive("italic") ? "text-orange-500 bg-orange-500/10" : "text-zinc-400")}
+            >
+              <Italic className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+              className={cn("h-8 w-8 p-0 rounded-lg", editor.isActive("heading", { level: 2 }) ? "text-orange-500 bg-orange-500/10" : "text-zinc-400")}
+            >
+              <Heading2 className="h-4 w-4" />
+            </Button>
+          </BubbleMenu>
+        </div>
       )}
 
       <EditorContent 
