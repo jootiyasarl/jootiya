@@ -22,12 +22,14 @@ CREATE TABLE IF NOT EXISTS public.posts (
 ALTER TABLE public.posts ENABLE ROW LEVEL SECURITY;
 
 -- Policy: Anyone can view published posts
+DROP POLICY IF EXISTS "Anyone can view published posts" ON public.posts;
 CREATE POLICY "Anyone can view published posts" ON public.posts
     FOR SELECT
     USING (status = 'published');
 
 -- Policy: Only Admins can manage posts
 -- This assumes you have a 'role' column in your profiles table
+DROP POLICY IF EXISTS "Only admins can manage posts" ON public.posts;
 CREATE POLICY "Only admins can manage posts" ON public.posts
     FOR ALL
     USING (
