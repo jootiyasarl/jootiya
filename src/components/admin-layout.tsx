@@ -183,7 +183,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   };
 
   return (
-    <div className="flex min-h-screen bg-zinc-950 text-zinc-50">
+    <div className="flex min-h-screen bg-zinc-950 text-zinc-50 overflow-x-hidden">
       {/* Desktop sidebar */}
       <aside
         className={cn(
@@ -263,7 +263,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       </div>
 
       {/* Main content */}
-      <div className="flex min-h-screen flex-1 flex-col bg-zinc-950">
+      <div className="flex min-h-screen flex-1 flex-col bg-zinc-950 overflow-hidden">
         <header className="sticky top-0 z-30 border-b border-zinc-900 bg-zinc-950/80 backdrop-blur">
           <div className="flex items-center gap-3 px-4 py-3 md:px-6">
             <Button
@@ -339,7 +339,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           </div>
         </header>
 
-        <main className="flex-1 px-4 py-4 md:px-6 md:py-6 bg-zinc-950">
+        <main className="flex-1 px-4 py-4 md:px-6 md:py-6 bg-zinc-950 min-h-0">
           <div className="mx-auto max-w-6xl space-y-4">{children}</div>
         </main>
       </div>
