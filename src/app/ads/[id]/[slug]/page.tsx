@@ -305,11 +305,21 @@ export default async function AdPage({ params }: AdPageProps) {
           </aside>
 
 import { ViralProgressBar } from "@/components/ads/ViralProgressBar";
+import { ViralTracker } from "@/components/ads/ViralTracker";
 import { Share2, MessageCircle } from "lucide-react";
 
 // ... inside the return statement, before Column Left ...
           <div className="flex-1 w-full min-w-0">
-            <div className="mb-6">
+            {/* Viral Tracking & Progress */}
+            <div className="mb-6 space-y-4">
+              {/* Tracker for visitors (hidden) */}
+              {params && id && slug && (
+                <ViralTracker 
+                  adId={ad.id} 
+                  referrerId={new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '').get('ref') || ''} 
+                />
+              )}
+              
               <ViralProgressBar 
                 adId={ad.id} 
                 initialCount={ad.referral_count || 0} 
