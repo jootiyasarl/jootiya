@@ -10,6 +10,9 @@ import { AdCard } from "@/components/AdCard";
 import { ReportModal } from "@/components/ads/ReportModal";
 import { ReportButton } from "@/components/ads/ReportButton";
 import { FavoriteButton } from "@/components/ads/FavoriteButton";
+import { ViralProgressBar } from "@/components/ads/ViralProgressBar";
+import { ViralTracker } from "@/components/ads/ViralTracker";
+import { ViralShareButton } from "@/components/ads/ViralShareButton";
 import {
   MapPin,
   Calendar,
@@ -256,41 +259,24 @@ export default async function AdPage({ params }: AdPageProps) {
   }
 
   return (
-    <>
-      <div dir="ltr" className="min-h-screen bg-[#F8FAFC] dark:bg-zinc-950 pb-32 font-sans text-zinc-900 dark:text-zinc-100 pt-10 md:pt-8">
-
-      {/* Top Header / Breadcrumbs */}
+    <div dir="ltr" className="min-h-screen bg-[#F8FAFC] dark:bg-zinc-950 pb-32 font-sans text-zinc-900 dark:text-zinc-100 pt-10 md:pt-8">
       <div className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 z-40">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-2">
           <div className="flex flex-wrap items-center justify-between gap-6">
             <nav className="flex flex-wrap items-center gap-2 text-sm text-zinc-500 min-w-0">
-              <Link href="/" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors flex-shrink-0">Accueil</Link>
-              <ChevronRight className="h-4 w-4 flex-shrink-0" />
-              <Link href="/marketplace" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors flex-shrink-0">Marché</Link>
-              <ChevronRight className="h-4 w-4 flex-shrink-0" />
-              <span className="text-zinc-900 dark:text-zinc-100 font-medium truncate">
-                {ad.title}
-              </span>
+              <Link href="/" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">Accueil</Link>
+              <ChevronRight className="h-4 w-4" />
+              <Link href="/marketplace" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">Marché</Link>
+              <ChevronRight className="h-4 w-4" />
+              <span className="text-zinc-900 dark:text-zinc-100 font-medium truncate">{ad.title}</span>
             </nav>
-
-            <div className="flex items-center gap-3 flex-shrink-0">
+            <div className="flex items-center gap-3">
               <div className="hidden md:block text-right mr-4">
                 <p className="text-xs text-zinc-400 font-bold uppercase tracking-wider">Prix</p>
                 <p className="font-black text-orange-600 leading-none">{formattedPrice}</p>
               </div>
-              <Button variant="ghost" size="sm" className="hidden sm:flex gap-2 text-zinc-600 hover:text-zinc-900">
-                <Share2 className="h-4 w-4" />
-                <span className="hidden lg:inline">Partager</span>
-              </Button>
-              <FavoriteButton
-                adId={ad.id}
-                className="hover:bg-red-50 text-zinc-600 hover:text-red-600 rounded-xl"
-              />
-              <ReportButton
-                targetId={ad.id}
-                targetType="ad"
-                reporterId={user?.id}
-              />
+              <FavoriteButton adId={ad.id} className="hover:bg-red-50 text-zinc-600 hover:text-red-600 rounded-xl" />
+              <ReportButton targetId={ad.id} targetType="ad" reporterId={user?.id} />
             </div>
           </div>
         </div>
@@ -298,28 +284,11 @@ export default async function AdPage({ params }: AdPageProps) {
 
       <main className="mx-auto max-w-screen-2xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="flex flex-col xl:flex-row gap-6 justify-between items-start">
-          
-          {/* Left Ad Sidebar (Desktop Only) */}
-          <aside className="hidden xl:block w-[160px] shrink-0 h-[600px] border border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl">
-            {/* Google Adsense Code Here */}
-          </aside>
+          <aside className="hidden xl:block w-[160px] shrink-0 h-[600px] border border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl" />
 
-import { ViralProgressBar } from "@/components/ads/ViralProgressBar";
-import { ViralTracker } from "@/components/ads/ViralTracker";
-import { Share2, MessageCircle } from "lucide-react";
-
-// ... inside the return statement, before Column Left ...
           <div className="flex-1 w-full min-w-0">
-            {/* Viral Tracking & Progress */}
             <div className="mb-6 space-y-4">
-              {/* Tracker for visitors (hidden) */}
-              {params && id && slug && (
-                <ViralTracker 
-                  adId={ad.id} 
-                  referrerId={new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '').get('ref') || ''} 
-                />
-              )}
-              
+              <ViralTracker adId={ad.id} referrerId="" />
               <ViralProgressBar 
                 adId={ad.id} 
                 initialCount={ad.referral_count || 0} 
@@ -328,247 +297,133 @@ import { Share2, MessageCircle } from "lucide-react";
                 currentUserId={user?.id}
               />
             </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+              <div className="lg:col-span-8 space-y-8">
+                <section className="rounded-3xl overflow-hidden shadow-sm bg-white dark:bg-zinc-900">
+                  <AdImageGallery images={images} />
+                </section>
 
-          {/* Column Left: Media & Details (8/12) */}
-          <div className="lg:col-span-8 space-y-8">
-
-            {/* Image Gallery Component */}
-            <section className="rounded-3xl overflow-hidden shadow-sm bg-white dark:bg-zinc-900">
-              <AdImageGallery images={images} />
-            </section>
-
-            {/* Mobile Title & Price (Visible only on mobile) */}
-            <div className="lg:hidden space-y-3 px-1">
-              <div className="flex items-start justify-between gap-4">
-                <h1 className="text-2xl font-bold leading-tight sm:text-3xl text-zinc-900 dark:text-zinc-100">{ad.title}</h1>
-                <div className="text-xl font-black text-orange-600 whitespace-nowrap">{formattedPrice}</div>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-zinc-500">
-                <MapPin className="h-4 w-4" />
-                <span>{ad.city}, {ad.neighborhood || "Maroc"}</span>
-                <span className="w-1 h-1 rounded-full bg-zinc-300" />
-                <span>{formattedDate}</span>
-              </div>
-            </div>
-
-            {/* Description Card */}
-            <div className="rounded-3xl bg-white dark:bg-zinc-900 p-6 shadow-sm border border-zinc-100 dark:border-zinc-800 sm:p-8">
-              <h2 className="text-lg font-bold flex items-center gap-2 mb-6 text-zinc-900 dark:text-zinc-100">
-                <Sparkles className="w-5 h-5 text-orange-500" />
-                Description
-              </h2>
-              <div className="prose prose-zinc prose-p:text-zinc-600 prose-headings:text-zinc-900 max-w-none">
-                <p className="whitespace-pre-wrap leading-relaxed text-[15px]">{ad.description || "Aucune description fournie."}</p>
-              </div>
-
-              {/* Specs Grid */}
-              <div className="mt-10 grid grid-cols-2 gap-4 pt-8 border-t border-zinc-50 sm:grid-cols-3">
-                <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700">
-                  <span className="text-[10px] uppercase tracking-wider text-zinc-400 font-bold block mb-1">Catégorie</span>
-                  <p className="font-semibold text-zinc-900 dark:text-zinc-100 text-sm">{ad.category || "Autre"}</p>
-                </div>
-                <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700">
-                  <span className="text-[10px] uppercase tracking-wider text-zinc-400 font-bold block mb-1">État</span>
-                  <p className="font-semibold text-zinc-900 dark:text-zinc-100 text-sm flex items-center gap-1.5">
-                    {ad.condition === 'new' ? (
-                      <>
-                        <span className="w-2 h-2 rounded-full bg-green-500" /> Neuf
-                      </>
-                    ) : (
-                      <>
-                        <span className="w-2 h-2 rounded-full bg-amber-500" /> Occasion
-                      </>
-                    )}
-                  </p>
-                </div>
-                <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700">
-                  <span className="text-[10px] uppercase tracking-wider text-zinc-400 font-bold block mb-1">Vues</span>
-                  <p className="font-semibold text-zinc-900 dark:text-zinc-100 text-sm flex items-center gap-1.5">
-                    <Eye className="w-3.5 h-3.5 text-zinc-400" /> {ad.views_count || 1}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Location Map */}
-            {(ad.latitude && ad.longitude) && (
-              <div className="rounded-3xl bg-zinc-900 p-1 overflow-hidden shadow-lg">
-                <div className="bg-white rounded-[20px] overflow-hidden relative">
-                  <div className="absolute top-4 left-4 z-[400] bg-white/90 backdrop-blur px-4 py-2 rounded-xl shadow-sm border border-zinc-100">
-                    <p className="text-xs font-bold flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-orange-600" />
-                      Emplacement approximatif
-                    </p>
+                <div className="lg:hidden space-y-3 px-1">
+                  <div className="flex items-start justify-between gap-4">
+                    <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">{ad.title}</h1>
+                    <div className="text-xl font-black text-orange-600">{formattedPrice}</div>
                   </div>
-                  <AdLocationMapDynamic
-                    lat={Number(ad.latitude)}
-                    lng={Number(ad.longitude)}
-                    city={ad.city}
-                    neighborhood={ad.neighborhood}
-                  />
+                  <div className="flex items-center gap-2 text-sm text-zinc-500">
+                    <MapPin className="h-4 w-4" />
+                    <span>{ad.city}, {ad.neighborhood || "Maroc"}</span>
+                    <span className="w-1 h-1 rounded-full bg-zinc-300" />
+                    <span>{formattedDate}</span>
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
 
-          {/* Column Right: Sticky Sidebar (4/12) */}
-          <div className="lg:col-span-4 space-y-6">
+                <div className="rounded-3xl bg-white dark:bg-zinc-900 p-6 shadow-sm border border-zinc-100 dark:border-zinc-800 sm:p-8">
+                  <h2 className="text-lg font-bold flex items-center gap-2 mb-6 text-zinc-900 dark:text-zinc-100">
+                    <Sparkles className="w-5 h-5 text-orange-500" />
+                    Description
+                  </h2>
+                  <p className="whitespace-pre-wrap leading-relaxed text-[15px] text-zinc-600 dark:text-zinc-400">
+                    {ad.description || "Aucune description fournie."}
+                  </p>
+                  <div className="mt-10 grid grid-cols-2 gap-4 pt-8 border-t border-zinc-50 sm:grid-cols-3 text-sm">
+                    <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700">
+                      <span className="text-[10px] uppercase text-zinc-400 font-bold block mb-1">Catégorie</span>
+                      <p className="font-semibold">{ad.category || "Autre"}</p>
+                    </div>
+                    <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700">
+                      <span className="text-[10px] uppercase text-zinc-400 font-bold block mb-1">État</span>
+                      <p className="font-semibold">{ad.condition === 'new' ? "Neuf" : "Occasion"}</p>
+                    </div>
+                    <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700">
+                      <span className="text-[10px] uppercase text-zinc-400 font-bold block mb-1">Vues</span>
+                      <p className="font-semibold flex items-center gap-1.5"><Eye className="w-3.5 h-3.5" /> {ad.views_count || 1}</p>
+                    </div>
+                  </div>
+                </div>
 
-import { ViralShareButton } from "@/components/ads/ViralShareButton";
-
-// ... inside the Sidebar (Right Column) ...
-            {/* Primary Details Card (Desktop) */}
-            <div className="hidden lg:block rounded-3xl bg-white dark:bg-zinc-900 p-8 shadow-sm border border-zinc-100 dark:border-zinc-800">
-              <h1 className="text-2xl font-bold leading-tight mb-2 text-zinc-900 dark:text-zinc-100">{ad.title}</h1>
-              <div className="flex items-center gap-2 text-sm text-zinc-500 mb-8">
-                <MapPin className="h-4 w-4" />
-                <span>{ad.city}</span>
-                <span className="text-zinc-300">•</span>
-                <span>{formattedDate}</span>
-              </div>
-
-              <div className="text-4xl font-black text-zinc-900 dark:text-zinc-100 mb-8 tracking-tight">{formattedPrice}</div>
-
-              <div className="space-y-6">
-                <ContactActions
-                  adId={ad.id}
-                  sellerId={ad.seller_id}
-                  currentUser={user}
-                  sellerPhone={ad.phone || (Array.isArray(ad.profiles) ? ad.profiles[0]?.phone : ad.profiles?.phone)}
-                />
-                
-                {user?.id === ad.seller_id && !ad.is_featured && (
-                  <div className="pt-6 border-t border-zinc-50 dark:border-zinc-800">
-                    <ViralShareButton 
-                      adId={ad.id} 
-                      adTitle={ad.title} 
-                      adPrice={formattedPrice} 
-                      sellerId={ad.seller_id} 
-                    />
+                {ad.latitude && ad.longitude && (
+                  <div className="rounded-3xl bg-zinc-900 p-1 overflow-hidden shadow-lg">
+                    <div className="bg-white rounded-[20px] overflow-hidden relative">
+                      <AdLocationMapDynamic lat={Number(ad.latitude)} lng={Number(ad.longitude)} city={ad.city} neighborhood={ad.neighborhood} />
+                    </div>
                   </div>
                 )}
               </div>
-            </div>
 
-            {/* Verified Seller Card */}
-            <div className="rounded-3xl bg-white dark:bg-zinc-900 p-6 shadow-sm border border-zinc-100 dark:border-zinc-800 relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-orange-50 rounded-bl-[80px] -mr-4 -mt-4 z-0 transition-transform group-hover:scale-110" />
-
-              <div className="relative z-10 flex items-center gap-4 mb-6">
-                <div className="h-16 w-16 rounded-full bg-zinc-100 border-2 border-white shadow-md flex items-center justify-center text-xl font-bold text-zinc-400 overflow-hidden">
-                  {sellerProfile?.avatar_url ? (
-                    <Image src={sellerProfile.avatar_url} alt={sellerName} width={64} height={64} className="w-full h-full object-cover" />
-                  ) : (
-                    sellerInitial
-                  )}
-                </div>
-                <div>
-                  <h3 className="font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5">
-                    {sellerName}
-                    {isTrusted && (
-                      <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-blue-100 text-[10px] text-blue-700 font-extrabold tracking-wide border border-blue-200">
-                        <Award className="w-3 h-3" />
-                        TOP
-                      </span>
+              <div className="lg:col-span-4 space-y-6">
+                <div className="hidden lg:block rounded-3xl bg-white dark:bg-zinc-900 p-8 shadow-sm border border-zinc-100 dark:border-zinc-800">
+                  <h1 className="text-2xl font-bold mb-2">{ad.title}</h1>
+                  <div className="flex items-center gap-2 text-sm text-zinc-500 mb-8">
+                    <MapPin className="h-4 w-4" />
+                    <span>{ad.city} • {formattedDate}</span>
+                  </div>
+                  <div className="text-4xl font-black mb-8">{formattedPrice}</div>
+                  <div className="space-y-6">
+                    <ContactActions adId={ad.id} sellerId={ad.seller_id} currentUser={user} sellerPhone={ad.phone || sellerProfile?.phone} />
+                    {user?.id === ad.seller_id && !ad.is_featured && (
+                      <div className="pt-6 border-t border-zinc-50 dark:border-zinc-800">
+                        <ViralShareButton adId={ad.id} adTitle={ad.title} adPrice={formattedPrice} sellerId={ad.seller_id} />
+                      </div>
                     )}
-                  </h3>
-                  <p className="text-xs text-zinc-500 font-medium">Membre depuis {memberSince}</p>
+                  </div>
                 </div>
-              </div>
 
-              <div className="grid grid-cols-2 gap-3 relative z-10">
-                <div className="bg-zinc-50 dark:bg-zinc-800 p-3 rounded-2xl text-center border border-zinc-100 dark:border-zinc-700">
-                  <span className="block text-lg font-black text-zinc-900 dark:text-zinc-100">100%</span>
-                  <span className="text-[10px] text-zinc-400 uppercase font-bold tracking-wider">Réponse</span>
+                <div className="rounded-3xl bg-white dark:bg-zinc-900 p-6 shadow-sm border border-zinc-100 dark:border-zinc-800 relative overflow-hidden">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="h-16 w-16 rounded-full bg-zinc-100 flex items-center justify-center text-xl font-bold overflow-hidden">
+                      {sellerProfile?.avatar_url ? <Image src={sellerProfile.avatar_url} alt={sellerName} width={64} height={64} className="object-cover" /> : sellerInitial}
+                    </div>
+                    <div>
+                      <h3 className="font-bold flex items-center gap-1.5">{sellerName} {isTrusted && <Award className="w-4 h-4 text-blue-500" />}</h3>
+                      <p className="text-xs text-zinc-500">Membre depuis {memberSince}</p>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-zinc-50 dark:bg-zinc-800 p-3 rounded-2xl text-center border border-zinc-100 dark:border-zinc-700">
+                      <span className="block text-lg font-black">100%</span>
+                      <span className="text-[10px] text-zinc-400 uppercase font-bold">Réponse</span>
+                    </div>
+                    <div className="bg-zinc-50 dark:bg-zinc-800 p-3 rounded-2xl text-center border border-zinc-100 dark:border-zinc-700">
+                      <span className="block text-lg font-black flex items-center justify-center gap-1">{avgRating > 0 ? avgRating : '-'} <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" /></span>
+                      <span className="text-[10px] text-zinc-400 uppercase font-bold">{totalReviews} Avis</span>
+                    </div>
+                  </div>
+                  <Link href={`/profile/${ad.seller_id}`} className="mt-6 block text-center text-xs font-bold text-orange-600 hover:underline">Voir le profil complet</Link>
                 </div>
-                <div className="bg-zinc-50 dark:bg-zinc-800 p-3 rounded-2xl text-center border border-zinc-100 dark:border-zinc-700">
-                  <span className="block text-lg font-black text-zinc-900 dark:text-zinc-100 flex items-center justify-center gap-1">
-                    {avgRating > 0 ? avgRating : '-'}
-                    <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
-                  </span>
-                  <span className="text-[10px] text-zinc-400 uppercase font-bold tracking-wider">{totalReviews} Avis</span>
-                </div>
-              </div>
 
-              <div className="mt-6 pt-4 border-t border-zinc-50 text-center">
-                <Link href={`/profile/${ad.seller_id}`} className="text-xs font-bold text-orange-600 hover:underline flex items-center justify-center gap-1">
-                  Voir le profil complet
-                  <ChevronRight className="w-3 h-3" />
-                </Link>
+                <div className="rounded-3xl bg-gradient-to-br from-emerald-50 to-teal-50 p-6 border border-emerald-100/50">
+                  <div className="flex items-center gap-3 mb-4">
+                    <ShieldCheck className="w-10 h-10 text-emerald-600" />
+                    <h3 className="font-bold text-emerald-900 text-sm">Protection Jootiya</h3>
+                  </div>
+                  <p className="text-xs text-emerald-800/80 mb-4">Achetez et vendez en toute sécurité.</p>
+                  <ul className="space-y-2 text-xs font-semibold text-emerald-700">
+                    <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5" /> Identité vérifiée</li>
+                    <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5" /> Support 24/7</li>
+                  </ul>
+                </div>
               </div>
             </div>
 
-            {/* Trust & Safety Shield */}
-            <div className="rounded-3xl bg-gradient-to-br from-emerald-50 to-teal-50 p-6 border border-emerald-100/50">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 shadow-sm">
-                  <ShieldCheck className="w-5 h-5" />
-                </div>
-                <h3 className="font-bold text-emerald-900 text-sm">Protection Jootiya</h3>
-              </div>
-              <p className="text-xs text-emerald-800/80 leading-relaxed mb-4">
-                Nous veillons à votre sécurité. Ne payez jamais à l'avance et privilégiez les remises en main propre.
-              </p>
-              <ul className="space-y-2">
-                {["Identité vérifiée", "Support 24/7", "Signalement facile"].map((item, i) => (
-                  <li key={i} className="flex items-center gap-2 text-xs font-semibold text-emerald-700">
-                    <CheckCircle2 className="w-3.5 h-3.5" /> {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-          </div>
-        </div>
-
-            {/* Similar Ads Section */}
             {similarAds.length > 0 && (
               <div className="mt-24 border-t border-zinc-100 dark:border-zinc-800 pt-16">
-                <div className="flex items-center justify-between mb-8">
-                  <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">Annonces similaires</h2>
-                  <Link href={`/categories/${ad.category}`} className="text-sm font-bold text-orange-600 hover:text-orange-700 hidden sm:block">
-                    Voir plus
-                  </Link>
-                </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6">
+                <h2 className="text-2xl font-bold mb-8">Annonces similaires</h2>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
                   {similarAds.map((simAd: any) => (
-                    <AdCard 
-                      key={simAd.id} 
-                      priority={true}
-                      ad={{
-                      id: simAd.id,
-                      slug: simAd.slug,
-                      title: simAd.title,
+                    <AdCard key={simAd.id} priority={true} ad={{
+                      id: simAd.id, slug: simAd.slug, title: simAd.title, 
                       price: simAd.price ? `${Number(simAd.price).toLocaleString()} ${simAd.currency || 'MAD'}` : 'Sur demande',
-                      location: simAd.city || 'Maroc',
-                      imageUrl: (simAd.images || simAd.image_urls)?.[0],
-                      createdAt: simAd.created_at ? `${new Date(simAd.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}` : undefined
+                      location: simAd.city || 'Maroc', imageUrl: (simAd.images || simAd.image_urls)?.[0]
                     }} />
                   ))}
                 </div>
               </div>
             )}
           </div>
-
-          {/* Right Ad Sidebar (Desktop Only) */}
-          <aside className="hidden xl:block w-[160px] shrink-0 h-[600px] border border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl">
-            {/* Google Adsense Code Here */}
-          </aside>
-
+          <aside className="hidden xl:block w-[160px] shrink-0 h-[600px] border border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl" />
         </div>
       </main>
-
-      <QuickActionFooter
-        phone={ad.phone || (Array.isArray(ad.profiles) ? ad.profiles[0]?.phone : ad.profiles?.phone)}
-        adTitle={ad.title}
-        adPrice={formattedPrice}
-        adId={ad.id}
-        sellerId={ad.seller_id}
-        currentUser={user}
-      />
-
+      <QuickActionFooter phone={ad.phone || sellerProfile?.phone} adTitle={ad.title} adPrice={formattedPrice} adId={ad.id} sellerId={ad.seller_id} currentUser={user} />
     </div>
-    </>
   );
 }

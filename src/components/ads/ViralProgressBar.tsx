@@ -3,9 +3,9 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { Progress } from "@/components/ui/progress";
-import { Share2, Sparkles, CheckCircle2 } from "lucide-react";
+import { Sparkles, CheckCircle2 } from "lucide-react";
 
-interface ViralProgressBarProps {
+export interface ViralProgressBarProps {
   adId: string;
   initialCount: number;
   isFeatured: boolean;
