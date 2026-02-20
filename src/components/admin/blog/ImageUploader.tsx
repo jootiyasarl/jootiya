@@ -79,7 +79,7 @@ export const ImageUploader = ({ onUploadComplete, currentImage, label = "Image d
       const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
       const filePath = `blog/${fileName}`;
 
-      const bucketName = "images"; // Changed from blog_content to images
+      const bucketName = "ad-images"; // Changed from blog_content to ad-images
       const { data, error } = await supabase.storage
         .from(bucketName)
         .upload(filePath, file, {

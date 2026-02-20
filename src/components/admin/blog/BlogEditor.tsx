@@ -236,14 +236,15 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
       const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.webp`;
       const filePath = `blog/content/${fileName}`;
 
+      const bucketName = "ad-images"; // Changed from blog_content to ad-images
       const { data, error } = await supabase.storage
-        .from("blog_content")
+        .from(bucketName)
         .upload(filePath, compressedFile);
 
       if (error) throw error;
 
       const { data: { publicUrl } } = supabase.storage
-        .from("blog_content")
+        .from(bucketName)
         .getPublicUrl(filePath);
 
       editor?.chain().focus().setImage({ src: publicUrl }).run();
