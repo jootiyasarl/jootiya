@@ -10,6 +10,7 @@ import { AdCard } from "@/components/AdCard";
 import { Package } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
+import { shadowTracker } from "@/lib/shadow-tracker";
 
 // Transform Supabase Ad to AdCard expected format
 function transformAdToCard(ad: any) {
@@ -51,9 +52,6 @@ export default function MarketplaceManager({ ads }: { ads: any[] }) {
     const activeCategory = searchParams.get("category") || "";
     const [query, setQuery] = useState(initialQuery);
 
-import { shadowTracker } from "@/lib/shadow-tracker";
-
-// ... inside handleSearch ...
     const handleSearch = () => {
         if (query) {
             shadowTracker.trackEvent({
