@@ -1,8 +1,14 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
-import { BlogEditor } from "@/components/admin/blog/BlogEditor";
+
+const BlogEditor = dynamic(() => import("@/components/admin/blog/BlogEditor").then(mod => mod.BlogEditor), {
+  ssr: false,
+  loading: () => <div className="h-[400px] w-full bg-zinc-100 animate-pulse rounded-xl flex items-center justify-center text-zinc-400">Loading Editor...</div>
+});
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
