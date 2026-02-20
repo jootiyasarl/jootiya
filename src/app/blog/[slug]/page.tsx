@@ -8,12 +8,13 @@ import { Metadata } from 'next';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
+  const decodedSlug = decodeURIComponent(slug);
   const supabase = createSupabaseServerClient();
   
   const { data: post } = await supabase
     .from("posts")
     .select("title, seo_title, excerpt, featured_image")
-    .eq("slug", slug)
+    .eq("slug", decodedSlug)
     .eq("status", "published")
     .maybeSingle();
 
@@ -33,13 +34,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+  const decodedSlug = decodeURIComponent(slug);
   const supabase = createSupabaseServerClient();
 
   // جلب المقال من قاعدة البيانات فقط
   const { data: post } = await supabase
     .from("posts")
     .select("*, profiles(full_name, avatar_url)")
-    .eq("slug", slug)
+    .eq("slug", decodedSlug)
     .eq("status", "published")
     .maybeSingle();
 
