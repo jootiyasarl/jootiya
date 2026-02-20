@@ -17,6 +17,8 @@ const BlogEditor = dynamic(() => import("@/components/admin/blog/BlogEditor").th
   loading: () => <div className="h-[500px] w-full bg-zinc-900/50 animate-pulse rounded-[2rem] border border-zinc-800 flex items-center justify-center text-zinc-500 font-medium">Initialisation de l'éditeur professionnel...</div>
 });
 
+import { ImageUploader } from "@/components/admin/blog/ImageUploader";
+
 export default function BlogAdminPage() {
   const [loading, setLoading] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -33,6 +35,8 @@ export default function BlogAdminPage() {
     category: "Actualités",
     status: "draft"
   });
+
+  // ... (checkAdmin logic remains the same)
 
   useEffect(() => {
     async function checkAdmin() {
@@ -219,15 +223,10 @@ export default function BlogAdminPage() {
               {/* Status Card */}
               <div className="p-8 bg-zinc-900/40 backdrop-blur-xl rounded-[2.5rem] border border-zinc-800/50 shadow-2xl space-y-6">
                 <div className="space-y-4">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.2em]">Image de couverture</label>
-                    <Input 
-                      placeholder="Lien de l'image (Unsplash, etc.)" 
-                      value={formData.featured_image}
-                      onChange={(e) => setPostData({...formData, featured_image: e.target.value})}
-                      className="bg-zinc-950/50 border-zinc-800 focus:border-orange-500/50 rounded-xl transition-all"
-                    />
-                  </div>
+                  <ImageUploader 
+                    currentImage={formData.featured_image}
+                    onUploadComplete={(url) => setPostData({...formData, featured_image: url})}
+                  />
 
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.2em]">Statut de publication</label>
