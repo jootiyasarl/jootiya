@@ -37,16 +37,25 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const decodedSlug = decodeURIComponent(slug);
   const supabase = createSupabaseServerClient();
 
-  // جلب المقال من قاعدة البيانات فقط
-  const { data: post } = await supabase
+  // جلب المقال من قاعدة البيانات
+  const { data: post, error } = await supabase
     .from("posts")
     .select("*, profiles(full_name, avatar_url)")
     .eq("slug", decodedSlug)
-    .eq("status", "published")
     .maybeSingle();
 
-  if (!post) {
-    notFound();
+  // Debug section for Admin or development
+  if (!post || post.status !== "published") {
+    return (
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6 text-center">
+        <h1 className="text-2xl font-bold mb-4">Debug Info</h1>
+        <p className="mb-2">Slug: {decodedSlug}</p>
+        <p className="mb-2">Post Found: {post ? 'Yes' : 'No'}</p>
+        {post && <p className="mb-2">Status: {post.status}</p>}
+        {error && <p className="text-red-500 mb-4">Error: {error.message}</p>}
+        <Link href="/blog" className="text-orange-500 font-bold underline">Retour au blog</Link>
+      </div>
+    );
   }
 
   const formattedDate = new Date(post.published_at || post.created_at).toLocaleDateString("fr-FR", {
