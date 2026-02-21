@@ -79,7 +79,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   return (
     <article className="min-h-screen bg-white dark:bg-zinc-950 pb-20">
       {/* Header Image Section */}
-      <div className="relative h-[45vh] md:h-[65vh] w-full bg-zinc-900 pt-16 md:pt-20">
+      <div className="relative h-[45vh] md:h-[65vh] w-full bg-zinc-900 pt-24 md:pt-28">
         {post.featured_image && (
           <Image 
             src={post.featured_image} 
