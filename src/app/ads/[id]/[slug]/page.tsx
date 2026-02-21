@@ -262,17 +262,17 @@ export default async function AdPage({ params }: AdPageProps) {
   return (
     <div dir="ltr" className="min-h-screen bg-[#F8FAFC] dark:bg-zinc-950 pb-32 font-sans text-zinc-900 dark:text-zinc-100 pt-10 md:pt-8">
       <ShadowViewTracker adId={ad.id} category={ad.category} />
-      <div className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 z-40">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-2">
-          <div className="flex flex-wrap items-center justify-between gap-6">
-            <nav className="flex flex-wrap items-center gap-2 text-sm text-zinc-500 min-w-0">
+      <div className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl border-b border-zinc-200 dark:border-zinc-800 z-40">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <nav className="flex flex-wrap items-center gap-2 text-[13px] font-medium text-zinc-500 min-w-0">
               <Link href="/" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">Accueil</Link>
               <ChevronRight className="h-4 w-4" />
               <Link href="/marketplace" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">Marché</Link>
               <ChevronRight className="h-4 w-4" />
               <span className="text-zinc-900 dark:text-zinc-100 font-medium truncate">{ad.title}</span>
             </nav>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between gap-3 md:justify-end">
               <div className="hidden md:block text-right mr-4">
                 <p className="text-xs text-zinc-400 font-bold uppercase tracking-wider">Prix</p>
                 <p className="font-black text-orange-600 leading-none">{formattedPrice}</p>
@@ -284,12 +284,12 @@ export default async function AdPage({ params }: AdPageProps) {
         </div>
       </div>
 
-      <main className="mx-auto max-w-screen-2xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="flex flex-col xl:flex-row gap-6 justify-between items-start">
+      <main className="mx-auto max-w-screen-2xl px-4 py-10 sm:px-6 lg:px-8">
+        <div className="flex flex-col xl:flex-row gap-10 justify-between items-start">
           <aside className="hidden xl:block w-[160px] shrink-0 h-[600px] border border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl" />
 
           <div className="flex-1 w-full min-w-0">
-            <div className="mb-6 space-y-4">
+            <div className="mb-8 space-y-4">
               <ViralTracker adId={ad.id} referrerId="" />
               <ViralProgressBar 
                 adId={ad.id} 
@@ -302,7 +302,7 @@ export default async function AdPage({ params }: AdPageProps) {
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
               <div className="lg:col-span-8 space-y-8">
-                <section className="rounded-3xl overflow-hidden shadow-sm bg-white dark:bg-zinc-900">
+                <section className="rounded-2xl overflow-hidden bg-white dark:bg-zinc-900 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-zinc-100 dark:ring-white/5">
                   <AdImageGallery images={images} />
                 </section>
 
@@ -319,7 +319,7 @@ export default async function AdPage({ params }: AdPageProps) {
                   </div>
                 </div>
 
-                <div className="rounded-3xl bg-white dark:bg-zinc-900 p-6 shadow-sm border border-zinc-100 dark:border-zinc-800 sm:p-8">
+                <div className="rounded-2xl bg-white dark:bg-zinc-900 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-zinc-100 dark:ring-white/5 sm:p-8">
                   <h2 className="text-lg font-bold flex items-center gap-2 mb-6 text-zinc-900 dark:text-zinc-100">
                     <Sparkles className="w-5 h-5 text-orange-500" />
                     Description
@@ -344,7 +344,7 @@ export default async function AdPage({ params }: AdPageProps) {
                 </div>
 
                 {ad.latitude && ad.longitude && (
-                  <div className="rounded-3xl bg-zinc-900 p-1 overflow-hidden shadow-lg">
+                  <div className="rounded-2xl bg-zinc-900 p-1 overflow-hidden shadow-[0_12px_34px_rgba(0,0,0,0.18)]">
                     <div className="bg-white rounded-[20px] overflow-hidden relative">
                       <AdLocationMapDynamic lat={Number(ad.latitude)} lng={Number(ad.longitude)} city={ad.city} neighborhood={ad.neighborhood} />
                     </div>
@@ -353,7 +353,7 @@ export default async function AdPage({ params }: AdPageProps) {
               </div>
 
               <div className="lg:col-span-4 space-y-6">
-                <div className="hidden lg:block rounded-3xl bg-white dark:bg-zinc-900 p-8 shadow-sm border border-zinc-100 dark:border-zinc-800">
+                <div className="hidden lg:block rounded-2xl bg-white dark:bg-zinc-900 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-zinc-100 dark:ring-white/5">
                   <h1 className="text-2xl font-bold mb-2">{ad.title}</h1>
                   <div className="flex items-center gap-2 text-sm text-zinc-500 mb-8">
                     <MapPin className="h-4 w-4" />
@@ -370,7 +370,7 @@ export default async function AdPage({ params }: AdPageProps) {
                   </div>
                 </div>
 
-                <div className="rounded-3xl bg-white dark:bg-zinc-900 p-6 shadow-sm border border-zinc-100 dark:border-zinc-800 relative overflow-hidden">
+                <div className="rounded-2xl bg-white dark:bg-zinc-900 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-zinc-100 dark:ring-white/5 relative overflow-hidden">
                   <div className="flex items-center gap-4 mb-6">
                     <div className="h-16 w-16 rounded-full bg-zinc-100 flex items-center justify-center text-xl font-bold overflow-hidden">
                       {sellerProfile?.avatar_url ? <Image src={sellerProfile.avatar_url} alt={sellerName} width={64} height={64} className="object-cover" /> : sellerInitial}
@@ -410,7 +410,7 @@ export default async function AdPage({ params }: AdPageProps) {
             {similarAds.length > 0 && (
               <div className="mt-24 border-t border-zinc-100 dark:border-zinc-800 pt-16">
                 <h2 className="text-2xl font-bold mb-8">Annonces similaires</h2>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
                   {similarAds.map((simAd: any) => (
                     <AdCard key={simAd.id} priority={true} ad={{
                       id: simAd.id, slug: simAd.slug, title: simAd.title, 
