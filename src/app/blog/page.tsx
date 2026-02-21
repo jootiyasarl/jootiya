@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getPublishedPosts } from "@/lib/db/blog";
 import { Calendar, ArrowRight, BookOpen } from "lucide-react";
 
