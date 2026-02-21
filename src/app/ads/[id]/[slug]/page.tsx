@@ -260,7 +260,7 @@ export default async function AdPage({ params }: AdPageProps) {
   }
 
   return (
-    <div dir="ltr" className="min-h-screen bg-[#F8FAFC] dark:bg-zinc-950 pb-32 font-sans text-zinc-900 dark:text-zinc-100 pt-10 md:pt-8">
+    <div dir="ltr" className="min-h-screen bg-[#F8FAFC] dark:bg-zinc-950 pb-32 font-sans text-zinc-900 dark:text-zinc-100 pt-6 md:pt-6">
       <ShadowViewTracker adId={ad.id} category={ad.category} />
       <div className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl border-b border-zinc-200 dark:border-zinc-800 z-40">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-2">
