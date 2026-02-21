@@ -38,7 +38,7 @@ export function RootNavbarShell({ children, navbar, footer }: RootNavbarShellPro
       </div>
       <main className={cn(
         "min-h-screen",
-        !isSpecialPath && "pt-32"
+        !isSpecialPath && "pt-20"
       )}>
         {children}
       </main>
