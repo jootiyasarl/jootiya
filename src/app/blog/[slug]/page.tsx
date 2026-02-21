@@ -87,11 +87,12 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             fill 
             className="object-cover opacity-70" 
             priority 
+            unoptimized
           />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/20 to-transparent" />
         <div className="absolute inset-0 flex items-end">
-          <div className="max-w-4xl mx-auto px-6 w-full pb-16">
+          <div className="max-w-4xl mx-auto px-6 w-full pb-20">
             <Link href="/blog" className="inline-flex items-center text-white/80 hover:text-white mb-8 text-sm font-bold bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 transition-all">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Retour au blog

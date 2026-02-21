@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabaseClient";
@@ -197,7 +198,14 @@ export default function BlogAdminPage() {
                   <div className="flex items-center gap-6">
                     <div className="h-16 w-16 rounded-2xl bg-zinc-800 overflow-hidden border border-zinc-700">
                       {post.featured_image ? (
-                        <img src={post.featured_image} alt="" className="h-full w-full object-cover" />
+                        <Image 
+                          src={post.featured_image} 
+                          alt="" 
+                          width={64} 
+                          height={64} 
+                          className="h-full w-full object-cover" 
+                          unoptimized
+                        />
                       ) : (
                         <div className="h-full w-full flex items-center justify-center text-zinc-600 font-black text-[10px]">NO IMG</div>
                       )}

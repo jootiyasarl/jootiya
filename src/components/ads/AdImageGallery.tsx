@@ -105,10 +105,11 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
                                     alt={`Product view ${index + 1}`}
                                     fill
                                     priority={index === 0}
-                                    className="object-cover"
+                                    className="object-contain"
                                     sizes="(max-width: 768px) 100vw, 70vw"
                                     onClick={() => setIsLightboxOpen(true)}
                                     loading={index === 0 ? "eager" : "lazy"}
+                                    unoptimized
                                 />
                             </div>
                         ))}
@@ -165,7 +166,8 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
                                 src={getOptimizedImageUrl(image, { width: 150, height: 150 })}
                                 alt={`Thumbnail ${index + 1}`}
                                 fill
-                                className="object-cover"
+                                className="object-contain"
+                                unoptimized
                             />
                         </button>
                     ))}

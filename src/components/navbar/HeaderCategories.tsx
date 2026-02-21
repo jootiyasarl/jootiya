@@ -34,10 +34,10 @@ export function HeaderCategories() {
                         )}
                     >
                         <div className={cn(
-                            "flex h-9 w-9 items-center justify-center rounded-xl transition-all duration-300 group-hover:scale-105 group-hover:-translate-y-0.5",
+                            "flex h-12 w-12 items-center justify-center rounded-xl transition-all duration-300 group-hover:scale-105 group-hover:-translate-y-0.5",
                             !currentCategory ? "bg-orange-50 dark:bg-orange-950/30" : "bg-zinc-50 dark:bg-zinc-900 group-hover:bg-orange-50 dark:group-hover:bg-orange-950/30"
                         )}>
-                            <LayoutGrid className={cn("h-4.5 w-4.5 transition-transform", !currentCategory && "scale-110")} />
+                            <LayoutGrid className={cn("h-6 w-6 transition-transform", !currentCategory && "scale-110")} />
                         </div>
                         <span className="text-[11px] font-bold tracking-tight">Tout</span>
                         
@@ -60,12 +60,12 @@ export function HeaderCategories() {
                                 )}
                             >
                                 <div className={cn(
-                                    "flex h-9 w-9 items-center justify-center rounded-xl transition-all duration-300 group-hover:scale-105 group-hover:-translate-y-0.5",
+                                    "flex h-12 w-12 items-center justify-center rounded-xl transition-all duration-300 group-hover:scale-105 group-hover:-translate-y-0.5",
                                     isActive 
                                         ? "bg-orange-50 dark:bg-orange-950/30" 
                                         : "bg-zinc-50 dark:bg-zinc-900 group-hover:bg-orange-50 dark:group-hover:bg-orange-950/30"
                                 )}>
-                                    <Icon className={cn("h-4.5 w-4.5 transition-transform", isActive ? "scale-110" : category.color)} />
+                                    <Icon className={cn("h-6 w-6 transition-transform", isActive ? "scale-110" : category.color)} />
                                 </div>
                                 <span className={cn("text-[11px] font-bold tracking-tight", isActive && "text-orange-600")}>
                                     {category.label}

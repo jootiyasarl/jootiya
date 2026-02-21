@@ -36,20 +36,23 @@ export function HomepageAdCard({
         className,
       )}
     >
-      <div className="relative h-40 w-full bg-zinc-100">
-        {imageUrl ? (
-          <Image
-            src={getOptimizedImageUrl(imageUrl, { width: 400, height: 300, quality: 75 })}
-            alt={title}
-            fill
-            className="object-cover transition-transform duration-200 group-hover:scale-105"
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center text-xs font-medium text-zinc-400">
-            No image
-          </div>
-        )}
+      <div className="relative aspect-square w-full overflow-hidden bg-zinc-100 shrink-0">
+        <div className="absolute inset-0 w-full h-full">
+          {imageUrl ? (
+            <Image
+              src={getOptimizedImageUrl(imageUrl, { width: 400, height: 400, quality: 75 })}
+              alt={title}
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              unoptimized
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center text-xs font-medium text-zinc-400">
+              No image
+            </div>
+          )}
+        </div>
 
         {distanceLabel ? (
           <div className="absolute left-2 top-2 inline-flex items-center rounded-full bg-zinc-900/85 px-2 py-0.5 text-[10px] font-medium text-zinc-50">

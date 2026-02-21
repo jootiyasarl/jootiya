@@ -17,24 +17,6 @@ const ensureFullUrl = (url: string | null) => {
   return `${baseUrl}/${cleanPath}`;
 };
 
-// Optimized Image Component for Ad Cards
-const OptimizedAdImage = ({ src, alt, priority = false }: { src: string, alt: string, priority?: boolean }) => {
-  const fullUrl = ensureFullUrl(src);
-  return (
-    <div className="relative h-full w-full">
-      <Image
-        src={getOptimizedImageUrl(fullUrl, { width: 400, height: 400, quality: 75 })}
-        alt={alt}
-        fill
-        priority={priority}
-        className="object-cover transition-transform duration-500 group-hover:scale-105"
-        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-        loading={priority ? "eager" : "lazy"}
-      />
-    </div>
-  );
-};
-
 export type PublicAdCardAd = {
   id: string;
   slug?: string;
@@ -69,9 +51,9 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete, pr
   const linkHref = href || `/ads/${ad.id}/${adSlug}`;
 
   return (
-    <article className="group relative flex flex-col gap-3">
-      {/* Image Container */}
-      <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-white dark:bg-zinc-900 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-zinc-100 dark:ring-white/5 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:shadow-[0_14px_40px_rgba(0,0,0,0.08)]">
+    <article className="group relative flex flex-col h-full bg-white dark:bg-zinc-900 rounded-[1.5rem] overflow-hidden shadow-sm border border-zinc-100 dark:border-zinc-800 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+      {/* الجزء المسؤول عن الصورة - هنا يكمن الحل */}
+      <div className="relative w-full aspect-[4/3] bg-zinc-100 dark:bg-zinc-800 overflow-hidden shrink-0">
         {linkHref && (
           <Link href={linkHref} className="absolute inset-0 z-10" aria-label={ad.title}>
             <span className="sr-only">Voir l'annonce</span>
@@ -79,27 +61,21 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete, pr
         )}
         
         {ad.imageUrl ? (
-          <OptimizedAdImage 
-            src={ad.imageUrl} 
-            alt={ad.title} 
-            priority={priority} 
+          <Image
+            src={getOptimizedImageUrl(ensureFullUrl(ad.imageUrl), { width: 400, height: 300, quality: 75 })}
+            alt={ad.title}
+            fill
+            priority={priority}
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            loading={priority ? "eager" : "lazy"}
+            unoptimized
           />
         ) : (
-          <div className="flex h-full w-full items-center justify-center bg-zinc-100 dark:bg-zinc-800 text-zinc-400">
-            <span className="text-xs">Aucune image</span>
+          <div className="absolute inset-0 flex items-center justify-center text-zinc-400">
+            <span className="text-xs font-bold uppercase tracking-widest">No Image</span>
           </div>
         )}
-
-        {/* Badges Overlay */}
-        <div className="absolute top-3 left-3 z-20 pointer-events-none">
-          {isFeatured && (
-            <div className="bg-white/95 dark:bg-zinc-900/95 backdrop-blur-sm px-3 py-1 rounded-full shadow-sm border border-zinc-200/50 dark:border-zinc-700/50">
-              <span className="text-[11px] font-bold text-zinc-900 dark:text-zinc-100 whitespace-nowrap">
-                Coup de cœur
-              </span>
-            </div>
-          )}
-        </div>
 
         {/* Favorite Heart Icon Overlay */}
         <div className="absolute right-3 top-3 z-30">
@@ -107,6 +83,17 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete, pr
             adId={ad.id} 
             className="bg-transparent shadow-none hover:bg-transparent text-white drop-shadow-md hover:text-red-500" 
           />
+        </div>
+
+        {/* Badges Overlay */}
+        <div className="absolute top-3 left-3 z-20 pointer-events-none">
+          {isFeatured && (
+            <div className="bg-white/95 dark:bg-zinc-900/95 backdrop-blur-sm px-2.5 py-1 rounded-full shadow-sm border border-zinc-200/50 dark:border-zinc-700/50">
+              <span className="text-[10px] font-black text-orange-600 dark:text-orange-500 uppercase tracking-tight">
+                Coup de cœur
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Sold Overlay */}
@@ -119,28 +106,24 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete, pr
         )}
       </div>
 
-      {/* Info Section */}
-      <div className="flex flex-col gap-1 px-0.5">
-        <h3 className="text-[13px] font-bold text-zinc-900 dark:text-zinc-100 leading-snug line-clamp-2">
+      {/* جزء المعلومات - لضمان بقاء النصوص متساوية */}
+      <div className="p-4 flex flex-col flex-grow">
+        <h3 className="text-sm font-bold text-zinc-800 dark:text-zinc-100 line-clamp-2 h-10 mb-2 leading-snug">
           {ad.title}
         </h3>
-
-        <div className="flex items-center justify-between gap-2">
-          <p className="text-[12px] text-zinc-600 dark:text-zinc-300 font-medium truncate">
-            {ad.location}
-          </p>
-          <span className="text-[12px] font-black text-zinc-900 dark:text-zinc-100 whitespace-nowrap">
+        
+        <div className="mt-auto">
+          <p className="text-orange-600 dark:text-orange-500 font-extrabold text-lg">
             {ad.price}
-          </span>
+          </p>
+          <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-1">
+            {ad.location} • {ad.createdAt || "Aujourd'hui"}
+          </p>
         </div>
 
-        <p className="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium">
-          {ad.createdAt || "Aujourd'hui"}
-        </p>
-
-        {/* Footer Slot */}
+        {/* Footer Slot: Stays at the bottom */}
         {footerSlot && (
-          <div className="mt-2 relative z-20">
+          <div className="mt-3 pt-3 border-t border-zinc-50 dark:border-zinc-800/50 relative z-20">
             {footerSlot}
           </div>
         )}

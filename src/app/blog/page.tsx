@@ -40,12 +40,13 @@ export default async function BlogListing() {
                 href={`/blog/${post.slug}`}
                 className="group flex flex-col bg-white rounded-[2.5rem] border border-zinc-100 overflow-hidden hover:shadow-2xl hover:shadow-orange-500/10 hover:-translate-y-2 transition-all duration-500"
               >
-                <div className="relative aspect-[16/10] overflow-hidden">
-                  <img 
+                <div className="relative aspect-[16/9] overflow-hidden">
+                  <Image 
                     src={post.featured_image || "/images/placeholder-blog.jpg"} 
                     alt={post.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    loading="lazy"
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-110"
+                    unoptimized
                   />
                   <div className="absolute top-4 left-4 px-3 py-1 bg-white/90 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest text-zinc-900 shadow-sm">
                     {post.category || "Général"}
