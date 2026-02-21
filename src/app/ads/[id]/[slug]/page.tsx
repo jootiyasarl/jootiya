@@ -285,7 +285,7 @@ export default async function AdPage({ params }: AdPageProps) {
       </div>
 
       <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mb-8 space-y-4">
+        <div className="mb-10 space-y-4">
           <ViralTracker adId={ad.id} referrerId="" />
           <ViralProgressBar 
             adId={ad.id} 
@@ -303,7 +303,7 @@ export default async function AdPage({ params }: AdPageProps) {
               <AdImageGallery images={images} />
             </section>
 
-            <div className="space-y-5">
+            <div className="space-y-8">
               <div className="flex flex-col gap-3">
                 <h1 className="text-3xl sm:text-4xl font-black tracking-tighter leading-tight text-zinc-900 dark:text-white">
                   {ad.title}
@@ -321,7 +321,7 @@ export default async function AdPage({ params }: AdPageProps) {
                 </div>
               </div>
 
-              <div className="rounded-[2rem] bg-white dark:bg-zinc-900 p-6 sm:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-zinc-100 dark:ring-white/5">
+              <div className="rounded-[2rem] bg-white dark:bg-zinc-900 p-8 sm:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-zinc-100 dark:ring-white/5">
                 <div className="flex items-center justify-between gap-4 mb-8">
                   <h2 className="text-lg font-black tracking-tight text-zinc-900 dark:text-white">Description</h2>
                   <div className="flex items-center gap-2">
@@ -383,7 +383,7 @@ export default async function AdPage({ params }: AdPageProps) {
           {/* Right Column: Sticky CTA + Seller */}
           <div className="lg:col-span-4">
             <div className="lg:sticky lg:top-24 space-y-6">
-              <div className="rounded-[2rem] bg-white dark:bg-zinc-900 p-6 sm:p-8 shadow-[0_12px_40px_rgba(0,0,0,0.06)] ring-1 ring-zinc-100 dark:ring-white/5">
+              <div className="rounded-[2rem] bg-white dark:bg-zinc-900 p-8 shadow-[0_12px_40px_rgba(0,0,0,0.06)] ring-1 ring-zinc-100 dark:ring-white/5">
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Prix</p>
@@ -412,7 +412,7 @@ export default async function AdPage({ params }: AdPageProps) {
                 </div>
               </div>
 
-              <div className="rounded-[2rem] bg-white dark:bg-zinc-900 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-zinc-100 dark:ring-white/5">
+              <div className="rounded-[2rem] bg-white dark:bg-zinc-900 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-zinc-100 dark:ring-white/5">
                 <div className="flex items-center gap-4">
                   <div className="h-14 w-14 rounded-full bg-zinc-100 flex items-center justify-center text-xl font-black overflow-hidden ring-1 ring-zinc-200">
                     {sellerProfile?.avatar_url ? (
@@ -449,7 +449,7 @@ export default async function AdPage({ params }: AdPageProps) {
                 </Link>
               </div>
 
-              <div className="rounded-[2rem] bg-gradient-to-br from-emerald-50 to-teal-50 p-6 ring-1 ring-emerald-100/60">
+              <div className="rounded-[2rem] bg-gradient-to-br from-emerald-50 to-teal-50 p-8 ring-1 ring-emerald-100/60">
                 <div className="flex items-center gap-3 mb-4">
                   <ShieldCheck className="w-9 h-9 text-emerald-600" />
                   <h3 className="font-black text-emerald-900 text-sm">Protection Jootiya</h3>
