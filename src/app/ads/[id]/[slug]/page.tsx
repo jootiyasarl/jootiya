@@ -284,132 +284,89 @@ export default async function AdPage({ params }: AdPageProps) {
         </div>
       </div>
 
-      <main className="mx-auto max-w-screen-2xl px-4 py-10 sm:px-6 lg:px-8">
-        <div className="flex flex-col xl:flex-row gap-10 justify-between items-start">
-          <aside className="hidden xl:block w-[160px] shrink-0 h-[600px] border border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl" />
+      <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <div className="mb-8 space-y-4">
+          <ViralTracker adId={ad.id} referrerId="" />
+          <ViralProgressBar 
+            adId={ad.id} 
+            initialCount={ad.referral_count || 0} 
+            isFeatured={ad.is_featured} 
+            sellerId={ad.seller_id}
+            currentUserId={user?.id}
+          />
+        </div>
 
-          <div className="flex-1 w-full min-w-0">
-            <div className="mb-8 space-y-4">
-              <ViralTracker adId={ad.id} referrerId="" />
-              <ViralProgressBar 
-                adId={ad.id} 
-                initialCount={ad.referral_count || 0} 
-                isFeatured={ad.is_featured} 
-                sellerId={ad.seller_id}
-                currentUserId={user?.id}
-              />
-            </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+          {/* Left Column: Gallery + Details */}
+          <div className="lg:col-span-8 space-y-10 min-w-0">
+            <section className="rounded-[2rem] overflow-hidden bg-white dark:bg-zinc-900 shadow-[0_12px_40px_rgba(0,0,0,0.06)] ring-1 ring-zinc-100 dark:ring-white/5">
+              <AdImageGallery images={images} />
+            </section>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-              <div className="lg:col-span-8 space-y-8">
-                <section className="rounded-2xl overflow-hidden bg-white dark:bg-zinc-900 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-zinc-100 dark:ring-white/5">
-                  <AdImageGallery images={images} />
-                </section>
-
-                <div className="lg:hidden space-y-3 px-1">
-                  <div className="flex items-start justify-between gap-4">
-                    <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">{ad.title}</h1>
-                    <div className="text-xl font-black text-orange-600">{formattedPrice}</div>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-zinc-500">
-                    <MapPin className="h-4 w-4" />
-                    <span>{ad.city}, {ad.neighborhood || "Maroc"}</span>
-                    <span className="w-1 h-1 rounded-full bg-zinc-300" />
-                    <span>{formattedDate}</span>
-                  </div>
-                </div>
-
-                <div className="rounded-2xl bg-white dark:bg-zinc-900 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-zinc-100 dark:ring-white/5 sm:p-8">
-                  <h2 className="text-lg font-bold flex items-center gap-2 mb-6 text-zinc-900 dark:text-zinc-100">
-                    <Sparkles className="w-5 h-5 text-orange-500" />
-                    Description
-                  </h2>
-                  <p className="whitespace-pre-wrap leading-relaxed text-[15px] text-zinc-600 dark:text-zinc-400">
-                    {ad.description || "Aucune description fournie."}
-                  </p>
-                  <div className="mt-10 grid grid-cols-2 gap-4 pt-8 border-t border-zinc-50 sm:grid-cols-3 text-sm">
-                    <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700">
-                      <span className="text-[10px] uppercase text-zinc-400 font-bold block mb-1">Catégorie</span>
-                      <p className="font-semibold">{ad.category || "Autre"}</p>
-                    </div>
-                    <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700">
-                      <span className="text-[10px] uppercase text-zinc-400 font-bold block mb-1">État</span>
-                      <p className="font-semibold">{ad.condition === 'new' ? "Neuf" : "Occasion"}</p>
-                    </div>
-                    <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-100 dark:border-zinc-700">
-                      <span className="text-[10px] uppercase text-zinc-400 font-bold block mb-1">Vues</span>
-                      <p className="font-semibold flex items-center gap-1.5"><Eye className="w-3.5 h-3.5" /> {ad.views_count || 1}</p>
-                    </div>
-                  </div>
-                </div>
-
-                {ad.latitude && ad.longitude && (
-                  <div className="rounded-2xl bg-zinc-900 p-1 overflow-hidden shadow-[0_12px_34px_rgba(0,0,0,0.18)]">
-                    <div className="bg-white rounded-[20px] overflow-hidden relative">
-                      <AdLocationMapDynamic lat={Number(ad.latitude)} lng={Number(ad.longitude)} city={ad.city} neighborhood={ad.neighborhood} />
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              <div className="lg:col-span-4 space-y-6">
-                <div className="hidden lg:block rounded-2xl bg-white dark:bg-zinc-900 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-zinc-100 dark:ring-white/5">
-                  <h1 className="text-2xl font-bold mb-2">{ad.title}</h1>
-                  <div className="flex items-center gap-2 text-sm text-zinc-500 mb-8">
-                    <MapPin className="h-4 w-4" />
-                    <span>{ad.city} • {formattedDate}</span>
-                  </div>
-                  <div className="text-4xl font-black mb-8">{formattedPrice}</div>
-                  <div className="space-y-6">
-                    <ContactActions adId={ad.id} sellerId={ad.seller_id} currentUser={user} sellerPhone={ad.phone || sellerProfile?.phone} />
-                    {user?.id === ad.seller_id && !ad.is_featured && (
-                      <div className="pt-6 border-t border-zinc-50 dark:border-zinc-800">
-                        <ViralShareButton adId={ad.id} adTitle={ad.title} adPrice={formattedPrice} sellerId={ad.seller_id} />
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className="rounded-2xl bg-white dark:bg-zinc-900 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-zinc-100 dark:ring-white/5 relative overflow-hidden">
-                  <div className="flex items-center gap-4 mb-6">
-                    <div className="h-16 w-16 rounded-full bg-zinc-100 flex items-center justify-center text-xl font-bold overflow-hidden">
-                      {sellerProfile?.avatar_url ? <Image src={sellerProfile.avatar_url} alt={sellerName} width={64} height={64} className="object-cover" /> : sellerInitial}
-                    </div>
-                    <div>
-                      <h3 className="font-bold flex items-center gap-1.5">{sellerName} {isTrusted && <Award className="w-4 h-4 text-blue-500" />}</h3>
-                      <p className="text-xs text-zinc-500">Membre depuis {memberSince}</p>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-zinc-50 dark:bg-zinc-800 p-3 rounded-2xl text-center border border-zinc-100 dark:border-zinc-700">
-                      <span className="block text-lg font-black">100%</span>
-                      <span className="text-[10px] text-zinc-400 uppercase font-bold">Réponse</span>
-                    </div>
-                    <div className="bg-zinc-50 dark:bg-zinc-800 p-3 rounded-2xl text-center border border-zinc-100 dark:border-zinc-700">
-                      <span className="block text-lg font-black flex items-center justify-center gap-1">{avgRating > 0 ? avgRating : '-'} <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" /></span>
-                      <span className="text-[10px] text-zinc-400 uppercase font-bold">{totalReviews} Avis</span>
-                    </div>
-                  </div>
-                  <Link href={`/profile/${ad.seller_id}`} className="mt-6 block text-center text-xs font-bold text-orange-600 hover:underline">Voir le profil complet</Link>
-                </div>
-
-                <div className="rounded-3xl bg-gradient-to-br from-emerald-50 to-teal-50 p-6 border border-emerald-100/50">
-                  <div className="flex items-center gap-3 mb-4">
-                    <ShieldCheck className="w-10 h-10 text-emerald-600" />
-                    <h3 className="font-bold text-emerald-900 text-sm">Protection Jootiya</h3>
-                  </div>
-                  <p className="text-xs text-emerald-800/80 mb-4">Achetez et vendez en toute sécurité.</p>
-                  <ul className="space-y-2 text-xs font-semibold text-emerald-700">
-                    <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5" /> Identité vérifiée</li>
-                    <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5" /> Support 24/7</li>
-                  </ul>
+            <div className="space-y-5">
+              <div className="flex flex-col gap-3">
+                <h1 className="text-3xl sm:text-4xl font-black tracking-tighter leading-tight text-zinc-900 dark:text-white">
+                  {ad.title}
+                </h1>
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] font-medium text-zinc-500">
+                  <span className="inline-flex items-center gap-1.5">
+                    <MapPin className="h-4 w-4 text-orange-500" />
+                    {ad.city}{ad.neighborhood ? `, ${ad.neighborhood}` : ""}
+                  </span>
+                  <span className="h-1 w-1 rounded-full bg-zinc-300" />
+                  <span className="inline-flex items-center gap-1.5">
+                    <Calendar className="h-4 w-4 text-orange-500" />
+                    {formattedDate}
+                  </span>
                 </div>
               </div>
+
+              <div className="rounded-[2rem] bg-white dark:bg-zinc-900 p-6 sm:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-zinc-100 dark:ring-white/5">
+                <div className="flex items-center justify-between gap-4 mb-8">
+                  <h2 className="text-lg font-black tracking-tight text-zinc-900 dark:text-white">Description</h2>
+                  <div className="flex items-center gap-2">
+                    <FavoriteButton adId={ad.id} className="hover:bg-red-50 text-zinc-600 hover:text-red-600 rounded-xl" />
+                    <ReportButton targetId={ad.id} targetType="ad" reporterId={user?.id} />
+                  </div>
+                </div>
+
+                <p className="whitespace-pre-wrap leading-relaxed text-[15px] text-zinc-700 dark:text-zinc-300">
+                  {ad.description || "Aucune description fournie."}
+                </p>
+
+                <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3">
+                  <div className="rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 p-4 ring-1 ring-zinc-100 dark:ring-white/5">
+                    <span className="text-[10px] uppercase text-zinc-400 font-black tracking-widest block mb-1">Catégorie</span>
+                    <p className="font-bold text-zinc-900 dark:text-zinc-100">{ad.category || "Autre"}</p>
+                  </div>
+                  <div className="rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 p-4 ring-1 ring-zinc-100 dark:ring-white/5">
+                    <span className="text-[10px] uppercase text-zinc-400 font-black tracking-widest block mb-1">État</span>
+                    <p className="font-bold text-zinc-900 dark:text-zinc-100">{ad.condition === 'new' ? "Neuf" : "Occasion"}</p>
+                  </div>
+                  <div className="rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 p-4 ring-1 ring-zinc-100 dark:ring-white/5">
+                    <span className="text-[10px] uppercase text-zinc-400 font-black tracking-widest block mb-1">Vues</span>
+                    <p className="font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5"><Eye className="w-4 h-4 text-orange-500" /> {ad.views_count || 1}</p>
+                  </div>
+                </div>
+              </div>
+
+              {ad.latitude && ad.longitude && (
+                <div className="rounded-[2rem] bg-white dark:bg-zinc-900 p-1 overflow-hidden shadow-[0_12px_34px_rgba(0,0,0,0.12)] ring-1 ring-zinc-100 dark:ring-white/5">
+                  <div className="bg-white rounded-[1.5rem] overflow-hidden relative">
+                    <AdLocationMapDynamic lat={Number(ad.latitude)} lng={Number(ad.longitude)} city={ad.city} neighborhood={ad.neighborhood} />
+                  </div>
+                </div>
+              )}
             </div>
 
             {similarAds.length > 0 && (
-              <div className="mt-24 border-t border-zinc-100 dark:border-zinc-800 pt-16">
-                <h2 className="text-2xl font-bold mb-8">Annonces similaires</h2>
+              <div className="pt-6">
+                <div className="flex items-end justify-between gap-4 mb-6">
+                  <h2 className="text-xl sm:text-2xl font-black tracking-tight">Annonces similaires</h2>
+                  <Link href="/marketplace" className="text-[11px] font-black uppercase tracking-widest text-zinc-500 hover:text-orange-600">
+                    Voir plus
+                  </Link>
+                </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
                   {similarAds.map((simAd: any) => (
                     <AdCard key={simAd.id} priority={true} ad={{
@@ -422,7 +379,89 @@ export default async function AdPage({ params }: AdPageProps) {
               </div>
             )}
           </div>
-          <aside className="hidden xl:block w-[160px] shrink-0 h-[600px] border border-dashed border-zinc-200 dark:border-zinc-800 rounded-xl" />
+
+          {/* Right Column: Sticky CTA + Seller */}
+          <div className="lg:col-span-4">
+            <div className="lg:sticky lg:top-24 space-y-6">
+              <div className="rounded-[2rem] bg-white dark:bg-zinc-900 p-6 sm:p-8 shadow-[0_12px_40px_rgba(0,0,0,0.06)] ring-1 ring-zinc-100 dark:ring-white/5">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Prix</p>
+                    <p className="mt-2 text-3xl font-black tracking-tight text-zinc-900 dark:text-white">{formattedPrice}</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <FavoriteButton adId={ad.id} className="hover:bg-red-50 text-zinc-600 hover:text-red-600 rounded-xl" />
+                    <ReportButton targetId={ad.id} targetType="ad" reporterId={user?.id} />
+                  </div>
+                </div>
+
+                <div className="mt-6 space-y-4">
+                  <div className="rounded-2xl bg-orange-50/60 dark:bg-orange-500/10 ring-1 ring-orange-100 dark:ring-orange-500/20 p-4">
+                    <p className="text-[12px] font-bold text-zinc-700 dark:text-zinc-200 leading-relaxed">
+                      Contactez le vendeur rapidement. Les bonnes affaires partent vite.
+                    </p>
+                  </div>
+
+                  <ContactActions adId={ad.id} sellerId={ad.seller_id} currentUser={user} sellerPhone={ad.phone || sellerProfile?.phone} />
+
+                  {user?.id === ad.seller_id && !ad.is_featured && (
+                    <div className="pt-4 border-t border-zinc-100 dark:border-zinc-800">
+                      <ViralShareButton adId={ad.id} adTitle={ad.title} adPrice={formattedPrice} sellerId={ad.seller_id} />
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="rounded-[2rem] bg-white dark:bg-zinc-900 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-zinc-100 dark:ring-white/5">
+                <div className="flex items-center gap-4">
+                  <div className="h-14 w-14 rounded-full bg-zinc-100 flex items-center justify-center text-xl font-black overflow-hidden ring-1 ring-zinc-200">
+                    {sellerProfile?.avatar_url ? (
+                      <Image src={sellerProfile.avatar_url} alt={sellerName} width={56} height={56} className="object-cover" />
+                    ) : (
+                      sellerInitial
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="font-black text-zinc-900 dark:text-white flex items-center gap-2 truncate">
+                      {sellerName}
+                      {isTrusted && <Award className="w-4 h-4 text-blue-500" />}
+                    </h3>
+                    <p className="text-xs text-zinc-500 font-medium">Membre depuis {memberSince}</p>
+                  </div>
+                </div>
+
+                <div className="mt-6 grid grid-cols-2 gap-3">
+                  <div className="rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 p-3 text-center ring-1 ring-zinc-100 dark:ring-white/5">
+                    <span className="block text-lg font-black text-zinc-900 dark:text-white">100%</span>
+                    <span className="text-[10px] text-zinc-400 uppercase font-black tracking-widest">Réponse</span>
+                  </div>
+                  <div className="rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 p-3 text-center ring-1 ring-zinc-100 dark:ring-white/5">
+                    <span className="block text-lg font-black flex items-center justify-center gap-1 text-zinc-900 dark:text-white">
+                      {avgRating > 0 ? avgRating : '-'}
+                      <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
+                    </span>
+                    <span className="text-[10px] text-zinc-400 uppercase font-black tracking-widest">{totalReviews} Avis</span>
+                  </div>
+                </div>
+
+                <Link href={`/profile/${ad.seller_id}`} className="mt-6 block text-center text-xs font-black text-orange-600 hover:underline">
+                  Voir le profil complet
+                </Link>
+              </div>
+
+              <div className="rounded-[2rem] bg-gradient-to-br from-emerald-50 to-teal-50 p-6 ring-1 ring-emerald-100/60">
+                <div className="flex items-center gap-3 mb-4">
+                  <ShieldCheck className="w-9 h-9 text-emerald-600" />
+                  <h3 className="font-black text-emerald-900 text-sm">Protection Jootiya</h3>
+                </div>
+                <p className="text-xs text-emerald-800/80 mb-4 font-medium">Achetez et vendez en toute sécurité.</p>
+                <ul className="space-y-2 text-xs font-semibold text-emerald-700">
+                  <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5" /> Identité vérifiée</li>
+                  <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5" /> Support 24/7</li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
       <QuickActionFooter phone={ad.phone || sellerProfile?.phone} adTitle={ad.title} adPrice={formattedPrice} adId={ad.id} sellerId={ad.seller_id} currentUser={user} />
