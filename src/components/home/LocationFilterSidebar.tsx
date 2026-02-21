@@ -116,7 +116,7 @@ export function LocationFilterSidebar({ ads }: SidebarProps) {
 
     return (
         <aside className="sticky top-24 space-y-6 lg:block">
-            <div className="bg-white rounded-3xl p-6 shadow-sm border border-zinc-100">
+            <div className="bg-white rounded-2xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-zinc-100">
                 <div className="flex items-center gap-3 mb-6">
                     <div className="p-2.5 bg-orange-50 rounded-xl">
                         <Compass className="w-5 h-5 text-orange-600" />
@@ -129,7 +129,7 @@ export function LocationFilterSidebar({ ads }: SidebarProps) {
 
                 {/* Map Preview */}
                 {/* Map Preview */}
-                <div className="h-[220px] w-full rounded-2xl overflow-hidden border border-zinc-100 mb-6 relative group">
+                <div className="h-[220px] w-full rounded-2xl overflow-hidden ring-1 ring-zinc-100 mb-6 relative group">
                     {/* Only render map if we are on client to avoid hydration issues, checking width is tricky with hydration, 
                         but Leaflet handles display:none better if we delay it slightly or ensure container has dimensions.
                         However, simplest fix for mobile crash is to ensure this component (LocationFilterSidebar) isn't rendered on mobile by parent.
@@ -151,7 +151,7 @@ export function LocationFilterSidebar({ ads }: SidebarProps) {
                                 size="sm"
                                 onClick={handleLocateAndFilter}
                                 disabled={isLocating}
-                                className="bg-zinc-900 text-white hover:bg-black shadow-xl rounded-xl font-bold text-xs h-9 px-4"
+                                className="bg-zinc-900 text-white hover:bg-black shadow-[0_12px_28px_rgba(0,0,0,0.18)] rounded-xl font-bold text-xs h-9 px-4 transition-all active:scale-[0.98]"
                             >
                                 {isLocating ? "Détection..." : (
                                     <>
@@ -189,7 +189,7 @@ export function LocationFilterSidebar({ ads }: SidebarProps) {
             </div>
 
             {/* Promo Box / Tips */}
-            <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-3xl p-6 text-white shadow-xl shadow-orange-200">
+            <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl p-6 text-white shadow-[0_18px_45px_rgba(255,102,0,0.25)]">
                 <div className="flex items-start gap-3">
                     <MapPin className="w-5 h-5 text-orange-200 mt-1" />
                     <div>

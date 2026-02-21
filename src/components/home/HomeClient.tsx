@@ -126,7 +126,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
   const mapAds = ads.filter(a => a.latitude && a.longitude).slice(0, 10);
 
   return (
-    <div dir="ltr" className="min-h-screen bg-white font-sans text-zinc-900 pb-20">
+    <div dir="ltr" className="min-h-screen bg-white font-sans text-zinc-900 pb-24">
       {isOfflineData && (
         <div className="bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest py-1 text-center flex items-center justify-center gap-2">
           <WifiOff className="w-3 h-3" />
@@ -134,22 +134,22 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
         </div>
       )}
       
-      <main className="mx-auto max-w-7xl px-4 mt-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <main className="mx-auto max-w-7xl px-4 mt-10 sm:mt-14">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12">
           <div className="hidden lg:block lg:col-span-3">
             <Suspense fallback={<div className="h-[400px] w-full bg-zinc-50 animate-pulse rounded-3xl" />}>
               <LocationFilterSidebar ads={mapAds} />
             </Suspense>
           </div>
 
-          <div className="lg:col-span-9 space-y-16 sm:space-y-32">
+          <div className="lg:col-span-9 space-y-20 sm:space-y-28">
             {ads.length === 0 && !loading ? (
-              <div className="flex flex-col items-center justify-center py-20 text-center border-2 border-dashed rounded-3xl">
-                <div className="bg-zinc-100 p-6 rounded-full mb-4">
+              <div className="flex flex-col items-center justify-center py-24 text-center border border-dashed border-zinc-200 rounded-[2.5rem] bg-zinc-50/40">
+                <div className="bg-white p-6 rounded-2xl mb-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-zinc-100">
                   <Package className="w-10 h-10 text-zinc-400" />
                 </div>
                 <h3 className="text-xl font-bold text-zinc-900">Aucune annonce trouvée</h3>
-                <Link href="/marketplace/post" className="mt-6 px-8 py-3 bg-orange-500 text-white rounded-xl font-bold hover:bg-orange-600 transition-all shadow-lg shadow-orange-100">
+                <Link href="/marketplace/post" className="mt-8 inline-flex items-center justify-center px-8 h-12 bg-orange-500 text-white rounded-2xl font-black hover:bg-orange-600 transition-all shadow-[0_12px_30px_rgba(255,102,0,0.18)] hover:shadow-[0_18px_40px_rgba(255,102,0,0.22)] active:scale-[0.98]">
                   Déposer une annonce
                 </Link>
               </div>
@@ -158,7 +158,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
                 {latParam ? (
                   <section className="space-y-6">
                     <h2 className="text-xl font-bold text-zinc-900">Résultats à proximité ({ads.length})</h2>
-                    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4">
+                    <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4">
                       {ads.map((ad, index) => (
                         <AdCard key={ad.id} ad={ad} href={`/ads/${ad.id}`} priority={index < 4} />
                       ))}
@@ -182,7 +182,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
                               Voir plus <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                             </Link>
                           </div>
-                          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4">
+                          <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4">
                             {catAds.map((ad, index) => (
                               <AdCard key={ad.id} ad={ad} href={`/ads/${ad.id}`} priority={index < 2} />
                             ))}

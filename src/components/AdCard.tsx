@@ -69,9 +69,9 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete, pr
   const linkHref = href || `/ads/${ad.id}/${adSlug}`;
 
   return (
-    <article className="group relative flex flex-col gap-2">
+    <article className="group relative flex flex-col gap-3">
       {/* Image Container */}
-      <div className="relative aspect-square w-full overflow-hidden rounded-[1.5rem] bg-white dark:bg-zinc-900 transition-all duration-300">
+      <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-white dark:bg-zinc-900 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-zinc-100 dark:ring-white/5 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:shadow-[0_14px_40px_rgba(0,0,0,0.08)]">
         {linkHref && (
           <Link href={linkHref} className="absolute inset-0 z-10" aria-label={ad.title}>
             <span className="sr-only">Voir l'annonce</span>
@@ -120,26 +120,23 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete, pr
       </div>
 
       {/* Info Section */}
-      <div className="flex flex-col gap-0 px-0.5 mt-1">
-        <div className="flex justify-between items-start gap-2">
-          <h3 className="text-[13px] font-bold text-zinc-900 dark:text-zinc-100 leading-tight truncate">
-            {ad.title}
-          </h3>
-        </div>
-        
-        <p className="text-[12px] text-zinc-600 dark:text-zinc-300 font-medium truncate">
-          {ad.location}
-        </p>
-        
-        <p className="text-[12px] text-zinc-600 dark:text-zinc-300 font-medium">
-          {ad.createdAt || "Aujourd'hui"}
-        </p>
-        
-        <div className="mt-0.5 flex items-baseline gap-1">
-          <span className="text-[13px] font-bold text-zinc-900 dark:text-zinc-100">
+      <div className="flex flex-col gap-1 px-0.5">
+        <h3 className="text-[13px] font-bold text-zinc-900 dark:text-zinc-100 leading-snug line-clamp-2">
+          {ad.title}
+        </h3>
+
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-[12px] text-zinc-600 dark:text-zinc-300 font-medium truncate">
+            {ad.location}
+          </p>
+          <span className="text-[12px] font-black text-zinc-900 dark:text-zinc-100 whitespace-nowrap">
             {ad.price}
           </span>
         </div>
+
+        <p className="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium">
+          {ad.createdAt || "Aujourd'hui"}
+        </p>
 
         {/* Footer Slot */}
         {footerSlot && (

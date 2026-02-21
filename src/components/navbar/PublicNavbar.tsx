@@ -23,8 +23,10 @@ export default async function PublicNavbar() {
           </div>
 
           {/* Center: Search Bar */}
-          <div className="hidden lg:flex flex-1 justify-center max-w-2xl px-4">
+          <div className="hidden lg:flex flex-1 justify-center px-6">
+            <div className="w-full max-w-2xl">
             <SimpleSearchBar />
+            </div>
           </div>
 
           {/* Right: User Actions / Info */}
@@ -35,7 +37,7 @@ export default async function PublicNavbar() {
                 rel="nofollow"
                 aria-label="Déposer une annonce"
             >
-                <div className="rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-black h-9 px-4 text-[9px] uppercase tracking-wider shadow-lg shadow-orange-200/40 dark:shadow-orange-900/40 transition-all hover:scale-[1.03] active:scale-[0.97] flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap border border-orange-400/20">
+                <div className="rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-black h-11 px-5 text-[10px] uppercase tracking-wider shadow-[0_12px_30px_rgba(255,102,0,0.18)] hover:shadow-[0_18px_40px_rgba(255,102,0,0.22)] transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap">
                     <PlusCircle className="w-4 h-4 shrink-0" />
                     <span>Déposer une annonce</span>
                 </div>

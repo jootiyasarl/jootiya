@@ -193,7 +193,7 @@ export function MobileMenu({ initialUserEmail = null }: MobileMenuProps) {
 
                         <div className="p-4 border-t border-zinc-100 dark:border-zinc-800">
                             <Link href="/marketplace/post" onClick={() => setIsMobileMenuOpen(false)}>
-                                <div className="w-full h-11 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold shadow-md shadow-orange-200 dark:shadow-none text-sm flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.98]">
+                                <div className="w-full h-12 rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-black shadow-[0_12px_30px_rgba(255,102,0,0.18)] text-sm flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.98]">
                                     <PlusCircle className="w-4 h-4" />
                                     Déposer une annonce
                                 </div>
