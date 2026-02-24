@@ -19,12 +19,13 @@ export async function middleware(request: NextRequest) {
   const ref = url.searchParams.get('ref');
   const adId = url.pathname.split('/ads/')[1]?.split('/')[0];
 
-  // 1. Admin Protection Logic
+  // 1. Admin Protection Logic (CRITICAL FIX)
   if (url.pathname.startsWith('/admin')) {
     const allCookies = request.cookies.getAll();
     const supabaseToken = allCookies.find(c => c.name.includes('-auth-token'))?.value || request.cookies.get('sb-access-token')?.value;
 
     if (!supabaseToken) {
+      console.log('Middleware: No token for /admin, redirecting to /master-access');
       return NextResponse.redirect(new URL('/master-access', request.url));
     }
 
@@ -34,35 +35,32 @@ export async function middleware(request: NextRequest) {
         const { data: { user }, error } = await supabaseAdmin.auth.getUser(supabaseToken);
         
         if (error || !user) {
+          console.error('Middleware: Auth error or no user for /admin');
           return NextResponse.redirect(new URL('/master-access', request.url));
         }
 
-        // Allow Admin by Email OR Phone
-        const isAdminEmail = user.email === 'jootiyasarl@gmail.com';
-        
-        // Fetch profile to check role or specific phone
+        // Fetch profile to verify admin role
         const { data: profile } = await supabaseAdmin
           .from('profiles')
-          .select('role, phone')
+          .select('role, phone, email')
           .eq('id', user.id)
           .single();
 
         const isSuperAdmin = profile?.role === 'super_admin' || profile?.role === 'admin';
-        const isAdminPhone = profile?.phone === '0618112646';
+        const isAuthorizedEmail = user.email === 'jootiyasarl@gmail.com' || profile?.email === 'jootiyasarl@gmail.com';
+        const isAuthorizedPhone = profile?.phone === '0618112646';
 
-        if (isAdminEmail || isSuperAdmin || isAdminPhone) {
-          // If it's the specific admin phone, ensure they have the role
-          if (isAdminPhone && profile?.role !== 'super_admin') {
-            await supabaseAdmin
-              .from('profiles')
-              .update({ role: 'super_admin' })
-              .eq('id', user.id);
-          }
+        // IF AUTHORIZED ADMIN, STAY ON /ADMIN
+        if (isAuthorizedEmail || isSuperAdmin || isAuthorizedPhone) {
+          console.log('Middleware: Admin Authorized access to', url.pathname);
           return NextResponse.next();
         }
 
+        // IF LOGGED IN BUT NOT ADMIN, REDIRECT TO HOME
+        console.warn('Middleware: Unauthorized user attempted /admin access');
         return NextResponse.redirect(new URL('/', request.url));
       } catch (e) {
+        console.error('Middleware: Catch error in /admin logic', e);
         return NextResponse.redirect(new URL('/master-access', request.url));
       }
     }
