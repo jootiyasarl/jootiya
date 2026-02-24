@@ -118,8 +118,8 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                         {isAdmin ? (
                             <Link
                                 href="/admin"
-                                className="p-2.5 rounded-xl text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all"
-                                title="Administration"
+                                className="p-2.5 rounded-xl text-orange-600 bg-orange-50 border border-orange-200 dark:text-orange-500 dark:bg-orange-950/20 dark:border-orange-900/30 transition-all shadow-sm shadow-orange-500/10 hover:scale-105"
+                                title="لوحة تحكم الأدمن"
                                 rel="nofollow"
                             >
                                 <ShieldAlert className="w-5 h-5" />
