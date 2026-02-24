@@ -48,7 +48,7 @@ export default function BlogAdminPage() {
       try {
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) {
-          router.push("/master-access");
+          router.push("/login?redirectTo=/admin/blog");
           return;
         }
 

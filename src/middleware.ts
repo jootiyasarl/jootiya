@@ -25,8 +25,7 @@ export async function middleware(request: NextRequest) {
 
     if (!accessToken) {
       console.log('Middleware: No access token for /admin, redirecting to /master-access');
-      const redirectUrl = new URL('/master-access', request.url);
-      return NextResponse.redirect(redirectUrl);
+      return NextResponse.redirect(new URL('/master-access', request.url));
     }
 
     const supabaseAdmin = getSupabaseAdmin();
@@ -36,8 +35,7 @@ export async function middleware(request: NextRequest) {
         
         if (error || !user) {
           console.log('Middleware: Invalid token for /admin, redirecting to /master-access');
-          const redirectUrl = new URL('/master-access', request.url);
-          return NextResponse.redirect(redirectUrl);
+          return NextResponse.redirect(new URL('/master-access', request.url));
         }
 
         // Check if user is the specific admin
@@ -49,7 +47,6 @@ export async function middleware(request: NextRequest) {
         console.log('Middleware: Unauthorized email for /admin:', user.email);
         return NextResponse.redirect(new URL('/', request.url));
       } catch (e) {
-        console.error('Middleware Admin Error:', e);
         return NextResponse.redirect(new URL('/master-access', request.url));
       }
     }
