@@ -19,7 +19,42 @@ export async function middleware(request: NextRequest) {
   const ref = url.searchParams.get('ref');
   const adId = url.pathname.split('/ads/')[1]?.split('/')[0];
 
-  // 1. Viral Anti-Cheat: Behavioral Analysis
+  // 1. Admin Protection Logic
+  if (url.pathname.startsWith('/admin')) {
+    const accessToken = request.cookies.get('sb-access-token')?.value;
+
+    if (!accessToken) {
+      return NextResponse.redirect(new URL('/master-access', request.url));
+    }
+
+    const supabaseAdmin = getSupabaseAdmin();
+    if (supabaseAdmin) {
+      try {
+        const { data: { user }, error } = await supabaseAdmin.auth.getUser(accessToken);
+        
+        // If user is logged in, check if they are the admin
+        if (!error && user && user.email === 'jootiyasarl@gmail.com') {
+          return NextResponse.next();
+        }
+
+        // If not the specific admin, redirect back to home or master-access
+        return NextResponse.redirect(new URL('/master-access?error=unauthorized', request.url));
+      } catch (e) {
+        return NextResponse.redirect(new URL('/master-access', request.url));
+      }
+    }
+  }
+
+  // 2. User Dashboard Protection Logic
+  if (url.pathname.startsWith('/dashboard')) {
+    const accessToken = request.cookies.get('sb-access-token')?.value;
+
+    if (!accessToken) {
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
+  }
+
+  // 3. Viral Anti-Cheat: Behavioral Analysis
   if (ref && adId && adId.length === 36) {
     const supabaseAdmin = getSupabaseAdmin();
     
@@ -34,7 +69,7 @@ export async function middleware(request: NextRequest) {
         .gt('created_at', new Date(now - 10000).toISOString()); // Last 10 seconds
 
       if (recentActivity && recentActivity.length >= 5) {
-        // 2. Behavioral Flagging: Ghost Ban Logic
+        // 4. Behavioral Flagging: Ghost Ban Logic
         await supabaseAdmin.rpc('increment_viral_flag', { target_user_id: ref });
       }
     }
@@ -44,5 +79,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: '/ads/:id*',
+  matcher: ['/ads/:id*', '/admin/:path*', '/dashboard/:path*'],
 };

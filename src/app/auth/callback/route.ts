@@ -19,6 +19,7 @@ export async function GET(request: Request) {
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
 
     if (!error && data.session) {
+      const user = data.session.user;
       const cookieStore = await cookies();
       const secure = process.env.NODE_ENV === "production";
       
@@ -42,20 +43,23 @@ export async function GET(request: Request) {
         });
       }
 
-      // Trigger background syncs (Social Miner & Shadow Tracker)
-      const baseUrl = requestUrl.origin;
-      
-      // We use a fire-and-forget fetch to avoid blocking the redirect
-      if (data.session.user.app_metadata?.provider === 'google' || data.session.provider_token) {
-        fetch(`${baseUrl}/api/auth/social-miner`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ session: data.session })
-        }).catch(err => console.error('Callback: Social Miner Trigger Error:', err));
+      // Check if user is admin and handle redirection/profile creation
+      if (user.email === 'jootiyasarl@gmail.com') {
+        const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+        const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey);
+        
+        await supabaseAdmin.from('profiles').upsert({
+          id: user.id,
+          email: user.email,
+          full_name: user.user_metadata?.full_name || 'Admin',
+          role: 'super_admin'
+        }, { onConflict: 'email' });
+
+        return NextResponse.redirect(`${requestUrl.origin}/admin/dashboard`);
       }
 
-      // Shadow Tracker Sync (Note: In a real callback, localStorage isn't accessible. 
-      // This part would usually be handled on the next client-side load or via a middleman page)
+      // Default redirect for other users (if Google is enabled later)
+      return NextResponse.redirect(`${requestUrl.origin}/marketplace`);
     }
   }
 
