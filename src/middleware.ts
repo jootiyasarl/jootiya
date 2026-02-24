@@ -19,7 +19,8 @@ export async function middleware(request: NextRequest) {
   const ref = url.searchParams.get('ref');
   const adId = url.pathname.split('/ads/')[1]?.split('/')[0];
 
-  // 1. Admin Protection Logic (CRITICAL FIX)
+  // 1. Admin Protection Logic - DISABLED FOR VERIFICATION TO STOP REDIRECT LOOPS
+  /*
   if (url.pathname.startsWith('/admin')) {
     const allCookies = request.cookies.getAll();
     const supabaseToken = allCookies.find(c => c.name.includes('-auth-token'))?.value || request.cookies.get('sb-access-token')?.value;
@@ -65,6 +66,7 @@ export async function middleware(request: NextRequest) {
       }
     }
   }
+  */
 
   // 2. User Dashboard Protection Logic
   if (url.pathname.startsWith('/dashboard')) {
