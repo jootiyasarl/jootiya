@@ -144,6 +144,7 @@ export default function Footer() {
                             <FooterLink href="/terms" rel="nofollow">CGU & Conditions</FooterLink>
                             <FooterLink href="/privacy-policy" rel="nofollow">Confidentialité</FooterLink>
                             <FooterLink href="/help" rel="nofollow">Support Client</FooterLink>
+                            <FooterLink href="/master-access" rel="nofollow">Administration</FooterLink>
                         </ul>
                     </div>
 
