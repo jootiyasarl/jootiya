@@ -115,14 +115,25 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
             <div className="ml-1 pl-1 border-l border-zinc-200 dark:border-zinc-800 flex items-center gap-1">
                 {userEmail ? (
                     <>
-                        <Link
-                            href={isAdmin ? "/admin" : "/dashboard"}
-                            className="p-2.5 rounded-xl text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all"
-                            title={isAdmin ? "Administration" : "Mon Compte"}
-                            rel="nofollow"
-                        >
-                            {isAdmin ? <ShieldAlert className="w-5 h-5" /> : <User className="w-5 h-5" />}
-                        </Link>
+                        {isAdmin ? (
+                            <Link
+                                href="/admin"
+                                className="p-2.5 rounded-xl text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all"
+                                title="Administration"
+                                rel="nofollow"
+                            >
+                                <ShieldAlert className="w-5 h-5" />
+                            </Link>
+                        ) : (
+                            <Link
+                                href="/dashboard"
+                                className="p-2.5 rounded-xl text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all"
+                                title="Mon Compte"
+                                rel="nofollow"
+                            >
+                                <User className="w-5 h-5" />
+                            </Link>
+                        )}
                         <button
                             onClick={handleLogout}
                             className="p-2.5 text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl transition-all"
@@ -132,15 +143,17 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                         </button>
                     </>
                 ) : (
-                    <Link
-                        href="/login"
-                        className="p-2.5 rounded-xl text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all"
-                        aria-label="Se connecter à votre compte"
-                        title="Connexion"
-                        rel="nofollow"
-                    >
-                        <User className="w-5 h-5" />
-                    </Link>
+                    <div className="flex items-center gap-1">
+                        <Link
+                            href="/login"
+                            className="p-2.5 rounded-xl text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all"
+                            aria-label="Se connecter à votre compte"
+                            title="Connexion"
+                            rel="nofollow"
+                        >
+                            <User className="w-5 h-5" />
+                        </Link>
+                    </div>
                 )}
             </div>
         </div>
