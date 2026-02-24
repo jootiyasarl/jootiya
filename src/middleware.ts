@@ -24,6 +24,7 @@ export async function middleware(request: NextRequest) {
     const accessToken = request.cookies.get('sb-access-token')?.value;
 
     if (!accessToken) {
+      console.log('Middleware: No access token for /admin, redirecting to /master-access');
       return NextResponse.redirect(new URL('/master-access', request.url));
     }
 
@@ -32,13 +33,19 @@ export async function middleware(request: NextRequest) {
       try {
         const { data: { user }, error } = await supabaseAdmin.auth.getUser(accessToken);
         
-        // If user is logged in, check if they are the admin
-        if (!error && user && user.email === 'jootiyasarl@gmail.com') {
+        if (error || !user) {
+          console.log('Middleware: Invalid token for /admin, redirecting to /master-access');
+          return NextResponse.redirect(new URL('/master-access', request.url));
+        }
+
+        // Check if user is the specific admin
+        if (user.email === 'jootiyasarl@gmail.com') {
           return NextResponse.next();
         }
 
-        // If not the specific admin, redirect back to home or master-access
-        return NextResponse.redirect(new URL('/master-access?error=unauthorized', request.url));
+        // If not the specific admin, redirect back to home
+        console.log('Middleware: Unauthorized email for /admin:', user.email);
+        return NextResponse.redirect(new URL('/', request.url));
       } catch (e) {
         return NextResponse.redirect(new URL('/master-access', request.url));
       }
