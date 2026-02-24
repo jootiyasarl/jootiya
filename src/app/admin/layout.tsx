@@ -9,6 +9,9 @@ interface AdminAppLayoutProps {
 }
 
 async function ensureAdminOrSuperAdmin() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
   // FORCE BYPASS FOR VERIFICATION
   return;
 
@@ -16,13 +19,6 @@ async function ensureAdminOrSuperAdmin() {
   const accessToken = cookieStore.get("sb-access-token")?.value;
 
   if (!accessToken) {
-    redirect("/master-access");
-  }
-
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  if (!supabaseUrl || !supabaseAnonKey) {
     redirect("/master-access");
   }
 
@@ -34,7 +30,7 @@ async function ensureAdminOrSuperAdmin() {
 
   const { data, error } = await supabase.auth.getUser(accessToken);
 
-  if (error || !data.user) {
+  if (error || !data?.user) {
     redirect("/master-access");
   }
 
