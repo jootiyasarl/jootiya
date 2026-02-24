@@ -21,7 +21,7 @@ export async function middleware(request: NextRequest) {
 
   // 1. Admin Protection Logic
   if (url.pathname.startsWith('/admin')) {
-    // TEMPORARY BYPASS FOR VERIFICATION
+    // FORCE BYPASS FOR VERIFICATION
     return NextResponse.next();
 
     // جلب جميع الكوكيز للبحث عن التوكن الصحيح
