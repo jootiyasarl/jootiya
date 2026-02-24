@@ -40,16 +40,24 @@ export async function middleware(request: NextRequest) {
         // Allow Admin by Email OR Phone
         const isAdminEmail = user.email === 'jootiyasarl@gmail.com';
         
-        // Fetch profile to check role for phone-based login
+        // Fetch profile to check role or specific phone
         const { data: profile } = await supabaseAdmin
           .from('profiles')
-          .select('role')
+          .select('role, phone')
           .eq('id', user.id)
           .single();
 
         const isSuperAdmin = profile?.role === 'super_admin' || profile?.role === 'admin';
+        const isAdminPhone = profile?.phone === '0618112646';
 
-        if (isAdminEmail || isSuperAdmin) {
+        if (isAdminEmail || isSuperAdmin || isAdminPhone) {
+          // If it's the specific admin phone, ensure they have the role
+          if (isAdminPhone && profile?.role !== 'super_admin') {
+            await supabaseAdmin
+              .from('profiles')
+              .update({ role: 'super_admin' })
+              .eq('id', user.id);
+          }
           return NextResponse.next();
         }
 
