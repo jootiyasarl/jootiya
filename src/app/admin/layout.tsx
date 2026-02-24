@@ -35,7 +35,7 @@ async function ensureAdminOrSuperAdmin() {
   }
 
   // Admin access is strictly restricted to this email
-  if (data.user.email === 'jootiyasarl@gmail.com') {
+  if (data?.user?.email === 'jootiyasarl@gmail.com') {
     return; // Authorized
   }
 
@@ -43,7 +43,7 @@ async function ensureAdminOrSuperAdmin() {
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select("role")
-    .eq("id", data.user.id)
+    .eq("id", data?.user?.id || '')
     .maybeSingle();
 
   if (profileError || (profile?.role !== "super_admin" && profile?.role !== "admin")) {
