@@ -21,30 +21,35 @@ export async function middleware(request: NextRequest) {
 
   // 1. Admin Protection Logic
   if (url.pathname.startsWith('/admin')) {
-    // FORCE BYPASS FOR VERIFICATION
-    return NextResponse.next();
-
-    // جلب جميع الكوكيز للبحث عن التوكن الصحيح
     const allCookies = request.cookies.getAll();
     const supabaseToken = allCookies.find(c => c.name.includes('-auth-token'))?.value || request.cookies.get('sb-access-token')?.value;
 
     if (!supabaseToken) {
-      console.log('Middleware: No Supabase token found');
       return NextResponse.redirect(new URL('/master-access', request.url));
     }
 
     const supabaseAdmin = getSupabaseAdmin();
     if (supabaseAdmin) {
       try {
-        // استخدام getUser يضمن أن التوكن صحيح وغير مزور
         const { data: { user }, error } = await supabaseAdmin.auth.getUser(supabaseToken);
         
         if (error || !user) {
           return NextResponse.redirect(new URL('/master-access', request.url));
         }
 
-        // التحقق الصارم من الإيميل
-        if (user.email === 'jootiyasarl@gmail.com') {
+        // Allow Admin by Email OR Phone
+        const isAdminEmail = user.email === 'jootiyasarl@gmail.com';
+        
+        // Fetch profile to check role for phone-based login
+        const { data: profile } = await supabaseAdmin
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .single();
+
+        const isSuperAdmin = profile?.role === 'super_admin' || profile?.role === 'admin';
+
+        if (isAdminEmail || isSuperAdmin) {
           return NextResponse.next();
         }
 
