@@ -22,10 +22,16 @@ export async function middleware(request: NextRequest) {
   // 1. Admin Protection Logic
   if (url.pathname.startsWith('/admin')) {
     const allCookies = request.cookies.getAll();
-    const supabaseToken = allCookies.find(c => c.name.includes('-auth-token'))?.value || request.cookies.get('sb-access-token')?.value;
+    // Log cookie names for debugging (can be seen in server logs)
+    const cookieNames = allCookies.map(c => c.name);
+    
+    // Look for ANY supabase auth token
+    const supabaseToken = allCookies.find(c => c.name.includes('auth-token'))?.value || 
+                          request.cookies.get('sb-access-token')?.value ||
+                          request.cookies.get('supabase-auth-token')?.value;
 
     if (!supabaseToken) {
-      console.log('Middleware: No token for /admin, redirecting to /master-access');
+      console.log('Middleware: No token found for /admin. Cookies present:', cookieNames);
       return NextResponse.redirect(new URL('/master-access', request.url));
     }
 
@@ -35,7 +41,7 @@ export async function middleware(request: NextRequest) {
         const { data: { user }, error } = await supabaseAdmin.auth.getUser(supabaseToken);
         
         if (error || !user) {
-          console.error('Middleware: Auth error or no user for /admin');
+          console.error('Middleware: Auth error or no user for /admin', error);
           return NextResponse.redirect(new URL('/master-access', request.url));
         }
 
@@ -52,15 +58,12 @@ export async function middleware(request: NextRequest) {
 
         // IF AUTHORIZED ADMIN, ALLOW ACCESS
         if (isAuthorizedEmail || isSuperAdmin || isAuthorizedPhone) {
-          console.log('Middleware: Admin Authorized access to', url.pathname);
           return NextResponse.next();
         }
 
-        // IF LOGGED IN BUT NOT ADMIN, REDIRECT TO HOME
-        console.warn('Middleware: Unauthorized user attempted /admin access');
+        console.warn('Middleware: Unauthorized access attempt by', user.email);
         return NextResponse.redirect(new URL('/', request.url));
       } catch (e) {
-        console.error('Middleware: Catch error in /admin logic', e);
         return NextResponse.redirect(new URL('/master-access', request.url));
       }
     }
