@@ -12,13 +12,13 @@ async function ensureAdminOrSuperAdmin() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-  // FORCE BYPASS FOR VERIFICATION
-  return;
-
   const cookieStore = await cookies();
-  const accessToken = cookieStore.get("sb-access-token")?.value;
+  // Get all cookies to find the supabase auth token which might have a different name
+  const allCookies = cookieStore.getAll();
+  const supabaseToken = allCookies.find(c => c.name.includes('-auth-token'))?.value || cookieStore.get("sb-access-token")?.value;
 
-  if (!accessToken) {
+  if (!supabaseToken) {
+    console.log('Admin Layout: No token found, redirecting');
     redirect("/master-access");
   }
 
@@ -28,27 +28,32 @@ async function ensureAdminOrSuperAdmin() {
     },
   });
 
-  const { data, error } = await supabase.auth.getUser(accessToken);
+  const { data, error } = await supabase.auth.getUser(supabaseToken);
 
   if (error || !data?.user) {
+    console.error('Admin Layout: Auth error', error);
     redirect("/master-access");
   }
 
-  // Admin access is strictly restricted to this email
-  if (data?.user?.email === 'jootiyasarl@gmail.com') {
-    return; // Authorized
-  }
-
+  // Admin access is strictly restricted to this email or specific phone
+  const isAuthorizedEmail = data.user.email === 'jootiyasarl@gmail.com';
+  
   // For other profiles, check their role
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
-    .select("role")
-    .eq("id", data?.user?.id || '')
+    .select("role, phone")
+    .eq("id", data.user.id)
     .maybeSingle();
 
-  if (profileError || (profile?.role !== "super_admin" && profile?.role !== "admin")) {
-    redirect("/");
+  const isSuperAdmin = profile?.role === "super_admin" || profile?.role === "admin";
+  const isAuthorizedPhone = profile?.phone === '0618112646';
+
+  if (isAuthorizedEmail || isSuperAdmin || isAuthorizedPhone) {
+    return; // Authorized
   }
+
+  console.warn('Admin Layout: Unauthorized access attempt', data.user.email);
+  redirect("/");
 }
 
 export default async function AdminAppLayout({

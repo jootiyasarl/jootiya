@@ -19,8 +19,7 @@ export async function middleware(request: NextRequest) {
   const ref = url.searchParams.get('ref');
   const adId = url.pathname.split('/ads/')[1]?.split('/')[0];
 
-  // 1. Admin Protection Logic - DISABLED FOR VERIFICATION TO STOP REDIRECT LOOPS
-  /*
+  // 1. Admin Protection Logic
   if (url.pathname.startsWith('/admin')) {
     const allCookies = request.cookies.getAll();
     const supabaseToken = allCookies.find(c => c.name.includes('-auth-token'))?.value || request.cookies.get('sb-access-token')?.value;
@@ -51,7 +50,7 @@ export async function middleware(request: NextRequest) {
         const isAuthorizedEmail = user.email === 'jootiyasarl@gmail.com' || profile?.email === 'jootiyasarl@gmail.com';
         const isAuthorizedPhone = profile?.phone === '0618112646';
 
-        // IF AUTHORIZED ADMIN, STAY ON /ADMIN
+        // IF AUTHORIZED ADMIN, ALLOW ACCESS
         if (isAuthorizedEmail || isSuperAdmin || isAuthorizedPhone) {
           console.log('Middleware: Admin Authorized access to', url.pathname);
           return NextResponse.next();
@@ -66,7 +65,6 @@ export async function middleware(request: NextRequest) {
       }
     }
   }
-  */
 
   // 2. User Dashboard Protection Logic
   if (url.pathname.startsWith('/dashboard')) {
