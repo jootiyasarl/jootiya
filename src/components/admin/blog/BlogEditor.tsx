@@ -22,15 +22,7 @@ import {
   Quote,
   Undo,
   Redo,
-  AlignCenter,
-  AlignLeft,
-  AlignRight,
-  Type,
-  Loader2,
-  Plus,
-  MoreVertical,
-  Highlighter,
-  Code
+  Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -51,6 +43,9 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
         heading: {
           levels: [1, 2, 3],
         },
+        // Configure Smart Paste defaults
+        codeBlock: false,
+        code: false,
       }),
       Underline,
       Typography,
@@ -66,6 +61,7 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
         },
         validate: href => /^https?:\/\//.test(href),
       }).extend({
+        // Enhanced Smart Paste for Links: ensure external links are nofollow
         addAttributes() {
           return {
             ...this.parent?.(),
@@ -76,7 +72,7 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
               default: null,
               parseHTML: element => element.getAttribute('rel'),
               renderHTML: attributes => {
-                const isExternal = attributes.href && !attributes.href.includes('jootiya.ma');
+                const isExternal = attributes.href && !attributes.href.includes('jootiya.com');
                 return isExternal ? { rel: 'noopener noreferrer nofollow' } : {};
               },
             },
@@ -89,13 +85,30 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
         },
       }),
       Placeholder.configure({
-        placeholder: "Appuyez sur Enter pour une nouvelle ligne, ou '/' pour les commandes...",
+        placeholder: "Commencez à rédiger votre article ici (le copier-coller intelligent est activé)...",
       }),
     ],
     content,
     editorProps: {
       attributes: {
         class: "prose prose-lg md:prose-xl prose-orange dark:prose-invert max-w-none p-8 md:p-20 min-h-[600px] outline-none selection:bg-orange-500/30",
+      },
+      // Smart Paste Implementation
+      transformPastedHTML(html) {
+        // 1. Remove style attributes (cleans colors, fonts, margins from source)
+        let cleaned = html.replace(/ style="[^"]*"/g, "");
+        
+        // 2. Remove class attributes (cleans source site specific styling)
+        cleaned = cleaned.replace(/ class="[^"]*"/g, "");
+        
+        // 3. Remove script and style tags completely
+        cleaned = cleaned.replace(/<script\b[^>]*>([\s\S]*?)<\/script>/gim, "");
+        cleaned = cleaned.replace(/<style\b[^>]*>([\s\S]*?)<\/style>/gim, "");
+        
+        // 4. Flatten spans but keep content (removes nested wrappers that often carry font data)
+        cleaned = cleaned.replace(/<span\b[^>]*>([\s\S]*?)<\/span>/gim, "$1");
+        
+        return cleaned;
       },
       handleDrop: (view, event, slice, moved) => {
         if (!moved && event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0]) {
@@ -124,6 +137,7 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
       },
     },
     onUpdate: ({ editor }) => {
+      // Outputs clean HTML for Database storage
       onChange(editor.getHTML());
     },
   });
@@ -187,6 +201,7 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
               variant="ghost" size="sm" type="button"
               onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
               className={cn("h-8 w-8 p-0", editor.isActive("heading", { level: 1 }) ? "text-orange-500 bg-orange-500/10" : "text-zinc-500")}
+              title="Titre 1 (H1)"
             >
               <Heading1 className="h-4 w-4" />
             </Button>
@@ -194,6 +209,7 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
               variant="ghost" size="sm" type="button"
               onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
               className={cn("h-8 w-8 p-0", editor.isActive("heading", { level: 2 }) ? "text-orange-500 bg-orange-500/10" : "text-zinc-500")}
+              title="Titre 2 (H2)"
             >
               <Heading2 className="h-4 w-4" />
             </Button>
@@ -201,6 +217,7 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
               variant="ghost" size="sm" type="button"
               onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
               className={cn("h-8 w-8 p-0", editor.isActive("heading", { level: 3 }) ? "text-orange-500 bg-orange-500/10" : "text-zinc-500")}
+              title="Titre 3 (H3)"
             >
               <Heading3 className="h-4 w-4" />
             </Button>
@@ -211,6 +228,7 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
               variant="ghost" size="sm" type="button"
               onClick={() => editor.chain().focus().toggleBold().run()}
               className={cn("h-8 w-8 p-0", editor.isActive("bold") ? "text-orange-500 bg-orange-500/10" : "text-zinc-500")}
+              title="Gras"
             >
               <Bold className="h-4 w-4" />
             </Button>
@@ -218,6 +236,7 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
               variant="ghost" size="sm" type="button"
               onClick={() => editor.chain().focus().toggleItalic().run()}
               className={cn("h-8 w-8 p-0", editor.isActive("italic") ? "text-orange-500 bg-orange-500/10" : "text-zinc-500")}
+              title="Italique"
             >
               <Italic className="h-4 w-4" />
             </Button>
@@ -225,6 +244,7 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
               variant="ghost" size="sm" type="button"
               onClick={() => editor.chain().focus().toggleUnderline().run()}
               className={cn("h-8 w-8 p-0", editor.isActive("underline") ? "text-orange-500 bg-orange-500/10" : "text-zinc-500")}
+              title="Souligné"
             >
               <UnderlineIcon className="h-4 w-4" />
             </Button>
@@ -235,6 +255,7 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
               variant="ghost" size="sm" type="button"
               onClick={() => editor.chain().focus().toggleBulletList().run()}
               className={cn("h-8 w-8 p-0", editor.isActive("bulletList") ? "text-orange-500 bg-orange-500/10" : "text-zinc-500")}
+              title="Liste à puces"
             >
               <List className="h-4 w-4" />
             </Button>
@@ -242,6 +263,7 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
               variant="ghost" size="sm" type="button"
               onClick={() => editor.chain().focus().toggleOrderedList().run()}
               className={cn("h-8 w-8 p-0", editor.isActive("orderedList") ? "text-orange-500 bg-orange-500/10" : "text-zinc-500")}
+              title="Liste ordonnée"
             >
               <ListOrdered className="h-4 w-4" />
             </Button>
@@ -249,6 +271,7 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
               variant="ghost" size="sm" type="button"
               onClick={() => editor.chain().focus().toggleBlockquote().run()}
               className={cn("h-8 w-8 p-0", editor.isActive("blockquote") ? "text-orange-500 bg-orange-500/10" : "text-zinc-500")}
+              title="Citation"
             >
               <Quote className="h-4 w-4" />
             </Button>
@@ -262,6 +285,7 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
                 if (url) editor.chain().focus().setLink({ href: url }).run();
               }}
               className={cn("h-8 w-8 p-0", editor.isActive("link") ? "text-orange-500 bg-orange-500/10" : "text-zinc-500")}
+              title="Lien"
             >
               <LinkIcon className="h-4 w-4" />
             </Button>
@@ -269,6 +293,7 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
               variant="ghost" size="sm" type="button"
               onClick={triggerImageUpload}
               className="h-8 w-8 p-0 text-zinc-500 hover:text-white"
+              title="Insérer une image"
             >
               <ImageIcon className="h-4 w-4" />
             </Button>
@@ -280,6 +305,7 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
               onClick={() => editor.chain().focus().undo().run()}
               disabled={!editor.can().undo()}
               className="h-8 w-8 p-0 text-zinc-500 hover:text-white"
+              title="Annuler (Ctrl+Z)"
             >
               <Undo className="h-4 w-4" />
             </Button>
@@ -288,14 +314,15 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
               onClick={() => editor.chain().focus().redo().run()}
               disabled={!editor.can().redo()}
               className="h-8 w-8 p-0 text-zinc-500 hover:text-white"
+              title="Rétablir (Ctrl+Y)"
             >
               <Redo className="h-4 w-4" />
             </Button>
           </div>
         </div>
         
-        <div className="hidden md:flex flex-col items-end">
-          <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">Jootiya SEO Editor v3.1</span>
+        <div className="hidden lg:flex flex-col items-end">
+          <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">Smart Paste Active</span>
           <div className="flex items-center gap-2 text-[10px] font-bold text-zinc-400">
             <span>{editor.getText().split(/\s+/).filter(w => w.length > 0).length} mots</span>
           </div>
