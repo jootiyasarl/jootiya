@@ -35,13 +35,21 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import { useState, useCallback, ReactNode } from "react";
+import { useState, useCallback } from "react";
 import dynamic from "next/dynamic";
-import { Editor } from "@tiptap/react";
 
-// Use dynamic imports with explicit any to bypass all static type checks
-const BubbleMenu = dynamic(() => import("@tiptap/react").then((mod: any) => mod.BubbleMenu), { ssr: false }) as any;
-const FloatingMenu = dynamic(() => import("@tiptap/react").then((mod: any) => mod.FloatingMenu), { ssr: false }) as any;
+// Define props for the menus
+interface MenuProps {
+  editor: any;
+  children: React.ReactNode;
+  tippyOptions?: any;
+  pluginKey?: string;
+  shouldShow?: (props: any) => boolean;
+}
+
+// Import directly from extensions to avoid @tiptap/react issues in Next.js 15
+const BubbleMenu = dynamic(() => import("@tiptap/extension-bubble-menu").then(mod => (mod as any).BubbleMenuReact || (mod as any).BubbleMenu), { ssr: false }) as any;
+const FloatingMenu = dynamic(() => import("@tiptap/extension-floating-menu").then(mod => (mod as any).FloatingMenuReact || (mod as any).FloatingMenu), { ssr: false }) as any;
 
 interface BlogEditorProps {
   content: string;
@@ -186,83 +194,79 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
     <div className="group relative border border-zinc-800 rounded-[3rem] overflow-hidden bg-zinc-950/50 backdrop-blur-sm shadow-2xl transition-all duration-500 focus-within:border-orange-500/30 focus-within:ring-8 focus-within:ring-orange-500/5">
       
       {/* Bubble Menu (appears on selection) */}
-      {editor && (
-        <BubbleMenu 
-          editor={editor} 
-          tippyOptions={{ duration: 100 }} 
-        >
-          <div className="flex items-center gap-0.5 p-1 bg-zinc-900 border border-zinc-800 rounded-2xl shadow-2xl animate-in fade-in zoom-in duration-200">
-            <Button
-              variant="ghost" size="sm" type="button"
-              onClick={() => editor.chain().focus().toggleBold().run()}
-              className={cn("h-8 w-8 p-0 rounded-lg", editor.isActive("bold") ? "text-orange-500 bg-orange-500/10" : "text-zinc-400")}
-            >
-              <Bold className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost" size="sm" type="button"
-              onClick={() => editor.chain().focus().toggleItalic().run()}
-              className={cn("h-8 w-8 p-0 rounded-lg", editor.isActive("italic") ? "text-orange-500 bg-orange-500/10" : "text-zinc-400")}
-            >
-              <Italic className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost" size="sm" type="button"
-              onClick={() => editor.chain().focus().toggleUnderline().run()}
-              className={cn("h-8 w-8 p-0 rounded-lg", editor.isActive("underline") ? "text-orange-500 bg-orange-500/10" : "text-zinc-400")}
-            >
-              <UnderlineIcon className="h-4 w-4" />
-            </Button>
-            <div className="w-px h-4 bg-zinc-800 mx-1" />
-            <Button
-              variant="ghost" size="sm" type="button"
-              onClick={() => {
-                const previousUrl = editor.getAttributes("link").href;
-                const url = window.prompt("URL", previousUrl);
-                if (url) editor.chain().focus().setLink({ href: url }).run();
-              }}
-              className={cn("h-8 w-8 p-0 rounded-lg", editor.isActive("link") ? "text-orange-500 bg-orange-500/10" : "text-zinc-400")}
-            >
-              <LinkIcon className="h-4 w-4" />
-            </Button>
-          </div>
-        </BubbleMenu>
-      )}
+      <BubbleMenu 
+        editor={editor} 
+        tippyOptions={{ duration: 100 }} 
+      >
+        <div className="flex items-center gap-0.5 p-1 bg-zinc-900 border border-zinc-800 rounded-2xl shadow-2xl animate-in fade-in zoom-in duration-200">
+          <Button
+            variant="ghost" size="sm" type="button"
+            onClick={() => editor.chain().focus().toggleBold().run()}
+            className={cn("h-8 w-8 p-0 rounded-lg", editor.isActive("bold") ? "text-orange-500 bg-orange-500/10" : "text-zinc-400")}
+          >
+            <Bold className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost" size="sm" type="button"
+            onClick={() => editor.chain().focus().toggleItalic().run()}
+            className={cn("h-8 w-8 p-0 rounded-lg", editor.isActive("italic") ? "text-orange-500 bg-orange-500/10" : "text-zinc-400")}
+          >
+            <Italic className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost" size="sm" type="button"
+            onClick={() => editor.chain().focus().toggleUnderline().run()}
+            className={cn("h-8 w-8 p-0 rounded-lg", editor.isActive("underline") ? "text-orange-500 bg-orange-500/10" : "text-zinc-400")}
+          >
+            <UnderlineIcon className="h-4 w-4" />
+          </Button>
+          <div className="w-px h-4 bg-zinc-800 mx-1" />
+          <Button
+            variant="ghost" size="sm" type="button"
+            onClick={() => {
+              const previousUrl = editor.getAttributes("link").href;
+              const url = window.prompt("URL", previousUrl);
+              if (url) editor.chain().focus().setLink({ href: url }).run();
+            }}
+            className={cn("h-8 w-8 p-0 rounded-lg", editor.isActive("link") ? "text-orange-500 bg-orange-500/10" : "text-zinc-400")}
+          >
+            <LinkIcon className="h-4 w-4" />
+          </Button>
+        </div>
+      </BubbleMenu>
 
       {/* Floating Menu (appears on empty line) */}
-      {editor && (
-        <FloatingMenu 
-          editor={editor} 
-          tippyOptions={{ duration: 100 }}
-        >
-          <div className="flex items-center gap-1 p-1 bg-zinc-900 border border-zinc-800 rounded-2xl shadow-2xl">
-            <Button
-              variant="ghost" size="sm" type="button"
-              onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-              className="h-10 px-3 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 flex items-center gap-2"
-            >
-              <Heading1 className="h-4 w-4 text-orange-500" />
-              <span className="text-[10px] font-black uppercase tracking-widest">Titre 1</span>
-            </Button>
-            <Button
-              variant="ghost" size="sm" type="button"
-              onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-              className="h-10 px-3 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 flex items-center gap-2"
-            >
-              <Heading2 className="h-4 w-4 text-orange-500" />
-              <span className="text-[10px] font-black uppercase tracking-widest">Titre 2</span>
-            </Button>
-            <Button
-              variant="ghost" size="sm" type="button"
-              onClick={triggerImageUpload}
-              className="h-10 px-3 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 flex items-center gap-2"
-            >
-              <ImageIcon className="h-4 w-4 text-emerald-500" />
-              <span className="text-[10px] font-black uppercase tracking-widest">Image</span>
-            </Button>
-          </div>
-        </FloatingMenu>
-      )}
+      <FloatingMenu 
+        editor={editor} 
+        tippyOptions={{ duration: 100 }}
+      >
+        <div className="flex items-center gap-1 p-1 bg-zinc-900 border border-zinc-800 rounded-2xl shadow-2xl">
+          <Button
+            variant="ghost" size="sm" type="button"
+            onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+            className="h-10 px-3 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 flex items-center gap-2"
+          >
+            <Heading1 className="h-4 w-4 text-orange-500" />
+            <span className="text-[10px] font-black uppercase tracking-widest">Titre 1</span>
+          </Button>
+          <Button
+            variant="ghost" size="sm" type="button"
+            onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+            className="h-10 px-3 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 flex items-center gap-2"
+          >
+            <Heading2 className="h-4 w-4 text-orange-500" />
+            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Titre 2</span>
+          </Button>
+          <Button
+            variant="ghost" size="sm" type="button"
+            onClick={triggerImageUpload}
+            className="h-10 px-3 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 flex items-center gap-2"
+          >
+            <ImageIcon className="h-4 w-4 text-emerald-500" />
+            <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Image</span>
+          </Button>
+        </div>
+      </FloatingMenu>
 
       {/* Main Top Bar (Fixed Toolbar) */}
       <div className="flex items-center justify-between p-4 border-b border-zinc-800 bg-zinc-900/40 backdrop-blur-xl sticky top-0 z-20">
