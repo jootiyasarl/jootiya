@@ -39,18 +39,9 @@ import { useState, useCallback, ReactNode } from "react";
 import dynamic from "next/dynamic";
 import { Editor } from "@tiptap/react";
 
-// Define props for the menus to fix TypeScript errors
-interface MenuProps {
-  editor: Editor;
-  children: ReactNode;
-  tippyOptions?: any;
-  pluginKey?: string | any;
-  shouldShow?: (props: any) => boolean;
-}
-
-// Import components directly from extension packages to bypass @tiptap/react export issues in Turbopack
-const BubbleMenu = dynamic(() => import("@tiptap/extension-bubble-menu").then((mod: any) => mod.BubbleMenuReact || mod.BubbleMenu), { ssr: false });
-const FloatingMenu = dynamic(() => import("@tiptap/extension-floating-menu").then((mod: any) => mod.FloatingMenuReact || mod.FloatingMenu), { ssr: false });
+// Use dynamic imports with explicit any to bypass all static type checks
+const BubbleMenu = dynamic(() => import("@tiptap/react").then((mod: any) => mod.BubbleMenu), { ssr: false }) as any;
+const FloatingMenu = dynamic(() => import("@tiptap/react").then((mod: any) => mod.FloatingMenu), { ssr: false }) as any;
 
 interface BlogEditorProps {
   content: string;
