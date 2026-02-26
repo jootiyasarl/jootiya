@@ -9,7 +9,7 @@ import { createSupabaseServerClient, setAuthSession } from "@/lib/supabase-serve
 import { ShieldCheck, Lock, ChevronLeft, Mail } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "تسجيل الدخول | Jootiya",
+  title: "Connexion | Jootiya",
 };
 
 interface LoginPageProps {
@@ -29,7 +29,7 @@ async function loginAction(formData: FormData) {
 
   if (typeof identifier !== "string" || typeof password !== "string") {
     const params = new URLSearchParams();
-    params.set("error", "يرجى إدخال رقم الهاتف أو الإيميل وكلمة السر.");
+    params.set("error", "Veuillez entrer votre email/téléphone et mot de passe.");
     redirect(`/login?${params.toString()}`);
   }
 
@@ -51,7 +51,7 @@ async function loginAction(formData: FormData) {
 
   if (error || !data.session) {
     const params = new URLSearchParams();
-    params.set("error", "بيانات الدخول غير صحيحة.");
+    params.set("error", "Identifiants incorrects.");
     redirect(`/login?${params.toString()}`);
   }
 
@@ -99,7 +99,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         <div className="w-full max-w-md space-y-8 relative z-10 text-left" dir="ltr">
           <div className="space-y-2">
             <h1 className="text-5xl font-bold text-white tracking-tight">Login</h1>
-            <p className="text-zinc-300/80 text-lg font-medium">I'm a professional</p>
+            <p className="text-zinc-300/80 text-lg font-medium">Je suis un professionnel</p>
           </div>
 
           {error && (
@@ -117,7 +117,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
                 id="identifier"
                 name="identifier"
                 type="text"
-                placeholder="Email address"
+                placeholder="Adresse e-mail ou téléphone"
                 required
                 className="h-14 px-6 rounded-xl bg-[#245a50] border-none text-white placeholder:text-zinc-400 focus:ring-2 focus:ring-orange-500/50 transition-all text-base font-medium"
               />
@@ -128,7 +128,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
                 id="password"
                 name="password"
                 type="password"
-                placeholder="Password"
+                placeholder="Mot de passe"
                 required
                 className="h-14 px-6 rounded-xl bg-[#245a50] border-none text-white placeholder:text-zinc-400 focus:ring-2 focus:ring-orange-500/50 transition-all text-base font-medium"
               />
@@ -140,29 +140,29 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
                 id="remember" 
                 className="w-4 h-4 rounded border-none bg-[#245a50] text-orange-600 focus:ring-offset-[#1a4d43]" 
               />
-              <label htmlFor="remember" className="text-sm text-zinc-300 font-medium">Keep me logged in</label>
+              <label htmlFor="remember" className="text-sm text-zinc-300 font-medium">Rester connecté</label>
             </div>
 
             <div className="pt-4">
               <SubmitButton
-                label="Log in"
-                loadingLabel="Logging in..."
+                label="Se connecter"
+                loadingLabel="Connexion..."
                 className="w-full h-14 text-lg font-bold rounded-2xl bg-[#f97316] hover:bg-[#ea580c] text-white shadow-lg shadow-orange-950/20 transition-all active:scale-[0.98]"
               />
             </div>
 
             <div className="text-center pt-2">
               <Link href="/forgot-password" title="Réinitialiser" className="text-sm font-medium text-orange-500/80 hover:text-orange-400 transition-colors underline-offset-4 hover:underline">
-                Forget password?
+                Mot de passe oublié ?
               </Link>
             </div>
           </form>
 
           <div className="pt-8 text-center">
             <p className="text-zinc-400 text-sm font-medium">
-              Don't have an account?{' '}
+              Pas encore de compte ?{' '}
               <Link href="/register" className="text-white hover:text-orange-400 font-bold transition-colors">
-                Sign up free
+                S'inscrire gratuitement
               </Link>
             </p>
           </div>
