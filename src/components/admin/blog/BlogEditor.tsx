@@ -35,12 +35,22 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import { useState, useCallback } from "react";
+import { useState, useCallback, ReactNode } from "react";
 import dynamic from "next/dynamic";
+import { Editor } from "@tiptap/react";
 
-// Use dynamic imports with type casting to bypass Turbopack's named export resolution issues
-const BubbleMenu = dynamic(() => import("@tiptap/react").then((mod: any) => mod.BubbleMenu), { ssr: false });
-const FloatingMenu = dynamic(() => import("@tiptap/react").then((mod: any) => mod.FloatingMenu), { ssr: false });
+// Define props for the menus to fix TypeScript errors
+interface MenuProps {
+  editor: Editor;
+  children: ReactNode;
+  tippyOptions?: any;
+  pluginKey?: string | any;
+  shouldShow?: (props: any) => boolean;
+}
+
+// Use dynamic imports with explicit typing to resolve both Turbopack and TypeScript errors
+const BubbleMenu = dynamic(() => import("@tiptap/react").then((mod: any) => mod.BubbleMenu as React.ComponentType<MenuProps>), { ssr: false });
+const FloatingMenu = dynamic(() => import("@tiptap/react").then((mod: any) => mod.FloatingMenu as React.ComponentType<MenuProps>), { ssr: false });
 
 interface BlogEditorProps {
   content: string;
