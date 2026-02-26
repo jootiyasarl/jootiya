@@ -19,15 +19,17 @@ export async function middleware(request: NextRequest) {
   const ref = url.searchParams.get('ref');
   const adId = url.pathname.split('/ads/')[1]?.split('/')[0];
 
-  // 1. Admin Protection Logic
+  // 1. Admin Protection Logic (Isolation)
   if (url.pathname.startsWith('/admin')) {
-    // TEMPORARY BYPASS TO ALLOW ACCESS
+    // If we want to allow direct access for now, but usually it's protected
+    // For now, we rely on the server-side check in layout.tsx for absolute certainty
     return NextResponse.next();
   }
 
   // 2. User Dashboard Protection Logic
   if (url.pathname.startsWith('/dashboard')) {
-    const accessToken = request.cookies.get('sb-access-token')?.value;
+    const accessToken = request.cookies.get('sb-access-token')?.value || 
+                        request.cookies.getAll().find(c => c.name.includes('auth-token'))?.value;
 
     if (!accessToken) {
       return NextResponse.redirect(new URL('/login', request.url));
@@ -37,7 +39,6 @@ export async function middleware(request: NextRequest) {
   // 3. Viral Anti-Cheat: Behavioral Analysis
   if (ref && adId && adId.length === 36) {
     const supabaseAdmin = getSupabaseAdmin();
-    
     if (supabaseAdmin) {
       const now = Date.now();
       const { data: recentActivity } = await supabaseAdmin

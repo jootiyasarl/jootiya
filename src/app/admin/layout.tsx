@@ -8,41 +8,40 @@ interface AdminAppLayoutProps {
   children: ReactNode;
 }
 
-async function ensureAdminOrSuperAdmin() {
+async function checkAdminAuth() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
   const cookieStore = await cookies();
-  // Get all cookies to find the supabase auth token which might have a different name
   const allCookies = cookieStore.getAll();
-  const supabaseToken = allCookies.find(c => c.name.includes('-auth-token'))?.value || cookieStore.get("sb-access-token")?.value;
+  
+  // Find the Supabase auth token
+  const supabaseToken = allCookies.find(c => c.name.includes('auth-token'))?.value || 
+                        cookieStore.get("sb-access-token")?.value;
 
   if (!supabaseToken) {
-    console.log('Admin Layout: No token found, redirecting');
+    console.log('Admin Layout: No token, redirecting to /master-access');
     redirect("/master-access");
   }
 
   const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-    auth: {
-      persistSession: false,
-    },
+    auth: { persistSession: false },
   });
 
-  const { data, error } = await supabase.auth.getUser(supabaseToken);
+  const { data: { user }, error } = await supabase.auth.getUser(supabaseToken);
 
-  if (error || !data?.user) {
+  if (error || !user) {
     console.error('Admin Layout: Auth error', error);
     redirect("/master-access");
   }
 
-  // Admin access is strictly restricted to this email or specific phone
-  const isAuthorizedEmail = data.user.email === 'jootiyasarl@gmail.com';
+  // Strict email and role check
+  const isAuthorizedEmail = user.email === 'jootiyasarl@gmail.com';
   
-  // For other profiles, check their role
-  const { data: profile, error: profileError } = await supabase
+  const { data: profile } = await supabase
     .from("profiles")
     .select("role, phone")
-    .eq("id", data.user.id)
+    .eq("id", user.id)
     .maybeSingle();
 
   const isSuperAdmin = profile?.role === "super_admin" || profile?.role === "admin";
@@ -52,14 +51,11 @@ async function ensureAdminOrSuperAdmin() {
     return; // Authorized
   }
 
-  console.warn('Admin Layout: Unauthorized access attempt', data.user.email);
+  console.warn('Admin Layout: Unauthorized access attempt', user.email);
   redirect("/");
 }
 
-export default async function AdminAppLayout({
-  children,
-}: AdminAppLayoutProps) {
-  await ensureAdminOrSuperAdmin();
-
+export default async function AdminAppLayout({ children }: AdminAppLayoutProps) {
+  await checkAdminAuth();
   return <AdminLayout>{children}</AdminLayout>;
 }
