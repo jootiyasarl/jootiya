@@ -37,32 +37,56 @@ export async function registerServiceWorker() {
 
 export async function subscribeUserToPush() {
     try {
-        const msg = await messaging();
-        if (!msg) return;
-
-        const permission = await Notification.requestPermission();
-        if (permission !== 'granted') return;
-
-        const token = await getToken(msg, {
-            vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY
+        if (!('serviceWorker' in navigator)) return;
+        
+        const registration = await navigator.serviceWorker.ready;
+        
+        // Use the native push manager instead of Firebase for standard web push
+        const subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!)
         });
 
-        if (token) {
-            console.log('FCM Token:', token);
-            // Save to Supabase
-            const { data: { user } } = await supabase.auth.getUser();
-            if (user) {
-                await supabase.from('push_subscriptions').upsert({
-                    user_id: user.id,
-                    subscription: { token }, // Store token instead of raw subscription object
-                }, { onConflict: 'user_id' });
-            }
-            return token;
+        console.log('Push: Generated Subscription:', JSON.stringify(subscription));
+
+        // Save to Supabase via our API
+        const response = await fetch('/api/notifications/save-subscription', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                subscription: subscription
+            }),
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            console.log('Push: Subscription saved successfully!', data);
+            localStorage.setItem("jootiya_notif_subscribed", "true");
+            return subscription;
+        } else {
+            console.error('Push: Failed to save subscription', data);
+            throw new Error(data.error || 'Failed to save subscription');
         }
     } catch (e) {
         console.error('Push: Subscription failed', e);
         throw e;
     }
+}
+
+// Helper to convert VAPID key
+function urlBase64ToUint8Array(base64String: string) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+        .replace(/\-/g, '+')
+        .replace(/_/g, '/');
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
 }
 
 export async function checkPushPermission() {
