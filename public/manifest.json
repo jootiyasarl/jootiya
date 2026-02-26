@@ -1,11 +1,11 @@
 {
-    "name": "Jootiya | Achat et Vente au Maroc",
+    "name": "Jootiya",
     "short_name": "Jootiya",
-    "description": "La plateforme n°1 au Maroc pour l'achat et la vente d'articles neufs et d'occasion.",
+    "description": "Le n°1 de l'achat et de la vente au Maroc",
     "start_url": "/",
     "display": "standalone",
-    "background_color": "#ffffff",
-    "theme_color": "#f97316",
+    "background_color": "#0a0a0a",
+    "theme_color": "#ea580c",
     "orientation": "portrait",
     "categories": [
         "shopping",

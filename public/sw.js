@@ -100,16 +100,16 @@ self.addEventListener('push', function (event) {
         const data = event.data.json();
         const options = {
             body: data.body || 'Vous avez une nouvelle notification de Jootiya',
-            icon: '/icon-192x192.png', // Fallback to site icon
-            badge: '/icon-192x192.png',
+            icon: '/icon-192x192.png',
+            badge: '/favicon.svg',
             data: {
-                url: data.url || '/dashboard/messages'
+                url: data.url || '/'
             },
             vibrate: [100, 50, 100],
             actions: [
                 {
                     action: 'open',
-                    title: 'Voir le message'
+                    title: 'Voir l\'annonce'
                 }
             ]
         };
