@@ -10,6 +10,12 @@ export default async function DashboardPage() {
     redirect("/login?redirectTo=/dashboard");
   }
 
+  // 🚩 الفحص الذهبي: إذا كان الأدمن يحاول دخول لوحة البائعين
+  if (user.email === 'jootiyasarl@gmail.com') {
+    console.log("Admin detected in /dashboard, redirecting to /admin");
+    redirect("/admin");
+  }
+
   const supabase = await getAuthenticatedServerClient();
 
   // Fetch data in parallel using the server client

@@ -9,6 +9,11 @@ export async function GET() {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    // 🚩 الفحص الذكي: إذا كان الأدمن يحاول رؤية إحصائيات بائع
+    if (user.email === 'jootiyasarl@gmail.com') {
+        return NextResponse.json({ isAdmin: true, redirect: '/admin' });
+    }
+
     const supabase = createSupabaseServerClient();
 
     try {
