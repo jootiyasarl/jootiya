@@ -15,6 +15,10 @@ export function PushPermissionPrompt() {
 
     useEffect(() => {
         const handleTrigger = async () => {
+            // Check if app is installed (standalone mode)
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+            if (!isStandalone) return; // Only show for PWA installed users
+
             const currentStatus = await checkPushPermission();
             if (currentStatus !== ('default' as any)) return;
 

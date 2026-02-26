@@ -51,10 +51,19 @@ export function ContactActions({ adId, sellerId, sellerPhone, currentUser }: Con
             return;
         }
 
-        // Try to trigger the fancy global prompt first if permission is default
+        // Check if PWA is installed
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+
+        // If not installed, we can't force notifications as per new rule
+        // But we can show the number for regular users or encourage install
+        if (!isStandalone) {
+            setIsSubscribed(true); // Allow regular browser users to see the number without notification lock
+            return;
+        }
+
+        // For PWA users, follow the notification lock logic
         if (Notification.permission === 'default') {
             window.dispatchEvent(new CustomEvent('trigger-push-prompt'));
-            // We don't return here because we want to handle the reveal if they accept
         }
 
         try {

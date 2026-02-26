@@ -41,7 +41,15 @@ export function QuickActionFooter({ phone, adTitle, adPrice, adId, sellerId, cur
             return;
         }
 
-        // Trigger fancy global prompt if needed
+        // Check if PWA is installed
+        const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+
+        if (!isStandalone) {
+            setIsSubscribed(true); // Reveal for regular users
+            return;
+        }
+
+        // Trigger fancy global prompt if needed for PWA users
         if (Notification.permission === 'default') {
             window.dispatchEvent(new CustomEvent('trigger-push-prompt'));
         }
