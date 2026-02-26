@@ -7,6 +7,7 @@ import Image from "@tiptap/extension-image";
 import Underline from "@tiptap/extension-underline";
 import Placeholder from "@tiptap/extension-placeholder";
 import TextAlign from "@tiptap/extension-text-align";
+import Typography from "@tiptap/extension-typography";
 import imageCompression from "browser-image-compression";
 import { supabase } from "@/lib/supabaseClient";
 import { 
@@ -17,9 +18,9 @@ import {
   ListOrdered, 
   Link as LinkIcon, 
   Image as ImageIcon,
+  Heading1,
   Heading2,
   Heading3,
-  Heading1,
   Quote,
   Undo,
   Redo,
@@ -30,7 +31,8 @@ import {
   Loader2,
   Plus,
   MoreVertical,
-  Highlighter
+  Highlighter,
+  Code
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -56,6 +58,7 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
         },
       }),
       Underline,
+      Typography,
       TextAlign.configure({
         types: ["heading", "paragraph"],
       }),
@@ -65,8 +68,24 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
         linkOnPaste: true,
         HTMLAttributes: {
           class: "text-orange-500 underline decoration-orange-500/30 underline-offset-4 font-medium transition-colors hover:text-orange-600",
-          target: "_blank",
-          rel: "noopener noreferrer nofollow",
+        },
+        validate: href => /^https?:\/\//.test(href),
+      }).extend({
+        addAttributes() {
+          return {
+            ...this.parent?.(),
+            target: {
+              default: '_blank',
+            },
+            rel: {
+              default: null,
+              parseHTML: element => element.getAttribute('rel'),
+              renderHTML: attributes => {
+                const isExternal = attributes.href && !attributes.href.includes('jootiya.ma');
+                return isExternal ? { rel: 'noopener noreferrer nofollow' } : {};
+              },
+            },
+          };
         },
       }),
       Image.configure({
@@ -75,7 +94,7 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
         },
       }),
       Placeholder.configure({
-        placeholder: "Appuyez sur Enter pour une nouvelle ligne, ou '/' pour les commandes...",
+        placeholder: "Appuyez sur Enter pour une nouvelle ligne, أو '/' pour les commandes...",
       }),
     ],
     content,
@@ -230,9 +249,101 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
         </Button>
       </FloatingMenu>
 
-      {/* Main Top Bar (Minimalist) */}
-      <div className="flex items-center justify-between p-4 border-b border-zinc-800 bg-zinc-900/20 backdrop-blur-xl sticky top-0 z-20">
-        <div className="flex items-center gap-2">
+      {/* Main Top Bar (Fixed Toolbar) */}
+      <div className="flex items-center justify-between p-4 border-b border-zinc-800 bg-zinc-900/40 backdrop-blur-xl sticky top-0 z-20">
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <div className="flex items-center gap-1 bg-zinc-950/50 p-1 rounded-xl border border-zinc-800">
+            <Button
+              variant="ghost" size="sm" type="button"
+              onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+              className={cn("h-8 w-8 p-0", editor.isActive("heading", { level: 1 }) ? "text-orange-500 bg-orange-500/10" : "text-zinc-500")}
+            >
+              <Heading1 className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost" size="sm" type="button"
+              onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+              className={cn("h-8 w-8 p-0", editor.isActive("heading", { level: 2 }) ? "text-orange-500 bg-orange-500/10" : "text-zinc-500")}
+            >
+              <Heading2 className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost" size="sm" type="button"
+              onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+              className={cn("h-8 w-8 p-0", editor.isActive("heading", { level: 3 }) ? "text-orange-500 bg-orange-500/10" : "text-zinc-500")}
+            >
+              <Heading3 className="h-4 w-4" />
+            </Button>
+          </div>
+
+          <div className="flex items-center gap-1 bg-zinc-950/50 p-1 rounded-xl border border-zinc-800">
+            <Button
+              variant="ghost" size="sm" type="button"
+              onClick={() => editor.chain().focus().toggleBold().run()}
+              className={cn("h-8 w-8 p-0", editor.isActive("bold") ? "text-orange-500 bg-orange-500/10" : "text-zinc-500")}
+            >
+              <Bold className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost" size="sm" type="button"
+              onClick={() => editor.chain().focus().toggleItalic().run()}
+              className={cn("h-8 w-8 p-0", editor.isActive("italic") ? "text-orange-500 bg-orange-500/10" : "text-zinc-500")}
+            >
+              <Italic className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost" size="sm" type="button"
+              onClick={() => editor.chain().focus().toggleUnderline().run()}
+              className={cn("h-8 w-8 p-0", editor.isActive("underline") ? "text-orange-500 bg-orange-500/10" : "text-zinc-500")}
+            >
+              <UnderlineIcon className="h-4 w-4" />
+            </Button>
+          </div>
+
+          <div className="flex items-center gap-1 bg-zinc-950/50 p-1 rounded-xl border border-zinc-800">
+            <Button
+              variant="ghost" size="sm" type="button"
+              onClick={() => editor.chain().focus().toggleBulletList().run()}
+              className={cn("h-8 w-8 p-0", editor.isActive("bulletList") ? "text-orange-500 bg-orange-500/10" : "text-zinc-500")}
+            >
+              <List className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost" size="sm" type="button"
+              onClick={() => editor.chain().focus().toggleOrderedList().run()}
+              className={cn("h-8 w-8 p-0", editor.isActive("orderedList") ? "text-orange-500 bg-orange-500/10" : "text-zinc-500")}
+            >
+              <ListOrdered className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost" size="sm" type="button"
+              onClick={() => editor.chain().focus().toggleBlockquote().run()}
+              className={cn("h-8 w-8 p-0", editor.isActive("blockquote") ? "text-orange-500 bg-orange-500/10" : "text-zinc-500")}
+            >
+              <Quote className="h-4 w-4" />
+            </Button>
+          </div>
+
+          <div className="flex items-center gap-1 bg-zinc-950/50 p-1 rounded-xl border border-zinc-800">
+            <Button
+              variant="ghost" size="sm" type="button"
+              onClick={() => {
+                const url = window.prompt("URL");
+                if (url) editor.chain().focus().setLink({ href: url }).run();
+              }}
+              className={cn("h-8 w-8 p-0", editor.isActive("link") ? "text-orange-500 bg-orange-500/10" : "text-zinc-500")}
+            >
+              <LinkIcon className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost" size="sm" type="button"
+              onClick={triggerImageUpload}
+              className="h-8 w-8 p-0 text-zinc-500 hover:text-white"
+            >
+              <ImageIcon className="h-4 w-4" />
+            </Button>
+          </div>
+
           <div className="flex items-center gap-1 bg-zinc-950/50 p-1 rounded-xl border border-zinc-800">
             <Button
               variant="ghost" size="sm" type="button"
@@ -253,14 +364,10 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
           </div>
         </div>
         
-        <div className="flex items-center gap-4">
-          <div className="flex flex-col items-end">
-            <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">Jootiya Editor v3.0</span>
-            <div className="flex items-center gap-2 text-[10px] font-bold text-zinc-400">
-              <span>{editor.getText().split(/\s+/).filter(w => w.length > 0).length} mots</span>
-              <div className="w-1 h-1 rounded-full bg-zinc-800" />
-              <span>{Math.max(1, Math.ceil(editor.getText().split(/\s+/).filter(w => w.length > 0).length / 200))} min</span>
-            </div>
+        <div className="hidden md:flex flex-col items-end">
+          <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">Jootiya SEO Editor v3.1</span>
+          <div className="flex items-center gap-2 text-[10px] font-bold text-zinc-400">
+            <span>{editor.getText().split(/\s+/).filter(w => w.length > 0).length} mots</span>
           </div>
         </div>
       </div>
