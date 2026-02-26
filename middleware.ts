@@ -19,6 +19,11 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 type Role = "seller" | "admin" | "super_admin" | "moderator" | "buyer";
 
 async function getUserRole(user: User): Promise<Role | null> {
+  // 0) الفحص الذهبي: الأدمن المطلق عبر الإيميل
+  if (user.email === 'jootiyasarl@gmail.com') {
+    return 'super_admin';
+  }
+
   // 1) Prefer the canonical role stored in the profiles table.
   const { data: profile, error } = await supabase
     .from("profiles")
