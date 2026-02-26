@@ -14,6 +14,7 @@ import { ScrollToTop } from "@/components/layout/ScrollToTop";
 import { Suspense } from "react";
 import { ThemeProvider } from "@/components/theme-provider";
 import { PageViewTracker } from "@/components/analytics/PageViewTracker";
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 const tajawal = Tajawal({
   variable: "--font-tajawal",
@@ -164,6 +165,7 @@ export default function RootLayout({
           <PushPermissionPrompt />
           <Toaster position="top-center" richColors />
         </ThemeProvider>
+        <GoogleAnalytics gaId="G-2BS0D7DTDJ" />
 
         {/* 5. Google Adsense & GDPR Scripts (Lazy Loaded at Bottom) */}
         <Script
