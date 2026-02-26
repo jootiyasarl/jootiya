@@ -76,7 +76,6 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
       {/* Left Side: Illustration (Hidden on mobile) */}
       <div className="hidden lg:flex lg:w-1/2 bg-[#fdfbf7] items-center justify-center p-12 relative">
         <div className="max-w-md w-full animate-in fade-in slide-in-from-left-8 duration-1000">
-          {/* A professional line-art style illustration placeholder */}
           <div className="relative aspect-square w-full">
             <svg viewBox="0 0 400 400" className="w-full h-full text-zinc-800" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M100 300 L150 100 L300 120 L250 320 Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -92,79 +91,94 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
       </div>
 
       {/* Right Side: Login Form */}
-      <div className="w-full lg:w-1/2 bg-[#1a4d43] flex items-center justify-center p-6 sm:p-12 relative overflow-hidden">
+      <div className="w-full lg:w-1/2 bg-[#0a0a0a] flex items-center justify-center p-6 sm:p-12 relative overflow-hidden">
         {/* Background Decorative Element */}
-        <div className="absolute top-[-10%] right-[-10%] w-64 h-64 bg-white/5 blur-3xl rounded-full pointer-events-none" />
+        <div className="absolute top-[-10%] right-[-10%] w-64 h-64 bg-orange-600/5 blur-3xl rounded-full pointer-events-none" />
         
-        <div className="w-full max-w-md space-y-8 relative z-10 text-left" dir="ltr">
-          <div className="space-y-2">
-            <h1 className="text-5xl font-bold text-white tracking-tight">Login</h1>
-            <p className="text-zinc-300/80 text-lg font-medium">Je suis un professionnel</p>
+        <div className="w-full max-w-md space-y-8 relative z-10 text-left flex flex-col min-h-[600px] justify-center" dir="ltr">
+          <div className="flex-grow flex flex-col justify-center space-y-8">
+            <div className="space-y-2">
+              <h1 className="text-5xl font-black text-white tracking-tighter">Login</h1>
+              <p className="text-zinc-400 text-lg font-medium">Je suis un professionnel</p>
+            </div>
+
+            {error && (
+              <div className="rounded-xl bg-red-500/10 p-4 border border-red-500/20 flex gap-3 items-center animate-in fade-in slide-in-from-top-2">
+                <ShieldCheck className="w-5 h-5 text-red-500 flex-shrink-0" />
+                <p className="text-sm font-medium text-red-200 leading-tight">{error}</p>
+              </div>
+            )}
+
+            <form action={loginAction} className="space-y-5">
+              <input type="hidden" name="redirectTo" value={redirectTo || ""} />
+              
+              <div className="space-y-1">
+                <Input
+                  id="identifier"
+                  name="identifier"
+                  type="text"
+                  placeholder="Adresse e-mail ou téléphone"
+                  required
+                  className="h-14 px-6 rounded-xl bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-500 focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all text-base font-medium"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  placeholder="Mot de passe"
+                  required
+                  className="h-14 px-6 rounded-xl bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-500 focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all text-base font-medium"
+                />
+              </div>
+
+              <div className="flex items-center gap-2 px-1">
+                <input 
+                  type="checkbox" 
+                  id="remember" 
+                  className="w-4 h-4 rounded border-zinc-800 bg-zinc-900 text-orange-600 focus:ring-offset-black" 
+                />
+                <label htmlFor="remember" className="text-sm text-zinc-400 font-medium">Rester connecté</label>
+              </div>
+
+              <div className="pt-4">
+                <SubmitButton
+                  label="Se connecter"
+                  loadingLabel="Connexion..."
+                  className="w-full h-14 text-lg font-black rounded-2xl bg-[#f97316] hover:bg-[#ea580c] text-white shadow-lg shadow-orange-950/20 transition-all active:scale-[0.98]"
+                />
+              </div>
+
+              <div className="text-center pt-2">
+                <Link href="/forgot-password" title="Réinitialiser" className="text-sm font-medium text-orange-500 hover:text-orange-400 transition-colors underline-offset-4 hover:underline">
+                  Mot de passe oublié ?
+                </Link>
+              </div>
+            </form>
+
+            <div className="pt-4 text-center">
+              <p className="text-zinc-500 text-sm font-medium">
+                Pas encore de compte ?{' '}
+                <Link href="/register" className="text-white hover:text-orange-400 font-bold transition-colors">
+                  S'inscrire gratuitement
+                </Link>
+              </p>
+            </div>
           </div>
 
-          {error && (
-            <div className="rounded-xl bg-red-500/10 p-4 border border-red-500/20 flex gap-3 items-center animate-in fade-in slide-in-from-top-2">
-              <ShieldCheck className="w-5 h-5 text-red-500 flex-shrink-0" />
-              <p className="text-sm font-medium text-red-200 leading-tight">{error}</p>
+          {/* Branding at the bottom */}
+          <div className="pt-12 border-t border-zinc-900/50 flex items-center justify-between opacity-50">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-black text-sm">J</span>
+              </div>
+              <span className="text-white font-black tracking-tighter text-xl uppercase">JOOTIYA</span>
             </div>
-          )}
-
-          <form action={loginAction} className="space-y-5">
-            <input type="hidden" name="redirectTo" value={redirectTo || ""} />
-            
-            <div className="space-y-1">
-              <Input
-                id="identifier"
-                name="identifier"
-                type="text"
-                placeholder="Adresse e-mail ou téléphone"
-                required
-                className="h-14 px-6 rounded-xl bg-[#245a50] border-none text-white placeholder:text-zinc-400 focus:ring-2 focus:ring-orange-500/50 transition-all text-base font-medium"
-              />
-            </div>
-
-            <div className="space-y-1">
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                placeholder="Mot de passe"
-                required
-                className="h-14 px-6 rounded-xl bg-[#245a50] border-none text-white placeholder:text-zinc-400 focus:ring-2 focus:ring-orange-500/50 transition-all text-base font-medium"
-              />
-            </div>
-
-            <div className="flex items-center gap-2 px-1">
-              <input 
-                type="checkbox" 
-                id="remember" 
-                className="w-4 h-4 rounded border-none bg-[#245a50] text-orange-600 focus:ring-offset-[#1a4d43]" 
-              />
-              <label htmlFor="remember" className="text-sm text-zinc-300 font-medium">Rester connecté</label>
-            </div>
-
-            <div className="pt-4">
-              <SubmitButton
-                label="Se connecter"
-                loadingLabel="Connexion..."
-                className="w-full h-14 text-lg font-bold rounded-2xl bg-[#f97316] hover:bg-[#ea580c] text-white shadow-lg shadow-orange-950/20 transition-all active:scale-[0.98]"
-              />
-            </div>
-
-            <div className="text-center pt-2">
-              <Link href="/forgot-password" title="Réinitialiser" className="text-sm font-medium text-orange-500/80 hover:text-orange-400 transition-colors underline-offset-4 hover:underline">
-                Mot de passe oublié ?
-              </Link>
-            </div>
-          </form>
-
-          <div className="pt-8 text-center">
-            <p className="text-zinc-400 text-sm font-medium">
-              Pas encore de compte ?{' '}
-              <Link href="/register" className="text-white hover:text-orange-400 font-bold transition-colors">
-                S'inscrire gratuitement
-              </Link>
-            </p>
+            <Link href="/" className="text-xs font-bold text-zinc-500 hover:text-white transition-colors">
+              Accueil
+            </Link>
           </div>
         </div>
       </div>
