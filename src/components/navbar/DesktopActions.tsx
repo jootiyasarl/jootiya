@@ -27,19 +27,17 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
     const isAdminPhone = (phone: string) => phone === "0618112646";
 
     useEffect(() => {
-        // Only run if we don't have initial data OR to sync with any changes
         const checkSession = async () => {
             const { data: { session } } = await supabase.auth.getSession();
             if (session?.user) {
                 const user = session.user;
                 setUserEmail(user.email ?? null);
                 
-                // Fetch profile to check role and phone
                 const { data: profile } = await supabase
                     .from('profiles')
                     .select('role, phone')
                     .eq('id', user.id)
-                    .single();
+                    .maybeSingle();
 
                 const isAuthorized = 
                     user.email === "jootiyasarl@gmail.com" || 
@@ -48,34 +46,34 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                     profile?.phone === "0618112646";
 
                 setIsAdmin(isAuthorized);
-
-                // Check for unread messages
+                
+                // Fetch unread messages count
                 const { count } = await supabase
                     .from('messages')
                     .select('*', { count: 'exact', head: true })
                     .eq('is_read', false)
-                    .neq('sender_id', session.user.id);
+                    .neq('sender_id', user.id);
 
                 setHasUnreadMessages(count !== null && count > 0);
             } else {
                 setUserEmail(null);
                 setIsAdmin(false);
+                setHasUnreadMessages(false);
             }
         };
 
         checkSession();
 
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-            if (event === "SIGNED_IN" && session?.user) {
+            if (session?.user) {
                 const user = session.user;
                 setUserEmail(user.email ?? null);
 
-                // Fetch profile to check role and phone
                 const { data: profile } = await supabase
                     .from('profiles')
                     .select('role, phone')
                     .eq('id', user.id)
-                    .single();
+                    .maybeSingle();
 
                 const isAuthorized = 
                     user.email === "jootiyasarl@gmail.com" || 
@@ -85,15 +83,13 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
 
                 setIsAdmin(isAuthorized);
 
-                if (session?.user) {
-                    supabase
-                        .from('messages')
-                        .select('*', { count: 'exact', head: true })
-                        .eq('is_read', false)
-                        .neq('sender_id', session.user.id)
-                        .then(({ count }) => setHasUnreadMessages(count !== null && count > 0));
-                }
-            } else if (event === "SIGNED_OUT") {
+                const { count } = await supabase
+                    .from('messages')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('is_read', false)
+                    .neq('sender_id', user.id)
+                    .then(({ count }) => setHasUnreadMessages(count !== null && count > 0));
+            } else {
                 setUserEmail(null);
                 setIsAdmin(false);
                 setHasUnreadMessages(false);
