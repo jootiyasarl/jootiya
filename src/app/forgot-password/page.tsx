@@ -52,52 +52,70 @@ export default async function ForgotPasswordPage({
       </div>
 
       {/* Right Side: Form */}
-      <div className="w-full lg:w-1/2 bg-[#1a4d43] flex items-center justify-center p-6 sm:p-12 relative">
-        <div className="w-full max-w-md space-y-8 relative z-10" dir="ltr">
-          <Link href="/login" className="inline-flex items-center gap-2 text-zinc-300 hover:text-white transition-all mb-4 group">
-            <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-            <span className="text-sm font-medium">Retour à la connexion</span>
-          </Link>
+      <div className="w-full lg:w-1/2 bg-[#0a0a0a] flex items-center justify-center p-6 sm:p-12 relative overflow-hidden">
+        {/* Background Decorative Element */}
+        <div className="absolute top-[-10%] right-[-10%] w-64 h-64 bg-orange-600/5 blur-3xl rounded-full pointer-events-none" />
+        
+        <div className="w-full max-w-md space-y-8 relative z-10 text-left flex flex-col min-h-[600px] justify-center" dir="ltr">
+          <div className="flex-grow flex flex-col justify-center space-y-8">
+            <Link href="/login" className="inline-flex items-center gap-2 text-zinc-500 hover:text-white transition-all mb-4 group">
+              <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+              <span className="text-sm font-medium">Retour à la connexion</span>
+            </Link>
 
-          <div className="space-y-2">
-            <h1 className="text-4xl font-bold text-white tracking-tight">Mot de passe oublié</h1>
-            <p className="text-zinc-300/80 text-lg font-medium">Entrez votre email pour réinitialiser</p>
+            <div className="space-y-2">
+              <h1 className="text-4xl font-black text-white tracking-tighter">Mot de passe oublié</h1>
+              <p className="text-zinc-400 text-lg font-medium">Entrez votre email pour réinitialiser</p>
+            </div>
+
+            {error && (
+              <div className="rounded-xl bg-red-500/10 p-4 border border-red-500/20 flex gap-3 items-center">
+                <ShieldCheck className="w-5 h-5 text-red-500 flex-shrink-0" />
+                <p className="text-sm font-medium text-red-200 leading-tight">{error}</p>
+              </div>
+            )}
+
+            {success && (
+              <div className="rounded-xl bg-emerald-500/10 p-4 border border-emerald-500/20 flex gap-3 items-center">
+                <ShieldCheck className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+                <p className="text-sm font-medium text-emerald-200 leading-tight">{success}</p>
+              </div>
+            )}
+
+            <form action={forgotPasswordAction} className="space-y-5">
+              <div className="space-y-1">
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="Votre adresse e-mail"
+                  required
+                  className="h-14 px-6 rounded-xl bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-500 focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all text-base font-medium"
+                />
+              </div>
+
+              <div className="pt-4">
+                <SubmitButton
+                  label="Envoyer le lien"
+                  loadingLabel="Envoi en cours..."
+                  className="w-full h-14 text-lg font-black rounded-2xl bg-[#f97316] hover:bg-[#ea580c] text-white shadow-lg transition-all active:scale-[0.98]"
+                />
+              </div>
+            </form>
           </div>
 
-          {error && (
-            <div className="rounded-xl bg-red-500/10 p-4 border border-red-500/20 flex gap-3 items-center">
-              <ShieldCheck className="w-5 h-5 text-red-500 flex-shrink-0" />
-              <p className="text-sm font-medium text-red-200 leading-tight">{error}</p>
+          {/* Branding at the bottom */}
+          <div className="pt-12 border-t border-zinc-900/50 flex items-center justify-between opacity-50">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-black text-sm">J</span>
+              </div>
+              <span className="text-white font-black tracking-tighter text-xl uppercase">JOOTIYA</span>
             </div>
-          )}
-
-          {success && (
-            <div className="rounded-xl bg-emerald-500/10 p-4 border border-emerald-500/20 flex gap-3 items-center">
-              <ShieldCheck className="w-5 h-5 text-emerald-500 flex-shrink-0" />
-              <p className="text-sm font-medium text-emerald-200 leading-tight">{success}</p>
-            </div>
-          )}
-
-          <form action={forgotPasswordAction} className="space-y-5">
-            <div className="space-y-1">
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="Votre adresse e-mail"
-                required
-                className="h-14 px-6 rounded-xl bg-[#245a50] border-none text-white placeholder:text-zinc-400 focus:ring-2 focus:ring-orange-500/50 transition-all"
-              />
-            </div>
-
-            <div className="pt-4">
-              <SubmitButton
-                label="Envoyer le lien"
-                loadingLabel="Envoi en cours..."
-                className="w-full h-14 text-lg font-bold rounded-2xl bg-[#f97316] hover:bg-[#ea580c] text-white shadow-lg transition-all active:scale-[0.98]"
-              />
-            </div>
-          </form>
+            <Link href="/" className="text-xs font-bold text-zinc-500 hover:text-white transition-colors">
+              Accueil
+            </Link>
+          </div>
         </div>
       </div>
     </div>
