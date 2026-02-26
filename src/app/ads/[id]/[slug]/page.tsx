@@ -439,7 +439,7 @@ export default async function AdPage({ params }: AdPageProps) {
           </div>
 
           {/* Right Column: Sticky CTA + Seller */}
-          <div className="lg:col-span-4">
+          <div className="hidden lg:block lg:col-span-4">
             <div className="lg:sticky lg:top-24 space-y-6">
               <div className="rounded-[2rem] bg-white dark:bg-zinc-900 p-8 shadow-[0_12px_40px_rgba(0,0,0,0.06)] ring-1 ring-zinc-100 dark:ring-white/5">
                 <div className="flex items-start justify-between gap-4">
