@@ -1,5 +1,6 @@
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import webpush from "web-push";
 
 // Configure web-push with VAPID keys (Only if keys are present to avoid build errors)
@@ -14,24 +15,31 @@ if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
 export async function POST(request: Request) {
     try {
         const { title, body, url } = await request.json();
-        const supabase = createSupabaseServerClient();
-        
-        // 1. Verify Admin (Strict Check) - Try both getUser and getSession for reliability
-        const { data: { user: userAuth } } = await supabase.auth.getUser();
-        let user = userAuth;
+        const cookieStore = await cookies();
+        const accessToken = cookieStore.get("sb-access-token")?.value;
 
-        if (!user) {
-            const { data: { session } } = await supabase.auth.getSession();
-            user = session?.user || null;
+        if (!accessToken) {
+            console.error("Admin API Unauthorized - No access token cookie found");
+            return NextResponse.json({ error: "Unauthorized. Please login again." }, { status: 401 });
         }
 
-        console.log("Admin API Auth Check - User Email:", user?.email);
+        const supabase = createSupabaseServerClient();
+        
+        // 1. Verify Admin (Strict Check) - Use the token explicitly to get the user
+        const { data: { user }, error: authError } = await supabase.auth.getUser(accessToken);
 
-        if (!user || user.email !== 'jootiyasarl@gmail.com') {
-            console.error("Admin API Unauthorized - Expected: jootiyasarl@gmail.com, Got:", user?.email);
+        if (authError || !user) {
+            console.error("Admin API Auth Error:", authError?.message);
+            return NextResponse.json({ error: "Unauthorized. Admin access only." }, { status: 403 });
+        }
+
+        console.log("Admin API Auth Check - User Email:", user.email);
+
+        if (user.email !== 'jootiyasarl@gmail.com') {
+            console.error("Admin API Unauthorized - Expected: jootiyasarl@gmail.com, Got:", user.email);
             return NextResponse.json({ 
                 error: "Unauthorized. Admin access only.",
-                debug: process.env.NODE_ENV === 'development' ? { email: user?.email } : undefined 
+                debug: process.env.NODE_ENV === 'development' ? { email: user.email } : undefined 
             }, { status: 403 });
         }
 
