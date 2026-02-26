@@ -137,6 +137,18 @@ export default function RootLayout({
             `,
           }}
         />
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=G-2BS0D7DTDJ`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-2BS0D7DTDJ');
+          `}
+        </Script>
       </head>
 
       <body
@@ -165,7 +177,6 @@ export default function RootLayout({
           <PushPermissionPrompt />
           <Toaster position="top-center" richColors />
         </ThemeProvider>
-        <GoogleAnalytics gaId="G-2BS0D7DTDJ" />
 
         {/* 5. Google Adsense & GDPR Scripts (Lazy Loaded at Bottom) */}
         <Script
