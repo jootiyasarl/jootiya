@@ -49,8 +49,17 @@ interface MenuProps {
 }
 
 // Use dynamic imports with explicit typing to resolve both Turbopack and TypeScript errors
-const BubbleMenu = dynamic(() => import("@tiptap/react").then((mod: any) => mod.BubbleMenu as React.ComponentType<MenuProps>), { ssr: false });
-const FloatingMenu = dynamic(() => import("@tiptap/react").then((mod: any) => mod.FloatingMenu as React.ComponentType<MenuProps>), { ssr: false });
+const BubbleMenu = dynamic(() => import("@tiptap/react").then((mod: any) => {
+  const component = mod.BubbleMenu;
+  if (!component) console.error("BubbleMenu not found in @tiptap/react");
+  return component as React.ComponentType<MenuProps>;
+}), { ssr: false });
+
+const FloatingMenu = dynamic(() => import("@tiptap/react").then((mod: any) => {
+  const component = mod.FloatingMenu;
+  if (!component) console.error("FloatingMenu not found in @tiptap/react");
+  return component as React.ComponentType<MenuProps>;
+}), { ssr: false });
 
 interface BlogEditorProps {
   content: string;
