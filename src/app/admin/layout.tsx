@@ -19,7 +19,8 @@ async function checkAdminAuth() {
 
   if (error || !user) {
     console.error('Admin Layout: No valid user session', error);
-    redirect("/login?redirectTo=/admin");
+    // توجيه مباشرة لصفحة الـ Google Login للأدمن وليس صفحة دخول البائعين
+    redirect("/master-access");
   }
 
   // فحص إضافي للملف الشخصي (للهاتف أو الرتب الأخرى)
