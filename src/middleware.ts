@@ -28,11 +28,26 @@ export async function middleware(request: NextRequest) {
 
   // 2. User Dashboard Protection Logic
   if (url.pathname.startsWith('/dashboard')) {
-    const accessToken = request.cookies.get('sb-access-token')?.value || 
-                        request.cookies.getAll().find(c => c.name.includes('auth-token'))?.value;
+    const allCookies = request.cookies.getAll();
+    const supabaseToken = allCookies.find(c => c.name.includes('auth-token'))?.value || 
+                          request.cookies.get('sb-access-token')?.value;
 
-    if (!accessToken) {
+    if (!supabaseToken) {
       return NextResponse.redirect(new URL('/login', request.url));
+    }
+
+    const supabaseAdmin = getSupabaseAdmin();
+    if (supabaseAdmin) {
+      try {
+        const { data: { user }, error } = await supabaseAdmin.auth.getUser(supabaseToken);
+        
+        // إذا كان المستخدم هو الأدمن، لا تسمح له بدخول لوحة البائعين، بل وجهه للإدارة
+        if (user?.email === 'jootiyasarl@gmail.com') {
+          return NextResponse.redirect(new URL('/admin', request.url));
+        }
+      } catch (e) {
+        // Fallback if auth check fails
+      }
     }
   }
 

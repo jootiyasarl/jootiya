@@ -58,11 +58,13 @@ async function loginAction(formData: FormData) {
   // Set cookies for the session
   await setAuthSession(data.session);
   
-  // If this is the admin email, force redirect to /admin
+  // 2. الفحص الذهبي: إذا كان هذا هو الأدمن، اقطرعه للمسار الصحيح فوراً
   if (data.session.user.email === 'jootiyasarl@gmail.com') {
-    redirect("/admin");
+    console.log("Admin detected, forcing redirect to /admin");
+    redirect("/admin"); // ✅ استخدام مسار مطلق ومباشر
   }
 
+  // 3. لبقية المستخدمين، اذهب للوجهة المطلوبة أو المتجر
   redirect(redirectTo);
 }
 
