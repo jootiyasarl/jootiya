@@ -21,8 +21,8 @@ export async function middleware(request: NextRequest) {
 
   // 1. Admin Protection Logic (Isolation)
   if (url.pathname.startsWith('/admin')) {
-    // If we want to allow direct access for now, but usually it's protected
-    // For now, we rely on the server-side check in layout.tsx for absolute certainty
+    // EMERGENCY BYPASS: Allow all access to /admin via middleware 
+    // to stop the redirect to /login and verify the page content.
     return NextResponse.next();
   }
 
