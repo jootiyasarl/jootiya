@@ -51,24 +51,46 @@ export async function POST(request: Request) {
         if (fetchError) throw fetchError;
 
         // 3. Send notifications in parallel
-        const notifications = subscriptions.map(async (sub: any) => {
+        console.log(`[Push API] Sending to ${subscriptions.length} subscribers`);
+        
+        const results = await Promise.allSettled(subscriptions.map(async (sub: any) => {
             try {
+                // Ensure the subscription object is correctly formatted for web-push
+                const subscription = typeof sub.subscription === 'string' 
+                    ? JSON.parse(sub.subscription) 
+                    : sub.subscription;
+
                 await webpush.sendNotification(
-                    sub.subscription,
-                    JSON.stringify({ title, body, url })
+                    subscription,
+                    JSON.stringify({ 
+                        title: title || 'Jootiya', 
+                        body: body || 'Nouvelle notification', 
+                        url: url || '/' 
+                    })
                 );
+                return { success: true };
             } catch (error: any) {
+                console.error("Error sending notification to one subscriber:", error.statusCode, error.message);
                 if (error.statusCode === 410 || error.statusCode === 404) {
-                    // Subscription expired or no longer valid - cleanup
-                    console.log("Cleaning up invalid subscription");
+                    // TODO: Optional cleanup logic
                 }
-                console.error("Error sending notification:", error);
+                throw error;
+            }
+        }));
+
+        const successCount = results.filter(r => r.status === 'fulfilled').length;
+        const failCount = results.filter(r => r.status === 'rejected').length;
+
+        console.log(`[Push API] Batch complete. Success: ${successCount}, Failed: ${failCount}`);
+
+        return NextResponse.json({ 
+            success: true, 
+            count: subscriptions.length,
+            results: {
+                success: successCount,
+                failed: failCount
             }
         });
-
-        await Promise.all(notifications);
-
-        return NextResponse.json({ success: true, count: subscriptions.length });
     } catch (error: any) {
         console.error("Send notification error:", error);
         return NextResponse.json({ error: error.message }, { status: 500 });
