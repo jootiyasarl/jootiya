@@ -43,12 +43,22 @@ export async function POST(request: Request) {
             }, { status: 403 });
         }
 
-        // 2. Fetch all subscriptions
+        // 2. Fetch all subscriptions with more details
         const { data: subscriptions, error: fetchError } = await supabase
             .from('push_subscriptions')
-            .select('subscription');
+            .select('subscription, created_at, user_id');
 
         if (fetchError) throw fetchError;
+
+        console.log(`[Push API] Found ${subscriptions?.length || 0} subscriptions in database`);
+
+        if (!subscriptions || subscriptions.length === 0) {
+            return NextResponse.json({ 
+                success: true, 
+                count: 0, 
+                message: "Aucun abonné trouvé في قاعدة البيانات." 
+            });
+        }
 
         // 3. Send notifications in parallel
         console.log(`[Push API] Sending to ${subscriptions.length} subscribers`);

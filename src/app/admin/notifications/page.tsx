@@ -12,6 +12,9 @@ export default function NotificationsPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [stats, setStats] = useState({ total: 0, loading: true });
 
+  const [subscribers, setSubscribers] = useState<any[]>([]);
+  const [isFetchingSubscribers, setIsFetchingSubscribers] = useState(true);
+
   useEffect(() => {
     async function fetchStats() {
       try {
@@ -26,7 +29,26 @@ export default function NotificationsPage() {
         setStats({ total: 0, loading: false });
       }
     }
+
+    async function fetchSubscribers() {
+      try {
+        const { data, error } = await supabase
+          .from('push_subscriptions')
+          .select('created_at, user_id, subscription')
+          .order('created_at', { ascending: false })
+          .limit(10);
+        
+        if (error) throw error;
+        setSubscribers(data || []);
+      } catch (error) {
+        console.error("Error fetching subscribers:", error);
+      } finally {
+        setIsFetchingSubscribers(false);
+      }
+    }
+
     fetchStats();
+    fetchSubscribers();
   }, []);
 
   const handleSendNotification = async (e: React.FormEvent) => {
@@ -125,64 +147,101 @@ export default function NotificationsPage() {
 
       <div className="grid gap-8 md:grid-cols-2">
         {/* Form Section */}
-        <div className="rounded-[2.5rem] border border-zinc-800/50 bg-zinc-900/40 backdrop-blur-xl p-8 shadow-2xl relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 rounded-bl-[5rem]" />
-          
-          <form onSubmit={handleSendNotification} className="space-y-6 relative z-10">
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-1">Titre de l'alerte</label>
-              <input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Ex: Nouvelle Hamza disponible ! ⚡"
-                className="w-full h-14 px-6 rounded-2xl bg-zinc-950/50 border-zinc-800 text-white placeholder:text-zinc-600 focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all font-medium"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-1">Message</label>
-              <textarea
-                value={body}
-                onChange={(e) => setBody(e.target.value)}
-                placeholder="Décrivez l'offre ou l'annonce..."
-                rows={4}
-                className="w-full px-6 py-4 rounded-2xl bg-zinc-950/50 border-zinc-800 text-white placeholder:text-zinc-600 focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all font-medium resize-none"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-1">Lien de redirection</label>
-              <div className="relative">
-                <LinkIcon className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+        <div className="space-y-8">
+          <div className="rounded-[2.5rem] border border-zinc-800/50 bg-zinc-900/40 backdrop-blur-xl p-8 shadow-2xl relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 rounded-bl-[5rem]" />
+            
+            <form onSubmit={handleSendNotification} className="space-y-6 relative z-10">
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-1">Titre de l'alerte</label>
                 <input
                   type="text"
-                  value={url}
-                  onChange={(e) => setUrl(e.target.value)}
-                  placeholder="/marketplace/ads/..."
-                  className="w-full h-14 pl-14 pr-6 rounded-2xl bg-zinc-950/50 border-zinc-800 text-white placeholder:text-zinc-600 focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all font-medium"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Ex: Nouvelle Hamza disponible ! ⚡"
+                  className="w-full h-14 px-6 rounded-2xl bg-zinc-950/50 border-zinc-800 text-white placeholder:text-zinc-600 focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all font-medium"
                 />
               </div>
-            </div>
 
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full h-14 bg-orange-600 hover:bg-orange-500 disabled:bg-zinc-800 disabled:text-zinc-500 text-white rounded-2xl font-black text-sm uppercase tracking-widest transition-all active:scale-95 flex items-center justify-center gap-3 shadow-lg shadow-orange-900/20"
-            >
-              {isLoading ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  Envoi en cours...
-                </>
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-1">Message</label>
+                <textarea
+                  value={body}
+                  onChange={(e) => setBody(e.target.value)}
+                  placeholder="Décrivez l'offre ou l'annonce..."
+                  rows={4}
+                  className="w-full px-6 py-4 rounded-2xl bg-zinc-950/50 border-zinc-800 text-white placeholder:text-zinc-600 focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all font-medium resize-none"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-1">Lien de redirection</label>
+                <div className="relative">
+                  <LinkIcon className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                  <input
+                    type="text"
+                    value={url}
+                    onChange={(e) => setUrl(e.target.value)}
+                    placeholder="/marketplace/ads/..."
+                    className="w-full h-14 pl-14 pr-6 rounded-2xl bg-zinc-950/50 border-zinc-800 text-white placeholder:text-zinc-600 focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all font-medium"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full h-14 bg-orange-600 hover:bg-orange-500 disabled:bg-zinc-800 disabled:text-zinc-500 text-white rounded-2xl font-black text-sm uppercase tracking-widest transition-all active:scale-95 flex items-center justify-center gap-3 shadow-lg shadow-orange-900/20"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Envoi en cours...
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-5 h-5" />
+                    Envoyer maintenant
+                  </>
+                )}
+              </button>
+            </form>
+          </div>
+
+          {/* Subscribers List Section */}
+          <div className="rounded-[2.5rem] border border-zinc-800/50 bg-zinc-900/20 p-8 space-y-6">
+            <h3 className="text-sm font-bold text-white flex items-center gap-2">
+              <Users className="w-4 h-4 text-orange-500" />
+              Derniers abonnés
+            </h3>
+            <div className="space-y-4">
+              {isFetchingSubscribers ? (
+                <div className="flex items-center justify-center py-4">
+                  <Loader2 className="w-6 h-6 animate-spin text-zinc-600" />
+                </div>
+              ) : subscribers.length > 0 ? (
+                subscribers.map((sub, i) => (
+                  <div key={i} className="flex items-center justify-between p-4 rounded-2xl bg-zinc-950/30 border border-zinc-800/30">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-[10px] font-black text-zinc-400">
+                        {sub.user_id ? "U" : "G"}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-[11px] font-bold text-zinc-300 truncate">
+                          {sub.user_id ? `Utilisateur: ${sub.user_id.substring(0, 8)}` : "Visiteur (Guest)"}
+                        </p>
+                        <p className="text-[9px] text-zinc-500">
+                          {new Date(sub.created_at).toLocaleString('fr-FR')}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))
               ) : (
-                <>
-                  <Send className="w-5 h-5" />
-                  Envoyer maintenant
-                </>
+                <p className="text-center text-xs text-zinc-600 py-4 italic">Aucun abonné pour le moment</p>
               )}
-            </button>
-          </form>
+            </div>
+          </div>
         </div>
 
         {/* Preview & Info Section */}
