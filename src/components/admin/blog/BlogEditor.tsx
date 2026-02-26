@@ -1,4 +1,4 @@
-import { useEditor, EditorContent, BubbleMenu, FloatingMenu } from "@tiptap/react";
+import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
@@ -36,6 +36,11 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useState, useCallback } from "react";
+import dynamic from "next/dynamic";
+
+// Use dynamic imports with type casting to bypass Turbopack's named export resolution issues
+const BubbleMenu = dynamic(() => import("@tiptap/react").then((mod: any) => mod.BubbleMenu), { ssr: false });
+const FloatingMenu = dynamic(() => import("@tiptap/react").then((mod: any) => mod.FloatingMenu), { ssr: false });
 
 interface BlogEditorProps {
   content: string;
