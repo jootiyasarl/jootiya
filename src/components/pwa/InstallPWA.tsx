@@ -102,8 +102,8 @@ export default function InstallPWA() {
       <div className="bg-zinc-950/95 border-t border-orange-600/30 p-4 backdrop-blur-md shadow-[0_-10px_40px_rgba(234,88,12,0.15)]">
         <div className="max-w-xl mx-auto flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-orange-600 rounded-xl flex items-center justify-center shadow-lg shadow-orange-600/40 animate-bounce">
-              <span className="text-white font-black text-lg">J</span>
+            <div className="w-auto px-4 h-10 bg-orange-600 rounded-xl flex items-center justify-center shadow-lg shadow-orange-600/40 animate-bounce">
+              <span className="text-white font-black text-lg tracking-tighter">jootiya</span>
             </div>
             <div>
               <h3 className="text-white font-bold text-sm leading-none">تطبيق جوطية متاح الآن</h3>
