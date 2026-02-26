@@ -34,14 +34,24 @@ export default function InstallPWA() {
           applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!)
         });
 
-        await fetch("/api/notifications/save-subscription", {
+        console.log("PWA: Generated Subscription:", JSON.stringify(subscription));
+
+        const response = await fetch("/api/notifications/save-subscription", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(subscription),
+          body: JSON.stringify({
+            subscription: subscription,
+          }),
         });
+
+        const data = await response.json();
         
-        localStorage.setItem("jootiya_notif_subscribed", "true");
-        console.log("PWA: Subscribed for notifications after install");
+        if (response.ok) {
+          localStorage.setItem("jootiya_notif_subscribed", "true");
+          console.log("Subscription saved!", data);
+        } else {
+          console.error("PWA: Failed to save subscription to API", data);
+        }
       }
     } catch (error) {
       console.error("PWA: Error subscribing for notifications:", error);

@@ -19,39 +19,33 @@ export async function POST(request: Request) {
 
         const subscriptionData: any = {
             subscription: subscription,
+            endpoint: subscription.endpoint,
+            user_id: finalUserId,
             updated_at: new Date().toISOString()
         };
 
-        if (finalUserId) {
-            subscriptionData.user_id = finalUserId;
-        }
-
-        // Using upsert with a unique constraint on subscription endpoint if possible, 
-        // or just insert if we want to allow multiple devices per user.
-        // For now, let's use the endpoint as a unique identifier to avoid duplicates.
-        const endpoint = subscription.endpoint;
-        
         const { error } = await supabase
             .from('push_subscriptions')
-            .upsert({
-                user_id: finalUserId,
-                subscription: subscription,
-                endpoint: endpoint // Assuming we have or add this column for uniqueness
-            }, { onConflict: 'endpoint' });
+            .upsert(subscriptionData, { onConflict: 'endpoint' });
 
         if (error) {
-            console.error("Supabase error saving subscription:", error);
-            // Fallback to simple insert if endpoint column doesn't exist yet
+            console.error("Supabase error saving subscription (upsert):", error);
+            // Fallback to simple insert if upsert fails due to schema issues
             const { error: insertError } = await supabase
                 .from('push_subscriptions')
                 .insert({
                     user_id: finalUserId,
-                    subscription: subscription
+                    subscription: subscription,
+                    endpoint: subscription.endpoint
                 });
-            if (insertError) throw insertError;
+            if (insertError) {
+                console.error("Supabase error saving subscription (insert):", insertError);
+                throw insertError;
+            }
         }
 
-        return NextResponse.json({ success: true });
+        console.log("Subscription successfully saved in database");
+        return NextResponse.json({ success: true, message: "Subscription saved!" });
     } catch (error: any) {
         console.error("Save subscription error:", error);
         return NextResponse.json({ error: error.message }, { status: 500 });
