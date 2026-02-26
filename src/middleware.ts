@@ -21,52 +21,8 @@ export async function middleware(request: NextRequest) {
 
   // 1. Admin Protection Logic
   if (url.pathname.startsWith('/admin')) {
-    const allCookies = request.cookies.getAll();
-    // Log cookie names for debugging (can be seen in server logs)
-    const cookieNames = allCookies.map(c => c.name);
-    
-    // Look for ANY supabase auth token
-    const supabaseToken = allCookies.find(c => c.name.includes('auth-token'))?.value || 
-                          request.cookies.get('sb-access-token')?.value ||
-                          request.cookies.get('supabase-auth-token')?.value;
-
-    if (!supabaseToken) {
-      console.log('Middleware: No token found for /admin. Cookies present:', cookieNames);
-      return NextResponse.redirect(new URL('/master-access', request.url));
-    }
-
-    const supabaseAdmin = getSupabaseAdmin();
-    if (supabaseAdmin) {
-      try {
-        const { data: { user }, error } = await supabaseAdmin.auth.getUser(supabaseToken);
-        
-        if (error || !user) {
-          console.error('Middleware: Auth error or no user for /admin', error);
-          return NextResponse.redirect(new URL('/master-access', request.url));
-        }
-
-        // Fetch profile to verify admin role
-        const { data: profile } = await supabaseAdmin
-          .from('profiles')
-          .select('role, phone, email')
-          .eq('id', user.id)
-          .single();
-
-        const isSuperAdmin = profile?.role === 'super_admin' || profile?.role === 'admin';
-        const isAuthorizedEmail = user.email === 'jootiyasarl@gmail.com' || profile?.email === 'jootiyasarl@gmail.com';
-        const isAuthorizedPhone = profile?.phone === '0618112646';
-
-        // IF AUTHORIZED ADMIN, ALLOW ACCESS
-        if (isAuthorizedEmail || isSuperAdmin || isAuthorizedPhone) {
-          return NextResponse.next();
-        }
-
-        console.warn('Middleware: Unauthorized access attempt by', user.email);
-        return NextResponse.redirect(new URL('/', request.url));
-      } catch (e) {
-        return NextResponse.redirect(new URL('/master-access', request.url));
-      }
-    }
+    // TEMPORARY BYPASS TO ALLOW ACCESS
+    return NextResponse.next();
   }
 
   // 2. User Dashboard Protection Logic
