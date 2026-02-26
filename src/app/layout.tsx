@@ -137,18 +137,20 @@ export default function RootLayout({
             `,
           }}
         />
-        <Script
-          src={`https://www.googletagmanager.com/gtag/js?id=G-2BS0D7DTDJ`}
-          strategy="afterInteractive"
+        <script 
+          async 
+          src="https://www.googletagmanager.com/gtag/js?id=G-2BS0D7DTDJ"
+        ></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-2BS0D7DTDJ');
+            `,
+          }}
         />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-2BS0D7DTDJ');
-          `}
-        </Script>
       </head>
 
       <body
