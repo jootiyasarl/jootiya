@@ -1,6 +1,6 @@
 "use client";
 
-import { useEditor, EditorContent } from "@tiptap/react";
+import { useEditor, EditorContent, BubbleMenu, FloatingMenu } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
@@ -19,7 +19,7 @@ import {
   Image as ImageIcon,
   Heading2,
   Heading3,
-  Heading4,
+  Heading1,
   Quote,
   Undo,
   Redo,
@@ -27,146 +27,23 @@ import {
   AlignLeft,
   AlignRight,
   Type,
-  Loader2
+  Loader2,
+  Plus,
+  MoreVertical,
+  Highlighter
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 
 interface BlogEditorProps {
   content: string;
   onChange: (content: string) => void;
 }
 
-const MenuBar = ({ editor, onImageUpload }: { editor: any; onImageUpload: () => void }) => {
-  if (!editor) return null;
-
-  const setLink = () => {
-    const previousUrl = editor.getAttributes("link").href;
-    const url = window.prompt("URL", previousUrl);
-
-    if (url === null) return;
-    if (url === "") {
-      editor.chain().focus().extendMarkRange("link").unsetLink().run();
-      return;
-    }
-
-    editor.chain().focus().extendMarkRange("link").setLink({ href: url, target: "_blank" }).run();
-  };
-
-  const ToolbarButton = ({ 
-    onClick, 
-    active, 
-    children, 
-    disabled = false 
-  }: { 
-    onClick: () => void; 
-    active?: boolean; 
-    children: React.ReactNode;
-    disabled?: boolean;
-  }) => (
-    <Button
-      variant="ghost"
-      size="sm"
-      type="button"
-      disabled={disabled}
-      onClick={(e) => {
-        e.preventDefault();
-        onClick();
-      }}
-      className={cn(
-        "h-9 w-9 p-0 rounded-xl transition-all duration-200",
-        active 
-          ? "bg-orange-500 text-white shadow-lg shadow-orange-500/20" 
-          : "text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100"
-      )}
-    >
-      {children}
-    </Button>
-  );
-
-  return (
-    <div className="flex flex-wrap items-center gap-1.5 p-3 border-b border-zinc-800 bg-zinc-900/50 backdrop-blur-md sticky top-0 z-20">
-      <div className="flex items-center gap-1 px-1.5 py-1 bg-zinc-950/50 rounded-2xl border border-zinc-800/50 mr-2">
-        <ToolbarButton onClick={() => editor.chain().focus().toggleBold().run()} active={editor.isActive("bold")}>
-          <Bold className="h-4 w-4" />
-        </ToolbarButton>
-        <ToolbarButton onClick={() => editor.chain().focus().toggleItalic().run()} active={editor.isActive("italic")}>
-          <Italic className="h-4 w-4" />
-        </ToolbarButton>
-        <ToolbarButton onClick={() => editor.chain().focus().toggleUnderline().run()} active={editor.isActive("underline")}>
-          <UnderlineIcon className="h-4 w-4" />
-        </ToolbarButton>
-      </div>
-
-      <div className="flex items-center gap-1 px-1.5 py-1 bg-zinc-950/50 rounded-2xl border border-zinc-800/50 mr-2">
-        <ToolbarButton 
-          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} 
-          active={editor.isActive("heading", { level: 2 })}
-        >
-          <Heading2 className="h-4 w-4" />
-        </ToolbarButton>
-        <ToolbarButton 
-          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} 
-          active={editor.isActive("heading", { level: 3 })}
-        >
-          <Heading3 className="h-4 w-4" />
-        </ToolbarButton>
-        <ToolbarButton 
-          onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()} 
-          active={editor.isActive("heading", { level: 4 })}
-        >
-          <Heading4 className="h-4 w-4" />
-        </ToolbarButton>
-      </div>
-
-      <div className="flex items-center gap-1 px-1.5 py-1 bg-zinc-950/50 rounded-2xl border border-zinc-800/50 mr-2">
-        <ToolbarButton onClick={() => editor.chain().focus().setTextAlign('left').run()} active={editor.isActive({ textAlign: 'left' })}>
-          <AlignLeft className="h-4 w-4" />
-        </ToolbarButton>
-        <ToolbarButton onClick={() => editor.chain().focus().setTextAlign('center').run()} active={editor.isActive({ textAlign: 'center' })}>
-          <AlignCenter className="h-4 w-4" />
-        </ToolbarButton>
-        <ToolbarButton onClick={() => editor.chain().focus().setTextAlign('right').run()} active={editor.isActive({ textAlign: 'right' })}>
-          <AlignRight className="h-4 w-4" />
-        </ToolbarButton>
-      </div>
-
-      <div className="flex items-center gap-1 px-1.5 py-1 bg-zinc-950/50 rounded-2xl border border-zinc-800/50 mr-2">
-        <ToolbarButton onClick={() => editor.chain().focus().toggleBulletList().run()} active={editor.isActive("bulletList")}>
-          <List className="h-4 w-4" />
-        </ToolbarButton>
-        <ToolbarButton onClick={() => editor.chain().focus().toggleOrderedList().run()} active={editor.isActive("orderedList")}>
-          <ListOrdered className="h-4 w-4" />
-        </ToolbarButton>
-        <ToolbarButton onClick={() => editor.chain().focus().toggleBlockquote().run()} active={editor.isActive("blockquote")}>
-          <Quote className="h-4 w-4" />
-        </ToolbarButton>
-      </div>
-
-      <div className="flex items-center gap-1 px-1.5 py-1 bg-zinc-950/50 rounded-2xl border border-zinc-800/50">
-        <ToolbarButton onClick={setLink} active={editor.isActive("link")}>
-          <LinkIcon className="h-4 w-4" />
-        </ToolbarButton>
-        <ToolbarButton onClick={onImageUpload}>
-          <ImageIcon className="h-4 w-4" />
-        </ToolbarButton>
-      </div>
-
-      <div className="flex-1" />
-
-      <div className="flex items-center gap-1 px-1.5 py-1 bg-zinc-950/50 rounded-2xl border border-zinc-800/50 ml-2">
-        <ToolbarButton onClick={() => editor.chain().focus().undo().run()} disabled={!editor.can().undo()}>
-          <Undo className="h-4 w-4" />
-        </ToolbarButton>
-        <ToolbarButton onClick={() => editor.chain().focus().redo().run()} disabled={!editor.can().redo()}>
-          <Redo className="h-4 w-4" />
-        </ToolbarButton>
-      </div>
-    </div>
-  );
-};
+// Use a specialized TipTap extension for image resizing if needed, but for now we'll use a clean CSS approach
+// Removing old MenuBar as we now use Bubble and Floating menus
 
 export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
   const [isUploading, setIsUploading] = useState(false);
@@ -175,7 +52,7 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
     extensions: [
       StarterKit.configure({
         heading: {
-          levels: [2, 3, 4],
+          levels: [1, 2, 3],
         },
       }),
       Underline,
@@ -194,17 +71,17 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
       }),
       Image.configure({
         HTMLAttributes: {
-          class: "rounded-[2rem] border border-zinc-800 shadow-2xl mx-auto my-8 max-w-full",
+          class: "rounded-[2rem] border border-zinc-800 shadow-2xl mx-auto my-8 max-w-full cursor-pointer hover:ring-4 hover:ring-orange-500/20 transition-all",
         },
       }),
       Placeholder.configure({
-        placeholder: "Racontez votre histoire, structurez-la avec des titres (H2-H4) pour un meilleur SEO...",
+        placeholder: "Appuyez sur Enter pour une nouvelle ligne, ou '/' pour les commandes...",
       }),
     ],
     content,
     editorProps: {
       attributes: {
-        class: "prose prose-lg md:prose-xl prose-orange dark:prose-invert max-w-none p-8 md:p-12 min-h-[500px] outline-none",
+        class: "prose prose-lg md:prose-xl prose-orange dark:prose-invert max-w-none p-8 md:p-20 min-h-[600px] outline-none selection:bg-orange-500/30",
       },
       handleDrop: (view, event, slice, moved) => {
         if (!moved && event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0]) {
@@ -212,6 +89,21 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
           if (file.type.startsWith("image/")) {
             handleImageUpload(file);
             return true;
+          }
+        }
+        return false;
+      },
+      handlePaste: (view, event) => {
+        const items = event.clipboardData?.items;
+        if (items) {
+          for (const item of Array.from(items)) {
+            if (item.type.startsWith("image/")) {
+              const file = item.getAsFile();
+              if (file) {
+                handleImageUpload(file);
+                return true;
+              }
+            }
           }
         }
         return false;
@@ -226,8 +118,8 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
     try {
       setIsUploading(true);
       const options = {
-        maxSizeMB: 0.2, // 200KB limit
-        maxWidthOrHeight: 1200,
+        maxSizeMB: 0.5,
+        maxWidthOrHeight: 1600,
         useWebWorker: true,
         fileType: "image/webp",
       };
@@ -236,7 +128,7 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
       const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.webp`;
       const filePath = `blog/content/${fileName}`;
 
-      const bucketName = "ad-images"; // Changed from blog_content to ad-images
+      const bucketName = "ad-images";
       const { data, error } = await supabase.storage
         .from(bucketName)
         .upload(filePath, compressedFile);
@@ -257,7 +149,7 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
     }
   };
 
-  const triggerImageUpload = () => {
+  const triggerImageUpload = useCallback(() => {
     const input = document.createElement("input");
     input.type = "file";
     input.accept = "image/*";
@@ -266,42 +158,124 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
       if (file) handleImageUpload(file);
     };
     input.click();
-  };
+  }, [editor]);
 
-  // Word Count & Reading Time
-  const text = editor?.getText() || "";
-  const wordCount = text.split(/\s+/).filter(word => word.length > 0).length;
-  const readingTime = Math.max(1, Math.ceil(wordCount / 200));
+  if (!editor) return null;
 
   return (
-    <div className="group relative border border-zinc-800 rounded-[2.5rem] overflow-hidden bg-zinc-950 shadow-2xl transition-all duration-300 focus-within:border-orange-500/50 focus-within:ring-4 focus-within:ring-orange-500/10">
-      <MenuBar editor={editor} onImageUpload={triggerImageUpload} />
+    <div className="group relative border border-zinc-800 rounded-[3rem] overflow-hidden bg-zinc-950/50 backdrop-blur-sm shadow-2xl transition-all duration-500 focus-within:border-orange-500/30 focus-within:ring-8 focus-within:ring-orange-500/5">
+      
+      {/* Bubble Menu (appears on selection) */}
+      <BubbleMenu editor={editor} tippyOptions={{ duration: 100 }} className="flex items-center gap-0.5 p-1 bg-zinc-900 border border-zinc-800 rounded-2xl shadow-2xl animate-in fade-in zoom-in duration-200">
+        <Button
+          variant="ghost" size="sm" type="button"
+          onClick={() => editor.chain().focus().toggleBold().run()}
+          className={cn("h-8 w-8 p-0 rounded-lg", editor.isActive("bold") ? "text-orange-500 bg-orange-500/10" : "text-zinc-400")}
+        >
+          <Bold className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="ghost" size="sm" type="button"
+          onClick={() => editor.chain().focus().toggleItalic().run()}
+          className={cn("h-8 w-8 p-0 rounded-lg", editor.isActive("italic") ? "text-orange-500 bg-orange-500/10" : "text-zinc-400")}
+        >
+          <Italic className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="ghost" size="sm" type="button"
+          onClick={() => editor.chain().focus().toggleUnderline().run()}
+          className={cn("h-8 w-8 p-0 rounded-lg", editor.isActive("underline") ? "text-orange-500 bg-orange-500/10" : "text-zinc-400")}
+        >
+          <UnderlineIcon className="h-4 w-4" />
+        </Button>
+        <div className="w-px h-4 bg-zinc-800 mx-1" />
+        <Button
+          variant="ghost" size="sm" type="button"
+          onClick={() => {
+            const previousUrl = editor.getAttributes("link").href;
+            const url = window.prompt("URL", previousUrl);
+            if (url) editor.chain().focus().setLink({ href: url }).run();
+          }}
+          className={cn("h-8 w-8 p-0 rounded-lg", editor.isActive("link") ? "text-orange-500 bg-orange-500/10" : "text-zinc-400")}
+        >
+          <LinkIcon className="h-4 w-4" />
+        </Button>
+      </BubbleMenu>
+
+      {/* Floating Menu (appears on empty line) */}
+      <FloatingMenu editor={editor} tippyOptions={{ duration: 100 }} className="flex items-center gap-1 p-1 bg-zinc-900 border border-zinc-800 rounded-2xl shadow-2xl">
+        <Button
+          variant="ghost" size="sm" type="button"
+          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+          className="h-10 px-3 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 flex items-center gap-2"
+        >
+          <Heading1 className="h-4 w-4 text-orange-500" />
+          <span className="text-[10px] font-black uppercase tracking-widest">Titre 1</span>
+        </Button>
+        <Button
+          variant="ghost" size="sm" type="button"
+          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+          className="h-10 px-3 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 flex items-center gap-2"
+        >
+          <Heading2 className="h-4 w-4 text-orange-500" />
+          <span className="text-[10px] font-black uppercase tracking-widest">Titre 2</span>
+        </Button>
+        <Button
+          variant="ghost" size="sm" type="button"
+          onClick={triggerImageUpload}
+          className="h-10 px-3 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 flex items-center gap-2"
+        >
+          <ImageIcon className="h-4 w-4 text-emerald-500" />
+          <span className="text-[10px] font-black uppercase tracking-widest">Image</span>
+        </Button>
+      </FloatingMenu>
+
+      {/* Main Top Bar (Minimalist) */}
+      <div className="flex items-center justify-between p-4 border-b border-zinc-800 bg-zinc-900/20 backdrop-blur-xl sticky top-0 z-20">
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 bg-zinc-950/50 p-1 rounded-xl border border-zinc-800">
+            <Button
+              variant="ghost" size="sm" type="button"
+              onClick={() => editor.chain().focus().undo().run()}
+              disabled={!editor.can().undo()}
+              className="h-8 w-8 p-0 text-zinc-500 hover:text-white"
+            >
+              <Undo className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost" size="sm" type="button"
+              onClick={() => editor.chain().focus().redo().run()}
+              disabled={!editor.can().redo()}
+              className="h-8 w-8 p-0 text-zinc-500 hover:text-white"
+            >
+              <Redo className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+        
+        <div className="flex items-center gap-4">
+          <div className="flex flex-col items-end">
+            <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">Jootiya Editor v3.0</span>
+            <div className="flex items-center gap-2 text-[10px] font-bold text-zinc-400">
+              <span>{editor.getText().split(/\s+/).filter(w => w.length > 0).length} mots</span>
+              <div className="w-1 h-1 rounded-full bg-zinc-800" />
+              <span>{Math.max(1, Math.ceil(editor.getText().split(/\s+/).filter(w => w.length > 0).length / 200))} min</span>
+            </div>
+          </div>
+        </div>
+      </div>
       
       {isUploading && (
-        <div className="absolute inset-0 bg-zinc-950/60 backdrop-blur-sm flex flex-col items-center justify-center text-white z-30">
+        <div className="absolute inset-0 bg-zinc-950/60 backdrop-blur-sm flex flex-col items-center justify-center text-white z-30 animate-in fade-in duration-300">
           <Loader2 className="h-10 w-10 animate-spin text-orange-500 mb-4" />
           <span className="text-sm font-black uppercase tracking-widest animate-pulse">
-            Traitement de l'image SEO...
+            Optimisation SEO de l'image...
           </span>
         </div>
       )}
 
-      <EditorContent editor={editor} />
-      
-      <div className="px-6 py-4 bg-zinc-900/30 border-t border-zinc-800/50 flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em]">
-        <div className="flex items-center gap-4 text-zinc-500">
-          <div className="flex items-center gap-1.5">
-            <Type className="h-3 w-3 text-orange-500/50" />
-            <span>{wordCount} Mots</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <Loader2 className="h-3 w-3 text-emerald-500/50" />
-            <span>{readingTime} Min de lecture</span>
-          </div>
-        </div>
-        <div className="text-zinc-600">
-          Jootiya Semantic Editor v2.0
-        </div>
+      <div className="relative min-h-[600px] cursor-text">
+        <EditorContent editor={editor} />
       </div>
     </div>
   );
