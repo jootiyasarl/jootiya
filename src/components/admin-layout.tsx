@@ -20,7 +20,8 @@ import {
   Star,
   LifeBuoy,
   Loader2,
-  FileText
+  FileText,
+  ShieldCheck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -205,30 +206,22 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           isCollapsed ? "w-[72px]" : "w-64",
         )}
       >
-        <div className="flex items-center justify-between px-1 pb-4">
-          <Link href="/admin" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-50 text-xs font-bold text-zinc-950">
-              JY
+        <div className="flex items-center justify-between px-1 pb-4 border-b border-zinc-900/50 mb-4">
+          <Link href="/admin" className="flex items-center gap-2.5 group">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-600 shadow-lg shadow-orange-900/20 group-hover:scale-105 transition-transform duration-300 rotate-3 group-hover:rotate-0">
+              <ShieldCheck className="h-6 w-6 text-white" />
             </div>
             {!isCollapsed && (
-              <div className="flex flex-col">
-                <span className="text-sm font-semibold leading-tight">
-                  Jootiya
+              <div className="flex flex-col animate-in fade-in slide-in-from-left-2 duration-500">
+                <span className="text-base font-black tracking-tighter leading-tight text-white group-hover:text-orange-500 transition-colors">
+                  JOOTIYA
                 </span>
-                <span className="text-[11px] text-zinc-400">Admin</span>
+                <span className="text-[9px] font-black uppercase tracking-[0.2em] text-zinc-500">
+                  Control Center
+                </span>
               </div>
             )}
           </Link>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-zinc-400 hover:text-zinc-50"
-            onClick={() => setIsCollapsed((prev) => !prev)}
-            aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-          >
-            <PanelLeft className="h-4 w-4" />
-          </Button>
         </div>
 
         <AdminSidebarNav collapsed={isCollapsed} />
