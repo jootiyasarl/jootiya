@@ -303,7 +303,65 @@ export default async function AdPage({ params }: AdPageProps) {
               <AdImageGallery images={images} />
             </section>
 
-            <div className="space-y-8">
+            {/* Mobile-only Price & Header (Reordered) */}
+            <div className="lg:hidden space-y-6">
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <p className="text-3xl font-black text-orange-600 tracking-tight">{formattedPrice}</p>
+                  <div className="flex items-center gap-2">
+                    <FavoriteButton adId={ad.id} className="hover:bg-red-50 text-zinc-600 hover:text-red-600 rounded-xl" />
+                    <ReportButton targetId={ad.id} targetType="ad" reporterId={user?.id} />
+                  </div>
+                </div>
+                <h1 className="text-2xl font-black tracking-tighter leading-tight text-zinc-900 dark:text-white">
+                  {ad.title}
+                </h1>
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] font-medium text-zinc-500">
+                  <span className="inline-flex items-center gap-1.5">
+                    <MapPin className="h-4 w-4 text-orange-500" />
+                    {ad.city}{ad.neighborhood ? `, ${ad.neighborhood}` : ""}
+                  </span>
+                  <span className="h-1 w-1 rounded-full bg-zinc-300" />
+                  <span className="inline-flex items-center gap-1.5">
+                    <Calendar className="h-4 w-4 text-orange-500" />
+                    {formattedDate}
+                  </span>
+                </div>
+              </div>
+
+              {/* Mobile Seller Card (Reordered) */}
+              <div className="rounded-[2rem] bg-white dark:bg-zinc-900 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-zinc-100 dark:ring-white/5">
+                <div className="flex items-center gap-4">
+                  <div className="h-12 w-12 rounded-full bg-zinc-100 flex items-center justify-center text-lg font-black overflow-hidden ring-1 ring-zinc-200">
+                    {sellerProfile?.avatar_url ? (
+                      <Image src={sellerProfile.avatar_url} alt={sellerName} width={48} height={48} className="object-cover" />
+                    ) : (
+                      sellerInitial
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="font-black text-zinc-900 dark:text-white flex items-center gap-2 truncate text-sm">
+                      {sellerName}
+                      {isTrusted && <Award className="w-4 h-4 text-blue-500" />}
+                    </h3>
+                    <p className="text-[11px] text-zinc-500 font-medium">Membre depuis {memberSince}</p>
+                  </div>
+                  <Link href={`/profile/${ad.seller_id}`} className="mr-auto text-[11px] font-black text-orange-600 hover:underline">
+                    Profil
+                  </Link>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h2 className="text-lg font-black tracking-tight text-zinc-900 dark:text-white">Description</h2>
+                <p className="whitespace-pre-wrap leading-relaxed text-[15px] text-zinc-700 dark:text-zinc-300">
+                  {ad.description || "Aucune description fournie."}
+                </p>
+              </div>
+            </div>
+
+            {/* Desktop-only Details (Hidden on mobile) */}
+            <div className="hidden lg:block space-y-8">
               <div className="flex flex-col gap-3">
                 <h1 className="text-3xl sm:text-4xl font-black tracking-tighter leading-tight text-zinc-900 dark:text-white">
                   {ad.title}
