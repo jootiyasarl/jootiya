@@ -48,30 +48,25 @@ export function QuickActionFooter({ phone, adTitle, adPrice, adId, sellerId, cur
                 setIsSubscribed(true);
                 toast.success("Notifications activées !");
                 
-                if (currentUser) {
-                    try {
-                        const registration = await navigator.serviceWorker.ready;
-                        let subscription = await registration.pushManager.getSubscription();
-                        
-                        if (!subscription) {
-                            subscription = await registration.pushManager.subscribe({
-                                userVisibleOnly: true,
-                                applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
-                            });
-                        }
+                try {
+                    const registration = await navigator.serviceWorker.ready;
+                    const subscription = await registration.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!)
+                    });
 
-                        // تأكد من إرسال الكائن كاملاً (JSON)
-                        const subData = JSON.parse(JSON.stringify(subscription));
-                        console.log("Sending complete subscription data (QuickFooter):", subData);
+                    console.log("Push Subscription Object:", JSON.stringify(subscription));
 
-                        await fetch("/api/notifications/save-subscription", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify(subData),
-                        });
-                    } catch (e) {
-                        console.error("Push subscription error (QuickFooter):", e);
-                    }
+                    await fetch("/api/notifications/save-subscription", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            subscription: subscription,
+                            user_id: currentUser?.id
+                        }),
+                    });
+                } catch (subErr) {
+                    console.error("Error creating push subscription:", subErr);
                 }
             } else {
                 toast.error("Veuillez activer les notifications pour voir le numéro.");
@@ -80,6 +75,19 @@ export function QuickActionFooter({ phone, adTitle, adPrice, adId, sellerId, cur
             console.error("Subscription error:", error);
         }
     };
+
+    function urlBase64ToUint8Array(base64String: string) {
+        const padding = '='.repeat((4 - base64String.length % 4) % 4);
+        const base64 = (base64String + padding)
+            .replace(/\-/g, '+')
+            .replace(/_/g, '/');
+        const rawData = window.atob(base64);
+        const outputArray = new Uint8Array(rawData.length);
+        for (let i = 0; i < rawData.length; ++i) {
+            outputArray[i] = rawData.charCodeAt(i);
+        }
+        return outputArray;
+    }
 
     // Format Moroccan phone number for WhatsApp
     const cleanPhone = phone?.replace(/\D/g, '');

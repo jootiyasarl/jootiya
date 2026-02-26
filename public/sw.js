@@ -94,7 +94,7 @@ self.addEventListener('sync', (event) => {
 });
 
 self.addEventListener('push', function (event) {
-    console.log('[SW] Push Event received', event);
+    console.log('[SW] Push Received:', event);
 
     if (!event.data) {
         console.warn('[SW] Push event received but no data found.');
@@ -102,8 +102,18 @@ self.addEventListener('push', function (event) {
     }
 
     try {
-        const data = event.data.json();
-        console.log('[SW] Push data parsed successfully:', data);
+        const payload = event.data.text();
+        console.log('[SW] Push Payload (Raw):', payload);
+        
+        let data;
+        try {
+            data = event.data.json();
+            console.log('[SW] Push Data (Parsed):', data);
+        } catch (jsonErr) {
+            console.error('[SW] Failed to parse push data as JSON:', jsonErr);
+            // Fallback for non-JSON payload
+            data = { title: 'Jootiya', body: payload };
+        }
 
         const options = {
             body: data.body || 'Vous avez une nouvelle notification de Jootiya',
@@ -118,27 +128,18 @@ self.addEventListener('push', function (event) {
                     action: 'open',
                     title: 'Voir l\'annonce'
                 }
-            ]
+            ],
+            tag: 'jootiya-push-notification',
+            renotify: true
         };
 
         event.waitUntil(
             self.registration.showNotification(data.title || 'Jootiya', options)
                 .then(() => console.log('[SW] Notification shown successfully'))
-                .catch(err => console.error('[SW] Error showing notification:', err))
+                .catch(err => console.error('[SW] Failed to show notification:', err))
         );
     } catch (e) {
-        console.error('SW: Error parsing push data', e);
-        // Fallback for non-JSON data
-        const textData = event.data.text();
-        console.log('[SW] Raw text data:', textData);
-        
-        event.waitUntil(
-            self.registration.showNotification('Jootiya', {
-                body: textData,
-                icon: '/icon-192x192.png',
-                badge: '/favicon.svg',
-            })
-        );
+        console.error('SW: Critical error in push event handler', e);
     }
 });
 
