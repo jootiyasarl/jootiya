@@ -113,13 +113,19 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
     }, []);
 
     const handleLogout = async () => {
-        await supabase.auth.signOut();
         try {
+            await supabase.auth.signOut();
             await fetch("/api/auth/logout", { method: "POST" });
+            
+            // Clear all possible auth cookies manually to be safe
+            document.cookie = "sb-access-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+            document.cookie = "sb-refresh-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+            
+            window.location.href = "/";
         } catch (error) {
             console.error("Failed to clear auth session", error);
+            window.location.href = "/";
         }
-        window.location.href = "/";
     };
 
     return (

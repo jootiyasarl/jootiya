@@ -183,15 +183,19 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   const handleLogout = async () => {
     try {
       setIsLoggingOut(true);
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
+      await supabase.auth.signOut();
+      await fetch("/api/auth/logout", { method: "POST" });
+      
+      // Clear all possible auth cookies manually to be safe
+      document.cookie = "sb-access-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      document.cookie = "sb-refresh-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
       
       toast.success("Déconnexion réussie");
-      router.push("/login");
-      router.refresh();
+      window.location.href = "/";
     } catch (error: any) {
       console.error("Logout error:", error);
       toast.error("Erreur lors de la déconnexion");
+      window.location.href = "/";
     } finally {
       setIsLoggingOut(false);
     }
