@@ -14,8 +14,6 @@ export function PushPermissionPrompt() {
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
-        // Higher-order logic: Only show the prompt if triggered by an event
-        // and if not in cooldown period
         const handleTrigger = async () => {
             const currentStatus = await checkPushPermission();
             if (currentStatus !== ('default' as any)) return;
@@ -30,8 +28,18 @@ export function PushPermissionPrompt() {
             setIsVisible(true);
         };
 
+        // 1. Show automatically after a short delay on entry
+        const timer = setTimeout(() => {
+            handleTrigger();
+        }, 3000);
+
+        // 2. Listen for manual triggers (like from ContactActions)
         window.addEventListener('trigger-push-prompt', handleTrigger);
-        return () => window.removeEventListener('trigger-push-prompt', handleTrigger);
+        
+        return () => {
+            clearTimeout(timer);
+            window.removeEventListener('trigger-push-prompt', handleTrigger);
+        };
     }, []);
 
     const handleAllow = async () => {

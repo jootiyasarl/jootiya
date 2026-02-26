@@ -47,8 +47,14 @@ export function ContactActions({ adId, sellerId, sellerPhone, currentUser }: Con
     const handleSubscribeAndReveal = async () => {
         if (!("Notification" in window)) {
             toast.error("Votre navigateur ne supporte pas les notifications.");
-            setIsSubscribed(true); // الكشف عن الرقم للمتصفحات غير الداعمة
+            setIsSubscribed(true); 
             return;
+        }
+
+        // Try to trigger the fancy global prompt first if permission is default
+        if (Notification.permission === 'default') {
+            window.dispatchEvent(new CustomEvent('trigger-push-prompt'));
+            // We don't return here because we want to handle the reveal if they accept
         }
 
         try {

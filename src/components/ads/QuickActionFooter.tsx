@@ -41,6 +41,11 @@ export function QuickActionFooter({ phone, adTitle, adPrice, adId, sellerId, cur
             return;
         }
 
+        // Trigger fancy global prompt if needed
+        if (Notification.permission === 'default') {
+            window.dispatchEvent(new CustomEvent('trigger-push-prompt'));
+        }
+
         try {
             const permission = await Notification.requestPermission();
             if (permission === "granted") {
