@@ -11,22 +11,6 @@ export async function registerServiceWorker() {
         });
         console.log('PWA SW: Registered Successfully', pwaRegistration);
 
-        // Standard event to check for updates
-        pwaRegistration.onupdatefound = () => {
-            const installingWorker = pwaRegistration.installing;
-            if (installingWorker) {
-                installingWorker.onstatechange = () => {
-                    if (installingWorker.state === 'installed') {
-                        if (navigator.serviceWorker.controller) {
-                            console.log('PWA SW: New content is available; please refresh.');
-                        } else {
-                            console.log('PWA SW: Content is cached for offline use.');
-                        }
-                    }
-                };
-            }
-        };
-
         return { pwaRegistration };
     } catch (e) {
         console.error('SW: Registration failed', e);
@@ -34,9 +18,9 @@ export async function registerServiceWorker() {
 }
 
 export async function subscribeUserToPush() {
+    if (typeof window === 'undefined' || !('serviceWorker' in navigator)) return;
+
     try {
-        if (!('serviceWorker' in navigator)) return;
-        
         const registration = await navigator.serviceWorker.ready;
         
         // Use the native push manager instead of Firebase for standard web push
