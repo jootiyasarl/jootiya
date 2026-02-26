@@ -1,16 +1,63 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Download } from "lucide-react";
+import { Download, BellRing } from "lucide-react";
+import { toast } from "sonner";
 
 export default function InstallPWA() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [showBanner, setShowBanner] = useState(false);
 
+  // Helper to convert VAPID key
+  function urlBase64ToUint8Array(base64String: string) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+      .replace(/\-/g, '+')
+      .replace(/_/g, '/');
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; ++i) {
+      outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+  }
+
+  const subscribeForNotifications = async () => {
+    try {
+      if (!("Notification" in window)) return;
+      
+      const permission = await Notification.requestPermission();
+      if (permission === "granted") {
+        const registration = await navigator.serviceWorker.ready;
+        const subscription = await registration.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!)
+        });
+
+        await fetch("/api/notifications/save-subscription", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(subscription),
+        });
+        
+        localStorage.setItem("jootiya_notif_subscribed", "true");
+        console.log("PWA: Subscribed for notifications after install");
+      }
+    } catch (error) {
+      console.error("PWA: Error subscribing for notifications:", error);
+    }
+  };
+
   useEffect(() => {
     // التحقق هل التطبيق مثبت أصلاً (Standalone mode)
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-    if (isStandalone) return;
+    if (isStandalone) {
+      // إذا كان التطبيق مثبت ولكن لم يشترك بعد، نطلب منه الإذن بهدوء
+      if (localStorage.getItem("jootiya_notif_subscribed") !== "true") {
+        subscribeForNotifications();
+      }
+      return;
+    }
 
     const handler = (e: any) => {
       e.preventDefault();
@@ -30,6 +77,10 @@ export default function InstallPWA() {
     if (outcome === "accepted") {
       setDeferredPrompt(null);
       setShowBanner(false);
+      // طلب تفعيل التنبيهات فور قبول التثبيت
+      setTimeout(() => {
+        subscribeForNotifications();
+      }, 2000);
     }
   };
 
