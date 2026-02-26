@@ -21,7 +21,12 @@ export async function middleware(request: NextRequest) {
 
   // 1. Admin Protection Logic (Isolation)
   if (url.pathname.startsWith('/admin')) {
-    // نترك الفحص لملف layout.tsx داخل مجلد الإدارة لمنع أي توجيه خاطئ هنا
+    const token = request.cookies.get('sb-access-token')?.value || 
+                  request.cookies.getAll().find(c => c.name.includes('auth-token'))?.value;
+    
+    if (!token) {
+      return NextResponse.redirect(new URL('/login?redirectTo=/admin', request.url));
+    }
     return NextResponse.next();
   }
 

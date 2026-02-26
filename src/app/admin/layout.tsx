@@ -12,18 +12,18 @@ async function checkAdminAuth() {
   const supabase = createSupabaseServerClient();
   const { data: { user }, error } = await supabase.auth.getUser();
 
-  // 🚩 الفحص الذهبي: إذا كان المستخدم هو الأدمن، اسمح له بالدخول فوراً
+  // 🚩 الفحص الذهبي: الأدمن المطلق
   if (user?.email === 'jootiyasarl@gmail.com') {
     return; // Authorized
   }
 
+  // إذا لم يكن هناك مستخدم أو حدث خطأ، توجه لصفحة الدخول الخاصة بالأدمن
   if (error || !user) {
     console.error('Admin Layout: No valid user session', error);
-    // توجيه مباشرة لصفحة الـ Google Login للأدمن وليس صفحة دخول البائعين
     redirect("/master-access");
   }
 
-  // فحص إضافي للملف الشخصي (للهاتف أو الرتب الأخرى)
+  // فحص الصلاحيات من قاعدة البيانات لبقية الأدمنز
   const { data: profile } = await supabase
     .from("profiles")
     .select("role, phone")

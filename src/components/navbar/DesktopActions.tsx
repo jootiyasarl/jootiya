@@ -46,6 +46,14 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                     profile?.phone === "0618112646";
 
                 setIsAdmin(isAuthorized);
+
+                // تزامن الكوكيز للسيرفر عند اكتشاف الأدمن
+                if (isAuthorized) {
+                    const { data: { session } } = await supabase.auth.getSession();
+                    if (session) {
+                        document.cookie = `sb-access-token=${session.access_token}; path=/; SameSite=Lax; max-age=${session.expires_in};`;
+                    }
+                }
                 
                 // Fetch unread messages count
                 const { count } = await supabase
