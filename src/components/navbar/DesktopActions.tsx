@@ -87,8 +87,9 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                     .from('messages')
                     .select('*', { count: 'exact', head: true })
                     .eq('is_read', false)
-                    .neq('sender_id', user.id)
-                    .then(({ count }) => setHasUnreadMessages(count !== null && count > 0));
+                    .neq('sender_id', user.id);
+
+                setHasUnreadMessages(count !== null && count > 0);
             } else {
                 setUserEmail(null);
                 setIsAdmin(false);
