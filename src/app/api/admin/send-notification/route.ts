@@ -16,14 +16,23 @@ export async function POST(request: Request) {
         const { title, body, url } = await request.json();
         const supabase = createSupabaseServerClient();
         
-        // 1. Verify Admin (Strict Check) - Using getSession to be more robust in some environments
-        const { data: { session } } = await supabase.auth.getSession();
-        const user = session?.user;
+        // 1. Verify Admin (Strict Check) - Try both getUser and getSession for reliability
+        const { data: { user: userAuth } } = await supabase.auth.getUser();
+        let user = userAuth;
 
-        console.log("Admin API Auth Check:", user?.email);
+        if (!user) {
+            const { data: { session } } = await supabase.auth.getSession();
+            user = session?.user || null;
+        }
+
+        console.log("Admin API Auth Check - User Email:", user?.email);
 
         if (!user || user.email !== 'jootiyasarl@gmail.com') {
-            return NextResponse.json({ error: "Unauthorized. Admin access only." }, { status: 403 });
+            console.error("Admin API Unauthorized - Expected: jootiyasarl@gmail.com, Got:", user?.email);
+            return NextResponse.json({ 
+                error: "Unauthorized. Admin access only.",
+                debug: process.env.NODE_ENV === 'development' ? { email: user?.email } : undefined 
+            }, { status: 403 });
         }
 
         // 2. Fetch all subscriptions
