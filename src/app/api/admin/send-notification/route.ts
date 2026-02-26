@@ -16,8 +16,12 @@ export async function POST(request: Request) {
         const { title, body, url } = await request.json();
         const supabase = createSupabaseServerClient();
         
-        // 1. Verify Admin (Strict Check)
-        const { data: { user } } = await supabase.auth.getUser();
+        // 1. Verify Admin (Strict Check) - Using getSession to be more robust in some environments
+        const { data: { session } } = await supabase.auth.getSession();
+        const user = session?.user;
+
+        console.log("Admin API Auth Check:", user?.email);
+
         if (!user || user.email !== 'jootiyasarl@gmail.com') {
             return NextResponse.json({ error: "Unauthorized. Admin access only." }, { status: 403 });
         }
