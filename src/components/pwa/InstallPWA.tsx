@@ -30,6 +30,20 @@ export default function InstallPWA() {
     if (outcome === "accepted") {
       setDeferredPrompt(null);
       setShowBanner(false);
+      
+      // تسجيل عملية التثبيت في قاعدة البيانات
+      try {
+        await fetch("/api/pwa/log-install", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            platform: navigator.platform,
+            user_agent: navigator.userAgent
+          }),
+        });
+      } catch (e) {
+        console.error("Failed to log PWA install:", e);
+      }
     }
   };
 

@@ -1,14 +1,74 @@
 "use client";
 
-import { useState } from "react";
-import { Send, Bell, Link as LinkIcon, AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Send, Bell, Link as LinkIcon, AlertCircle, CheckCircle2, Loader2, Users, Download, Smartphone } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/lib/supabaseClient";
+
+interface Subscriber {
+  user_id: string;
+  created_at: string;
+  profiles: {
+    full_name: string;
+    email: string;
+  } | null;
+}
+
+interface InstallLog {
+  id: string;
+  created_at: string;
+  platform: string;
+  profiles: {
+    full_name: string;
+  } | null;
+}
 
 export default function NotificationsPage() {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [url, setUrl] = useState("/");
   const [isLoading, setIsLoading] = useState(false);
+  const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
+  const [installs, setInstalls] = useState<InstallLog[]>([]);
+  const [isLoadingStats, setIsLoadingStats] = useState(true);
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  const fetchStats = async () => {
+    try {
+      // Fetch Subscribers
+      const { data: subData } = await supabase
+        .from('push_subscriptions')
+        .select(`
+          user_id,
+          created_at,
+          profiles:user_id (full_name, email)
+        `)
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      // Fetch Installs
+      const { data: installData } = await supabase
+        .from('install_logs')
+        .select(`
+          id,
+          created_at,
+          platform,
+          profiles:user_id (full_name)
+        `)
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      if (subData) setSubscribers(subData as any);
+      if (installData) setInstalls(installData as any);
+    } catch (error) {
+      console.error("Error fetching stats:", error);
+    } finally {
+      setIsLoadingStats(false);
+    }
+  };
 
   const handleSendNotification = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -121,43 +181,77 @@ export default function NotificationsPage() {
           </form>
         </div>
 
-        {/* Preview & Info Section */}
+        {/* Stats Section */}
         <div className="space-y-6">
-          <div className="rounded-[2.5rem] border border-zinc-800/50 bg-zinc-950/50 p-8">
-            <h3 className="text-xs font-black uppercase text-orange-500 tracking-[0.2em] mb-6 flex items-center gap-2">
-              <AlertCircle className="w-4 h-4" />
-              Aperçu sur mobile
-            </h3>
-            
-            <div className="bg-zinc-900 rounded-3xl p-4 border border-zinc-800 shadow-xl max-w-[280px] mx-auto">
-              <div className="flex items-start gap-3">
-                <div className="w-10 h-10 bg-orange-600 rounded-xl flex items-center justify-center shrink-0 shadow-lg shadow-orange-600/20">
-                  <span className="text-white font-black">J</span>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="rounded-3xl bg-zinc-900/40 border border-zinc-800/50 p-6">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="p-2 bg-orange-500/10 rounded-xl">
+                  <Users className="w-4 h-4 text-orange-500" />
                 </div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-[13px] font-bold text-white truncate">{title || "Titre de la notification"}</p>
-                  <p className="text-[11px] text-zinc-400 line-clamp-2 mt-0.5">{body || "Le contenu de votre message apparaîtra ici pour les utilisateurs."}</p>
-                  <p className="text-[9px] text-zinc-500 mt-2 uppercase tracking-tighter">Maintenant • Jootiya.com</p>
-                </div>
+                <span className="text-[10px] font-black uppercase text-zinc-500 tracking-widest">Abonnés Push</span>
               </div>
+              <p className="text-3xl font-black text-white">{subscribers.length}</p>
+            </div>
+            <div className="rounded-3xl bg-zinc-900/40 border border-zinc-800/50 p-6">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="p-2 bg-emerald-500/10 rounded-xl">
+                  <Download className="w-4 h-4 text-emerald-500" />
+                </div>
+                <span className="text-[10px] font-black uppercase text-zinc-500 tracking-widest">Installations</span>
+              </div>
+              <p className="text-3xl font-black text-white">{installs.length}</p>
             </div>
           </div>
 
-          <div className="rounded-[2.5rem] border border-zinc-800/50 bg-zinc-900/20 p-8 space-y-4">
-            <h3 className="text-sm font-bold text-white">Conseils d'envoi</h3>
-            <ul className="space-y-3">
-              {[
-                "Soyez bref et percutant (moins de 50 caractères).",
-                "Utilisez des emojis pour augmenter le taux de clic.",
-                "Ciblez les heures de forte audience (19h - 21h).",
-                "Assurez-vous que le lien est valide."
-              ].map((tip, i) => (
-                <li key={i} className="flex items-start gap-3 text-xs text-zinc-400 leading-relaxed">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                  {tip}
-                </li>
-              ))}
-            </ul>
+          <div className="rounded-[2.5rem] border border-zinc-800/50 bg-zinc-950/50 p-8 overflow-hidden h-[400px] flex flex-col">
+            <h3 className="text-xs font-black uppercase text-orange-500 tracking-[0.2em] mb-6 flex items-center gap-2">
+              <Smartphone className="w-4 h-4" />
+              Activités récentes
+            </h3>
+            
+            <div className="space-y-4 overflow-y-auto no-scrollbar flex-1">
+              {isLoadingStats ? (
+                <div className="flex items-center justify-center h-full">
+                  <Loader2 className="w-6 h-6 animate-spin text-zinc-700" />
+                </div>
+              ) : (
+                <>
+                  {subscribers.map((sub, i) => (
+                    <div key={`sub-${i}`} className="flex items-center justify-between p-4 bg-zinc-900/50 rounded-2xl border border-zinc-800/30">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-orange-500/10 flex items-center justify-center text-orange-500">
+                          <Bell className="w-4 h-4" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-xs font-bold text-white truncate">{sub.profiles?.full_name || "Utilisateur Anonyme"}</p>
+                          <p className="text-[10px] text-zinc-500">Nouvel abonné Push</p>
+                        </div>
+                      </div>
+                      <span className="text-[9px] text-zinc-600 font-medium">
+                        {new Date(sub.created_at).toLocaleDateString()}
+                      </span>
+                    </div>
+                  ))}
+                  {installs.map((inst, i) => (
+                    <div key={`inst-${i}`} className="flex items-center justify-between p-4 bg-emerald-500/5 rounded-2xl border border-emerald-500/10">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500">
+                          <Download className="w-4 h-4" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-xs font-bold text-white truncate">{inst.profiles?.full_name || "Utilisateur Anonyme"}</p>
+                          <p className="text-[10px] text-emerald-500/60">Application installée ({inst.platform})</p>
+                        </div>
+                      </div>
+                      <span className="text-[9px] text-zinc-600 font-medium">
+                        {new Date(inst.created_at).toLocaleDateString()}
+                      </span>
+                    </div>
+                  ))}
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
