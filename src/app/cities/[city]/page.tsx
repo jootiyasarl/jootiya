@@ -68,7 +68,7 @@ export default async function CityLandingPage({ params }: Props) {
     };
 
     return (
-        <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 pb-20">
+        <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 pb-20" dir="ltr">
             {/* JSON-LD for City */}
             <script
                 type="application/ld+json"
@@ -81,11 +81,11 @@ export default async function CityLandingPage({ params }: Props) {
                     <div className="flex items-center gap-4">
                         <div className="flex items-center gap-1.5">
                             <Clock className="w-3 h-3 text-orange-500" />
-                            <span>الصلاة: --:--</span>
+                            <span>Prière: --:--</span>
                         </div>
                         <div className="flex items-center gap-1.5">
                             <Cloud className="w-3 h-3 text-blue-500" />
-                            <span>الطقس: 22°C</span>
+                            <span>Météo: 22°C</span>
                         </div>
                     </div>
                     <div className="flex items-center gap-1">
@@ -100,10 +100,10 @@ export default async function CityLandingPage({ params }: Props) {
                 {/* Dynamic SEO Header */}
                 <div className="text-center space-y-2">
                     <h1 className="text-3xl font-black text-zinc-900 dark:text-white tracking-tighter">
-                        سوق <span className="text-orange-600">{cityData.name}</span> المفتوح
+                        Marché <span className="text-orange-600">{cityData.name}</span>
                     </h1>
                     <p className="text-sm text-zinc-500 font-medium leading-relaxed">
-                        اكتشف آخر إعلانات البيع والشراء في مدينة {cityData.name}. همزات حصرية، سيارات، هواتف وعقارات.
+                        Découvrez les dernières annonces de vente et d'achat à {cityData.name}. Bonnes affaires exclusives, voitures, téléphones et immobilier.
                     </p>
                 </div>
 
@@ -141,7 +141,7 @@ export default async function CityLandingPage({ params }: Props) {
                                         {ad.image_urls?.[0] ? (
                                             <Image 
                                                 src={ad.image_urls[0]} 
-                                                alt={`${ad.title} في ${cityData.name}`}
+                                                alt={`${ad.title} à ${cityData.name}`}
                                                 fill
                                                 className="object-cover"
                                             />
@@ -151,7 +151,7 @@ export default async function CityLandingPage({ params }: Props) {
                                             </div>
                                         )}
                                     </div>
-                                    <div className="space-y-1 px-1 text-right" dir="rtl">
+                                    <div className="space-y-1 px-1 text-left">
                                         <h3 className="text-xs font-bold text-zinc-900 dark:text-zinc-100 truncate">{ad.title}</h3>
                                         <p className="text-sm font-black text-orange-600">{ad.price} {ad.currency || 'MAD'}</p>
                                     </div>
@@ -184,7 +184,7 @@ export default async function CityLandingPage({ params }: Props) {
                 {/* Footer Semantic Text */}
                 <div className="text-center pt-8">
                     <p className="text-[10px] text-zinc-400 font-medium leading-relaxed max-w-[400px] mx-auto">
-                        Jootiya هو دليلك في المغرب لمعرفة آخر الهمزات وتوقيت المدن المغربية. نحن نسهل عليك الوصول لأفضل الصفقات في {cityData.name} بكل أمان وسهولة.
+                        Jootiya est votre guide au Maroc pour découvrir les dernières offres et les horaires des villes marocaines. Nous facilitons votre accès aux meilleures affaires à {cityData.name} en toute sécurité et simplicité.
                     </p>
                 </div>
             </main>
