@@ -98,12 +98,6 @@ export default function RootLayout({
         <meta name="google-adsense-account" content="ca-pub-4945284817184050" />
         <meta name="google-adsense-platform-account" content="ca-host-pub-6129854895232620" />
 
-        {/* Preload Category Icons intentionally for above-the-fold content */}
-        <link rel="preload" href="/categories/electronics.svg" as="image" type="image/svg+xml" crossOrigin="anonymous" />
-        <link rel="preload" href="/categories/vehicles.svg" as="image" type="image/svg+xml" crossOrigin="anonymous" />
-        <link rel="preload" href="/categories/home.svg" as="image" type="image/svg+xml" crossOrigin="anonymous" />
-        <link rel="preload" href="/categories/fashion.svg" as="image" type="image/svg+xml" crossOrigin="anonymous" />
-
         {/* 3. بروتوكول التمويه الدلالي (Authority Linking) */}
         <script
           type="application/ld+json"

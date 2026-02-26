@@ -38,6 +38,15 @@ self.addEventListener('activate', (event) => {
 
 // Smart Re-engagement & Activity Tracking
 self.addEventListener('fetch', (event) => {
+    // Skip Next.js chunks and static assets to avoid ChunkLoadError and 404s
+    if (
+        event.request.url.includes('/_next/') || 
+        event.request.url.includes('/api/admin/') ||
+        event.request.url.includes('google-analytics')
+    ) {
+        return;
+    }
+
     // Record last activity on every meaningful fetch
     if (event.request.mode === 'navigate' || event.request.url.includes('/api/')) {
         const updateLastActivity = async () => {
