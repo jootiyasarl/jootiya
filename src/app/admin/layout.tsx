@@ -9,53 +9,34 @@ interface AdminAppLayoutProps {
 }
 
 async function checkAdminAuth() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+  const supabase = createSupabaseServerClient();
+  const { data: { user }, error } = await supabase.auth.getUser();
 
-  // EMERGENCY BYPASS FOR DIAGNOSIS
-  return;
-
-  const cookieStore = await cookies();
-  const allCookies = cookieStore.getAll();
-  
-  // Find the Supabase auth token
-  const supabaseToken = allCookies.find(c => c.name.includes('auth-token'))?.value || 
-                        cookieStore.get("sb-access-token")?.value;
-
-  if (!supabaseToken) {
-    console.log('Admin Layout: No token, redirecting to /master-access');
-    redirect("/master-access");
+  // 🚩 الفحص الذهبي: إذا كان المستخدم هو الأدمن، اسمح له بالدخول فوراً
+  if (user?.email === 'jootiyasarl@gmail.com') {
+    return; // Authorized
   }
-
-  const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-    auth: { persistSession: false },
-  });
-
-  const { data, error } = await supabase.auth.getUser(supabaseToken);
-  const user = data?.user;
 
   if (error || !user) {
-    console.error('Admin Layout: Auth error', error);
-    redirect("/master-access");
+    console.error('Admin Layout: No valid user session', error);
+    redirect("/login?redirectTo=/admin");
   }
 
-  // Strict email and role check
-  const isAuthorizedEmail = user?.email === 'jootiyasarl@gmail.com';
-  
+  // فحص إضافي للملف الشخصي (للهاتف أو الرتب الأخرى)
   const { data: profile } = await supabase
     .from("profiles")
     .select("role, phone")
-    .eq("id", user?.id || '')
+    .eq("id", user.id)
     .maybeSingle();
 
   const isSuperAdmin = profile?.role === "super_admin" || profile?.role === "admin";
   const isAuthorizedPhone = profile?.phone === '0618112646';
 
-  if (isAuthorizedEmail || isSuperAdmin || isAuthorizedPhone) {
+  if (isSuperAdmin || isAuthorizedPhone) {
     return; // Authorized
   }
 
-  console.warn('Admin Layout: Unauthorized access attempt', user?.email);
+  console.warn('Admin Layout: Unauthorized access attempt', user.email);
   redirect("/");
 }
 
