@@ -98,8 +98,8 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         <div className="w-full max-w-md space-y-8 relative z-10 text-left flex flex-col min-h-[600px] justify-center" dir="ltr">
           <div className="flex-grow flex flex-col justify-center space-y-8">
             <div className="space-y-2">
-              <h1 className="text-5xl font-black text-white tracking-tighter">Login</h1>
-              <p className="text-zinc-400 text-lg font-medium">Je suis un professionnel</p>
+              <h1 className="text-5xl font-black text-white tracking-tighter">Login jootiya</h1>
+              <p className="text-zinc-400 text-lg font-medium"></p>
             </div>
 
             {error && (
