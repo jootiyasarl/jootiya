@@ -15,6 +15,7 @@ import { Suspense } from "react";
 import { ThemeProvider } from "@/components/theme-provider";
 import { PageViewTracker } from "@/components/analytics/PageViewTracker";
 import { GoogleAnalytics } from '@next/third-parties/google'
+import InstallPWA from "@/components/pwa/InstallPWA";
 
 const tajawal = Tajawal({
   variable: "--font-tajawal",
@@ -197,6 +198,7 @@ export default function RootLayout({
 
           <PushPermissionPrompt />
           <Toaster position="top-center" richColors />
+          <InstallPWA />
         </ThemeProvider>
 
         {/* 5. Google Adsense & GDPR Scripts (Lazy Loaded at Bottom) */}
