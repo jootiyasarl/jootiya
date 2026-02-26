@@ -168,13 +168,12 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             </div>
           </div>
 
-          {/* Branding at the bottom */}
+          {/* Branding removed as requested */}
           <div className="pt-12 border-t border-zinc-900/50 flex items-center justify-between opacity-50">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-black text-sm">J</span>
               </div>
-              <span className="text-white font-black tracking-tighter text-xl uppercase">JOOTIYA</span>
             </div>
             <Link href="/" className="text-xs font-bold text-zinc-500 hover:text-white transition-colors">
               Accueil

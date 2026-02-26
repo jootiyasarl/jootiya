@@ -9,7 +9,7 @@ import { createSupabaseServerClient, setAuthSession } from "@/lib/supabase-serve
 import { UserPlus, ShieldCheck, Mail, Lock, ChevronLeft, Phone } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "إنشاء حساب | Jootiya",
+  title: "Inscription | Jootiya",
 };
 
 interface RegisterPageProps {
@@ -28,7 +28,7 @@ async function registerAction(formData: FormData) {
 
   if (typeof phone !== "string" || typeof password !== "string") {
     const params = new URLSearchParams();
-    params.set("error", "يرجى إدخال رقم الهاتف وكلمة السر.");
+    params.set("error", "Veuillez entrer votre numéro de téléphone et mot de passe.");
     redirect(`/register?${params.toString()}`);
   }
 
@@ -39,13 +39,13 @@ async function registerAction(formData: FormData) {
   // Validate phone format (06 or 07 followed by 8 digits)
   if (!/^(06|07)\d{8}$/.test(trimmedPhone)) {
     const params = new URLSearchParams();
-    params.set("error", "رقم الهاتف يجب أن يبدأ بـ 06 أو 07 ويتكون من 10 أرقام.");
+    params.set("error", "Le numéro doit commencer par 06 ou 07 (10 chiffres).");
     redirect(`/register?${params.toString()}`);
   }
 
   if (trimmedPassword.length < 8) {
     const params = new URLSearchParams();
-    params.set("error", "كلمة السر يجب أن تكون 8 أحرف على الأقل.");
+    params.set("error", "Le mot de passe doit faire au moins 8 caractères.");
     redirect(`/register?${params.toString()}`);
   }
 
@@ -90,7 +90,7 @@ async function registerAction(formData: FormData) {
 
   if (profileError) {
     const params = new URLSearchParams();
-    params.set("error", "فشل حفظ الملف الشخصي.");
+    params.set("error", "Erreur lors de l'enregistrement du profil.");
     redirect(`/register?${params.toString()}`);
   }
 
@@ -99,123 +99,117 @@ async function registerAction(formData: FormData) {
     redirect("/marketplace");
   }
 
-  redirect("/login?message=تم إنشاء الحساب بنجاح. يمكنك الآن تسجيل الدخول.");
+  redirect("/login?message=Compte créé avec succès. Vous pouvez maintenant vous connecter.");
 }
 
 export default async function RegisterPage({ searchParams }: RegisterPageProps) {
   const { error, message } = await searchParams;
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-zinc-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 dir-rtl text-right" dir="rtl">
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-orange-500/5 blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full bg-purple-500/5 blur-[120px]" />
+    <div className="min-h-screen bg-white flex font-sans overflow-hidden">
+      {/* Left Side: Illustration (Hidden on mobile) */}
+      <div className="hidden lg:flex lg:w-1/2 bg-[#fdfbf7] items-center justify-center p-12 relative">
+        <div className="max-w-md w-full animate-in fade-in slide-in-from-left-8 duration-1000">
+          <div className="relative aspect-square w-full">
+            <svg viewBox="0 0 400 400" className="w-full h-full text-zinc-800" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M100 300 L150 100 L300 120 L250 320 Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M180 150 Q220 130 240 170" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              <circle cx="210" cy="110" r="25" stroke="currentColor" strokeWidth="2" />
+              <path d="M120 280 L280 280" stroke="#f97316" strokeWidth="4" strokeLinecap="round" />
+              <rect x="140" y="160" width="100" height="120" rx="10" stroke="currentColor" strokeWidth="2" />
+              <path d="M160 190 H220 M160 210 H220 M160 230 H190" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-orange-500/5 blur-3xl rounded-full -z-10" />
+          </div>
+        </div>
       </div>
 
-      <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10 px-4">
-        <Link href="/" className="inline-flex items-center gap-2 text-zinc-500 hover:text-zinc-900 transition-colors mb-8 group">
-          <ChevronLeft className="w-4 h-4 group-hover:translate-x-1 transition-transform rotate-180" />
-          <span className="text-sm font-bold">العودة للرئيسية</span>
-        </Link>
-        <h1 className="text-3xl font-black tracking-tighter text-orange-600 mb-2">JOOTIYA</h1>
-        <h2 className="text-3xl font-bold text-zinc-900">إنشاء حساب جديد</h2>
-        <p className="mt-2 text-zinc-500 text-sm">ابدأ البيع والشراء في أكبر سوق في المغرب</p>
-      </div>
+      {/* Right Side: Register Form */}
+      <div className="w-full lg:w-1/2 bg-[#0a0a0a] flex items-center justify-center p-6 sm:p-12 relative overflow-hidden">
+        {/* Background Decorative Element */}
+        <div className="absolute top-[-10%] right-[-10%] w-64 h-64 bg-orange-600/5 blur-3xl rounded-full pointer-events-none" />
+        
+        <div className="w-full max-w-md space-y-8 relative z-10 text-left flex flex-col min-h-[600px] justify-center" dir="ltr">
+          <div className="flex-grow flex flex-col justify-center space-y-8">
+            <div className="space-y-2">
+              <h1 className="text-5xl font-black text-white tracking-tighter">Inscription</h1>
+              <p className="text-zinc-400 text-lg font-medium">Créer un compte professionnel</p>
+            </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-[440px] relative z-10 px-4">
-        <Card className="border-none shadow-2xl shadow-zinc-200/50 bg-white/80 backdrop-blur-xl rounded-3xl overflow-hidden ring-1 ring-zinc-200/50">
-          <CardContent className="p-8 sm:p-10">
             {error && (
-              <div className="mb-6 rounded-2xl bg-red-50 p-4 border border-red-100 flex gap-3 items-center">
+              <div className="rounded-xl bg-red-500/10 p-4 border border-red-500/20 flex gap-3 items-center animate-in fade-in slide-in-from-top-2">
                 <ShieldCheck className="w-5 h-5 text-red-500 flex-shrink-0" />
-                <p className="text-xs font-bold text-red-700 leading-tight">{error}</p>
-              </div>
-            )}
-            {message && (
-              <div className="mb-6 rounded-2xl bg-emerald-50 p-4 border border-emerald-100 flex gap-3 items-center">
-                <ShieldCheck className="w-5 h-5 text-emerald-500 flex-shrink-0" />
-                <p className="text-xs font-bold text-emerald-700 leading-tight">{message}</p>
+                <p className="text-sm font-medium text-red-200 leading-tight">{error}</p>
               </div>
             )}
 
             <form action={registerAction} className="space-y-5">
-              <div className="space-y-2">
-                <Label htmlFor="phone" className="text-sm font-bold text-zinc-700 mr-1">رقم الهاتف</Label>
-                <div className="relative group">
-                  <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                    <Phone className="h-4 w-4 text-zinc-400 group-focus-within:text-orange-500 transition-colors" />
-                  </div>
-                  <Input
-                    id="phone"
-                    name="phone"
-                    type="tel"
-                    placeholder="06XXXXXXXX"
-                    required
-                    className="h-12 pr-11 text-left text-sm rounded-2xl bg-zinc-50 border-transparent focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-200 transition-all"
-                    dir="ltr"
-                  />
-                </div>
+              <div className="space-y-1">
+                <Input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  placeholder="Numéro de téléphone (06/07...)"
+                  required
+                  className="h-14 px-6 rounded-xl bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-500 focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all text-base font-medium"
+                />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-bold text-zinc-700 mr-1">الإيميل (اختياري)</Label>
-                <div className="relative group">
-                  <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                    <Mail className="h-4 w-4 text-zinc-400 group-focus-within:text-orange-500 transition-colors" />
-                  </div>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    placeholder="exemple@mail.com"
-                    className="h-12 pr-11 text-left text-sm rounded-2xl bg-zinc-50 border-transparent focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-200 transition-all"
-                    dir="ltr"
-                  />
-                </div>
-                <p className="text-[10px] text-zinc-400 pr-1">سيُستخدم للتواصل أو استعادة الحساب مستقبلاً</p>
+              <div className="space-y-1">
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="Adresse e-mail (optionnel)"
+                  className="h-14 px-6 rounded-xl bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-500 focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all text-base font-medium"
+                />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-bold text-zinc-700 mr-1">كلمة السر</Label>
-                <div className="relative group">
-                  <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                    <Lock className="h-4 w-4 text-zinc-400 group-focus-within:text-orange-500 transition-colors" />
-                  </div>
-                  <Input
-                    id="password"
-                    name="password"
-                    type="password"
-                    placeholder="••••••••"
-                    minLength={8}
-                    required
-                    className="h-12 pr-11 text-left text-sm rounded-2xl bg-zinc-50 border-transparent focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-200 transition-all"
-                    dir="ltr"
-                  />
-                </div>
+              <div className="space-y-1">
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  placeholder="Mot de passe (8+ caractères)"
+                  required
+                  className="h-14 px-6 rounded-xl bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-500 focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all text-base font-medium"
+                />
               </div>
 
-              <SubmitButton
-                label="إنشاء الحساب"
-                loadingLabel="جاري الإنشاء..."
-                className="w-full h-12 text-sm font-bold rounded-2xl bg-orange-600 hover:bg-orange-700 text-white shadow-lg shadow-orange-200 transition-all active:scale-[0.98] mt-2"
-              />
+              <div className="pt-4">
+                <SubmitButton
+                  label="Créer mon compte"
+                  loadingLabel="Création en cours..."
+                  className="w-full h-14 text-lg font-black rounded-2xl bg-[#f97316] hover:bg-[#ea580c] text-white shadow-lg shadow-orange-950/20 transition-all active:scale-[0.98]"
+                />
+              </div>
             </form>
 
-            <div className="mt-8 pt-8 border-t border-zinc-100 text-center">
-              <p className="text-sm text-zinc-500">
-                لديك حساب بالفعل؟{' '}
-                <Link href="/login" className="font-bold text-orange-600 hover:text-orange-700 transition-colors">
-                  سجل دخولك الآن
+            <div className="pt-4 text-center">
+              <p className="text-zinc-500 text-sm font-medium">
+                Déjà un compte ?{' '}
+                <Link href="/login" className="text-white hover:text-orange-400 font-bold transition-colors">
+                  Se connecter
                 </Link>
               </p>
             </div>
-          </CardContent>
-        </Card>
+          </div>
 
-        <p className="mt-8 text-center text-[11px] text-zinc-400">
-          بإنشاء حساب، أنت توافق على <Link href="/terms" className="underline hover:text-zinc-600">شروط الاستخدام</Link> و <Link href="/privacy" className="underline hover:text-zinc-600">سياسة الخصوصية</Link>
-        </p>
+          {/* Branding removed as requested */}
+          <div className="pt-12 border-t border-zinc-900/50 flex items-center justify-between opacity-50">
+            <div className="flex items-center gap-2">
+              {/* Logo icon kept but text removed if that's what was meant by "jootiya text" */}
+              <div className="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-black text-sm">J</span>
+              </div>
+            </div>
+            <Link href="/" className="text-xs font-bold text-zinc-500 hover:text-white transition-colors">
+              Accueil
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
+
   );
 }
