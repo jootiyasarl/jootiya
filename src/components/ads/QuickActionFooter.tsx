@@ -51,18 +51,26 @@ export function QuickActionFooter({ phone, adTitle, adPrice, adId, sellerId, cur
                 if (currentUser) {
                     try {
                         const registration = await navigator.serviceWorker.ready;
-                        const subscription = await registration.pushManager.subscribe({
-                            userVisibleOnly: true,
-                            applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
-                        });
+                        let subscription = await registration.pushManager.getSubscription();
+                        
+                        if (!subscription) {
+                            subscription = await registration.pushManager.subscribe({
+                                userVisibleOnly: true,
+                                applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
+                            });
+                        }
+
+                        // تأكد من إرسال الكائن كاملاً (JSON)
+                        const subData = JSON.parse(JSON.stringify(subscription));
+                        console.log("Sending complete subscription data (QuickFooter):", subData);
 
                         await fetch("/api/notifications/save-subscription", {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify(subscription),
+                            body: JSON.stringify(subData),
                         });
                     } catch (e) {
-                        console.error("Push subscription error:", e);
+                        console.error("Push subscription error (QuickFooter):", e);
                     }
                 }
             } else {

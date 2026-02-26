@@ -94,10 +94,17 @@ self.addEventListener('sync', (event) => {
 });
 
 self.addEventListener('push', function (event) {
-    if (!event.data) return;
+    console.log('[SW] Push Event received', event);
+
+    if (!event.data) {
+        console.warn('[SW] Push event received but no data found.');
+        return;
+    }
 
     try {
         const data = event.data.json();
+        console.log('[SW] Push data parsed successfully:', data);
+
         const options = {
             body: data.body || 'Vous avez une nouvelle notification de Jootiya',
             icon: '/icon-192x192.png',
@@ -116,9 +123,22 @@ self.addEventListener('push', function (event) {
 
         event.waitUntil(
             self.registration.showNotification(data.title || 'Jootiya', options)
+                .then(() => console.log('[SW] Notification shown successfully'))
+                .catch(err => console.error('[SW] Error showing notification:', err))
         );
     } catch (e) {
         console.error('SW: Error parsing push data', e);
+        // Fallback for non-JSON data
+        const textData = event.data.text();
+        console.log('[SW] Raw text data:', textData);
+        
+        event.waitUntil(
+            self.registration.showNotification('Jootiya', {
+                body: textData,
+                icon: '/icon-192x192.png',
+                badge: '/favicon.svg',
+            })
+        );
     }
 });
 

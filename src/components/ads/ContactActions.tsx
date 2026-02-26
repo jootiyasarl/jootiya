@@ -60,17 +60,29 @@ export function ContactActions({ adId, sellerId, sellerPhone, currentUser }: Con
                 
                 // حفظ الاشتراك في قاعدة البيانات إذا كان مسجلاً
                 if (currentUser) {
-                    const registration = await navigator.serviceWorker.ready;
-                    const subscription = await registration.pushManager.subscribe({
-                        userVisibleOnly: true,
-                        applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
-                    });
+                    try {
+                        const registration = await navigator.serviceWorker.ready;
+                        let subscription = await registration.pushManager.getSubscription();
+                        
+                        if (!subscription) {
+                            subscription = await registration.pushManager.subscribe({
+                                userVisibleOnly: true,
+                                applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
+                            });
+                        }
 
-                    await fetch("/api/notifications/save-subscription", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(subscription),
-                    });
+                        // تأكد من إرسال الكائن كاملاً (JSON)
+                        const subData = JSON.parse(JSON.stringify(subscription));
+                        console.log("Sending complete subscription data:", subData);
+
+                        await fetch("/api/notifications/save-subscription", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(subData),
+                        });
+                    } catch (e) {
+                        console.error("Push manager error:", e);
+                    }
                 }
             } else {
                 toast.error("Désolé, vous devez activer les notifications pour rester en contact avec les vendeurs sur Jootiya.");
