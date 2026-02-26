@@ -65,8 +65,10 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
         checkSession();
 
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-            if (session?.user) {
-                const user = session.user;
+            // Use session from auth state change event
+            const user = session?.user;
+            
+            if (user) {
                 setUserEmail(user.email ?? null);
 
                 const { data: profile } = await supabase
