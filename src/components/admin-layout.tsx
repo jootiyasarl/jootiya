@@ -88,6 +88,11 @@ const adminNavItems: AdminNavItem[] = [
     icon: BarChart3,
   },
   {
+    label: "Notifications",
+    href: "/admin/notifications",
+    icon: Bell,
+  },
+  {
     label: "Blog",
     href: "/admin/blog",
     icon: FileText,
