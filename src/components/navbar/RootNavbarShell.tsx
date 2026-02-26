@@ -21,7 +21,8 @@ export function RootNavbarShell({ children, navbar, footer }: RootNavbarShellPro
     pathname?.startsWith("/login") ||
     pathname?.startsWith("/register") ||
     pathname?.startsWith("/sign-in") ||
-    pathname?.startsWith("/onboarding");
+    pathname?.startsWith("/onboarding") ||
+    pathname?.startsWith("/forgot-password");
 
   return (
     <>
