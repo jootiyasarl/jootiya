@@ -1,9 +1,7 @@
 import { supabase } from "./supabaseClient";
-import { messaging } from "./firebaseClient";
-import { getToken } from "firebase/messaging";
 
 export async function registerServiceWorker() {
-    if (!('serviceWorker' in navigator)) return;
+    if (typeof window === 'undefined' || !('serviceWorker' in navigator)) return;
 
     try {
         // Register the Main PWA Service Worker (Handles caching/offline)
