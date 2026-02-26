@@ -7,14 +7,29 @@ export async function registerServiceWorker() {
 
     try {
         // Register the Main PWA Service Worker (Handles caching/offline)
-        const pwaRegistration = await navigator.serviceWorker.register('/sw.js');
-        console.log('PWA SW: Registered', pwaRegistration);
+        // Using a cache-busting parameter to ensure the latest version is loaded
+        const pwaRegistration = await navigator.serviceWorker.register('/sw.js?v=' + Date.now(), {
+            scope: '/'
+        });
+        console.log('PWA SW: Registered Successfully', pwaRegistration);
 
-        // Register the Firebase Service Worker
-        const firebaseRegistration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
-        console.log('FCM SW: Registered', firebaseRegistration);
+        // Standard event to check for updates
+        pwaRegistration.onupdatefound = () => {
+            const installingWorker = pwaRegistration.installing;
+            if (installingWorker) {
+                installingWorker.onstatechange = () => {
+                    if (installingWorker.state === 'installed') {
+                        if (navigator.serviceWorker.controller) {
+                            console.log('PWA SW: New content is available; please refresh.');
+                        } else {
+                            console.log('PWA SW: Content is cached for offline use.');
+                        }
+                    }
+                };
+            }
+        };
 
-        return { pwaRegistration, firebaseRegistration };
+        return { pwaRegistration };
     } catch (e) {
         console.error('SW: Registration failed', e);
     }

@@ -94,23 +94,23 @@ self.addEventListener('sync', (event) => {
 });
 
 self.addEventListener('push', function (event) {
-    console.log('[SW] Push Received:', event);
+    console.log('[SW V2] Push Received:', event);
 
     if (!event.data) {
-        console.warn('[SW] Push event received but no data found.');
+        console.warn('[SW V2] Push event received but no data found.');
         return;
     }
 
     try {
         const payload = event.data.text();
-        console.log('[SW] Push Payload (Raw):', payload);
+        console.log('[SW V2] Push Payload (Raw):', payload);
         
         let data;
         try {
             data = event.data.json();
-            console.log('[SW] Push Data (Parsed):', data);
+            console.log('[SW V2] Push Data (Parsed):', data);
         } catch (jsonErr) {
-            console.error('[SW] Failed to parse push data as JSON:', jsonErr);
+            console.error('[SW V2] Failed to parse push data as JSON:', jsonErr);
             // Fallback for non-JSON payload
             data = { title: 'Jootiya', body: payload };
         }
@@ -118,7 +118,7 @@ self.addEventListener('push', function (event) {
         const options = {
             body: data.body || 'Vous avez une nouvelle notification de Jootiya',
             icon: '/icon-192x192.png',
-            badge: '/favicon.svg',
+            badge: '/icon-192x192.png',
             data: {
                 url: data.url || '/'
             },
@@ -135,11 +135,11 @@ self.addEventListener('push', function (event) {
 
         event.waitUntil(
             self.registration.showNotification(data.title || 'Jootiya', options)
-                .then(() => console.log('[SW] Notification shown successfully'))
-                .catch(err => console.error('[SW] Failed to show notification:', err))
+                .then(() => console.log('[SW V2] Notification shown successfully'))
+                .catch(err => console.error('[SW V2] Failed to show notification:', err))
         );
     } catch (e) {
-        console.error('SW: Critical error in push event handler', e);
+        console.error('SW V2: Critical error in push event handler', e);
     }
 });
 
