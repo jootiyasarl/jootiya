@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Cloud, Clock, MapPin, ChevronRight, Share2, Sparkles, Image as ImageIcon } from 'lucide-react';
 import { MOROCCAN_CITIES } from '@/lib/constants/cities';
 import { supabase } from '@/lib/supabaseClient';
+import { CityWidgets } from '@/components/cities/CityWidgets';
 
 interface Props {
     params: Promise<{ city: string }>;
@@ -78,16 +79,7 @@ export default async function CityLandingPage({ params }: Props) {
             {/* Header Widget - 40px Height */}
             <div className="h-10 bg-zinc-100 dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 flex items-center overflow-hidden">
                 <div className="container mx-auto px-4 max-w-[600px] flex justify-between items-center text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
-                    <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-1.5">
-                            <Clock className="w-3 h-3 text-orange-500" />
-                            <span>Prière: --:--</span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                            <Cloud className="w-3 h-3 text-blue-500" />
-                            <span>Météo: 22°C</span>
-                        </div>
-                    </div>
+                    <CityWidgets cityName={cityData.name} />
                     <div className="flex items-center gap-1">
                         <MapPin className="w-3 h-3" />
                         <span>{cityData.name}</span>
