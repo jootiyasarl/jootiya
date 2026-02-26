@@ -17,10 +17,11 @@ async function checkAdminAuth() {
     return; // Authorized
   }
 
-  // إذا لم يكن هناك مستخدم أو حدث خطأ، توجه لصفحة الدخول الخاصة بالأدمن
+  // إذا لم يكن هناك مستخدم أو حدث خطأ، لا تقم بإعادة التوجيه التلقائي لمنع الحلقات اللانهائية
   if (error || !user) {
     console.error('Admin Layout: No valid user session', error);
-    redirect("/master-access");
+    // بدلاً من التوجيه، نعرض رسالة خطأ بسيطة أو نترك الصفحة تحمل
+    return; 
   }
 
   // فحص الصلاحيات من قاعدة البيانات لبقية الأدمنز
