@@ -17,7 +17,14 @@ import {
     Home,
     Car,
     Laptop,
-    Package
+    Package,
+    Smartphone,
+    Shirt,
+    Hammer,
+    Gamepad2,
+    PawPrint,
+    BookOpen,
+    Tag
 } from "lucide-react";
 import { useTheme } from "next-themes";
 
@@ -75,10 +82,16 @@ export function MobileMenu({ initialUserEmail = null }: MobileMenuProps) {
     };
 
     const navLinks = [
-        { name: "Immobilier", href: "/categories/real-estate", icon: Home },
-        { name: "Véhicules", href: "/categories/vehicles", icon: Car },
-        { name: "Électronique", href: "/categories/electronics", icon: Laptop },
-        { name: "Maison", href: "/categories/home-furniture", icon: Package },
+        { name: "Électronique", href: "/categories/electronics", icon: Smartphone, color: "text-blue-600", bg: "bg-blue-50" },
+        { name: "Véhicules", href: "/categories/vehicles", icon: Car, color: "text-orange-600", bg: "bg-orange-50" },
+        { name: "Immobilier", href: "/categories/real-estate", icon: Home, color: "text-emerald-600", bg: "bg-emerald-50" },
+        { name: "Mode & Chaussures", href: "/categories/fashion", icon: Shirt, color: "text-pink-600", bg: "bg-pink-50" },
+        { name: "Maison & Ameublement", href: "/categories/home-furniture", icon: Package, color: "text-green-600", bg: "bg-green-50" },
+        { name: "Outils & Équipement", href: "/categories/tools-equipment", icon: Hammer, color: "text-zinc-600", bg: "bg-zinc-50" },
+        { name: "Loisirs", href: "/categories/hobbies", icon: Gamepad2, color: "text-purple-600", bg: "bg-purple-50" },
+        { name: "Animaux", href: "/categories/animals", icon: PawPrint, color: "text-amber-600", bg: "bg-amber-50" },
+        { name: "Livres & Études", href: "/categories/books", icon: BookOpen, color: "text-sky-600", bg: "bg-sky-50" },
+        { name: "Occasions", href: "/categories/used-clearance", icon: Tag, color: "text-red-600", bg: "bg-red-50" },
     ];
 
     return (
@@ -173,16 +186,25 @@ export function MobileMenu({ initialUserEmail = null }: MobileMenuProps) {
                             </div>
 
                             {/* Categories */}
-                            <div className="space-y-2">
+                            <div className="space-y-3">
                                 <h3 className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 px-1">Toutes les catégories</h3>
-                                <div className="grid grid-cols-1 gap-1">
+                                <div className="grid grid-cols-1 gap-1.5">
                                     {navLinks.map((link) => (
-                                        <Link key={link.name} href={link.href} onClick={() => setIsMobileMenuOpen(false)} className="flex items-center justify-between p-2.5 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800/50 group transition-all">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-lg flex items-center justify-center text-zinc-400 group-hover:text-orange-600 transition-colors">
-                                                    <link.icon className="w-5 h-5 stroke-[1.5]" />
+                                        <Link 
+                                            key={link.name} 
+                                            href={link.href} 
+                                            onClick={() => setIsMobileMenuOpen(false)} 
+                                            className="flex items-center justify-between p-3 rounded-2xl hover:bg-zinc-50 dark:hover:bg-zinc-800/50 group transition-all border border-transparent active:scale-[0.98]"
+                                        >
+                                            <div className="flex items-center gap-4">
+                                                <div className={cn(
+                                                    "w-10 h-10 rounded-xl flex items-center justify-center transition-colors shadow-sm",
+                                                    link.bg,
+                                                    "dark:bg-zinc-800"
+                                                )}>
+                                                    <link.icon className={cn("w-5 h-5", link.color)} />
                                                 </div>
-                                                <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">{link.name}</span>
+                                                <span className="text-sm font-bold text-zinc-700 dark:text-zinc-300 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">{link.name}</span>
                                             </div>
                                             <ChevronRight className="w-4 h-4 text-zinc-300 group-hover:text-orange-500 group-hover:translate-x-0.5 transition-all" />
                                         </Link>
