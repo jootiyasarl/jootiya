@@ -12,10 +12,8 @@ import {
     Award,
     MessageCircle,
     ShoppingBag,
-    Users,
-    Flag
+    Users
 } from "lucide-react";
-import { ReportButton } from "@/components/ads/ReportButton";
 import { getServerUser } from "@/lib/supabase-server";
 
 export const dynamic = "force-dynamic";
@@ -121,11 +119,6 @@ export default async function PublicProfilePage({ params }: ProfilePageProps) {
                                 <span className="block text-xl font-black text-zinc-900">{ads?.length || 0}</span>
                                 <span className="text-[10px] text-zinc-400 font-bold uppercase">Annonces</span>
                             </div>
-                            <ReportButton
-                                targetId={sellerId}
-                                targetType="user"
-                                reporterId={user?.id}
-                            />
                         </div>
                     </div>
                 </div>
