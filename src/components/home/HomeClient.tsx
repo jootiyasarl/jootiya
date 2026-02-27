@@ -35,7 +35,6 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
 
   useEffect(() => {
     async function initData() {
-      // 1. Instant UI: Load from IndexedDB first
       try {
         const cached = await getCachedAds();
         if (cached && cached.length > 0) {
@@ -47,7 +46,6 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
         console.error("IndexedDB error:", e);
       }
 
-      // 2. Background Update: Fetch from Supabase
       try {
         let data: any[] | null = [];
         if (latParam && lngParam) {
@@ -110,7 +108,6 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
           setIsOfflineData(false);
           setLoading(false);
           
-          // Sync back to IndexedDB
           if (!latParam && !lngParam) {
             saveAds(formattedAds);
           }
@@ -134,7 +131,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
         </div>
       )}
       
-      <main className="mx-auto max-w-7xl px-4 mt-8 md:mt-10">
+      <main className="mx-auto max-w-7xl px-4 mt-32 md:mt-40">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
           <div className="hidden lg:block lg:col-span-3">
             <Suspense fallback={<div className="h-[400px] w-full bg-zinc-50 animate-pulse rounded-3xl" />}>
@@ -192,13 +189,14 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
                     })}
                   </>
                 )}
+                
+                <div className="block py-4">
+                  <SellBanner />
+                </div>
+
+                <BlogSection />
               </>
             )}
-            
-            <BlogSection />
-            <div className="block mt-8">
-              <SellBanner />
-            </div>
           </div>
         </div>
       </main>
