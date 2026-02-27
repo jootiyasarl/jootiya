@@ -207,59 +207,46 @@ export function ProfileForm() {
     const file = event.target.files?.[0];
     if (!file) return;
 
+    if (!file.type.startsWith('image/')) {
+      toast.error("Veuillez sélectionner une image valide.");
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("L'image est trop volumineuse (max 2MB).");
+      return;
+    }
+
     setUploadingAvatar(true);
     try {
-      // 1. Get session immediately and refresh if needed
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      
-      if (sessionError || !session?.user) {
-        // Try one last time with getUser which is more authoritative
-        const { data: { user: authUser }, error: userError } = await supabase.auth.getUser();
-        if (userError || !authUser) {
-          toast.error("Votre session a expiré. Veuillez vous reconnecter.");
-          setUploadingAvatar(false);
-          return;
-        }
-        // If getUser worked, we continue with that user
-      }
+      // Direct session check from client
+      const { data: { session } } = await supabase.auth.getSession();
+      const currentUserId = session?.user?.id || userId;
 
-      const user = session?.user || (await supabase.auth.getUser()).data.user;
-      if (!user) throw new Error("User not found");
-      const currentUserId = user.id;
-
-      if (!file.type.startsWith('image/')) {
-        toast.error("Veuillez sélectionner une image valide.");
-        setUploadingAvatar(false);
-        return;
-      }
-
-      if (file.size > 2 * 1024 * 1024) { // 2MB limit
-        toast.error("L'image est trop volumineuse (max 2MB).");
+      if (!currentUserId) {
+        toast.error("Veuillez vous reconnecter.");
         setUploadingAvatar(false);
         return;
       }
 
       const fileExt = file.name.split('.').pop();
-      const fileName = `${userId}-${Math.random()}.${fileExt}`;
-      const filePath = `${fileName}`; // Using root of ad-images since avatars folder might not exist
+      const fileName = `${currentUserId}-${Math.random()}.${fileExt}`;
+      const filePath = `${fileName}`;
 
-      // 1. Upload to Supabase Storage (Using existing ad-images bucket)
       const { error: uploadError } = await supabase.storage
         .from('ad-images')
         .upload(filePath, file);
 
       if (uploadError) throw uploadError;
 
-      // 2. Get Public URL
       const { data: { publicUrl } } = supabase.storage
         .from('ad-images')
         .getPublicUrl(filePath);
 
-      // 3. Update Profile locally and in DB
       const { error: updateError } = await supabase
         .from('profiles')
         .update({ avatar_url: publicUrl })
-        .eq('id', userId);
+        .eq('id', currentUserId);
 
       if (updateError) throw updateError;
 
@@ -267,7 +254,7 @@ export function ProfileForm() {
       toast.success("Photo de profil mise à jour.");
     } catch (err: any) {
       console.error("Error uploading avatar:", err);
-      toast.error("Échec du téléchargement de l'image.");
+      toast.error("Échec du téléchargement.");
     } finally {
       setUploadingAvatar(false);
     }
