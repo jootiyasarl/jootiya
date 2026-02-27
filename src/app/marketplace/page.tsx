@@ -13,6 +13,7 @@ import {
     ArrowRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { SellBanner } from '@/components/home/SellBanner';
 
 export const metadata = {
   title: 'Catégories - Jootiya',
@@ -85,6 +86,11 @@ export default function MarketplacePage() {
               </Link>
             );
           })}
+        </div>
+
+        {/* Sell Banner - Added here */}
+        <div className="mt-12 md:mt-16">
+          <SellBanner />
         </div>
       </div>
     </div>
