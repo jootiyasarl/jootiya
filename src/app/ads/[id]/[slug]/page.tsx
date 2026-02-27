@@ -260,7 +260,7 @@ export default async function AdPage({ params }: AdPageProps) {
     <div dir="ltr" className="bg-[#F8FAFC] dark:bg-zinc-950 pb-16 font-sans text-zinc-900 dark:text-zinc-100">
       <ShadowViewTracker adId={ad.id} category={ad.category} />
       {/* Breadcrumbs - Integrated Design */}
-      <div className="relative w-full bg-white dark:bg-zinc-900 border-b border-zinc-100 dark:border-zinc-800 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+      <div className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 z-40 sticky top-[55px] md:top-[63px] shadow-sm">
         <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-2.5">
           <div className="flex items-center justify-between gap-4">
             <nav className="flex items-center gap-1.5 text-[10px] md:text-[11px] font-bold text-zinc-500 min-w-0">
