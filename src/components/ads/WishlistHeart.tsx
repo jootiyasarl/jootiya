@@ -1,10 +1,11 @@
 "use client";
 
-import { Heart } from "lucide-react";
 import { useState, useEffect } from "react";
+import { Heart } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { toggleFavoriteAction } from "@/app/ads/actions";
 
 interface WishlistHeartProps {
     adId: string;
@@ -14,70 +15,51 @@ interface WishlistHeartProps {
 export function WishlistHeart({ adId, className }: WishlistHeartProps) {
     const [isFavorited, setIsFavorited] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [userId, setUserId] = useState<string | null>(null);
 
-    // Check if user is logged in and if ad is favorited
     useEffect(() => {
         const checkFavoriteStatus = async () => {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (!user) {
-                setUserId(null);
-                return;
-            }
-
-            setUserId(user.id);
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session?.user) return;
 
             const { data } = await supabase
                 .from("favorites")
                 .select("id")
-                .eq("user_id", user.id)
+                .eq("user_id", session.user.id)
                 .eq("ad_id", adId)
-                .single();
+                .maybeSingle();
 
             setIsFavorited(!!data);
         };
 
         checkFavoriteStatus();
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+                checkFavoriteStatus();
+            } else if (event === 'SIGNED_OUT') {
+                setIsFavorited(false);
+            }
+        });
+
+        return () => subscription.unsubscribe();
     }, [adId]);
 
     const toggleFavorite = async (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
 
-        if (!userId) {
-            toast.error("Veuillez vous connecter pour ajouter aux favoris");
-            return;
-        }
-
         setIsLoading(true);
-
         try {
-            if (isFavorited) {
-                // Remove from favorites
-                const { error } = await supabase
-                    .from("favorites")
-                    .delete()
-                    .eq("user_id", userId)
-                    .eq("ad_id", adId);
-
-                if (error) throw error;
-
-                setIsFavorited(false);
-                toast.success("Retiré des favoris");
+            const result = await toggleFavoriteAction(adId);
+            
+            if (result.error) {
+                toast.error(result.error);
             } else {
-                // Add to favorites
-                const { error } = await supabase
-                    .from("favorites")
-                    .insert({ user_id: userId, ad_id: adId });
-
-                if (error) throw error;
-
-                setIsFavorited(true);
-                toast.success("Ajouté aux favoris");
+                setIsFavorited(result.isFavorite ?? false);
+                toast.success(result.isFavorite ? "Ajouté aux favoris" : "Retiré des favoris");
             }
-        } catch (error) {
-            console.error("Error toggling favorite:", error);
-            toast.error("Une erreur s'est produite");
+        } catch (err: any) {
+            toast.error("Une erreur est survenue");
         } finally {
             setIsLoading(false);
         }
