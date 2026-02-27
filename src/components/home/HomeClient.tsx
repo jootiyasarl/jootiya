@@ -3,6 +3,7 @@
 import React, { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { HeroSection } from "@/components/home/HeroSection";
+import { SellBanner } from "@/components/home/SellBanner";
 import { BlogSection } from "@/components/home/BlogSection";
 import { AdCard } from "@/components/AdCard";
 import { LocationFilterSidebar } from "@/components/home/LocationFilterSidebar";
@@ -127,6 +128,8 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
 
   return (
     <div dir="ltr" className="min-h-screen bg-white font-sans text-zinc-900 pb-24">
+      <HeroSection />
+
       {isOfflineData && (
         <div className="bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest py-1 text-center flex items-center justify-center gap-2">
           <WifiOff className="w-3 h-3" />
@@ -143,6 +146,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
           </div>
 
           <div className="lg:col-span-9 space-y-20 sm:space-y-28">
+            <SellBanner />
             {ads.length === 0 && !loading ? (
               <div className="flex flex-col items-center justify-center py-24 text-center border border-dashed border-zinc-200 rounded-[2.5rem] bg-zinc-50/40">
                 <div className="bg-white p-6 rounded-2xl mb-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-zinc-100">
