@@ -209,16 +209,23 @@ export function ProfileForm() {
 
     setUploadingAvatar(true);
     try {
-      // Get session immediately before any operation
+      // 1. Get session immediately and refresh if needed
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       
       if (sessionError || !session?.user) {
-        toast.error("Votre session a expiré. Veuillez vous reconnecter.");
-        setUploadingAvatar(false);
-        return;
+        // Try one last time with getUser which is more authoritative
+        const { data: { user: authUser }, error: userError } = await supabase.auth.getUser();
+        if (userError || !authUser) {
+          toast.error("Votre session a expiré. Veuillez vous reconnecter.");
+          setUploadingAvatar(false);
+          return;
+        }
+        // If getUser worked, we continue with that user
       }
 
-      const currentUserId = session.user.id;
+      const user = session?.user || (await supabase.auth.getUser()).data.user;
+      if (!user) throw new Error("User not found");
+      const currentUserId = user.id;
 
       if (!file.type.startsWith('image/')) {
         toast.error("Veuillez sélectionner une image valide.");
