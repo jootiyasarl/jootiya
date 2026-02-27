@@ -134,7 +134,10 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
         </div>
       )}
       
-      <main className="mx-auto max-w-7xl px-4 mt-6 sm:mt-10">
+      <main className="mx-auto max-w-7xl px-4 mt-4 md:mt-6">
+        <div className="mb-8 md:mb-12">
+          <SellBanner />
+        </div>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
           <div className="hidden lg:block lg:col-span-3">
             <Suspense fallback={<div className="h-[400px] w-full bg-zinc-50 animate-pulse rounded-3xl" />}>
@@ -143,9 +146,6 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
           </div>
 
           <div className="lg:col-span-9 space-y-12 sm:space-y-16">
-            <div className="block">
-              <SellBanner />
-            </div>
             {ads.length === 0 && !loading ? (
               <div className="flex flex-col items-center justify-center py-24 text-center border border-dashed border-zinc-200 rounded-[2.5rem] bg-zinc-50/40">
                 <div className="bg-white p-6 rounded-2xl mb-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-zinc-100">
