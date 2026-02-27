@@ -84,7 +84,8 @@ export function ProfileForm() {
       }
 
       if (!user) {
-        setError("You must be signed in to edit your profile.");
+        setLoading(false);
+        // Do not set error here to avoid blocking the UI if session is slow
         return;
       }
 
