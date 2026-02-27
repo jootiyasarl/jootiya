@@ -259,33 +259,35 @@ export default async function AdPage({ params }: AdPageProps) {
   return (
     <div dir="ltr" className="bg-[#F8FAFC] dark:bg-zinc-950 pb-16 font-sans text-zinc-900 dark:text-zinc-100">
       <ShadowViewTracker adId={ad.id} category={ad.category} />
-      {/* Breadcrumbs Section - Compact & Aligned */}
-      <div className="bg-white dark:bg-zinc-900 border-b border-zinc-100 dark:border-zinc-800">
-        <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-3.5">
+      {/* Breadcrumbs - Integrated Design */}
+      <div className="relative w-full bg-white dark:bg-zinc-900 border-b border-zinc-100 dark:border-zinc-800 shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+        <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-2.5">
           <div className="flex items-center justify-between gap-4">
-            <nav className="flex items-center gap-2 text-[11px] font-bold text-zinc-500 min-w-0">
-              <Link href="/" className="hover:text-orange-600 transition-colors whitespace-nowrap">Accueil</Link>
-              <ChevronRight className="h-3 w-3 opacity-40 flex-shrink-0" />
-              <Link href="/marketplace/search" className="hover:text-orange-600 transition-colors whitespace-nowrap">Marché</Link>
-              <ChevronRight className="h-3 w-3 opacity-40 flex-shrink-0" />
-              {/* العنوان يظهر بشكل مقتضب في الموبايل لمنع التداخل */}
-              <span className="text-zinc-400 font-medium truncate opacity-70 max-w-[120px] md:max-w-none">
+            <nav className="flex items-center gap-1.5 text-[10px] md:text-[11px] font-bold text-zinc-500 min-w-0">
+              <Link href="/" className="hover:text-orange-600 transition-all whitespace-nowrap opacity-80 hover:opacity-100">
+                Accueil
+              </Link>
+              <ChevronRight className="h-3 w-3 text-zinc-300 flex-shrink-0" />
+              <Link href="/marketplace" className="hover:text-orange-600 transition-all whitespace-nowrap opacity-80 hover:opacity-100">
+                Annonces
+              </Link>
+              <ChevronRight className="h-3 w-3 text-zinc-300 flex-shrink-0" />
+              <span className="text-zinc-400 font-semibold truncate max-w-[100px] md:max-w-none opacity-60">
                 {ad.title}
               </span>
             </nav>
 
-            {/* عرض السعر في الديسكتوب فقط لتعزيز تجربة المستخدم */}
-            <div className="hidden md:flex items-center gap-4">
-              <div className="flex flex-col items-end">
-                <span className="text-[10px] uppercase tracking-widest text-zinc-400 font-black leading-none mb-1">Prix Direct</span>
-                <p className="font-black text-orange-600 text-sm leading-none">{formattedPrice}</p>
-              </div>
+            {/* Price Badge - Compact version */}
+            <div className="hidden sm:flex items-center px-3 py-1 bg-orange-50 dark:bg-orange-500/10 rounded-full border border-orange-100 dark:border-orange-500/20">
+              <span className="text-[10px] font-black text-orange-600 uppercase tracking-tight">
+                {formattedPrice}
+              </span>
             </div>
           </div>
         </div>
       </div>
 
-      <main className="max-w-[1440px] mx-auto px-4 md:px-8 pt-4 pb-16 lg:pt-8">
+      <main className="max-w-[1440px] mx-auto px-4 md:px-8 pt-4 md:pt-6 pb-20">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Left Column: Gallery + Details */}
           <div className="lg:col-span-8 space-y-4 min-w-0">
@@ -293,39 +295,38 @@ export default async function AdPage({ params }: AdPageProps) {
               <AdImageGallery images={images} />
             </section>
 
-            {/* Mobile-only Price & Header (Reordered) */}
-            <div className="lg:hidden space-y-3">
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center justify-between">
-                  <p className="text-xl font-black text-orange-600 tracking-tight">{formattedPrice}</p>
-                  <div className="flex items-center gap-2">
-                    <FavoriteButton adId={ad.id} className="h-9 w-9 hover:bg-red-50 text-zinc-600 hover:text-red-600 rounded-xl" />
+              {/* Mobile Header (Reordered) */}
+              <div className="lg:hidden space-y-3">
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center justify-between">
+                    <p className="text-xl font-black text-orange-600 tracking-tight">{formattedPrice}</p>
+                    <div className="flex items-center gap-2">
+                      <FavoriteButton adId={ad.id} className="h-9 w-9 hover:bg-red-50 text-zinc-600 hover:text-red-600 rounded-xl" />
+                    </div>
+                  </div>
+                  <h1 className="text-2xl font-black tracking-tighter leading-tight text-zinc-900 dark:text-white">
+                    {ad.title}
+                  </h1>
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] font-medium text-zinc-500">
+                    <span className="inline-flex items-center gap-1.5">
+                      <MapPin className="h-4 w-4 text-orange-500" />
+                      {ad.city}{ad.neighborhood ? `, ${ad.neighborhood}` : ""}
+                    </span>
+                    <span className="h-1 w-1 rounded-full bg-zinc-300" />
+                    <span className="inline-flex items-center gap-1.5">
+                      <Calendar className="h-4 w-4 text-orange-500" />
+                      {formattedDate}
+                    </span>
                   </div>
                 </div>
-                <h1 className="text-2xl font-black tracking-tighter leading-tight text-zinc-900 dark:text-white">
-                  {ad.title}
-                </h1>
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] font-medium text-zinc-500">
-                  <span className="inline-flex items-center gap-1.5">
-                    <MapPin className="h-4 w-4 text-orange-500" />
-                    {ad.city}{ad.neighborhood ? `, ${ad.neighborhood}` : ""}
-                  </span>
-                  <span className="h-1 w-1 rounded-full bg-zinc-300" />
-                  <span className="inline-flex items-center gap-1.5">
-                    <Calendar className="h-4 w-4 text-orange-500" />
-                    {formattedDate}
-                  </span>
+
+                <div className="space-y-2">
+                  <h2 className="text-sm font-black tracking-tight text-zinc-900 dark:text-white">Description</h2>
+                  <p className="whitespace-pre-wrap leading-relaxed text-[13px] text-zinc-700 dark:text-zinc-300">
+                    {ad.description || "Aucune description fournie."}
+                  </p>
                 </div>
               </div>
-
-
-              <div className="space-y-2">
-                <h2 className="text-sm font-black tracking-tight text-zinc-900 dark:text-white">Description</h2>
-                <p className="whitespace-pre-wrap leading-relaxed text-[13px] text-zinc-700 dark:text-zinc-300">
-                  {ad.description || "Aucune description fournie."}
-                </p>
-              </div>
-            </div>
 
             {/* Desktop-only Details (Hidden on mobile) */}
             <div className="hidden lg:block space-y-4">
