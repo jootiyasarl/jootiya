@@ -259,22 +259,21 @@ export default async function AdPage({ params }: AdPageProps) {
   return (
     <div dir="ltr" className="min-h-screen bg-[#F8FAFC] dark:bg-zinc-950 pb-16 font-sans text-zinc-900 dark:text-zinc-100">
       <ShadowViewTracker adId={ad.id} category={ad.category} />
-      <div className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl border-b border-zinc-200 dark:border-zinc-800 z-40 sticky top-0">
+      <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border-b border-zinc-200 dark:border-zinc-800 z-40 sticky top-0">
         <div className="mx-auto max-w-7xl px-4 py-1">
-          <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-            <nav className="flex flex-wrap items-center gap-2 text-[13px] font-medium text-zinc-500 min-w-0">
-              <Link href="/" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">Accueil</Link>
-              <ChevronRight className="h-4 w-4" />
-              <Link href="/marketplace" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">Marché</Link>
-              <ChevronRight className="h-4 w-4" />
-              <span className="text-zinc-900 dark:text-zinc-100 font-medium truncate">{ad.title}</span>
+          <div className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
+            <nav className="flex flex-wrap items-center gap-1.5 text-[11px] font-bold text-zinc-500 min-w-0">
+              <Link href="/" className="hover:text-orange-600 transition-colors">Accueil</Link>
+              <ChevronRight className="h-3 w-3 opacity-50" />
+              <Link href="/marketplace" className="hover:text-orange-600 transition-colors">Marché</Link>
+              <ChevronRight className="h-3 w-3 opacity-50" />
+              <span className="text-zinc-400 font-medium truncate max-w-[150px] md:max-w-none">{ad.title}</span>
             </nav>
-            <div className="flex items-center justify-between gap-3 md:justify-end">
-              <div className="hidden md:block text-right mr-4">
-                <p className="text-xs text-zinc-400 font-bold uppercase tracking-wider">Prix</p>
+            <div className="hidden md:flex items-center gap-3">
+              <div className="text-right mr-2">
                 <p className="font-black text-orange-600 leading-none">{formattedPrice}</p>
               </div>
-              <FavoriteButton adId={ad.id} className="hover:bg-red-50 text-zinc-600 hover:text-red-600 rounded-xl" />
+              <FavoriteButton adId={ad.id} className="h-8 w-8 hover:bg-red-50 text-zinc-600 hover:text-red-600 rounded-lg" />
             </div>
           </div>
         </div>
@@ -305,7 +304,7 @@ export default async function AdPage({ params }: AdPageProps) {
                 <div className="flex items-center justify-between">
                   <p className="text-xl font-black text-orange-600 tracking-tight">{formattedPrice}</p>
                   <div className="flex items-center gap-2">
-                    <FavoriteButton adId={ad.id} className="hover:bg-red-50 text-zinc-600 hover:text-red-600 rounded-xl" />
+                    <FavoriteButton adId={ad.id} className="h-9 w-9 hover:bg-red-50 text-zinc-600 hover:text-red-600 rounded-xl" />
                   </div>
                 </div>
                 <h1 className="text-2xl font-black tracking-tighter leading-tight text-zinc-900 dark:text-white">
