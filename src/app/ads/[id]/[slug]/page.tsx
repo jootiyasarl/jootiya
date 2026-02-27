@@ -257,10 +257,10 @@ export default async function AdPage({ params }: AdPageProps) {
   }
 
   return (
-    <div dir="ltr" className="min-h-screen bg-[#F8FAFC] dark:bg-zinc-950 pb-32 font-sans text-zinc-900 dark:text-zinc-100">
+    <div dir="ltr" className="min-h-screen bg-[#F8FAFC] dark:bg-zinc-950 pb-16 font-sans text-zinc-900 dark:text-zinc-100">
       <ShadowViewTracker adId={ad.id} category={ad.category} />
-      <div className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl border-b border-zinc-200 dark:border-zinc-800 z-40">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-2">
+      <div className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl border-b border-zinc-200 dark:border-zinc-800 z-40 sticky top-0">
+        <div className="mx-auto max-w-7xl px-4 py-1">
           <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
             <nav className="flex flex-wrap items-center gap-2 text-[13px] font-medium text-zinc-500 min-w-0">
               <Link href="/" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">Accueil</Link>
@@ -280,8 +280,8 @@ export default async function AdPage({ params }: AdPageProps) {
         </div>
       </div>
 
-      <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mb-10 space-y-4">
+      <main className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+        <div className="mb-4 space-y-2">
           <ViralTracker adId={ad.id} referrerId="" />
           <ViralProgressBar 
             adId={ad.id} 
@@ -292,18 +292,18 @@ export default async function AdPage({ params }: AdPageProps) {
           />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-start">
           {/* Left Column: Gallery + Details */}
-          <div className="lg:col-span-8 space-y-10 min-w-0">
-            <section className="rounded-[2rem] overflow-hidden bg-white dark:bg-zinc-900 shadow-[0_12px_40px_rgba(0,0,0,0.06)] ring-1 ring-zinc-100 dark:ring-white/5">
+          <div className="lg:col-span-8 space-y-4 min-w-0">
+            <section className="rounded-xl sm:rounded-2xl overflow-hidden bg-white dark:bg-zinc-900 shadow-sm ring-1 ring-zinc-100 dark:ring-white/5">
               <AdImageGallery images={images} />
             </section>
 
             {/* Mobile-only Price & Header (Reordered) */}
-            <div className="lg:hidden space-y-6">
-              <div className="flex flex-col gap-2">
+            <div className="lg:hidden space-y-3">
+              <div className="flex flex-col gap-1">
                 <div className="flex items-center justify-between">
-                  <p className="text-3xl font-black text-orange-600 tracking-tight">{formattedPrice}</p>
+                  <p className="text-xl font-black text-orange-600 tracking-tight">{formattedPrice}</p>
                   <div className="flex items-center gap-2">
                     <FavoriteButton adId={ad.id} className="hover:bg-red-50 text-zinc-600 hover:text-red-600 rounded-xl" />
                   </div>
@@ -325,9 +325,9 @@ export default async function AdPage({ params }: AdPageProps) {
               </div>
 
               {/* Mobile Seller Card (Reordered) */}
-              <div className="rounded-[2rem] bg-white dark:bg-zinc-900 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-zinc-100 dark:ring-white/5">
-                <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 rounded-full bg-zinc-100 flex items-center justify-center text-lg font-black overflow-hidden ring-1 ring-zinc-200">
+              <div className="rounded-xl bg-white dark:bg-zinc-900 p-3 shadow-sm ring-1 ring-zinc-100 dark:ring-white/5">
+                <div className="flex items-center gap-2">
+                  <div className="h-9 w-9 rounded-full bg-zinc-100 flex items-center justify-center text-sm font-black overflow-hidden ring-1 ring-zinc-200">
                     {sellerProfile?.avatar_url ? (
                       <Image src={sellerProfile.avatar_url} alt={sellerName} width={48} height={48} className="object-cover" />
                     ) : (
@@ -347,18 +347,18 @@ export default async function AdPage({ params }: AdPageProps) {
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <h2 className="text-lg font-black tracking-tight text-zinc-900 dark:text-white">Description</h2>
-                <p className="whitespace-pre-wrap leading-relaxed text-[15px] text-zinc-700 dark:text-zinc-300">
+              <div className="space-y-2">
+                <h2 className="text-sm font-black tracking-tight text-zinc-900 dark:text-white">Description</h2>
+                <p className="whitespace-pre-wrap leading-relaxed text-[13px] text-zinc-700 dark:text-zinc-300">
                   {ad.description || "Aucune description fournie."}
                 </p>
               </div>
             </div>
 
             {/* Desktop-only Details (Hidden on mobile) */}
-            <div className="hidden lg:block space-y-8">
-              <div className="flex flex-col gap-3">
-                <h1 className="text-3xl sm:text-4xl font-black tracking-tighter leading-tight text-zinc-900 dark:text-white">
+            <div className="hidden lg:block space-y-4">
+              <div className="flex flex-col gap-1.5">
+                <h1 className="text-xl sm:text-2xl font-black tracking-tighter leading-tight text-zinc-900 dark:text-white">
                   {ad.title}
                 </h1>
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] font-medium text-zinc-500">
@@ -374,20 +374,20 @@ export default async function AdPage({ params }: AdPageProps) {
                 </div>
               </div>
 
-              <div className="rounded-[2rem] bg-white dark:bg-zinc-900 p-8 sm:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-zinc-100 dark:ring-white/5">
-                <div className="flex items-center justify-between gap-4 mb-8">
-                  <h2 className="text-lg font-black tracking-tight text-zinc-900 dark:text-white">Description</h2>
+              <div className="rounded-xl sm:rounded-2xl bg-white dark:bg-zinc-900 p-4 sm:p-6 shadow-sm ring-1 ring-zinc-100 dark:ring-white/5">
+                <div className="flex items-center justify-between gap-3 mb-4">
+                  <h2 className="text-sm font-black tracking-tight text-zinc-900 dark:text-white">Description</h2>
                   <div className="flex items-center gap-2">
                     <FavoriteButton adId={ad.id} className="hover:bg-red-50 text-zinc-600 hover:text-red-600 rounded-xl" />
                   </div>
                 </div>
 
-                <p className="whitespace-pre-wrap leading-relaxed text-[15px] text-zinc-700 dark:text-zinc-300">
+                <p className="whitespace-pre-wrap leading-relaxed text-[13px] text-zinc-700 dark:text-zinc-300">
                   {ad.description || "Aucune description fournie."}
                 </p>
 
-                <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3">
-                  <div className="rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 p-4 ring-1 ring-zinc-100 dark:ring-white/5">
+                <div className="mt-6 grid grid-cols-2 gap-2 sm:grid-cols-3">
+                  <div className="rounded-lg bg-zinc-50 dark:bg-zinc-800/60 p-2.5 ring-1 ring-zinc-100 dark:ring-white/5">
                     <span className="text-[10px] uppercase text-zinc-400 font-black tracking-widest block mb-1">Catégorie</span>
                     <p className="font-bold text-zinc-900 dark:text-zinc-100">{ad.category || "Autre"}</p>
                   </div>
@@ -403,18 +403,18 @@ export default async function AdPage({ params }: AdPageProps) {
               </div>
 
               {ad.latitude && ad.longitude && (
-                <div className="rounded-[2rem] bg-white dark:bg-zinc-900 p-1 overflow-hidden shadow-[0_12px_34px_rgba(0,0,0,0.12)] ring-1 ring-zinc-100 dark:ring-white/5">
-                  <div className="bg-white rounded-[1.5rem] overflow-hidden relative">
+                <div className="rounded-2xl sm:rounded-[2rem] bg-white dark:bg-zinc-900 p-1 overflow-hidden shadow-sm ring-1 ring-zinc-100 dark:ring-white/5">
+                  <div className="bg-white rounded-xl sm:rounded-[1.5rem] overflow-hidden relative">
                     <AdLocationMapDynamic lat={Number(ad.latitude)} lng={Number(ad.longitude)} city={ad.city} neighborhood={ad.neighborhood} />
                   </div>
                 </div>
               )}
             </div>
 
-            {similarAds.length > 0 && (
-              <div className="pt-6">
-                <div className="flex items-end justify-between gap-4 mb-6">
-                  <h2 className="text-xl sm:text-2xl font-black tracking-tight">Annonces similaires</h2>
+              {similarAds.length > 0 && (
+              <div className="pt-2">
+                <div className="flex items-end justify-between gap-3 mb-3">
+                  <h2 className="text-base sm:text-lg font-black tracking-tight">Annonces similaires</h2>
                   <Link href="/marketplace" className="text-[11px] font-black uppercase tracking-widest text-zinc-500 hover:text-orange-600">
                     Voir plus
                   </Link>
@@ -436,23 +436,19 @@ export default async function AdPage({ params }: AdPageProps) {
             )}
           </div>
 
-          {/* Right Column: Sticky CTA + Seller */}
           <div className="hidden lg:block lg:col-span-4">
-            <div className="lg:sticky lg:top-24 space-y-6">
-              <div className="rounded-[2rem] bg-white dark:bg-zinc-900 p-8 shadow-[0_12px_40px_rgba(0,0,0,0.06)] ring-1 ring-zinc-100 dark:ring-white/5">
-                <div className="flex items-start justify-between gap-4">
+            <div className="lg:sticky lg:top-16 space-y-3">
+              <div className="rounded-xl sm:rounded-2xl bg-white dark:bg-zinc-900 p-4 shadow-sm ring-1 ring-zinc-100 dark:ring-white/5">
+                <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Prix</p>
-                    <p className="mt-2 text-3xl font-black tracking-tight text-zinc-900 dark:text-white">{formattedPrice}</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <FavoriteButton adId={ad.id} className="hover:bg-red-50 text-zinc-600 hover:text-red-600 rounded-xl" />
+                    <p className="mt-0.5 text-xl font-black tracking-tight text-zinc-900 dark:text-white">{formattedPrice}</p>
                   </div>
                 </div>
 
-                <div className="mt-6 space-y-4">
-                  <div className="rounded-2xl bg-orange-50/60 dark:bg-orange-500/10 ring-1 ring-orange-100 dark:ring-orange-500/20 p-4">
-                    <p className="text-[12px] font-bold text-zinc-700 dark:text-zinc-200 leading-relaxed">
+                <div className="mt-4 space-y-3">
+                  <div className="rounded-xl bg-orange-50/60 dark:bg-orange-500/10 ring-1 ring-orange-100 dark:ring-orange-500/20 p-3">
+                    <p className="text-[11px] font-bold text-zinc-700 dark:text-zinc-200 leading-relaxed">
                       Contactez le vendeur rapidement. Les bonnes affaires partent vite.
                     </p>
                   </div>
@@ -460,59 +456,59 @@ export default async function AdPage({ params }: AdPageProps) {
                   <ContactActions adId={ad.id} sellerId={ad.seller_id} currentUser={user} sellerPhone={ad.phone || sellerProfile?.phone} />
 
                   {user?.id === ad.seller_id && !ad.is_featured && (
-                    <div className="pt-4 border-t border-zinc-100 dark:border-zinc-800">
+                    <div className="pt-3 border-t border-zinc-100 dark:border-zinc-800">
                       <ViralShareButton adId={ad.id} adTitle={ad.title} adPrice={formattedPrice} sellerId={ad.seller_id} />
                     </div>
                   )}
                 </div>
               </div>
 
-              <div className="rounded-[2rem] bg-white dark:bg-zinc-900 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] ring-1 ring-zinc-100 dark:ring-white/5">
-                <div className="flex items-center gap-4">
-                  <div className="h-14 w-14 rounded-full bg-zinc-100 flex items-center justify-center text-xl font-black overflow-hidden ring-1 ring-zinc-200">
+              <div className="rounded-xl sm:rounded-2xl bg-white dark:bg-zinc-900 p-4 shadow-sm ring-1 ring-zinc-100 dark:ring-white/5">
+                <div className="flex items-center gap-2">
+                  <div className="h-10 w-10 rounded-full bg-zinc-100 flex items-center justify-center text-base font-black overflow-hidden ring-1 ring-zinc-200">
                     {sellerProfile?.avatar_url ? (
-                      <Image src={sellerProfile.avatar_url} alt={sellerName} width={56} height={56} className="object-cover" />
+                      <Image src={sellerProfile.avatar_url} alt={sellerName} width={40} height={40} className="object-cover" />
                     ) : (
                       sellerInitial
                     )}
                   </div>
                   <div className="min-w-0">
-                    <h3 className="font-black text-zinc-900 dark:text-white flex items-center gap-2 truncate">
+                    <h3 className="font-black text-zinc-900 dark:text-white flex items-center gap-1.5 truncate text-xs">
                       {sellerName}
-                      {isTrusted && <Award className="w-4 h-4 text-blue-500" />}
+                      {isTrusted && <Award className="w-3.5 h-3.5 text-blue-500" />}
                     </h3>
-                    <p className="text-xs text-zinc-500 font-medium">Membre depuis {memberSince}</p>
+                    <p className="text-[10px] text-zinc-500 font-medium">Membre depuis {memberSince}</p>
                   </div>
                 </div>
 
-                <div className="mt-6 grid grid-cols-2 gap-3">
-                  <div className="rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 p-3 text-center ring-1 ring-zinc-100 dark:ring-white/5">
-                    <span className="block text-lg font-black text-zinc-900 dark:text-white">100%</span>
-                    <span className="text-[10px] text-zinc-400 uppercase font-black tracking-widest">Réponse</span>
+                <div className="mt-3 grid grid-cols-2 gap-1.5">
+                  <div className="rounded-lg bg-zinc-50 dark:bg-zinc-800/60 p-2 text-center ring-1 ring-zinc-100 dark:ring-white/5">
+                    <span className="block text-sm font-black text-zinc-900 dark:text-white">100%</span>
+                    <span className="text-[8px] text-zinc-400 uppercase font-black tracking-widest">Réponse</span>
                   </div>
-                  <div className="rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 p-3 text-center ring-1 ring-zinc-100 dark:ring-white/5">
-                    <span className="block text-lg font-black flex items-center justify-center gap-1 text-zinc-900 dark:text-white">
+                  <div className="rounded-lg bg-zinc-50 dark:bg-zinc-800/60 p-2 text-center ring-1 ring-zinc-100 dark:ring-white/5">
+                    <span className="block text-sm font-black flex items-center justify-center gap-1 text-zinc-900 dark:text-white">
                       {avgRating > 0 ? avgRating : '-'}
-                      <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
+                      <Star className="w-2 h-2 text-yellow-500 fill-yellow-500" />
                     </span>
-                    <span className="text-[10px] text-zinc-400 uppercase font-black tracking-widest">{totalReviews} Avis</span>
+                    <span className="text-[8px] text-zinc-400 uppercase font-black tracking-widest">{totalReviews} Avis</span>
                   </div>
                 </div>
 
-                <Link href={`/profile/${ad.seller_id}`} className="mt-6 block text-center text-xs font-black text-orange-600 hover:underline">
+                <Link href={`/profile/${ad.seller_id}`} className="mt-3 block text-center text-[10px] font-black text-orange-600 hover:underline">
                   Voir le profil complet
                 </Link>
               </div>
 
-              <div className="rounded-[2rem] bg-gradient-to-br from-emerald-50 to-teal-50 p-8 ring-1 ring-emerald-100/60">
-                <div className="flex items-center gap-3 mb-4">
-                  <ShieldCheck className="w-9 h-9 text-emerald-600" />
-                  <h3 className="font-black text-emerald-900 text-sm">Protection Jootiya</h3>
+              <div className="rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50 p-4 ring-1 ring-emerald-100/60">
+                <div className="flex items-center gap-2 mb-2">
+                  <ShieldCheck className="w-6 h-6 text-emerald-600" />
+                  <h3 className="font-black text-emerald-900 text-[11px]">Protection Jootiya</h3>
                 </div>
-                <p className="text-xs text-emerald-800/80 mb-4 font-medium">Achetez et vendez en toute sécurité.</p>
-                <ul className="space-y-2 text-xs font-semibold text-emerald-700">
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5" /> Identité vérifiée</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5" /> Support 24/7</li>
+                <p className="text-[10px] text-emerald-800/80 mb-2 font-medium">Achetez et vendez en toute sécurité.</p>
+                <ul className="space-y-1 text-[10px] font-semibold text-emerald-700">
+                  <li className="flex items-center gap-1.5"><CheckCircle2 className="w-2.5 h-2.5" /> Identité vérifiée</li>
+                  <li className="flex items-center gap-1.5"><CheckCircle2 className="w-2.5 h-2.5" /> Support 24/7</li>
                 </ul>
               </div>
             </div>
