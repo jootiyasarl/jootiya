@@ -82,8 +82,8 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
 
     return (
         <div className="min-h-screen bg-zinc-50 pb-20">
-            <div className="container mx-auto px-4 py-4 md:py-8">
-                <div className="flex flex-col lg:flex-row gap-8">
+            <div className="container mx-auto px-4 pt-4 md:pt-6">
+                <div className="flex flex-col lg:flex-row gap-6">
                     {/* Left Sidebar for Ads (Desktop) */}
                     <div className="hidden lg:block lg:w-[160px] flex-shrink-0">
                         <div className="sticky top-24 w-full h-[600px] bg-white rounded-xl">
@@ -93,11 +93,11 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
 
                     {/* Main Content */}
                     <div className="flex-1 min-w-0">
-                        <Breadcrumbs items={breadcrumbs} className="mb-4" />
+                        <Breadcrumbs items={breadcrumbs} className="mb-2" />
 
-                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 mb-6">
                             <div>
-                                <h1 className="text-2xl md:text-4xl font-black text-zinc-900 mb-2">
+                                <h1 className="text-xl md:text-2xl font-black text-zinc-900 mb-1">
                                     {category.name}
                                 </h1>
                                 {category.description && (
@@ -127,7 +127,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
                             </div>
                         ) : (
                             <>
-                                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+                                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
                                     {ads.map((ad, index) => (
                                         <AdCard 
                                             key={ad.id} 
@@ -135,12 +135,12 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
                                             ad={{
                                                 id: ad.id,
                                                 title: ad.title,
-                                                price: ad.price ? `${Number(ad.price).toLocaleString()} ${ad.currency || 'MAD'}` : 'Sur demande',
+                                                price: ad.price ? Number(ad.price) : 0,
+                                                currency: ad.currency || 'MAD',
                                                 location: ad.city || 'Maroc',
-                                                imageUrl: ad.image_urls?.[0] || ad.images?.[0],
+                                                images: ad.image_urls || ad.images || null,
                                                 status: ad.status,
-                                                slug: ad.slug,
-                                                createdAt: ad.created_at ? new Date(ad.created_at).toLocaleDateString('fr-FR', { month: 'short', day: 'numeric' }) : undefined
+                                                created_at: ad.created_at || new Date().toISOString()
                                             }} 
                                         />
                                     ))}
