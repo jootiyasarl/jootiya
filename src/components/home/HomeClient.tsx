@@ -134,8 +134,8 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
         </div>
       )}
       
-      <main className="mx-auto max-w-7xl px-4 mt-[10px] space-y-4">
-        <div className="w-full">
+      <main className="mx-auto max-w-7xl px-4">
+        <div className="w-full mb-6">
           <SellBanner />
         </div>
         
