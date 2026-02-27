@@ -89,7 +89,7 @@ export default function MarketplacePage() {
         </div>
 
         {/* Sell Banner - Added here */}
-        <div className="mt-8 md:mt-10">
+        <div className="mt-8 md:mt-10 block">
           <SellBanner />
         </div>
       </div>
