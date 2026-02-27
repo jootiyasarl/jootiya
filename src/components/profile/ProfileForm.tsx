@@ -20,7 +20,7 @@ import { toast } from "sonner";
 import { Camera, User as UserIcon, Loader2 } from "lucide-react";
 import Image from "next/image";
 import type { User } from "@supabase/supabase-js";
-import { updateProfile, uploadAvatarAction } from "@/app/dashboard/profile/actions";
+import { updateProfile, uploadAvatarAction, deleteAvatarAction, updatePasswordAction } from "@/app/dashboard/profile/actions";
 
 interface PersonalInfoForm {
   name: string;
@@ -198,16 +198,15 @@ export function ProfileForm() {
     setSuccess(null);
 
     try {
-      const { error: updateError } = await supabase.auth.updateUser({
-        password: passwordForm.newPassword,
-      });
-      if (updateError) throw updateError;
+      const result = await updatePasswordAction(passwordForm.newPassword);
+      if (result.error) throw new Error(result.error);
+
       setSuccess("Password changed successfully.");
       toast.success("Password changed successfully");
       setPasswordForm({ newPassword: "", confirmPassword: "" });
     } catch (err: any) {
       setError(err.message ?? "Failed to change password.");
-      toast.error("Failed to change password");
+      toast.error(err.message ?? "Failed to change password");
     } finally {
       setChangingPassword(false);
     }
@@ -257,25 +256,15 @@ export function ProfileForm() {
   }
 
   async function handleDeleteAvatar() {
-    const { data: { session } } = await supabase.auth.getSession();
-    const currentUserId = session?.user?.id || userId;
-
-    if (!currentUserId) {
-      toast.error("You must be signed in to perform this action.");
-      return;
-    }
-
     setUploadingAvatar(true);
     try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({ avatar_url: null })
-        .eq('id', currentUserId);
-      if (error) throw error;
+      const result = await deleteAvatarAction();
+      if (result.error) throw new Error(result.error);
+
       setPersonalInfo(prev => ({ ...prev, avatar_url: "" }));
       toast.success("Photo supprimée.");
-    } catch (e) {
-      toast.error("Échec de la suppression.");
+    } catch (err: any) {
+      toast.error(err.message ?? "Échec de la suppression.");
     } finally {
       setUploadingAvatar(false);
     }

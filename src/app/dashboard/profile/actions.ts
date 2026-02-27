@@ -46,13 +46,15 @@ export async function uploadAvatarAction(base64Image: string, fileName: string) 
   const supabase = await getAuthenticatedServerClient();
 
   // Convert base64 to Buffer
-  const buffer = Buffer.from(base64Image.split(",")[1], "base64");
-  const filePath = `${user.id}-${Date.now()}-${fileName}`;
+  const base64Data = base64Image.replace(/^data:image\/\w+;base64,/, "");
+  const buffer = Buffer.from(base64Data, "base64");
+  const fileExt = fileName.split('.').pop();
+  const filePath = `${user.id}/${Date.now()}.${fileExt}`;
 
   const { error: uploadError } = await supabase.storage
     .from("ad-images")
     .upload(filePath, buffer, {
-      contentType: "image/jpeg", // Default or detect from base64
+      contentType: `image/${fileExt}`,
       upsert: true
     });
 
@@ -76,4 +78,44 @@ export async function uploadAvatarAction(base64Image: string, fileName: string) 
 
   revalidatePath("/dashboard/profile");
   return { success: true, publicUrl };
+}
+
+export async function deleteAvatarAction() {
+  const user = await getServerUser();
+  if (!user) {
+    return { error: "Session expiré. Veuillez vous reconnecter." };
+  }
+
+  const supabase = await getAuthenticatedServerClient();
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({ avatar_url: null })
+    .eq("id", user.id);
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  revalidatePath("/dashboard/profile");
+  return { success: true };
+}
+
+export async function updatePasswordAction(password: string) {
+  const user = await getServerUser();
+  if (!user) {
+    return { error: "Session expiré. Veuillez vous reconnecter." };
+  }
+
+  const supabase = await getAuthenticatedServerClient();
+
+  const { error } = await supabase.auth.updateUser({
+    password: password,
+  });
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  return { success: true };
 }
