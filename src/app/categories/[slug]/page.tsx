@@ -135,12 +135,11 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
                                             ad={{
                                                 id: ad.id,
                                                 title: ad.title,
-                                                price: ad.price ? Number(ad.price) : 0,
-                                                currency: ad.currency || 'MAD',
+                                                price: ad.price ? `${Number(ad.price).toLocaleString()} ${ad.currency || 'MAD'}` : '0 MAD',
                                                 location: ad.city || 'Maroc',
-                                                images: ad.image_urls || ad.images || null,
+                                                imageUrl: ad.image_urls?.[0] || ad.images?.[0],
                                                 status: ad.status,
-                                                created_at: ad.created_at || new Date().toISOString()
+                                                createdAt: ad.created_at ? new Date(ad.created_at).toLocaleDateString('fr-FR', { month: 'short', day: 'numeric' }) : undefined
                                             }} 
                                         />
                                     ))}
