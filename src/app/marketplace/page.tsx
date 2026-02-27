@@ -46,6 +46,11 @@ export default function MarketplacePage() {
           </p>
         </div>
 
+        {/* Sell Banner - Moved to top as per user requirement */}
+        <div className="mb-10 block">
+          <SellBanner />
+        </div>
+
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
           {CATEGORIES_GRID.map((cat) => {
             const Icon = cat.icon;
@@ -86,11 +91,6 @@ export default function MarketplacePage() {
               </Link>
             );
           })}
-        </div>
-
-        {/* Sell Banner - Added here */}
-        <div className="mt-8 md:mt-10 block">
-          <SellBanner />
         </div>
       </div>
     </div>
