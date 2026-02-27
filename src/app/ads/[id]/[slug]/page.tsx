@@ -279,7 +279,7 @@ export default async function AdPage({ params }: AdPageProps) {
         </div>
       </div>
 
-      <main className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8 mt-12 md:mt-26">
         <div className="mb-4 space-y-2">
           <ViralTracker adId={ad.id} referrerId="" />
           <ViralProgressBar 
