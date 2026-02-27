@@ -190,43 +190,52 @@ export function ProfileForm() {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    const { data: { session } } = await supabase.auth.getSession();
-    const currentUserId = session?.user?.id || userId;
-
-    if (!currentUserId) {
-      toast.error("You must be signed in to upload an avatar.");
-      return;
-    }
-
-    if (!file.type.startsWith('image/')) {
-      toast.error("Veuillez sélectionner une image valide.");
-      return;
-    }
-    if (file.size > 2 * 1024 * 1024) {
-      toast.error("L'image est trop volumineuse (max 2MB).");
-      return;
-    }
-
     setUploadingAvatar(true);
     try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${currentUserId}-${Math.random()}.${fileExt}`;
-      const filePath = `${fileName}`;
+      // Get session immediately before any operation
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError || !session?.user) {
+        toast.error("Votre session a expiré. Veuillez vous reconnecter.");
+        setUploadingAvatar(false);
+        return;
+      }
 
+      const currentUserId = session.user.id;
+
+      if (!file.type.startsWith('image/')) {
+        toast.error("Veuillez sélectionner une image valide.");
+        setUploadingAvatar(false);
+        return;
+      }
+
+      if (file.size > 2 * 1024 * 1024) { // 2MB limit
+        toast.error("L'image est trop volumineuse (max 2MB).");
+        setUploadingAvatar(false);
+        return;
+      }
+
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${userId}-${Math.random()}.${fileExt}`;
+      const filePath = `${fileName}`; // Using root of ad-images since avatars folder might not exist
+
+      // 1. Upload to Supabase Storage (Using existing ad-images bucket)
       const { error: uploadError } = await supabase.storage
         .from('ad-images')
         .upload(filePath, file);
 
       if (uploadError) throw uploadError;
 
+      // 2. Get Public URL
       const { data: { publicUrl } } = supabase.storage
         .from('ad-images')
         .getPublicUrl(filePath);
 
+      // 3. Update Profile locally and in DB
       const { error: updateError } = await supabase
         .from('profiles')
         .update({ avatar_url: publicUrl })
-        .eq('id', currentUserId);
+        .eq('id', userId);
 
       if (updateError) throw updateError;
 
