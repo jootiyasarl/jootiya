@@ -110,14 +110,8 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
       {/* Right Side: Clean Login Form */}
       <div className="w-full lg:w-1/2 bg-[#0a0a0a] flex items-center justify-center p-6 sm:p-12 relative h-full overflow-hidden">
         <div className="w-full max-w-sm space-y-4 relative z-10">
-          {/* Mobile Logo */}
-          <div className="lg:hidden text-center space-y-2 mb-4">
-            <h1 className="text-4xl font-black text-white tracking-tighter">Jootiya</h1>
-            <div className="h-1 w-12 bg-orange-500 mx-auto rounded-full" />
-          </div>
-
           <div className="space-y-1">
-            <h1 className="hidden lg:block text-4xl font-black text-white tracking-tighter">
+            <h1 className="text-4xl font-black text-white tracking-tighter">
               Bon retour !
             </h1>
             <p className="text-zinc-500 font-medium">
