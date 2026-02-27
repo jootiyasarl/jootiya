@@ -36,21 +36,17 @@ interface PasswordForm {
   confirmPassword: string;
 }
 
-export function ProfileForm() {
-  const [userId, setUserId] = useState<string | null>(null);
-  const [personalInfo, setPersonalInfo] = useState<PersonalInfoForm>({
-    name: "",
-    phone: "",
-    city: "",
-    email: "",
-    push_enabled: true,
-    avatar_url: "",
-  });
+export function ProfileForm({ 
+  initialData 
+}: { 
+  initialData: PersonalInfoForm 
+}) {
+  const [personalInfo, setPersonalInfo] = useState<PersonalInfoForm>(initialData);
   const [passwordForm, setPasswordForm] = useState<PasswordForm>({
     newPassword: "",
     confirmPassword: "",
   });
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [savingProfile, setSavingProfile] = useState(false);
   const [changingPassword, setChangingPassword] = useState(false);
   const [deletingAccount, setDeletingAccount] = useState(false);
@@ -58,91 +54,9 @@ export function ProfileForm() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  const loadProfile = useCallback(async function loadProfile(cancelled: boolean) {
-    setLoading(true);
-    setError(null);
-    setSuccess(null);
-
-    try {
-      // Try to get session, but don't fail immediately if it's not there yet
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      
-      let user: User | null = session?.user ?? null;
-
-      // If no session from getSession, wait a bit and try again (for client-side hydration)
-      if (!user) {
-        const { data: { user: authUser } } = await supabase.auth.getUser();
-        user = authUser;
-      }
-
-      if (!user) {
-        // If still no user, maybe the session is initializing. Let's not show error immediately.
-        // Instead, check if we have a session after a short delay
-        await new Promise(resolve => setTimeout(resolve, 500));
-        const { data: { session: retrySession } } = await supabase.auth.getSession();
-        user = retrySession?.user ?? null;
-      }
-
-      if (!user) {
-        setLoading(false);
-        // Do not set error here to avoid blocking the UI if session is slow
-        return;
-      }
-
-      if (cancelled) return;
-      setUserId(user.id);
-
-      let initialData: PersonalInfoForm = {
-        name: "",
-        phone: "",
-        city: "",
-        email: user.email || "",
-        push_enabled: true,
-        avatar_url: "",
-      };
-
-      const { data: profile, error: profileError } = await supabase
-        .from("profiles")
-        .select("full_name, phone, city, push_enabled, avatar_url")
-        .eq("id", user.id)
-        .maybeSingle();
-
-      if (!cancelled && !profileError && profile) {
-        initialData = {
-          ...initialData,
-          name: profile.full_name ?? "",
-          phone: profile.phone ?? "",
-          city: profile.city ?? "",
-          push_enabled: profile.push_enabled ?? true,
-          avatar_url: profile.avatar_url ?? "",
-        };
-      }
-      setPersonalInfo(initialData);
-    } catch (err: any) {
-      if (cancelled) return;
-      setError(err.message ?? "Failed to load profile.");
-    } finally {
-      if (!cancelled) setLoading(false);
-    }
-  }, []);
-
   useEffect(() => {
-    let cancelled = false;
-
-    // Listen for auth state changes to catch session as soon as it's available
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN' && session?.user) {
-        setUserId(session.user.id);
-        loadProfile(false);
-      }
-    });
-
-    loadProfile(cancelled);
-    return () => {
-      cancelled = true;
-      subscription.unsubscribe();
-    };
-  }, [loadProfile]);
+    setPersonalInfo(initialData);
+  }, [initialData]);
 
   async function handleProfileSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -264,11 +178,6 @@ export function ProfileForm() {
   }
 
   async function handleDeleteAccount() {
-    if (!userId) {
-      toast.error("Vous devez être connecté pour supprimer votre compte.");
-      return;
-    }
-
     setDeletingAccount(true);
     setError(null);
 
@@ -278,7 +187,7 @@ export function ProfileForm() {
       toast.success("Compte déconnecté. Redirection...");
       setTimeout(() => { window.location.href = "/"; }, 1500);
     } catch (err: any) {
-      toast.error(err.message ?? "Échec de la déconnexion.");
+      toast.error(err.message || "Échec de la déconnexion.");
     } finally {
       setDeletingAccount(false);
     }
