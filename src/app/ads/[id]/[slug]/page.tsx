@@ -259,10 +259,10 @@ export default async function AdPage({ params }: AdPageProps) {
   return (
     <div dir="ltr" className="min-h-screen bg-[#F8FAFC] dark:bg-zinc-950 pb-16 font-sans text-zinc-900 dark:text-zinc-100">
       <ShadowViewTracker adId={ad.id} category={ad.category} />
-      <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border-b border-zinc-200 dark:border-zinc-800 z-40 sticky top-[56px] md:top-[64px] pb-6">
+      <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border-b border-zinc-200 dark:border-zinc-800 z-40 sticky top-[56px] md:top-[64px] pb-4">
         <div className="container-standard py-0.5">
           <div className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
-            <nav className="breadcrumb-gap flex flex-wrap items-center gap-1.5 text-[11px] font-bold text-zinc-500 min-w-0">
+            <nav className="flex flex-wrap items-center gap-1.5 text-[11px] font-bold text-zinc-500 min-w-0">
               <Link href="/" className="hover:text-orange-600 transition-colors">Accueil</Link>
               <ChevronRight className="h-3 w-3 opacity-50" />
               <Link href="/marketplace" className="hover:text-orange-600 transition-colors">Marché</Link>
@@ -280,7 +280,7 @@ export default async function AdPage({ params }: AdPageProps) {
       </div>
 
       <main className="main-content-wrapper container-standard py-4 sm:py-6 lg:py-8">
-        <div className="breadcrumb-gap space-y-2">
+        <div className="space-y-2 mb-4">
           <ViralTracker adId={ad.id} referrerId="" />
           <ViralProgressBar 
             adId={ad.id} 
