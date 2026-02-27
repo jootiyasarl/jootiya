@@ -3,6 +3,7 @@
 // Imports updated
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { sendMessageAction } from "@/app/messages/actions";
 import { Button } from "@/components/ui/button";
 import { Phone, MessageCircle, AlertCircle, Send, Loader2, Lock, BellRing } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
@@ -133,71 +134,35 @@ export function ContactActions({ adId, sellerId, sellerPhone, currentUser }: Con
     };
 
     const handleQuickMessage = async () => {
-        if (!currentUser) {
-            router.push(`/login?redirectTo=/ads/${adId}`);
-            return;
-        }
-
-        // Prevent messaging self
-        if (currentUser.id === sellerId) {
-            alert("Vous ne pouvez pas vous envoyer un message à vous-même.");
-            setIsOpen(false);
-            return;
-        }
-
         if (!message.trim()) return;
 
         setIsSending(true);
 
         try {
-            // 1. Get or Create Conversation
-            let conversationId;
-            const { data: existingConv } = await supabase
-                .from('conversations')
-                .select('id')
-                .eq('ad_id', adId)
-                .eq('buyer_id', currentUser.id)
-                .eq('seller_id', sellerId)
-                .single();
+            const result = await sendMessageAction({
+                adId,
+                sellerId,
+                content: message.trim()
+            });
 
-            if (existingConv) {
-                conversationId = existingConv.id;
-            } else {
-                const { data: newConv, error: insertConvError } = await supabase
-                    .from('conversations')
-                    .insert({
-                        ad_id: adId,
-                        buyer_id: currentUser.id,
-                        seller_id: sellerId
-                    })
-                    .select('id')
-                    .single();
-
-                if (insertConvError) throw insertConvError;
-                conversationId = newConv.id;
+            if (result.error) {
+                if (result.error.includes("connecter")) {
+                    router.push(`/login?redirectTo=/ads/${adId}`);
+                } else {
+                    toast.error(result.error);
+                }
+                return;
             }
-
-            // 2. Send Message
-            const { error: msgError } = await supabase
-                .from('messages')
-                .insert({
-                    conversation_id: conversationId,
-                    sender_id: currentUser.id,
-                    content: message.trim()
-                });
-
-            if (msgError) throw msgError;
 
             // Success feedback
             setIsOpen(false);
             setMessage("");
-            // Optional: Redirect to chat or show toast
-            // For now, we redirect to full chat to continue conversation
-            router.push(`/dashboard/messages?id=${conversationId}`);
+            toast.success("Message envoyé !");
+            router.push(`/dashboard/messages?id=${result.conversationId}`);
 
         } catch (error) {
             console.error("Error sending message:", error);
-            alert("Erreur lors de l'envoi du message.");
+            toast.error("Erreur lors de l'envoi du message.");
         } finally {
             setIsSending(false);
         }
