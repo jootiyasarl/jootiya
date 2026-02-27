@@ -39,7 +39,7 @@ export default async function ForgotPasswordPage({
   const { error, success } = await searchParams;
 
   return (
-    <div className="min-h-screen bg-white flex font-sans overflow-hidden">
+    <div className="fixed inset-0 z-[9999] bg-[#0a0a0a] flex flex-col lg:flex-row font-sans overflow-hidden select-none touch-none text-left" dir="ltr">
       {/* Left Side: Illustration */}
       <div className="hidden lg:flex lg:w-1/2 bg-[#fdfbf7] items-center justify-center p-12">
         <div className="max-w-md w-full">

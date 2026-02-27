@@ -138,7 +138,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
   const { error, message } = await searchParams;
 
   return (
-    <div className="min-h-screen bg-white flex font-sans overflow-hidden">
+    <div className="fixed inset-0 z-[9999] bg-[#0a0a0a] flex flex-col lg:flex-row font-sans overflow-hidden select-none touch-none">
       {/* Left Side: Illustration (Hidden on mobile) */}
       <div className="hidden lg:flex lg:w-1/2 bg-[#fdfbf7] items-center justify-center p-12 relative">
         <div className="max-w-md w-full animate-in fade-in slide-in-from-left-8 duration-1000">
