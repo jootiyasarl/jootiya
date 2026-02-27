@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
-import { HeroSection } from "@/components/home/HeroSection";
 import { SellBanner } from "@/components/home/SellBanner";
 import { BlogSection } from "@/components/home/BlogSection";
 import { AdCard } from "@/components/AdCard";
@@ -128,8 +127,6 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
 
   return (
     <div dir="ltr" className="min-h-screen bg-white font-sans text-zinc-900 pb-24">
-      <HeroSection />
-
       {isOfflineData && (
         <div className="bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest py-1 text-center flex items-center justify-center gap-2">
           <WifiOff className="w-3 h-3" />
