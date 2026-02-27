@@ -143,7 +143,9 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
           </div>
 
           <div className="lg:col-span-9 space-y-12 sm:space-y-16">
-            <SellBanner />
+            <div className="block">
+              <SellBanner />
+            </div>
             {ads.length === 0 && !loading ? (
               <div className="flex flex-col items-center justify-center py-24 text-center border border-dashed border-zinc-200 rounded-[2.5rem] bg-zinc-50/40">
                 <div className="bg-white p-6 rounded-2xl mb-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-zinc-100">
