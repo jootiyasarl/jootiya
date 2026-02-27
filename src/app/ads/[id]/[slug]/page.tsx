@@ -6,9 +6,7 @@ import { AdImageGallery } from "@/components/ads/AdImageGallery";
 import { ContactActions } from "@/components/ads/ContactActions";
 import { AdLocationMapDynamic } from "@/components/ads/AdLocationMapDynamic";
 import { RecentReviews } from "@/components/ads/RecentReviews";
-import { AdCard } from "@/components/AdCard";
-import { ReportModal } from "@/components/ads/ReportModal";
-import { ReportButton } from "@/components/ads/ReportButton";
+import { AdCard } from "@/components/ads/AdCard";
 import { FavoriteButton } from "@/components/ads/FavoriteButton";
 import { ViralProgressBar } from "@/components/ads/ViralProgressBar";
 import { ViralTracker } from "@/components/ads/ViralTracker";
@@ -19,7 +17,6 @@ import {
   Calendar,
   Share2,
   Heart,
-  Flag,
   ShieldCheck,
   CheckCircle2,
   ChevronRight,
@@ -278,7 +275,6 @@ export default async function AdPage({ params }: AdPageProps) {
                 <p className="font-black text-orange-600 leading-none">{formattedPrice}</p>
               </div>
               <FavoriteButton adId={ad.id} className="hover:bg-red-50 text-zinc-600 hover:text-red-600 rounded-xl" />
-              <ReportButton targetId={ad.id} targetType="ad" reporterId={user?.id} />
             </div>
           </div>
         </div>
@@ -310,7 +306,6 @@ export default async function AdPage({ params }: AdPageProps) {
                   <p className="text-3xl font-black text-orange-600 tracking-tight">{formattedPrice}</p>
                   <div className="flex items-center gap-2">
                     <FavoriteButton adId={ad.id} className="hover:bg-red-50 text-zinc-600 hover:text-red-600 rounded-xl" />
-                    <ReportButton targetId={ad.id} targetType="ad" reporterId={user?.id} />
                   </div>
                 </div>
                 <h1 className="text-2xl font-black tracking-tighter leading-tight text-zinc-900 dark:text-white">
@@ -384,7 +379,6 @@ export default async function AdPage({ params }: AdPageProps) {
                   <h2 className="text-lg font-black tracking-tight text-zinc-900 dark:text-white">Description</h2>
                   <div className="flex items-center gap-2">
                     <FavoriteButton adId={ad.id} className="hover:bg-red-50 text-zinc-600 hover:text-red-600 rounded-xl" />
-                    <ReportButton targetId={ad.id} targetType="ad" reporterId={user?.id} />
                   </div>
                 </div>
 
@@ -449,7 +443,6 @@ export default async function AdPage({ params }: AdPageProps) {
                   </div>
                   <div className="flex items-center gap-2">
                     <FavoriteButton adId={ad.id} className="hover:bg-red-50 text-zinc-600 hover:text-red-600 rounded-xl" />
-                    <ReportButton targetId={ad.id} targetType="ad" reporterId={user?.id} />
                   </div>
                 </div>
 
