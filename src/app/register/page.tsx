@@ -51,6 +51,21 @@ async function registerAction(formData: FormData) {
 
   const supabase = createSupabaseServerClient();
 
+  // Check if email already exists in profiles
+  if (trimmedEmail) {
+    const { data: existingEmail } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("email", trimmedEmail)
+      .maybeSingle();
+
+    if (existingEmail) {
+      const params = new URLSearchParams();
+      params.set("error", "Cette adresse e-mail est déjà utilisée par un autre compte.");
+      redirect(`/register?${params.toString()}`);
+    }
+  }
+
   // For Hybrid Auth, we use the phone as the email identifier in Supabase Auth if needed,
   // or we create a custom user. Since the user wants to gather email optionally,
   // we'll use a virtual email for Supabase Auth based on the phone number.
