@@ -36,12 +36,7 @@ const CATEGORIES_GRID = [
 export default function MarketplacePage() {
   return (
     <div className="min-h-screen bg-[#F8FAFC] dark:bg-zinc-950 pb-12">
-      <div className="mx-auto max-w-7xl px-4 pt-2">
-        {/* Sell Banner - Moved to top as per user requirement */}
-        <div className="mb-6 block">
-          <SellBanner />
-        </div>
-
+      <div className="mx-auto max-w-7xl px-4 pt-4 md:pt-6">
         <div className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl font-black text-zinc-900 dark:text-white mb-4">
             Que recherchez-vous ?
@@ -91,6 +86,11 @@ export default function MarketplacePage() {
               </Link>
             );
           })}
+        </div>
+
+        {/* Sell Banner - Moved to bottom as per user requirement */}
+        <div className="mt-12 block">
+          <SellBanner />
         </div>
       </div>
     </div>
