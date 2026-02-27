@@ -284,7 +284,7 @@ export default async function AdPage({ params }: AdPageProps) {
         </div>
       </div>
 
-      <main className="max-w-[1440px] mx-auto px-4 md:px-8 pt-2 md:pt-4 pb-12">
+      <main className="max-w-[1440px] mx-auto px-4 md:px-8 pt-2 sm:pt-4 pb-8 sm:pb-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-start">
           {/* Left Column: Gallery + Details */}
           <div className="lg:col-span-8 space-y-4 min-w-0">
