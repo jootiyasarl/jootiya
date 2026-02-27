@@ -99,21 +99,6 @@ export default async function AdPage({ params }: AdPageProps) {
     <div dir="ltr" className="bg-[#F8FAFC] dark:bg-zinc-950 pb-16 font-sans">
       <ShadowViewTracker adId={ad.id} category={ad.category} />
       
-      {/* Unified Breadcrumbs - Responsive & Professional */}
-      <div className="sticky top-[124px] md:top-[128px] z-30 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-100 dark:border-zinc-800">
-        <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-3">
-          <nav className="flex items-center gap-2 text-[12px] font-bold text-zinc-500 uppercase tracking-wider overflow-x-auto no-scrollbar whitespace-nowrap">
-            <Link href="/" className="hover:text-orange-600 shrink-0">Accueil</Link>
-            <ChevronRight className="h-3.5 w-3.5 text-zinc-300 shrink-0" />
-            <Link href="/marketplace" className="hover:text-orange-600 shrink-0">Marché</Link>
-            <ChevronRight className="h-3.5 w-3.5 text-zinc-300 shrink-0" />
-            <span className="text-orange-600 font-black shrink-0">{ad.category || "Annonce"}</span>
-            <ChevronRight className="h-3.5 w-3.5 text-zinc-300 shrink-0" />
-            <span className="text-zinc-400 truncate max-w-[200px] md:max-w-none font-medium shrink-0">{ad.title}</span>
-          </nav>
-        </div>
-      </div>
-
       <main className="max-w-[1440px] mx-auto px-4 md:px-8 pt-4 md:pt-6 pb-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Main Content Column */}
