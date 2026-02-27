@@ -262,7 +262,7 @@ export default async function AdPage({ params }: AdPageProps) {
       <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border-b border-zinc-200 dark:border-zinc-800 z-40 sticky top-[56px] md:top-[64px] pb-6">
         <div className="container-standard py-0.5">
           <div className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
-            <nav className="flex flex-wrap items-center gap-1.5 text-[11px] font-bold text-zinc-500 min-w-0">
+            <nav className="breadcrumb-gap flex flex-wrap items-center gap-1.5 text-[11px] font-bold text-zinc-500 min-w-0">
               <Link href="/" className="hover:text-orange-600 transition-colors">Accueil</Link>
               <ChevronRight className="h-3 w-3 opacity-50" />
               <Link href="/marketplace" className="hover:text-orange-600 transition-colors">Marché</Link>

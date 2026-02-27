@@ -136,8 +136,8 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
           <SellBanner />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
-          <div className="hidden lg:block lg:col-span-3 lg:mt-[52px]">
-            <Suspense fallback={<div className="h-[400px] w-full bg-zinc-50 animate-pulse rounded-3xl" />}>
+          <div className="hidden lg:block lg:col-span-3 lg:mt-[44px]">
+            <Suspense fallback={<div className="min-h-[400px] w-full bg-zinc-50 animate-pulse rounded-3xl" />}>
               <LocationFilterSidebar ads={mapAds} />
             </Suspense>
           </div>
