@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { sendMessageAction } from "@/app/messages/actions";
 import { Button } from "@/components/ui/button";
-import { Phone, MessageCircle, AlertCircle, Send, Loader2, Lock, BellRing } from "lucide-react";
+import { Phone, MessageCircle, AlertCircle, Send, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
