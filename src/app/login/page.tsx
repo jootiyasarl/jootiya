@@ -72,9 +72,9 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const { error, message, redirectTo } = await searchParams;
 
   return (
-    <div className="min-h-screen bg-white flex font-sans overflow-hidden">
+    <div className="min-h-screen bg-[#0a0a0a] flex font-sans overflow-hidden">
       {/* Left Side: Illustration (Hidden on mobile) */}
-      <div className="hidden lg:flex lg:w-1/2 bg-[#fdfbf7] items-center justify-center p-12 relative">
+      <div className="hidden lg:flex lg:w-1/2 bg-[#fdfbf7] items-center justify-center p-12 relative border-r border-zinc-900/10">
         <div className="max-w-md w-full animate-in fade-in slide-in-from-left-8 duration-1000">
           <div className="relative aspect-square w-full">
             <svg viewBox="0 0 400 400" className="w-full h-full text-zinc-800" fill="none" xmlns="http://www.w3.org/2000/svg">
