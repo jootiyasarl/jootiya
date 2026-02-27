@@ -39,7 +39,7 @@ export default async function ForgotPasswordPage({
   const { error, success } = await searchParams;
 
   return (
-    <div className="fixed inset-0 z-[9999] bg-[#0a0a0a] flex flex-col lg:flex-row font-sans overflow-hidden select-none touch-none text-left" dir="ltr">
+    <div className="h-screen w-screen bg-white flex flex-col lg:flex-row font-sans overflow-hidden">
       {/* Left Side: Illustration */}
       <div className="hidden lg:flex lg:w-1/2 bg-[#fdfbf7] items-center justify-center p-12">
         <div className="max-w-md w-full">
@@ -51,34 +51,31 @@ export default async function ForgotPasswordPage({
         </div>
       </div>
 
-      {/* Right Side: Form */}
-      <div className="w-full lg:w-1/2 bg-[#0a0a0a] flex items-center justify-center p-6 sm:p-12 relative overflow-hidden">
-        {/* Background Decorative Element */}
-        <div className="absolute top-[-10%] right-[-10%] w-64 h-64 bg-orange-600/5 blur-3xl rounded-full pointer-events-none" />
-        
-        <div className="w-full max-w-md space-y-8 relative z-10 text-left flex flex-col min-h-[600px] justify-center" dir="ltr">
+      {/* Right Side: Reset Form */}
+      <div className="w-full lg:w-1/2 bg-white flex items-center justify-center p-6 sm:p-12 h-full overflow-hidden">
+        <div className="w-full max-w-md space-y-8 text-left flex flex-col justify-center h-full" dir="ltr">
+          <div className="space-y-2">
+            <h1 className="text-4xl font-black text-zinc-900 tracking-tighter">Réinitialisation</h1>
+            <p className="text-zinc-500 font-medium">Entrez votre email pour recevoir un lien</p>
+          </div>
+
           <div className="flex-grow flex flex-col justify-center space-y-8">
-            <Link href="/login" className="inline-flex items-center gap-2 text-zinc-500 hover:text-white transition-all mb-4 group">
+            <Link href="/login" className="inline-flex items-center gap-2 text-zinc-500 hover:text-zinc-900 transition-all mb-4 group">
               <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
               <span className="text-sm font-medium">Retour à la connexion</span>
             </Link>
 
-            <div className="space-y-2">
-              <h1 className="text-4xl font-black text-white tracking-tighter">Mot de passe oublié</h1>
-              <p className="text-zinc-400 text-lg font-medium">Entrez votre email pour réinitialiser</p>
-            </div>
-
             {error && (
               <div className="rounded-xl bg-red-500/10 p-4 border border-red-500/20 flex gap-3 items-center">
                 <ShieldCheck className="w-5 h-5 text-red-500 flex-shrink-0" />
-                <p className="text-sm font-medium text-red-200 leading-tight">{error}</p>
+                <p className="text-sm font-medium text-red-600 leading-tight">{error}</p>
               </div>
             )}
 
             {success && (
               <div className="rounded-xl bg-emerald-500/10 p-4 border border-emerald-500/20 flex gap-3 items-center">
                 <ShieldCheck className="w-5 h-5 text-emerald-500 flex-shrink-0" />
-                <p className="text-sm font-medium text-emerald-200 leading-tight">{success}</p>
+                <p className="text-sm font-medium text-emerald-600 leading-tight">{success}</p>
               </div>
             )}
 
@@ -90,7 +87,7 @@ export default async function ForgotPasswordPage({
                   type="email"
                   placeholder="Votre adresse e-mail"
                   required
-                  className="h-14 px-6 rounded-xl bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-500 focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all text-base font-medium"
+                  className="h-14 px-6 rounded-xl bg-zinc-50 border-zinc-200 text-zinc-900 placeholder:text-zinc-400 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all text-base font-bold"
                 />
               </div>
 
