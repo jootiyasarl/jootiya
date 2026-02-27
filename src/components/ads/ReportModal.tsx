@@ -3,9 +3,16 @@
 import { useState } from "react";
 import { Flag, X, AlertTriangle, ShieldAlert, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/lib/supabaseClient";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter,
+} from "@/components/ui/dialog";
 import { submitReportAction } from "@/app/ads/actions";
 
 interface ReportModalProps {
@@ -29,8 +36,6 @@ export function ReportModal({ isOpen, onClose, targetId, targetType, reporterId 
     const [details, setDetails] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    if (!isOpen) return null;
-
     const handleSubmit = async () => {
         if (!selectedReason) {
             toast.error("Veuillez sélectionner un motif de signalement");
@@ -48,102 +53,86 @@ export function ReportModal({ isOpen, onClose, targetId, targetType, reporterId 
 
             if (result.error) throw new Error(result.error);
 
-            toast.success("Votre signalement a été envoyé avec succès. Nous l'examinerons prochainement.");
+            toast.success("Votre signalement a été envoyé avec succès.");
             onClose();
         } catch (error: any) {
-            toast.error(error.message || "Désolé, une erreur est survenue lors de l'envoi du signalement.");
-            console.error("Report Error:", error);
+            toast.error(error.message || "Désolé, une erreur est survenue.");
         } finally {
             setIsSubmitting(false);
         }
     };
 
     return (
-        <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
-            <div className="bg-white w-full max-w-lg sm:rounded-[2.5rem] rounded-t-[2.5rem] overflow-hidden shadow-2xl animate-in slide-in-from-bottom-10 sm:zoom-in-95 duration-300 relative flex flex-col max-h-[90vh]">
-                {/* Header */}
-                <div className="p-6 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/50 shrink-0">
+        <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+            <DialogContent className="sm:max-w-lg rounded-[2.5rem] p-0 overflow-hidden border-none shadow-2xl z-[9999]">
+                <DialogHeader className="p-6 border-b border-zinc-100 bg-zinc-50/50">
                     <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-red-50 flex items-center justify-center shadow-sm">
+                        <div className="w-12 h-12 rounded-2xl bg-red-50 flex items-center justify-center">
                             <Flag className="w-6 h-6 text-red-600" />
                         </div>
-                        <div>
-                            <h3 className="text-lg font-black text-zinc-900 leading-tight uppercase tracking-tight">Signaler l'annonce</h3>
-                            <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-[0.2em] mt-1">Aidez-nous à garder Jootiya sûr</p>
+                        <div className="text-left">
+                            <DialogTitle className="text-lg font-black text-zinc-900 uppercase">Signaler l'annonce</DialogTitle>
+                            <DialogDescription className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">
+                                Motif du signalement
+                            </DialogDescription>
                         </div>
                     </div>
-                    <button 
-                        onClick={onClose} 
-                        className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-zinc-100 transition-all active:scale-90"
-                    >
-                        <X className="w-5 h-5 text-zinc-400" />
-                    </button>
-                </div>
+                </DialogHeader>
 
-                {/* Body - Scrollable */}
-                <div className="p-6 space-y-8 overflow-y-auto custom-scrollbar">
-                    <div className="space-y-4">
-                        <p className="text-sm font-black uppercase tracking-widest text-zinc-400 px-1">Motif du signalement</p>
-                        <div className="grid gap-3">
-                            {REPORT_REASONS.map((reason) => {
-                                const Icon = reason.icon;
-                                const isSelected = selectedReason === reason.id;
-                                return (
-                                    <button
-                                        key={reason.id}
-                                        onClick={() => setSelectedReason(reason.id)}
-                                        className={cn(
-                                            "flex items-center justify-between p-5 rounded-2xl border-2 transition-all duration-300 text-left group",
-                                            isSelected
-                                                ? "border-red-600 bg-red-50/30 shadow-lg shadow-red-100/50 scale-[1.02]"
-                                                : "border-zinc-100 hover:border-zinc-200 bg-zinc-50/30"
-                                        )}
-                                    >
-                                        <div className="flex items-center gap-4">
-                                            <div className={cn(
-                                                "w-10 h-10 rounded-xl flex items-center justify-center transition-colors",
-                                                isSelected ? "bg-red-600 text-white" : "bg-white text-zinc-400 group-hover:text-zinc-600"
-                                            )}>
-                                                <Icon className="w-5 h-5" />
-                                            </div>
-                                            <span className={cn("text-sm font-bold", isSelected ? "text-red-700" : "text-zinc-600")}>{reason.label}</span>
+                <div className="p-6 space-y-6 max-h-[60vh] overflow-y-auto custom-scrollbar">
+                    <div className="grid gap-3">
+                        {REPORT_REASONS.map((reason) => {
+                            const Icon = reason.icon;
+                            const isSelected = selectedReason === reason.id;
+                            return (
+                                <button
+                                    key={reason.id}
+                                    onClick={() => setSelectedReason(reason.id)}
+                                    className={cn(
+                                        "flex items-center justify-between p-4 rounded-2xl border-2 transition-all text-left",
+                                        isSelected
+                                            ? "border-red-600 bg-red-50/30 scale-[1.02]"
+                                            : "border-zinc-100 hover:border-zinc-200 bg-zinc-50/30"
+                                    )}
+                                >
+                                    <div className="flex items-center gap-4">
+                                        <div className={cn(
+                                            "w-10 h-10 rounded-xl flex items-center justify-center",
+                                            isSelected ? "bg-red-600 text-white" : "bg-white text-zinc-400"
+                                        )}>
+                                            <Icon className="w-5 h-5" />
                                         </div>
-                                        {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-red-600 shadow-glow animate-pulse" />}
-                                    </button>
-                                );
-                            })}
-                        </div>
+                                        <span className={cn("text-sm font-bold", isSelected ? "text-red-700" : "text-zinc-600")}>
+                                            {reason.label}
+                                        </span>
+                                    </div>
+                                    {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-red-600 animate-pulse" />}
+                                </button>
+                            );
+                        })}
                     </div>
 
-                    <div className="space-y-3">
-                        <p className="text-sm font-black uppercase tracking-widest text-zinc-400 px-1">Détails (Optionnel)</p>
+                    <div className="space-y-2 text-left">
+                        <label className="text-sm font-black uppercase tracking-widest text-zinc-400 px-1">Détails</label>
                         <textarea
                             value={details}
                             onChange={(e) => setDetails(e.target.value)}
-                            className="w-full p-5 rounded-[1.5rem] border-2 border-zinc-100 focus:border-red-600 focus:ring-0 transition-all text-base min-h-[120px] bg-zinc-50/30 resize-none placeholder:text-zinc-300"
-                            placeholder="Décrivez le problème en quelques mots..."
+                            className="w-full p-5 rounded-2xl border-2 border-zinc-100 focus:border-red-600 focus:ring-0 transition-all bg-zinc-50/30 min-h-[100px] resize-none"
+                            placeholder="Décrivez le problème..."
                         />
                     </div>
                 </div>
 
-                {/* Footer */}
-                <div className="p-6 bg-zinc-50/50 border-t border-zinc-100 shrink-0">
+                <DialogFooter className="p-6 bg-zinc-50/50 border-t border-zinc-100">
                     <Button
                         onClick={handleSubmit}
                         disabled={isSubmitting || !selectedReason}
-                        className="w-full bg-red-600 hover:bg-red-700 text-white font-black h-16 rounded-2xl shadow-xl shadow-red-200 transition-all active:scale-[0.98] py-0 text-base uppercase tracking-widest"
+                        className="w-full bg-red-600 hover:bg-red-700 text-white font-black h-14 rounded-2xl shadow-xl"
                     >
-                        {isSubmitting ? (
-                            <Loader2 className="w-6 h-6 animate-spin" />
-                        ) : (
-                            "Envoyer le signalement"
-                        )}
+                        {isSubmitting ? <Loader2 className="w-6 h-6 animate-spin" /> : "Envoyer le signalement"}
                     </Button>
-                    <p className="text-center text-[10px] text-zinc-400 mt-4 font-medium px-4">
-                        En envoyant ce signalement, vous confirmez que ces informations sont exactes.
-                    </p>
-                </div>
-            </div>
-        </div>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     );
 }
