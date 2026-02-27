@@ -24,7 +24,8 @@ export function HeaderCategories() {
 
     return (
         <div className="w-full bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-800">
-            <div className="flex w-full items-center justify-between gap-1 overflow-x-auto py-2 scrollbar-hide">
+            <div className="container-standard">
+                <div className="flex w-full items-center justify-between gap-1 overflow-x-auto py-2 scrollbar-hide">
                 <Link
                     href="/marketplace"
                     className={cn(
@@ -76,6 +77,7 @@ export function HeaderCategories() {
                         </Link>
                     );
                 })}
+                </div>
             </div>
         </div>
     );
