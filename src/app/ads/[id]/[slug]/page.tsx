@@ -260,27 +260,17 @@ export default async function AdPage({ params }: AdPageProps) {
     <div dir="ltr" className="bg-[#F8FAFC] dark:bg-zinc-950 pb-16 font-sans text-zinc-900 dark:text-zinc-100">
       <ShadowViewTracker adId={ad.id} category={ad.category} />
       {/* Breadcrumbs Section */}
-      <div className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 z-40 sticky top-[55px] md:top-[63px] shadow-sm">
-        <div className="max-w-[1440px] mx-auto px-4 md:px-8">
-          <div className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between py-1">
-            <nav className="flex flex-wrap items-center gap-1.5 text-[11px] font-bold text-zinc-500 min-w-0 py-2">
-              <Link href="/" className="hover:text-orange-600 transition-colors">Accueil</Link>
-              <ChevronRight className="h-3 w-3 opacity-50" />
-              <Link href="/marketplace" className="hover:text-orange-600 transition-colors">Marché</Link>
-              <ChevronRight className="h-3 w-3 opacity-50" />
-              <span className="text-zinc-400 font-medium truncate max-w-[150px] md:max-w-none">
-                {ad.title}
-              </span>
-            </nav>
-
-            {/* Price & Actions in Desktop */}
-            <div className="hidden md:flex items-center gap-3">
-              <div className="text-right mr-2">
-                <p className="font-black text-orange-600 leading-none">{formattedPrice}</p>
-              </div>
-              <FavoriteButton adId={ad.id} className="h-8 w-8 hover:bg-red-50 text-zinc-600 hover:text-red-600 rounded-lg" />
-            </div>
-          </div>
+      <div className="bg-zinc-50/50 dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-800">
+        <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-2">
+          <nav className="flex items-center gap-2 text-[11px] font-bold text-zinc-500 uppercase tracking-wider">
+            <Link href="/" className="hover:text-orange-600 transition-colors">Accueil</Link>
+            <span className="text-zinc-300">/</span>
+            <Link href="/marketplace" className="hover:text-orange-600 transition-colors">Marché</Link>
+            <span className="text-zinc-300">/</span>
+            <span className="text-orange-600 truncate max-w-[150px] md:max-w-none">
+              {ad.title}
+            </span>
+          </nav>
         </div>
       </div>
 
