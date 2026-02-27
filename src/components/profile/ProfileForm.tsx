@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import { Camera, User as UserIcon, Loader2 } from "lucide-react";
 import Image from "next/image";
 import type { User } from "@supabase/supabase-js";
+import { updateProfile, uploadAvatarAction } from "@/app/dashboard/profile/actions";
 
 interface PersonalInfoForm {
   name: string;
@@ -157,24 +158,21 @@ export function ProfileForm() {
     setSuccess(null);
 
     try {
-      const { error: upsertError } = await supabase
-        .from("profiles")
-        .upsert({
-          id: currentUserId,
-          full_name: personalInfo.name,
-          phone: personalInfo.phone,
-          city: personalInfo.city,
-          email: personalInfo.email,
-          avatar_url: personalInfo.avatar_url,
-          updated_at: new Date().toISOString(),
-        }, { onConflict: "id" });
+      const result = await updateProfile({
+        full_name: personalInfo.name,
+        phone: personalInfo.phone,
+        city: personalInfo.city,
+        email: personalInfo.email,
+        avatar_url: personalInfo.avatar_url,
+      });
 
-      if (upsertError) throw upsertError;
+      if (result.error) throw new Error(result.error);
+      
       setSuccess("Profile updated.");
       toast.success("Profile updated successfully");
     } catch (err: any) {
       setError(err.message ?? "Failed to save profile.");
-      toast.error("Failed to save profile");
+      toast.error(err.message ?? "Failed to save profile");
     } finally {
       setSavingProfile(false);
     }
@@ -231,43 +229,29 @@ export function ProfileForm() {
 
     setUploadingAvatar(true);
     try {
-      // Direct session check from client
-      const { data: { session } } = await supabase.auth.getSession();
-      const currentUserId = session?.user?.id || userId;
-
-      if (!currentUserId) {
-        toast.error("Veuillez vous reconnecter.");
+      // Use FileReader to convert file to base64 for Server Action
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64Image = reader.result as string;
+        const result = await uploadAvatarAction(base64Image, file.name);
+        
+        if (result.error) {
+          toast.error(result.error);
+          setUploadingAvatar(false);
+        } else if (result.publicUrl) {
+          setPersonalInfo(prev => ({ ...prev, avatar_url: result.publicUrl }));
+          toast.success("Photo de profil mise à jour.");
+          setUploadingAvatar(false);
+        }
+      };
+      reader.onerror = () => {
+        toast.error("Échec de la lecture du ملف.");
         setUploadingAvatar(false);
-        return;
-      }
-
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${currentUserId}-${Math.random()}.${fileExt}`;
-      const filePath = `${fileName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('ad-images')
-        .upload(filePath, file);
-
-      if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('ad-images')
-        .getPublicUrl(filePath);
-
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ avatar_url: publicUrl })
-        .eq('id', currentUserId);
-
-      if (updateError) throw updateError;
-
-      setPersonalInfo(prev => ({ ...prev, avatar_url: publicUrl }));
-      toast.success("Photo de profil mise à jour.");
+      };
+      reader.readAsDataURL(file);
     } catch (err: any) {
       console.error("Error uploading avatar:", err);
       toast.error("Échec du téléchargement.");
-    } finally {
       setUploadingAvatar(false);
     }
   }
