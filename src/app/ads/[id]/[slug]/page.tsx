@@ -214,23 +214,15 @@ export default async function AdPage({ params }: AdPageProps) {
     console.error("Error fetching similar ads:", err);
   }
 
-  // 5. Image Processing Logic
-  // Check both image_urls and images fields to ensure no data is missed
-  const rawImages = (ad.image_urls && Array.isArray(ad.image_urls) && ad.image_urls.length > 0) 
-    ? ad.image_urls 
-    : (ad.images && Array.isArray(ad.images) && ad.images.length > 0) 
-      ? ad.images 
-      : [];
-
-  // Ensure all image URLs are properly formatted (full URLs)
-  const images = rawImages.map((img: string) => {
-    if (img.startsWith('http')) return img;
-    const cleanPath = img.startsWith('/') ? img.substring(1) : img;
-    return `${baseUrl}/${cleanPath}`;
-  });
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://jootiya.com';
+  const adSlug = ad.slug || slug || generateSlug(ad.title);
+  const canonicalUrl = `${baseUrl}/ads/${ad.id}/${adSlug}`;
+  const citySuffix = ad.city ? ` à ${ad.city}` : "";
   const formattedPrice = ad.price
     ? Number(ad.price).toLocaleString() + " " + (ad.currency?.trim() || "MAD")
     : "Sur demande";
+  const metaTitle = `${ad.title} - ${formattedPrice}${citySuffix}`;
+  const metaDescription = ad.description ? ad.description.slice(0, 160) : `Découvrez ${ad.title} sur Jootiya.`;
 
   const formattedDate = new Date(ad.created_at).toLocaleDateString("fr-FR", {
     day: "numeric",
@@ -242,21 +234,24 @@ export default async function AdPage({ params }: AdPageProps) {
   const sellerInitial = sellerName.charAt(0).toUpperCase();
   const memberSince = sellerProfile?.created_at ? new Date(sellerProfile.created_at).getFullYear() : "2024";
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://jootiya.com';
-  const citySuffix = ad.city ? ` à ${ad.city}` : "";
-  const formattedPriceRaw = ad.price ? ` - ${Number(ad.price).toLocaleString()} ${ad.currency || 'MAD'}` : "";
-  const metaTitle = `${ad.title}${formattedPriceRaw}${citySuffix}`;
-  const metaDescription = ad.description ? ad.description.slice(0, 160) : `Découvrez ${ad.title} sur Jootiya.`;
-  const adSlug = ad.slug || slug || generateSlug(ad.title);
-  const canonicalUrl = `${baseUrl}/ads/${ad.id}/${adSlug}`;
-  
   let shareImage = `${baseUrl}/og-image.png`; 
   const rawImage = ad.image_urls?.[0];
   if (rawImage) {
     shareImage = rawImage.startsWith('http') ? rawImage : `${baseUrl}/${rawImage.startsWith('/') ? rawImage.substring(1) : rawImage}`;
   }
 
-  return (
+  // 5. Image Processing Logic
+  const rawImages = (ad.image_urls && Array.isArray(ad.image_urls) && ad.image_urls.length > 0) 
+    ? ad.image_urls 
+    : (ad.images && Array.isArray(ad.images) && ad.images.length > 0) 
+      ? ad.images 
+      : [];
+
+  const images = rawImages.map((img: string) => {
+    if (img.startsWith('http')) return img;
+    const cleanPath = img.startsWith('/') ? img.substring(1) : img;
+    return `${baseUrl}/${cleanPath}`;
+  });
     <div dir="ltr" className="bg-[#F8FAFC] dark:bg-zinc-950 pb-16 font-sans text-zinc-900 dark:text-zinc-100">
       <ShadowViewTracker adId={ad.id} category={ad.category} />
       {/* Breadcrumbs Section - Updated Position & Categories */}
