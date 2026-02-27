@@ -38,6 +38,9 @@ export function ReportModal({ isOpen, onClose, targetId, targetType, reporterId 
 
         setIsSubmitting(true);
         try {
+            const { data: { session } } = await supabase.auth.getSession();
+            const currentReporterId = session?.user?.id || reporterId;
+
             const reasonLabel = REPORT_REASONS.find(r => r.id === selectedReason)?.label || selectedReason;
 
             const { error } = await supabase
@@ -46,7 +49,7 @@ export function ReportModal({ isOpen, onClose, targetId, targetType, reporterId 
                     target_type: targetType,
                     ad_id: targetType === "ad" ? targetId : null,
                     reported_user_id: targetType === "user" ? targetId : null,
-                    reporter_id: reporterId || null,
+                    reporter_id: currentReporterId || null,
                     reason: reasonLabel,
                     details: { comment: details }
                 });

@@ -18,7 +18,8 @@ export function FavoriteButton({ adId, initialIsFavorite = false, className }: F
 
     useEffect(() => {
         const checkFavorite = async () => {
-            const { data: { user } } = await supabase.auth.getUser();
+            const { data: { session } } = await supabase.auth.getSession();
+            const user = session?.user;
             if (!user) return;
 
             const { data, error } = await supabase
@@ -33,17 +34,28 @@ export function FavoriteButton({ adId, initialIsFavorite = false, className }: F
             }
         };
 
-        if (initialIsFavorite === undefined) {
-            checkFavorite();
-        }
-    }, [adId, initialIsFavorite]);
+        checkFavorite();
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+                checkFavorite();
+            } else if (event === 'SIGNED_OUT') {
+                setIsFavorite(false);
+            }
+        });
+
+        return () => {
+            subscription.unsubscribe();
+        };
+    }, [adId]);
 
     const toggleFavorite = async (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
 
         setLoading(true);
-        const { data: { user } } = await supabase.auth.getUser();
+        const { data: { session } } = await supabase.auth.getSession();
+        const user = session?.user;
 
         if (!user) {
             toast.error("Veuillez vous connecter pour ajouter des favoris");
