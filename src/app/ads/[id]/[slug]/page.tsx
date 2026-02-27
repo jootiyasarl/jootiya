@@ -114,7 +114,7 @@ export default async function AdPage({ params }: AdPageProps) {
         </div>
       </div>
       
-      <main className="max-w-[1440px] mx-auto px-4 md:px-8 pt-4 md:pt-12 pb-12">
+      <main className="max-w-[1440px] mx-auto px-4 md:px-8 pt-4 md:pt-16 pb-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Main Content Column */}
           <div className="lg:col-span-8 space-y-6">
