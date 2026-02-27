@@ -55,6 +55,9 @@ async function registerAction(formData: FormData) {
   // or we create a custom user. Since the user wants to gather email optionally,
   // we'll use a virtual email for Supabase Auth based on the phone number.
   // Using .com instead of .local to ensure Supabase accepts it as a valid email domain.
+  // NOTE: If you get "email rate limit exceeded", it's because Supabase default SMTP 
+  // has a limit of 3 emails per hour. You should configure a custom SMTP (SendGrid/Resend) 
+  // or disable email confirmation in Supabase Dashboard.
   const virtualEmail = `${trimmedPhone}@jootiya.com`;
 
   const { data, error } = await supabase.auth.signUp({
