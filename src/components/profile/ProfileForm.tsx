@@ -126,8 +126,20 @@ export function ProfileForm() {
 
   useEffect(() => {
     let cancelled = false;
+
+    // Listen for auth state changes to catch session as soon as it's available
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session?.user) {
+        setUserId(session.user.id);
+        loadProfile(false);
+      }
+    });
+
     loadProfile(cancelled);
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+      subscription.unsubscribe();
+    };
   }, [loadProfile]);
 
   async function handleProfileSubmit(event: FormEvent<HTMLFormElement>) {
