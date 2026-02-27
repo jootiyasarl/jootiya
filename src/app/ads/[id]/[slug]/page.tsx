@@ -99,7 +99,7 @@ export default async function AdPage({ params }: AdPageProps) {
     <div dir="ltr" className="bg-[#F8FAFC] dark:bg-zinc-950 pb-8 font-sans">
       <ShadowViewTracker adId={ad.id} category={ad.category} />
       
-      <main className="max-w-[1440px] mx-auto px-4 md:px-8 pt-4 md:pt-6 pb-12">
+      <main className="max-w-[1440px] mx-auto px-4 md:px-8 pt-4 md:pt-10 pb-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Main Content Column */}
           <div className="lg:col-span-8 space-y-6">
