@@ -60,21 +60,21 @@ export function AdCard({ ad, canBoost, onEdit, onDelete }: { ad: Ad; canBoost?: 
       </div>
 
       {/* Content - Minimalist with generous spacing */}
-      <div className="p-3 space-y-2">
+      <div className="p-2 sm:p-3 space-y-1 sm:space-y-2">
         {/* Title - Clean and simple */}
-        <h3 className="line-clamp-2 text-sm font-medium text-zinc-900 dark:text-zinc-100 leading-snug">
+        <h3 className="line-clamp-2 text-[13px] sm:text-sm font-bold text-zinc-900 dark:text-zinc-100 leading-tight">
           {ad.title}
         </h3>
 
         {/* Location - Subtle */}
-        <div className="flex items-center gap-1 text-xs text-zinc-500 dark:text-zinc-400">
-          <MapPin className="h-3 w-3" strokeWidth={1.5} />
+        <div className="flex items-center gap-1 text-[10px] sm:text-xs text-zinc-500 dark:text-zinc-400">
+          <MapPin className="h-2.5 w-2.5 sm:h-3 w-3" strokeWidth={1.5} />
           <span className="truncate">{ad.location || 'Maroc'}</span>
         </div>
 
         {/* Price - Bold Orange at Bottom */}
-        <div className="text-xl font-extrabold text-[#FF6B00]">
-          {priceDisplay} {currencyDisplay}
+        <div className="text-lg sm:text-xl font-black text-[#FF6B00] tracking-tight">
+          {priceDisplay} <span className="text-[10px] sm:text-xs font-bold">{currencyDisplay}</span>
         </div>
 
         {/* Edit/Delete Actions (Dashboard only) */}
