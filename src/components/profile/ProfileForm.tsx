@@ -17,8 +17,9 @@ import {
 import { supabase } from "@/lib/supabaseClient";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import { Camera, User, Loader2 } from "lucide-react";
+import { Camera, User as UserIcon, Loader2 } from "lucide-react";
 import Image from "next/image";
+import type { User } from "@supabase/supabase-js";
 
 interface PersonalInfoForm {
   name: string;
@@ -65,7 +66,7 @@ export function ProfileForm() {
       // Try to get session, but don't fail immediately if it's not there yet
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       
-      let user = session?.user;
+      let user: User | null = session?.user ?? null;
 
       // If no session from getSession, wait a bit and try again (for client-side hydration)
       if (!user) {
@@ -78,7 +79,7 @@ export function ProfileForm() {
         // Instead, check if we have a session after a short delay
         await new Promise(resolve => setTimeout(resolve, 500));
         const { data: { session: retrySession } } = await supabase.auth.getSession();
-        user = retrySession?.user;
+        user = retrySession?.user ?? null;
       }
 
       if (!user) {
@@ -337,7 +338,7 @@ export function ProfileForm() {
                 {personalInfo.avatar_url ? (
                   <Image src={personalInfo.avatar_url} alt="Avatar" width={96} height={96} className="h-full w-full object-cover" />
                 ) : (
-                  <User className="h-10 w-10 text-zinc-300" />
+                  <UserIcon className="h-10 w-10 text-zinc-300" />
                 )}
                 {uploadingAvatar && (
                   <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-full">
