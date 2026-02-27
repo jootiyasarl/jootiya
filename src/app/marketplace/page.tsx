@@ -35,9 +35,9 @@ const CATEGORIES_GRID = [
 
 export default function MarketplacePage() {
   return (
-    <div className="min-h-screen bg-[#F8FAFC] dark:bg-zinc-950 pb-24">
-      <div className="mx-auto max-w-7xl px-4 pt-12">
-        <div className="text-center mb-12">
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-zinc-950 pb-12">
+      <div className="mx-auto max-w-7xl px-4 pt-8">
+        <div className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl font-black text-zinc-900 dark:text-white mb-4">
             Que recherchez-vous ?
           </h1>
@@ -46,7 +46,7 @@ export default function MarketplacePage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
           {CATEGORIES_GRID.map((cat) => {
             const Icon = cat.icon;
             return (
@@ -89,7 +89,7 @@ export default function MarketplacePage() {
         </div>
 
         {/* Sell Banner - Added here */}
-        <div className="mt-12 md:mt-16">
+        <div className="mt-8 md:mt-10">
           <SellBanner />
         </div>
       </div>

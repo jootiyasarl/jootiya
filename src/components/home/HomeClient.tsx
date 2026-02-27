@@ -126,7 +126,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
   const mapAds = ads.filter(a => a.latitude && a.longitude).slice(0, 10);
 
   return (
-    <div dir="ltr" className="min-h-screen bg-white font-sans text-zinc-900 pb-24">
+    <div dir="ltr" className="min-h-screen bg-white font-sans text-zinc-900 pb-12">
       {isOfflineData && (
         <div className="bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest py-1 text-center flex items-center justify-center gap-2">
           <WifiOff className="w-3 h-3" />
@@ -134,15 +134,15 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
         </div>
       )}
       
-      <main className="mx-auto max-w-7xl px-4 mt-10 sm:mt-14">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12">
+      <main className="mx-auto max-w-7xl px-4 mt-6 sm:mt-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
           <div className="hidden lg:block lg:col-span-3">
             <Suspense fallback={<div className="h-[400px] w-full bg-zinc-50 animate-pulse rounded-3xl" />}>
               <LocationFilterSidebar ads={mapAds} />
             </Suspense>
           </div>
 
-          <div className="lg:col-span-9 space-y-20 sm:space-y-28">
+          <div className="lg:col-span-9 space-y-12 sm:space-y-16">
             <SellBanner />
             {ads.length === 0 && !loading ? (
               <div className="flex flex-col items-center justify-center py-24 text-center border border-dashed border-zinc-200 rounded-[2.5rem] bg-zinc-50/40">
@@ -176,14 +176,14 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
                       const catAds = ads.filter(ad => ad.categorySlug === cat.id).slice(0, 6);
                       if (catAds.length === 0) return null;
                       return (
-                        <section key={cat.id} className="space-y-6">
+                        <section key={cat.id} className="space-y-4">
                           <div className="flex items-center justify-between">
-                            <h2 className="text-xl font-bold text-zinc-900">{cat.label}</h2>
+                            <h2 className="text-lg font-bold text-zinc-900">{cat.label}</h2>
                             <Link href={`/categories/${cat.id}`} className="text-sm font-bold text-zinc-900 hover:text-orange-500 flex items-center gap-1 group">
                               Voir plus <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                             </Link>
                           </div>
-                          <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4">
+                          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4">
                             {catAds.map((ad, index) => (
                               <AdCard key={ad.id} ad={ad} href={`/ads/${ad.id}`} priority={index < 2} />
                             ))}
