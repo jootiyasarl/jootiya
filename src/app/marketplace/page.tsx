@@ -36,7 +36,7 @@ const CATEGORIES_GRID = [
 export default function MarketplacePage() {
   return (
     <div className="min-h-screen bg-[#F8FAFC] dark:bg-zinc-950 pb-12">
-      <div className="mx-auto max-w-7xl px-4">
+      <div className="mx-auto max-w-7xl px-4 mt-20 md:mt-40">
         <div className="text-center mb-8">
           <h1 className="text-3xl md:text-4xl font-black text-zinc-900 dark:text-white mb-4">
             Que recherchez-vous ?
