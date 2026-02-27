@@ -192,11 +192,9 @@ export function ContactActions({ adId, sellerId, sellerPhone, currentUser }: Con
                     </Button>
 
                     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                        <DialogTrigger asChild>
-                            <Button className="w-full h-14 text-lg font-semibold rounded-2xl border border-zinc-200 hover:bg-zinc-50 transition-all active:scale-[0.98] gap-3 flex items-center justify-center text-zinc-900 bg-white shadow-sm">
-                                <MessageCircle className="h-5 w-5" />
-                                Envoyer un message
-                            </Button>
+                        <DialogTrigger className="w-full h-14 text-lg font-semibold rounded-2xl border border-zinc-200 hover:bg-zinc-50 transition-all active:scale-[0.98] gap-3 flex items-center justify-center text-zinc-900 bg-white shadow-sm">
+                            <MessageCircle className="h-5 w-5" />
+                            Envoyer un message
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-md bg-white rounded-3xl border-zinc-100 shadow-2xl p-0 overflow-hidden gap-0 z-[9999]">
                             <DialogHeader className="p-6 pb-2">
