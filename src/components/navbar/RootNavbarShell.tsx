@@ -19,6 +19,8 @@ export function RootNavbarShell({ children, navbar, footer }: RootNavbarShellPro
     pathname?.startsWith("/admin") ||
     pathname?.startsWith("/moderator") ||
     pathname?.startsWith("/login") ||
+    pathname === "/login" ||
+    pathname?.includes("/login") ||
     pathname?.startsWith("/register") ||
     pathname?.startsWith("/sign-in") ||
     pathname?.startsWith("/onboarding") ||
