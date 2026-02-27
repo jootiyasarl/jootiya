@@ -72,7 +72,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const { error, message, redirectTo } = await searchParams;
 
   return (
-    <div className="fixed inset-0 z-[9999] bg-[#0a0a0a] flex flex-col lg:flex-row font-sans overflow-hidden">
+    <div className="fixed inset-0 z-[9999] bg-[#0a0a0a] flex flex-col lg:flex-row font-sans overflow-hidden select-none touch-none">
       {/* Left Side: Modern Brand Experience */}
       <div className="hidden lg:flex lg:w-1/2 bg-zinc-950 items-center justify-center p-12 relative overflow-hidden border-r border-white/5">
         {/* Animated Background Gradients */}
@@ -109,7 +109,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
       {/* Right Side: Clean Login Form */}
       <div className="w-full lg:w-1/2 bg-[#0a0a0a] flex items-center justify-center p-6 sm:p-12 relative h-full overflow-hidden">
-        <div className="w-full max-w-sm space-y-6 relative z-10">
+        <div className="w-full max-w-sm space-y-4 relative z-10">
           {/* Mobile Logo */}
           <div className="lg:hidden text-center space-y-2 mb-4">
             <h1 className="text-4xl font-black text-white tracking-tighter">Jootiya</h1>
