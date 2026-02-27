@@ -135,8 +135,8 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
         <div className="block mb-6 md:mb-10">
           <SellBanner />
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
-          <div className="hidden lg:block lg:col-span-3">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+          <div className="hidden lg:block lg:col-span-3 lg:mt-[52px]">
             <Suspense fallback={<div className="h-[400px] w-full bg-zinc-50 animate-pulse rounded-3xl" />}>
               <LocationFilterSidebar ads={mapAds} />
             </Suspense>
@@ -175,7 +175,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
                       const catAds = ads.filter(ad => ad.categorySlug === cat.id).slice(0, 6);
                       if (catAds.length === 0) return null;
                       return (
-                        <section key={cat.id} className="space-y-4">
+                        <section key={cat.id} className="space-y-3">
                           <div className="flex items-center justify-between">
                             <h2 className="text-lg font-bold text-zinc-900">{cat.label}</h2>
                             <Link href={`/categories/${cat.id}`} className="text-sm font-bold text-zinc-900 hover:text-orange-500 flex items-center gap-1 group">

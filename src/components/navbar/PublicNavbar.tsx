@@ -33,11 +33,11 @@ export default async function PublicNavbar() {
           <div className="flex items-center gap-3 shrink-0">
             <Link
                 href="/marketplace/post"
-                className="hidden lg:block shrink-0"
+                className="hidden xl:block shrink-0"
                 rel="nofollow"
                 aria-label="Déposer une annonce"
             >
-                <div className="rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-black h-11 px-5 text-[10px] uppercase tracking-wider shadow-[0_12px_30px_rgba(255,102,0,0.18)] hover:shadow-[0_18px_40px_rgba(255,102,0,0.22)] transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap">
+                <div className="rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-black h-10 px-4 text-[10px] uppercase tracking-wider shadow-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap">
                     <PlusCircle className="w-4 h-4 shrink-0" />
                     <span>Déposer une annonce</span>
                 </div>
