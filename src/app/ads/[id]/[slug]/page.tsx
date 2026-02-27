@@ -259,22 +259,26 @@ export default async function AdPage({ params }: AdPageProps) {
   return (
     <div dir="ltr" className="bg-[#F8FAFC] dark:bg-zinc-950 pb-16 font-sans text-zinc-900 dark:text-zinc-100">
       <ShadowViewTracker adId={ad.id} category={ad.category} />
-      {/* Breadcrumbs Section */}
-      <div className="bg-zinc-50/50 dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-800">
-        <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-2">
-          <nav className="flex items-center gap-2 text-[11px] font-bold text-zinc-500 uppercase tracking-wider">
-            <Link href="/" className="hover:text-orange-600 transition-colors">Accueil</Link>
-            <span className="text-zinc-300">/</span>
-            <Link href="/marketplace" className="hover:text-orange-600 transition-colors">Marché</Link>
-            <span className="text-zinc-300">/</span>
-            <span className="text-orange-600 truncate max-w-[150px] md:max-w-none">
+      {/* Breadcrumbs Section - Updated Position & Categories */}
+      <div className="sticky top-[56px] md:top-[64px] z-30 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-100 dark:border-zinc-800">
+        <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-2.5">
+          <nav className="flex items-center gap-2 text-[10px] md:text-[11px] font-bold text-zinc-500 uppercase tracking-wider overflow-x-auto no-scrollbar whitespace-nowrap">
+            <Link href="/" className="hover:text-orange-600 transition-colors shrink-0">Accueil</Link>
+            <ChevronRight className="h-3 w-3 text-zinc-300 shrink-0" />
+            <Link href="/marketplace" className="hover:text-orange-600 transition-colors shrink-0">Marché</Link>
+            <ChevronRight className="h-3 w-3 text-zinc-300 shrink-0" />
+            <span className="text-orange-600 truncate font-black shrink-0">
+              {ad.category || "Annonce"}
+            </span>
+            <ChevronRight className="h-3 w-3 text-zinc-300 shrink-0" />
+            <span className="text-zinc-400 truncate max-w-[100px] md:max-w-none font-medium shrink-0">
               {ad.title}
             </span>
           </nav>
         </div>
       </div>
 
-      <main className="max-w-[1440px] mx-auto px-4 md:px-8 pt-2 sm:pt-4 pb-8 sm:pb-12">
+      <main className="max-w-[1440px] mx-auto px-4 md:px-8 pt-4 md:pt-6 pb-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-start">
           {/* Left Column: Gallery + Details */}
           <div className="lg:col-span-8 space-y-4 min-w-0">
