@@ -260,7 +260,7 @@ export default async function AdPage({ params }: AdPageProps) {
     <div dir="ltr" className="min-h-screen bg-[#F8FAFC] dark:bg-zinc-950 pb-16 font-sans text-zinc-900 dark:text-zinc-100">
       <ShadowViewTracker adId={ad.id} category={ad.category} />
       <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border-b border-zinc-200 dark:border-zinc-800 z-40 sticky top-[56px] md:top-[64px]">
-        <div className="mx-auto max-w-7xl px-4 py-0.5">
+        <div className="container-standard py-0.5">
           <div className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
             <nav className="flex flex-wrap items-center gap-1.5 text-[11px] font-bold text-zinc-500 min-w-0">
               <Link href="/" className="hover:text-orange-600 transition-colors">Accueil</Link>
@@ -279,8 +279,8 @@ export default async function AdPage({ params }: AdPageProps) {
         </div>
       </div>
 
-      <main className="mx-auto max-w-7xl px-4 mt-20 md:mt-40">
-        <div className="mb-4 space-y-2">
+      <main className="container-standard mt-2 md:mt-4 py-4 sm:py-6 lg:py-8">
+        <div className="breadcrumb-gap space-y-2">
           <ViralTracker adId={ad.id} referrerId="" />
           <ViralProgressBar 
             adId={ad.id} 
