@@ -145,14 +145,6 @@ export function ProfileForm() {
 
   async function handleProfileSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const { data: { session } } = await supabase.auth.getSession();
-    const currentUserId = session?.user?.id || userId;
-
-    if (!currentUserId) {
-      setError("You must be signed in to save your profile.");
-      return;
-    }
-
     setSavingProfile(true);
     setError(null);
     setSuccess(null);
@@ -168,11 +160,11 @@ export function ProfileForm() {
 
       if (result.error) throw new Error(result.error);
       
-      setSuccess("Profile updated.");
-      toast.success("Profile updated successfully");
+      setSuccess("Profile mis à jour avec succès.");
+      toast.success("Profil mis à jour.");
     } catch (err: any) {
-      setError(err.message ?? "Failed to save profile.");
-      toast.error(err.message ?? "Failed to save profile");
+      setError(err.message ?? "Erreur lors de la sauvegarde.");
+      toast.error(err.message ?? "Échec de la sauvegarde.");
     } finally {
       setSavingProfile(false);
     }
