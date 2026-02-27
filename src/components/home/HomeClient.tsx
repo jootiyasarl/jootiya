@@ -131,8 +131,8 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
         </div>
       )}
       
-      <main className="container-standard mt-2 md:mt-4 py-4 sm:py-6 lg:py-8">
-        <div className="block mt-4 md:mt-6 mb-10 md:mb-16">
+      <main className="main-content-wrapper container-standard py-4 sm:py-6 lg:py-8">
+        <div className="block mb-6 md:mb-10">
           <SellBanner />
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">

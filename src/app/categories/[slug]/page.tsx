@@ -82,7 +82,7 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
 
     return (
         <div className="min-h-screen bg-zinc-50 pb-20">
-            <div className="container-standard mt-2 md:mt-4 py-4 sm:py-6 lg:py-8">
+            <div className="main-content-wrapper container-standard py-4 sm:py-6 lg:py-8">
                 <div className="flex flex-col lg:flex-row gap-6">
                     {/* Left Sidebar for Ads (Desktop) */}
                     <div className="hidden lg:block lg:w-[160px] flex-shrink-0">

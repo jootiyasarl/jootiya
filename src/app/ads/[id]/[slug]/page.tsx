@@ -279,7 +279,7 @@ export default async function AdPage({ params }: AdPageProps) {
         </div>
       </div>
 
-      <main className="container-standard mt-2 md:mt-4 py-4 sm:py-6 lg:py-8">
+      <main className="main-content-wrapper container-standard py-4 sm:py-6 lg:py-8">
         <div className="breadcrumb-gap space-y-2">
           <ViralTracker adId={ad.id} referrerId="" />
           <ViralProgressBar 

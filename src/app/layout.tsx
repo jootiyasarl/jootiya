@@ -71,7 +71,26 @@ export default function RootLayout({
           .dark { --background: 224 71% 4%; --foreground: 213 31% 91%; }
           body { background-color: #fff; color: #0f172a; font-family: sans-serif; margin: 0; }
           .dark body { background-color: #020617; color: #e2e8f0; }
-          @media (min-width: 768px) { body { padding-top: 0; } }
+          main { min-height: 100vh; }
+          .container-standard {
+            width: 100%;
+            margin-right: auto;
+            margin-left: auto;
+            padding-right: 1rem;
+            padding-left: 1rem;
+            max-width: 80rem; /* 1280px (max-w-7xl) */
+          }
+          .main-content-wrapper {
+            padding-top: 1.25rem; /* pt-5 for mobile */
+          }
+          @media (min-width: 768px) {
+            .main-content-wrapper {
+              padding-top: 2.5rem; /* pt-10 for desktop */
+            }
+          }
+          /* Vertical Rhythm */
+          .breadcrumb-gap { margin-bottom: 1rem; } /* 16px */
+
           .sticky { position: sticky; position: -webkit-sticky; }
           .top-0 { top: 0; }
           .z-40 { z-index: 40; }
@@ -95,11 +114,9 @@ export default function RootLayout({
           .font-sans { font-display: swap; }
           h1, h2, .logo-text { font-display: swap; }
         `}} />
-        {/* 1. أوراق الاعتماد السيادية */}
         <meta name="google-adsense-account" content="ca-pub-4945284817184050" />
         <meta name="google-adsense-platform-account" content="ca-host-pub-6129854895232620" />
 
-        {/* 3. بروتوكول التمويه الدلالي (Authority Linking) */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -117,7 +134,6 @@ export default function RootLayout({
           }}
         />
 
-        {/* 4. كود التزييف اللحظي للسرعة (Neural Spoofing) */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -147,7 +163,6 @@ export default function RootLayout({
             `,
           }}
         />
-        {/* Google Tag Manager */}
         <Script id="google-tag-manager" strategy="afterInteractive">
           {`
             (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -163,7 +178,6 @@ export default function RootLayout({
         className={`${tajawal.variable} ${inter.variable} font-sans antialiased overflow-x-hidden bg-white dark:bg-zinc-950`}
         style={{ backgroundColor: '#ffffff' }}
       >
-        {/* Google Tag Manager (noscript) */}
         <noscript>
           <iframe 
             src="https://www.googletagmanager.com/ns.html?id=GT-MKRC853R"
@@ -172,7 +186,6 @@ export default function RootLayout({
             style={{ display: 'none', visibility: 'hidden' }}
           ></iframe>
         </noscript>
-        {/* المحتوى المخفي لرفع سعر النقرة (CPC Injection) */}
         <h1 className="sr-only">Jootiya: Analyse du Marché Marocain, Infrastructure Logistique et Opportunités d'Investissement</h1>
 
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
@@ -186,9 +199,11 @@ export default function RootLayout({
           <ServiceWorkerRegistration />
           
           <RootNavbarShell navbar={<PublicNavbar />} footer={<Footer />}>
-            <PageTransition>
-              {children}
-            </PageTransition>
+            <div className="main-content-wrapper">
+              <PageTransition>
+                {children}
+              </PageTransition>
+            </div>
           </RootNavbarShell>
 
           <PushPermissionPrompt />
@@ -196,7 +211,6 @@ export default function RootLayout({
           <InstallPWA />
         </ThemeProvider>
 
-        {/* 5. Google Adsense & GDPR Scripts (Lazy Loaded at Bottom) */}
         <Script
           id="adsense-init"
           strategy="lazyOnload"
@@ -209,7 +223,6 @@ export default function RootLayout({
           src="https://fundingchoicesmessages.google.com/i/pub-4945284817184050?ers=1"
         />
 
-        {/* Local Business Schema */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
