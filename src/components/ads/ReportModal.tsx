@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabaseClient";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { submitReportAction } from "@/app/ads/actions";
 
 interface ReportModalProps {
     isOpen: boolean;
@@ -38,28 +39,19 @@ export function ReportModal({ isOpen, onClose, targetId, targetType, reporterId 
 
         setIsSubmitting(true);
         try {
-            const { data: { session } } = await supabase.auth.getSession();
-            const currentReporterId = session?.user?.id || reporterId;
+            const result = await submitReportAction({
+                targetId,
+                targetType,
+                reason: REPORT_REASONS.find(r => r.id === selectedReason)?.label || selectedReason,
+                details
+            });
 
-            const reasonLabel = REPORT_REASONS.find(r => r.id === selectedReason)?.label || selectedReason;
-
-            const { error } = await supabase
-                .from("reports")
-                .insert({
-                    target_type: targetType,
-                    ad_id: targetType === "ad" ? targetId : null,
-                    reported_user_id: targetType === "user" ? targetId : null,
-                    reporter_id: currentReporterId || null,
-                    reason: reasonLabel,
-                    details: { comment: details }
-                });
-
-            if (error) throw error;
+            if (result.error) throw new Error(result.error);
 
             toast.success("Votre signalement a été envoyé avec succès. Nous l'examinerons prochainement.");
             onClose();
         } catch (error: any) {
-            toast.error("Désolé, une erreur est survenue lors de l'envoi du signalement.");
+            toast.error(error.message || "Désolé, une erreur est survenue lors de l'envoi du signalement.");
             console.error("Report Error:", error);
         } finally {
             setIsSubmitting(false);

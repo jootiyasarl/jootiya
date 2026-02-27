@@ -5,6 +5,7 @@ import { Heart } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { toggleFavoriteAction } from "@/app/ads/actions";
 
 interface FavoriteButtonProps {
     adId: string;
@@ -54,45 +55,20 @@ export function FavoriteButton({ adId, initialIsFavorite = false, className }: F
         e.stopPropagation();
 
         setLoading(true);
-        const { data: { session } } = await supabase.auth.getSession();
-        const user = session?.user;
-
-        if (!user) {
-            toast.error("Veuillez vous connecter pour ajouter des favoris");
+        try {
+            const result = await toggleFavoriteAction(adId);
+            
+            if (result.error) {
+                toast.error(result.error);
+            } else {
+                setIsFavorite(result.isFavorite ?? false);
+                toast.success(result.isFavorite ? "Ajouté aux favoris" : "Retiré des favoris");
+            }
+        } catch (err: any) {
+            toast.error("Une erreur est survenue");
+        } finally {
             setLoading(false);
-            return;
         }
-
-        if (isFavorite) {
-            const { error } = await supabase
-                .from("favorites")
-                .delete()
-                .eq("user_id", user.id)
-                .eq("ad_id", adId);
-
-            if (error) {
-                toast.error("Erreur lors della suppression");
-            } else {
-                setIsFavorite(false);
-                toast.success("Retiré des favoris");
-            }
-        } else {
-            const { error } = await supabase
-                .from("favorites")
-                .insert({ user_id: user.id, ad_id: adId });
-
-            if (error) {
-                if (error.code === '23505') {
-                    setIsFavorite(true);
-                } else {
-                    toast.error("Erreur lors de l'ajout");
-                }
-            } else {
-                setIsFavorite(true);
-                toast.success("Ajouté aux favoris");
-            }
-        }
-        setLoading(false);
     };
 
     return (
