@@ -69,8 +69,9 @@ export default function RootLayout({
         <style dangerouslySetInnerHTML={{ __html: `
           :root { --primary: 25 95% 53%; --background: 0 0% 100%; --foreground: 222 47% 11%; }
           .dark { --background: 224 71% 4%; --foreground: 213 31% 91%; }
-          body { background-color: #fff; color: #0f172a; font-family: sans-serif; margin: 0; }
+          body { background-color: #fff; color: #0f172a; font-family: sans-serif; margin: 0; padding-top: 3.5rem; }
           .dark body { background-color: #020617; color: #e2e8f0; }
+          @media (min-width: 768px) { body { padding-top: 4rem; } }
           .sticky { position: sticky; position: -webkit-sticky; }
           .top-0 { top: 0; }
           .z-40 { z-index: 40; }
