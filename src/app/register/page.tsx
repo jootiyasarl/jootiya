@@ -54,7 +54,8 @@ async function registerAction(formData: FormData) {
   // For Hybrid Auth, we use the phone as the email identifier in Supabase Auth if needed,
   // or we create a custom user. Since the user wants to gather email optionally,
   // we'll use a virtual email for Supabase Auth based on the phone number.
-  const virtualEmail = `${trimmedPhone}@jootiya.local`;
+  // Using .com instead of .local to ensure Supabase accepts it as a valid email domain.
+  const virtualEmail = `${trimmedPhone}@jootiya.com`;
 
   const { data, error } = await supabase.auth.signUp({
     email: virtualEmail,
