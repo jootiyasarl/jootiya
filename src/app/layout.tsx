@@ -205,11 +205,7 @@ export default function RootLayout({
           <ServiceWorkerRegistration />
           
           <RootNavbarShell navbar={<PublicNavbar />} footer={<Footer />}>
-            <div className="main-content-wrapper">
-              <PageTransition>
-                {children}
-              </PageTransition>
-            </div>
+            {children}
           </RootNavbarShell>
 
           <PushPermissionPrompt />

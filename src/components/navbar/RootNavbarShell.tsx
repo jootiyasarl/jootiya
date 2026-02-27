@@ -4,6 +4,7 @@ import { ReactNode, Suspense } from "react";
 import { usePathname } from "next/navigation";
 import { MobileBottomNav } from "./MobileBottomNav";
 import { cn } from "@/lib/utils";
+import { PageTransition } from "@/components/layout/PageTransition";
 
 interface RootNavbarShellProps {
   children: ReactNode;
@@ -23,10 +24,12 @@ export function RootNavbarShell({ children, navbar, footer }: RootNavbarShellPro
     pathname?.includes("/login") ||
     pathname?.startsWith("/register") ||
     pathname === "/register" ||
+    pathname?.includes("/register") ||
     pathname?.startsWith("/sign-in") ||
     pathname?.startsWith("/onboarding") ||
     pathname?.startsWith("/forgot-password") ||
-    pathname === "/forgot-password";
+    pathname === "/forgot-password" ||
+    pathname?.includes("/forgot-password");
 
   return (
     <>
@@ -47,7 +50,11 @@ export function RootNavbarShell({ children, navbar, footer }: RootNavbarShellPro
         "min-h-screen",
         !isSpecialPath && "pt-[56px] md:pt-[64px]"
       )}>
-        {children}
+        <div className={cn(!isSpecialPath && "main-content-wrapper")}>
+          <PageTransition>
+            {children}
+          </PageTransition>
+        </div>
       </main>
       {!isSpecialPath && (
         <div>
