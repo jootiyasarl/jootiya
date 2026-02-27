@@ -59,29 +59,32 @@ export function ReportModal({ isOpen, onClose, targetId, targetType, reporterId 
     };
 
     return (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
-            <div className="bg-white w-full max-w-md rounded-[2rem] overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300 relative">
+        <div className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+            <div className="bg-white w-full max-w-lg sm:rounded-[2.5rem] rounded-t-[2.5rem] overflow-hidden shadow-2xl animate-in slide-in-from-bottom-10 sm:zoom-in-95 duration-300 relative flex flex-col max-h-[90vh]">
                 {/* Header */}
-                <div className="p-6 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/50">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-2xl bg-red-50 flex items-center justify-center">
-                            <Flag className="w-5 h-5 text-red-600" />
+                <div className="p-6 border-b border-zinc-100 flex items-center justify-between bg-zinc-50/50 shrink-0">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-red-50 flex items-center justify-center shadow-sm">
+                            <Flag className="w-6 h-6 text-red-600" />
                         </div>
                         <div>
-                            <h3 className="font-black text-zinc-900 leading-tight">Signaler l'annonce</h3>
-                            <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider mt-0.5">Motif du signalement</p>
+                            <h3 className="text-lg font-black text-zinc-900 leading-tight uppercase tracking-tight">Signaler l'annonce</h3>
+                            <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-[0.2em] mt-1">Aidez-nous à garder Jootiya sûr</p>
                         </div>
                     </div>
-                    <button onClick={onClose} className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-zinc-100 transition-colors">
+                    <button 
+                        onClick={onClose} 
+                        className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-zinc-100 transition-all active:scale-90"
+                    >
                         <X className="w-5 h-5 text-zinc-400" />
                     </button>
                 </div>
 
-                {/* Body */}
-                <div className="p-6 space-y-6">
-                    <div className="space-y-3">
-                        <p className="text-sm font-bold text-zinc-700 mb-2">Quel est le motif du signalement ?</p>
-                        <div className="grid gap-2">
+                {/* Body - Scrollable */}
+                <div className="p-6 space-y-8 overflow-y-auto custom-scrollbar">
+                    <div className="space-y-4">
+                        <p className="text-sm font-black uppercase tracking-widest text-zinc-400 px-1">Motif du signalement</p>
+                        <div className="grid gap-3">
                             {REPORT_REASONS.map((reason) => {
                                 const Icon = reason.icon;
                                 const isSelected = selectedReason === reason.id;
@@ -90,47 +93,55 @@ export function ReportModal({ isOpen, onClose, targetId, targetType, reporterId 
                                         key={reason.id}
                                         onClick={() => setSelectedReason(reason.id)}
                                         className={cn(
-                                            "flex items-center justify-between p-4 rounded-2xl border-2 transition-all group",
+                                            "flex items-center justify-between p-5 rounded-2xl border-2 transition-all duration-300 text-left group",
                                             isSelected
-                                                ? "border-red-600 bg-red-50/50"
-                                                : "border-zinc-100 hover:border-zinc-200 bg-white"
+                                                ? "border-red-600 bg-red-50/30 shadow-lg shadow-red-100/50 scale-[1.02]"
+                                                : "border-zinc-100 hover:border-zinc-200 bg-zinc-50/30"
                                         )}
                                     >
-                                        <div className="flex items-center gap-3">
-                                            <Icon className={cn("w-5 h-5", isSelected ? "text-red-600" : reason.color)} />
+                                        <div className="flex items-center gap-4">
+                                            <div className={cn(
+                                                "w-10 h-10 rounded-xl flex items-center justify-center transition-colors",
+                                                isSelected ? "bg-red-600 text-white" : "bg-white text-zinc-400 group-hover:text-zinc-600"
+                                            )}>
+                                                <Icon className="w-5 h-5" />
+                                            </div>
                                             <span className={cn("text-sm font-bold", isSelected ? "text-red-700" : "text-zinc-600")}>{reason.label}</span>
                                         </div>
-                                        {isSelected && <div className="w-2 h-2 rounded-full bg-red-600" />}
+                                        {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-red-600 shadow-glow animate-pulse" />}
                                     </button>
                                 );
                             })}
                         </div>
                     </div>
 
-                    <div className="space-y-2">
-                        <p className="text-sm font-bold text-zinc-700">Détails supplémentaires (Optionnel)</p>
+                    <div className="space-y-3">
+                        <p className="text-sm font-black uppercase tracking-widest text-zinc-400 px-1">Détails (Optionnel)</p>
                         <textarea
                             value={details}
                             onChange={(e) => setDetails(e.target.value)}
-                            className="w-full p-4 rounded-2xl border-2 border-zinc-100 focus:border-red-600 focus:ring-0 transition-all text-sm min-h-[100px] bg-zinc-50/30 resize-none"
-                            placeholder="Dites-nous en plus sur le problème..."
+                            className="w-full p-5 rounded-[1.5rem] border-2 border-zinc-100 focus:border-red-600 focus:ring-0 transition-all text-base min-h-[120px] bg-zinc-50/30 resize-none placeholder:text-zinc-300"
+                            placeholder="Décrivez le problème en quelques mots..."
                         />
                     </div>
                 </div>
 
                 {/* Footer */}
-                <div className="p-6 bg-zinc-50/50 border-t border-zinc-100">
+                <div className="p-6 bg-zinc-50/50 border-t border-zinc-100 shrink-0">
                     <Button
                         onClick={handleSubmit}
                         disabled={isSubmitting || !selectedReason}
-                        className="w-full bg-red-600 hover:bg-red-700 text-white font-black h-14 rounded-2xl shadow-lg shadow-red-200 transition-all active:scale-[0.98] py-0"
+                        className="w-full bg-red-600 hover:bg-red-700 text-white font-black h-16 rounded-2xl shadow-xl shadow-red-200 transition-all active:scale-[0.98] py-0 text-base uppercase tracking-widest"
                     >
                         {isSubmitting ? (
-                            <Loader2 className="w-5 h-5 animate-spin" />
+                            <Loader2 className="w-6 h-6 animate-spin" />
                         ) : (
                             "Envoyer le signalement"
                         )}
                     </Button>
+                    <p className="text-center text-[10px] text-zinc-400 mt-4 font-medium px-4">
+                        En envoyant ce signalement, vous confirmez que ces informations sont exactes.
+                    </p>
                 </div>
             </div>
         </div>
