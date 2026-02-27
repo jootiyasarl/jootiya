@@ -22,9 +22,11 @@ export function RootNavbarShell({ children, navbar, footer }: RootNavbarShellPro
     pathname === "/login" ||
     pathname?.includes("/login") ||
     pathname?.startsWith("/register") ||
+    pathname === "/register" ||
     pathname?.startsWith("/sign-in") ||
     pathname?.startsWith("/onboarding") ||
-    pathname?.startsWith("/forgot-password");
+    pathname?.startsWith("/forgot-password") ||
+    pathname === "/forgot-password";
 
   return (
     <>
