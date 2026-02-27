@@ -20,7 +20,7 @@ import { toast } from "sonner";
 import { Camera, User as UserIcon, Loader2 } from "lucide-react";
 import Image from "next/image";
 import type { User } from "@supabase/supabase-js";
-import { updateProfile, uploadAvatarAction, deleteAvatarAction, updatePasswordAction } from "@/app/dashboard/profile/actions";
+import { updateProfile, uploadAvatarAction, deleteAvatarAction, updatePasswordAction, updateNotificationsAction } from "@/app/dashboard/profile/actions";
 
 interface PersonalInfoForm {
   name: string;
@@ -407,12 +407,13 @@ export function ProfileForm() {
               const newValue = !personalInfo.push_enabled;
               setSavingProfile(true);
               try {
-                const { error } = await supabase.from('profiles').update({ push_enabled: newValue }).eq('id', userId);
-                if (error) throw error;
+                const result = await updateNotificationsAction(newValue);
+                if (result.error) throw new Error(result.error);
+                
                 setPersonalInfo(prev => ({ ...prev, push_enabled: newValue }));
                 toast.success(newValue ? "Notifications activées" : "Notifications désactivées");
-              } catch (e) {
-                toast.error("Échec de la modification");
+              } catch (err: any) {
+                toast.error(err.message ?? "Échec de la modification");
               } finally {
                 setSavingProfile(false);
               }

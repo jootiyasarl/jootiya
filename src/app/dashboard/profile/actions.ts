@@ -119,3 +119,24 @@ export async function updatePasswordAction(password: string) {
 
   return { success: true };
 }
+
+export async function updateNotificationsAction(enabled: boolean) {
+  const user = await getServerUser();
+  if (!user) {
+    return { error: "Session expiré. Veuillez vous reconnecter." };
+  }
+
+  const supabase = await getAuthenticatedServerClient();
+
+  const { error } = await supabase
+    .from("profiles")
+    .update({ push_enabled: enabled })
+    .eq("id", user.id);
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  revalidatePath("/dashboard/profile");
+  return { success: true };
+}
