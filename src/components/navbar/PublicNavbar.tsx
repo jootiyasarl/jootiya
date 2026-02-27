@@ -13,10 +13,10 @@ export default async function PublicNavbar() {
   const isAdmin = userEmail === "jootiyasarl@gmail.com";
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 w-full bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-800 h-14 md:h-16 flex flex-col justify-center">
+    <header className="fixed top-0 left-0 right-0 z-50 w-full bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-800 flex flex-col justify-center h-auto">
       <div className="mx-auto max-w-7xl w-full px-4 md:px-6">
         {/* Main Nav Row */}
-        <div className="flex items-center justify-between gap-8 relative h-full">
+        <div className="flex h-12 md:h-14 items-center justify-between gap-8 relative">
           {/* Left: Logo (Centered on Mobile, Left on Desktop) */}
           <div className="flex items-center md:relative absolute left-1/2 md:left-0 -translate-x-1/2 md:translate-x-0 shrink-0">
             <NavbarLogo />
