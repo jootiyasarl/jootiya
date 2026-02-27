@@ -82,7 +82,8 @@ async function registerAction(formData: FormData) {
       data: {
         phone: trimmedPhone,
         real_email: trimmedEmail,
-      }
+      },
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://jootiya.com'}/marketplace`,
     }
   });
 
@@ -114,12 +115,23 @@ async function registerAction(formData: FormData) {
     redirect(`/register?${params.toString()}`);
   }
 
+  // Handle session correctly for Next.js Server Components
   if (data.session) {
     await setAuthSession(data.session);
     redirect("/marketplace");
-  }
+  } else if (user && !error) {
+    // If no session but user created (e.g. email confirmation enabled or delay in session sync)
+    // We try to sign in immediately since we have the credentials
+    const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+      email: virtualEmail,
+      password: trimmedPassword,
+    });
 
-  redirect("/login?message=Compte créé avec succès. Vous pouvez maintenant vous connecter.");
+    if (!signInError && signInData.session) {
+      await setAuthSession(signInData.session);
+      redirect("/marketplace");
+    }
+  }
 }
 
 export default async function RegisterPage({ searchParams }: RegisterPageProps) {
