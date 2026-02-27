@@ -56,21 +56,37 @@ export function ProfileForm() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  const loadProfile = useCallback(async (cancelled: boolean) => {
+  const loadProfile = useCallback(async function loadProfile(cancelled: boolean) {
     setLoading(true);
     setError(null);
     setSuccess(null);
 
     try {
+      // Try to get session, but don't fail immediately if it's not there yet
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      if (sessionError) throw sessionError;
-      if (!session?.user) {
+      
+      let user = session?.user;
+
+      // If no session from getSession, wait a bit and try again (for client-side hydration)
+      if (!user) {
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        user = authUser;
+      }
+
+      if (!user) {
+        // If still no user, maybe the session is initializing. Let's not show error immediately.
+        // Instead, check if we have a session after a short delay
+        await new Promise(resolve => setTimeout(resolve, 500));
+        const { data: { session: retrySession } } = await supabase.auth.getSession();
+        user = retrySession?.user;
+      }
+
+      if (!user) {
         setError("You must be signed in to edit your profile.");
         return;
       }
 
       if (cancelled) return;
-      const user = session.user;
       setUserId(user.id);
 
       let initialData: PersonalInfoForm = {
