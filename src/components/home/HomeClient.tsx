@@ -134,8 +134,10 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
         </div>
       )}
       
-      <main className="mx-auto max-w-7xl px-4 mt-2 space-y-8">
-        <SellBanner />
+      <main className="mx-auto max-w-7xl px-4 mt-[10px] space-y-4">
+        <div className="w-full">
+          <SellBanner />
+        </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
           <div className="hidden lg:block lg:col-span-3">
