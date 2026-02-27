@@ -68,19 +68,18 @@ export function ProfileForm() {
 
       try {
         const {
-          data: { user },
-          error: userError,
-        } = await supabase.auth.getUser();
+          data: { session },
+          error: sessionError,
+        } = await supabase.auth.getSession();
 
-        if (userError) {
-          throw userError;
-        }
+        if (sessionError) throw sessionError;
 
-        if (!user) {
+        if (!session?.user) {
           setError("You must be signed in to edit your profile.");
           return;
         }
 
+        const user = session.user;
         if (cancelled) return;
 
         setUserId(user.id);
