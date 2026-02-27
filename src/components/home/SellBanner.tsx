@@ -9,7 +9,7 @@ export function SellBanner() {
             <div className="absolute bottom-0 right-0 w-32 h-32 sm:w-48 sm:h-48 bg-blue-200/30 rounded-full translate-x-12 translate-y-12 sm:translate-x-16 sm:translate-y-16 blur-2xl sm:blur-3xl group-hover:bg-blue-300/30 transition-colors duration-700" />
             
             <div className="relative z-10 flex flex-row items-center justify-between py-2 sm:py-3 px-4 sm:px-10 text-left gap-4">
-                <h2 className="text-xs sm:text-sm md:text-base font-black text-zinc-900 dark:text-white tracking-tight leading-tight whitespace-nowrap">
+                <h2 className="text-xs sm:text-sm md:text-base font-black text-black dark:text-white tracking-tight leading-tight whitespace-nowrap">
                     C&apos;est le moment de vendre
                 </h2>
                 
