@@ -266,7 +266,7 @@ export default async function AdPage({ params }: AdPageProps) {
             <nav className="flex items-center gap-2 text-[11px] font-bold text-zinc-500 min-w-0">
               <Link href="/" className="hover:text-orange-600 transition-colors whitespace-nowrap">Accueil</Link>
               <ChevronRight className="h-3 w-3 opacity-40 flex-shrink-0" />
-              <Link href="/marketplace" className="hover:text-orange-600 transition-colors whitespace-nowrap">Marché</Link>
+              <Link href="/marketplace/search" className="hover:text-orange-600 transition-colors whitespace-nowrap">Marché</Link>
               <ChevronRight className="h-3 w-3 opacity-40 flex-shrink-0" />
               {/* العنوان يظهر بشكل مقتضب في الموبايل لمنع التداخل */}
               <span className="text-zinc-400 font-medium truncate opacity-70 max-w-[120px] md:max-w-none">
