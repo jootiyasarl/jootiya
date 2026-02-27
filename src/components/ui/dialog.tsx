@@ -93,7 +93,7 @@ export const DialogContent = React.forwardRef<
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 text-foreground"
+      className="fixed inset-0 z-[99999] flex items-center justify-center bg-background/80 text-foreground backdrop-blur-sm"
       role="dialog"
       aria-modal="true"
       onClick={() => setOpen(false)}
@@ -101,7 +101,7 @@ export const DialogContent = React.forwardRef<
       <div
         ref={ref}
         className={cn(
-          "relative w-full max-w-lg rounded-lg border bg-background p-6 shadow-lg",
+          "relative w-full max-w-lg rounded-lg border bg-background p-6 shadow-lg animate-in zoom-in-95 duration-200",
           className,
         )}
         onClick={(event) => event.stopPropagation()}
