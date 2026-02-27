@@ -72,111 +72,150 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const { error, message, redirectTo } = await searchParams;
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] flex font-sans overflow-hidden">
-      {/* Left Side: Illustration (Hidden on mobile) */}
-      <div className="hidden lg:flex lg:w-1/2 bg-[#fdfbf7] items-center justify-center p-12 relative border-r border-zinc-900/10">
-        <div className="max-w-md w-full animate-in fade-in slide-in-from-left-8 duration-1000">
-          <div className="relative aspect-square w-full">
-            <svg viewBox="0 0 400 400" className="w-full h-full text-zinc-800" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M100 300 L150 100 L300 120 L250 320 Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M180 150 Q220 130 240 170" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              <circle cx="210" cy="110" r="25" stroke="currentColor" strokeWidth="2" />
-              <path d="M120 280 L280 280" stroke="#f97316" strokeWidth="4" strokeLinecap="round" />
-              <rect x="140" y="160" width="100" height="120" rx="10" stroke="currentColor" strokeWidth="2" />
-              <path d="M160 190 H220 M160 210 H220 M160 230 H190" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-orange-500/5 blur-3xl rounded-full -z-10" />
+    <div className="h-screen w-screen bg-[#0a0a0a] flex flex-col lg:flex-row font-sans overflow-hidden">
+      {/* Left Side: Modern Brand Experience */}
+      <div className="hidden lg:flex lg:w-1/2 bg-zinc-950 items-center justify-center p-12 relative overflow-hidden border-r border-white/5">
+        {/* Animated Background Gradients */}
+        <div className="absolute top-0 left-0 w-full h-full">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-orange-600/10 blur-[120px] rounded-full animate-pulse" />
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-600/10 blur-[120px] rounded-full animate-pulse delay-700" />
+        </div>
+
+        <div className="max-w-md w-full relative z-10 space-y-8 animate-in fade-in slide-in-from-left-8 duration-1000">
+          <div className="space-y-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-500 text-xs font-bold uppercase tracking-widest">
+              Plateforme Premium
+            </div>
+            <h2 className="text-6xl font-black text-white leading-none tracking-tighter">
+              Vendez plus vite sur <span className="text-orange-500">Jootiya.</span>
+            </h2>
+            <p className="text-xl text-zinc-400 font-medium leading-relaxed">
+              La marketplace marocaine réinventée pour une expérience fluide و sécurisée.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 pt-8">
+            <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
+              <p className="text-2xl font-black text-white">10k+</p>
+              <p className="text-sm text-zinc-500 font-bold uppercase">Annonces</p>
+            </div>
+            <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
+              <p className="text-2xl font-black text-white">24/7</p>
+              <p className="text-sm text-zinc-500 font-bold uppercase">Support</p>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Right Side: Login Form */}
-      <div className="w-full lg:w-1/2 bg-[#0a0a0a] flex items-center justify-center p-6 sm:p-12 relative overflow-hidden">
-        {/* Background Decorative Element */}
-        <div className="absolute top-[-10%] right-[-10%] w-64 h-64 bg-orange-600/5 blur-3xl rounded-full pointer-events-none" />
-        
-        <div className="w-full max-w-md space-y-8 relative z-10 text-left flex flex-col min-h-[600px] justify-center" dir="ltr">
-          <div className="flex-grow flex flex-col justify-center space-y-8">
-            <div className="space-y-2">
-              <h1 className="text-5xl font-black text-white tracking-tighter">Login jootiya</h1>
-              <p className="text-zinc-400 text-lg font-medium"></p>
+      {/* Right Side: Clean Login Form */}
+      <div className="w-full lg:w-1/2 bg-[#0a0a0a] flex items-center justify-center p-6 sm:p-12 relative h-full">
+        <div className="w-full max-w-sm space-y-10 relative z-10">
+          {/* Mobile Logo */}
+          <div className="lg:hidden text-center space-y-2 mb-8">
+            <h1 className="text-4xl font-black text-white tracking-tighter">Jootiya</h1>
+            <div className="h-1 w-12 bg-orange-500 mx-auto rounded-full" />
+          </div>
+
+          <div className="space-y-3">
+            <h1 className="hidden lg:block text-4xl font-black text-white tracking-tighter">
+              Bon retour !
+            </h1>
+            <p className="text-zinc-500 font-medium">
+              Connectez-vous pour gérer vos annonces و favoris.
+            </p>
+          </div>
+
+          {error && (
+            <div className="rounded-2xl bg-red-500/5 p-4 border border-red-500/10 flex gap-3 items-center animate-in shake duration-500">
+              <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
+              <p className="text-sm font-bold text-red-400">{error}</p>
+            </div>
+          )}
+
+          <form action={loginAction} className="space-y-6">
+            <input type="hidden" name="redirectTo" value={redirectTo || ""} />
+            
+            <div className="space-y-4">
+              <div className="space-y-2 group">
+                <Label htmlFor="identifier" className="text-xs font-black uppercase tracking-widest text-zinc-500 ml-1 group-focus-within:text-orange-500 transition-colors">
+                  Email ou Téléphone
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="identifier"
+                    name="identifier"
+                    type="text"
+                    placeholder="nom@exemple.com"
+                    required
+                    className="h-14 px-5 rounded-2xl bg-zinc-900/50 border-zinc-800 text-white placeholder:text-zinc-600 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all text-base font-bold shadow-inner"
+                  />
+                  <Mail className="absolute right-5 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-700 group-focus-within:text-orange-500/50 transition-colors" />
+                </div>
+              </div>
+
+              <div className="space-y-2 group">
+                <div className="flex justify-between items-end px-1">
+                  <Label htmlFor="password" className="text-xs font-black uppercase tracking-widest text-zinc-500 group-focus-within:text-orange-500 transition-colors">
+                    Mot de passe
+                  </Label>
+                  <Link href="/forgot-password" title="Réinitialiser" className="text-[11px] font-black text-orange-500 hover:text-orange-400 transition-colors uppercase tracking-tight">
+                    Oublié ?
+                  </Link>
+                </div>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    name="password"
+                    type="password"
+                    placeholder="••••••••"
+                    required
+                    className="h-14 px-5 rounded-2xl bg-zinc-900/50 border-zinc-800 text-white placeholder:text-zinc-600 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all text-base font-bold shadow-inner"
+                  />
+                  <Lock className="absolute right-5 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-700 group-focus-within:text-orange-500/50 transition-colors" />
+                </div>
+              </div>
             </div>
 
-            {error && (
-              <div className="rounded-xl bg-red-500/10 p-4 border border-red-500/20 flex gap-3 items-center animate-in fade-in slide-in-from-top-2">
-                <ShieldCheck className="w-5 h-5 text-red-500 flex-shrink-0" />
-                <p className="text-sm font-medium text-red-200 leading-tight">{error}</p>
-              </div>
-            )}
-
-            <form action={loginAction} className="space-y-5">
-              <input type="hidden" name="redirectTo" value={redirectTo || ""} />
-              
-              <div className="space-y-1">
-                <Input
-                  id="identifier"
-                  name="identifier"
-                  type="text"
-                  placeholder="Adresse e-mail ou téléphone"
-                  required
-                  className="h-14 px-6 rounded-xl bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-500 focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all text-base font-medium"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  placeholder="Mot de passe"
-                  required
-                  className="h-14 px-6 rounded-xl bg-zinc-900 border-zinc-800 text-white placeholder:text-zinc-500 focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-all text-base font-medium"
-                />
-              </div>
-
-              <div className="flex items-center gap-2 px-1">
+            <div className="flex items-center gap-3 px-1">
+              <div className="relative flex items-center">
                 <input 
                   type="checkbox" 
                   id="remember" 
-                  className="w-4 h-4 rounded border-zinc-800 bg-zinc-900 text-orange-600 focus:ring-offset-black" 
+                  className="peer appearance-none w-5 h-5 rounded-lg border-2 border-zinc-800 bg-zinc-900 checked:bg-orange-500 checked:border-orange-500 transition-all cursor-pointer" 
                 />
-                <label htmlFor="remember" className="text-sm text-zinc-400 font-medium">Rester connecté</label>
+                <ShieldCheck className="absolute left-1 h-3 w-3 text-white opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" />
               </div>
-
-              <div className="pt-4">
-                <SubmitButton
-                  label="Se connecter"
-                  loadingLabel="Connexion..."
-                  className="w-full h-14 text-lg font-black rounded-2xl bg-[#f97316] hover:bg-[#ea580c] text-white shadow-lg shadow-orange-950/20 transition-all active:scale-[0.98]"
-                />
-              </div>
-
-              <div className="text-center pt-2">
-                <Link href="/forgot-password" title="Réinitialiser" className="text-sm font-medium text-orange-500 hover:text-orange-400 transition-colors underline-offset-4 hover:underline">
-                  Mot de passe oublié ?
-                </Link>
-              </div>
-            </form>
-
-            <div className="pt-4 text-center">
-              <p className="text-zinc-500 text-sm font-medium">
-                Pas encore de compte ?{' '}
-                <Link href="/register" className="text-white hover:text-orange-400 font-bold transition-colors">
-                  S'inscrire gratuitement
-                </Link>
-              </p>
+              <Label htmlFor="remember" className="text-sm text-zinc-400 font-bold cursor-pointer hover:text-zinc-300 transition-colors select-none">Rester connecté</Label>
             </div>
+
+            <div className="pt-2">
+              <SubmitButton
+                label="Connexion instantanée"
+                loadingLabel="Vérification..."
+                className="w-full h-14 text-base font-black rounded-2xl bg-orange-500 hover:bg-orange-600 text-white shadow-xl shadow-orange-500/10 transition-all active:scale-[0.98] ring-offset-2 ring-offset-[#0a0a0a] focus:ring-2 focus:ring-orange-500"
+              />
+            </div>
+          </form>
+
+          <div className="pt-8 text-center">
+            <p className="text-zinc-500 text-sm font-medium">
+              Nouveau ici ?{' '}
+              <Link href="/register" className="text-white hover:text-orange-500 font-black transition-colors underline decoration-orange-500/30 underline-offset-4">
+                Créer un compte gratuit
+              </Link>
+            </p>
           </div>
 
-          {/* Branding removed as requested */}
-          <div className="pt-12 border-t border-zinc-900/50 flex items-center justify-end opacity-50">
-            <Link href="/" className="text-xs font-bold text-zinc-500 hover:text-white transition-colors">
-              Accueil
+          {/* Navigation Links */}
+          <div className="pt-10 border-t border-white/5 flex items-center justify-between">
+            <Link href="/" className="group flex items-center gap-2 text-xs font-black text-zinc-600 hover:text-zinc-400 transition-colors uppercase tracking-widest">
+              <ChevronLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
+              Retour à l'accueil
             </Link>
+            <span className="text-[10px] font-bold text-zinc-800"> 2024 JOOTIYA</span>
           </div>
         </div>
       </div>
     </div>
-
   );
 }
