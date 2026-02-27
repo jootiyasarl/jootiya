@@ -422,13 +422,13 @@ export default async function AdPage({ params }: AdPageProps) {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
                   {similarAds.map((simAd: any) => (
                     <AdCard key={simAd.id} ad={{
-                      id: simAd.id, 
-                      slug: simAd.slug, 
-                      title: simAd.title, 
+                      id: simAd.id,
+                      title: simAd.title,
                       price: simAd.price,
                       currency: simAd.currency || 'MAD',
-                      location: simAd.city || 'Maroc', 
-                      imageUrl: (simAd.images || simAd.image_urls)?.[0]
+                      location: simAd.city || 'Maroc',
+                      images: simAd.images || simAd.image_urls || null,
+                      created_at: simAd.created_at || new Date().toISOString()
                     }} />
                   ))}
                 </div>
