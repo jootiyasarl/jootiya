@@ -134,7 +134,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
         </div>
       )}
       
-      <main className="mx-auto max-w-7xl px-4 mt-4 md:mt-6">
+      <main className="mx-auto max-w-7xl px-4 mt-8 md:mt-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
           <div className="hidden lg:block lg:col-span-3">
             <Suspense fallback={<div className="h-[400px] w-full bg-zinc-50 animate-pulse rounded-3xl" />}>
