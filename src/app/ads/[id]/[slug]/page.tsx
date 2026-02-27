@@ -257,12 +257,12 @@ export default async function AdPage({ params }: AdPageProps) {
   }
 
   return (
-    <div dir="ltr" className="min-h-screen bg-[#F8FAFC] dark:bg-zinc-950 pb-16 font-sans text-zinc-900 dark:text-zinc-100">
+    <div dir="ltr" className="bg-[#F8FAFC] dark:bg-zinc-950 pb-16 font-sans text-zinc-900 dark:text-zinc-100">
       <ShadowViewTracker adId={ad.id} category={ad.category} />
-      <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border-b border-zinc-200 dark:border-zinc-800 z-40 sticky top-[56px] md:top-[64px] pb-4">
-        <div className="container-standard py-0.5">
+      <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl border-b border-zinc-200 dark:border-zinc-800 z-40 sticky top-[56px] md:top-[64px]">
+        <div className="container-standard">
           <div className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between">
-            <nav className="flex flex-wrap items-center gap-1.5 text-[11px] font-bold text-zinc-500 min-w-0">
+            <nav className="flex flex-wrap items-center gap-1.5 text-[11px] font-bold text-zinc-500 min-w-0 py-2">
               <Link href="/" className="hover:text-orange-600 transition-colors">Accueil</Link>
               <ChevronRight className="h-3 w-3 opacity-50" />
               <Link href="/marketplace" className="hover:text-orange-600 transition-colors">Marché</Link>
@@ -279,18 +279,7 @@ export default async function AdPage({ params }: AdPageProps) {
         </div>
       </div>
 
-      <main className="main-content-wrapper container-standard py-4 sm:py-6 lg:py-8">
-        <div className="space-y-2 mb-4">
-          <ViralTracker adId={ad.id} referrerId="" />
-          <ViralProgressBar 
-            adId={ad.id} 
-            initialCount={ad.referral_count || 0} 
-            isFeatured={ad.is_featured} 
-            sellerId={ad.seller_id}
-            currentUserId={user?.id}
-          />
-        </div>
-
+      <main className="container-standard py-4 sm:py-6 lg:py-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-start">
           {/* Left Column: Gallery + Details */}
           <div className="lg:col-span-8 space-y-4 min-w-0">
@@ -436,7 +425,7 @@ export default async function AdPage({ params }: AdPageProps) {
           </div>
 
           <div className="hidden lg:block lg:col-span-4">
-            <div className="lg:sticky lg:top-16 space-y-3">
+            <div className="lg:sticky lg:top-24 space-y-3">
               <div className="rounded-xl sm:rounded-2xl bg-white dark:bg-zinc-900 p-4 shadow-sm ring-1 ring-zinc-100 dark:ring-white/5">
                 <div className="flex items-start justify-between gap-3">
                   <div>
