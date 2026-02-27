@@ -260,7 +260,7 @@ export default async function AdPage({ params }: AdPageProps) {
     <div dir="ltr" className="bg-[#F8FAFC] dark:bg-zinc-950 pb-16 font-sans text-zinc-900 dark:text-zinc-100">
       <ShadowViewTracker adId={ad.id} category={ad.category} />
       {/* Breadcrumbs Section - Updated Position & Categories */}
-      <div className="sticky top-[56px] md:top-[64px] z-30 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-100 dark:border-zinc-800">
+      <div className="sticky top-[64px] md:top-[72px] z-30 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-100 dark:border-zinc-800">
         <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-2.5">
           <nav className="flex items-center gap-2 text-[10px] md:text-[11px] font-bold text-zinc-500 uppercase tracking-wider overflow-x-auto no-scrollbar whitespace-nowrap">
             <Link href="/" className="hover:text-orange-600 transition-colors shrink-0">Accueil</Link>
