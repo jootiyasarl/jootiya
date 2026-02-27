@@ -90,8 +90,9 @@ async function registerAction(formData: FormData) {
     );
 
   if (profileError) {
+    console.error("Profile creation error:", profileError);
     const params = new URLSearchParams();
-    params.set("error", "Erreur lors de l'enregistrement du profil.");
+    params.set("error", `Erreur profil: ${profileError.message}`);
     redirect(`/register?${params.toString()}`);
   }
 
