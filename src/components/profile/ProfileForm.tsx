@@ -160,11 +160,11 @@ export function ProfileForm() {
 
       if (result.error) throw new Error(result.error);
       
-      setSuccess("Profile mis à jour avec succès.");
+      setSuccess("Profil mis à jour avec succès.");
       toast.success("Profil mis à jour.");
     } catch (err: any) {
-      setError(err.message ?? "Erreur lors de la sauvegarde.");
-      toast.error(err.message ?? "Échec de la sauvegarde.");
+      setError(err.message || "Erreur lors de la sauvegarde.");
+      toast.error(err.message || "Échec de la sauvegarde.");
     } finally {
       setSavingProfile(false);
     }
