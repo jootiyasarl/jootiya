@@ -150,7 +150,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
         <div className="max-w-md w-full relative z-10 space-y-8 animate-in fade-in slide-in-from-left-8 duration-1000">
           <div className="space-y-4 text-left" dir="ltr">
             <h2 className="text-4xl font-black text-zinc-900 leading-none tracking-tighter">
-              Vendez plus vite sur <span className="text-orange-500">Jootiya.</span>
+              Vendez plus vite sur <span className="text-orange-500 text-5xl">Jootiya.</span>
             </h2>
           </div>
 
