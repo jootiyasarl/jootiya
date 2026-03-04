@@ -203,7 +203,6 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
               <ChevronLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
               Retour à l'accueil
             </Link>
-            <span className="text-[10px] font-bold text-zinc-300"> 2024 JOOTIYA</span>
           </div>
         </div>
       </div>
