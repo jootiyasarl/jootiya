@@ -304,7 +304,7 @@ export default function BlogAdminPage() {
 
             <div className="space-y-3">
               <div className="flex items-center justify-between ml-1">
-                <label className="text-sm font-bold uppercase tracking-widest text-zinc-500">Contenu enrichي</label>
+                <label className="text-sm font-bold uppercase tracking-widest text-zinc-500">Contenu enrichi</label>
                 <div className="flex items-center gap-2 text-[10px] font-bold text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded-md border border-emerald-500/20">
                   <CheckCircle2 className="h-3 w-3" />
                   SAUVEGARDE AUTO ACTIVE

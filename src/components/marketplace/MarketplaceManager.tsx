@@ -133,7 +133,7 @@ export default function MarketplaceManager({ ads }: { ads: any[] }) {
                         </div>
                         <h3 className="text-xl font-bold text-zinc-900 mb-2">Aucune annonce trouvée</h3>
                         <p className="text-zinc-500 max-w-sm">
-                            Il n'y a pas d'annonces correspondant à vos critères pour le moment. Essayez de modifier vos filtres أو votre recherche.
+                            Il n'y a pas d'annonces correspondant à vos critères pour le moment. Essayez de modifier vos filtres et votre recherche.
                         </p>
                     </div>
                 )}

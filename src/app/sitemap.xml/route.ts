@@ -17,10 +17,10 @@ export async function GET() {
 
   const baseUrl = 'https://jootiya.com';
 
-  // 2. جلب الأقسام (يمكن جلبها ديناميكياً إذا كانت في قاعدة البيانات)
+  // 2. Fetch categories (can be dynamic if in database)
   const categories = ['immobilier', 'vehicules', 'electronique', 'maison', 'loisirs', 'emploi', 'services'];
 
-  // 3. بناء هيكل الـ XML
+  // 3. Build XML structure
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>

@@ -33,7 +33,7 @@ export default function AdminLoginPage() {
       if (error) throw error;
     } catch (err: any) {
       console.error("Admin Login error:", err.message);
-      setError("حدث خطأ أثناء تسجيل الدخول. تأكد من استخدام حساب Gmail الصحيح.");
+      setError("Une erreur est survenue lors de la connexion. Assurez-vous d'utiliser le bon compte Gmail.");
       setIsLoading(false);
     }
   };
@@ -48,11 +48,11 @@ export default function AdminLoginPage() {
       <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10 px-4 text-center">
         <Link href="/" className="inline-flex items-center gap-2 text-zinc-500 hover:text-zinc-300 transition-colors mb-8 group">
           <ChevronLeft className="w-4 h-4 group-hover:translate-x-1 transition-transform rotate-180" />
-          <span className="text-sm font-bold">العودة للرئيسية</span>
+          <span className="text-sm font-bold">Retour à l'accueil</span>
         </Link>
         <h1 className="text-4xl font-black tracking-tighter text-white mb-2">JOOTIYA</h1>
-        <h2 className="text-xl font-bold text-zinc-400">مركز التحكم الإداري</h2>
-        <p className="mt-2 text-zinc-500 text-sm italic">دخول مقيد للمسؤولين فقط</p>
+        <h2 className="text-xl font-bold text-zinc-400">Panel d'Administration</h2>
+        <p className="mt-2 text-zinc-500 text-sm italic">Accès restreint aux administrateurs uniquement</p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-[440px] relative z-10 px-4">
@@ -66,7 +66,7 @@ export default function AdminLoginPage() {
             )}
 
             <div className="space-y-6 text-center">
-              <p className="text-zinc-400 text-sm">سجل دخولك باستخدام بريد Google المعتمد للوصول للوحة التحكم</p>
+              <p className="text-zinc-400 text-sm">Connectez-vous avec votre compte Google autorisé pour accéder au panel.</p>
               
               <button
                 type="button"
@@ -86,7 +86,7 @@ export default function AdminLoginPage() {
                     </svg>
                   </span>
                 )}
-                <span>{isLoading ? "جاري التحقق..." : "الدخول باستخدام Google"}</span>
+                <span>{isLoading ? "Vérification..." : "Connexion avec Google"}</span>
               </button>
 
               <div className="relative">

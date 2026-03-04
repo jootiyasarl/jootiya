@@ -9,7 +9,7 @@ export async function GET() {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // 🚩 الفحص الذكي: إذا كان الأدمن يحاول رؤية إحصائيات بائع
+    // Admin Check: if admin is trying to see seller stats
     if (user.email === 'jootiyasarl@gmail.com') {
         return NextResponse.json({ isAdmin: true, redirect: '/admin' });
     }

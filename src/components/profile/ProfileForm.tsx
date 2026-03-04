@@ -151,7 +151,7 @@ export function ProfileForm({
         }
       };
       reader.onerror = () => {
-        toast.error("Échec de la lecture du ملف.");
+        toast.error("Échec de la lecture du fichier.");
         setUploadingAvatar(false);
       };
       reader.readAsDataURL(file);

@@ -12,19 +12,19 @@ async function checkAdminAuth() {
   const supabase = createSupabaseServerClient();
   const { data: { user }, error } = await supabase.auth.getUser();
 
-  // 🚩 الفحص الذهبي: الأدمن المطلق
+  // Admin Check
   if (user?.email === 'jootiyasarl@gmail.com') {
     return; // Authorized
   }
 
-  // إذا لم يكن هناك مستخدم أو حدث خطأ، لا تقم بإعادة التوجيه التلقائي لمنع الحلقات اللانهائية
+  // If no user or error, do not redirect automatically to prevent loops
   if (error || !user) {
     console.error('Admin Layout: No valid user session', error);
-    // بدلاً من التوجيه، نعرض رسالة خطأ بسيطة أو نترك الصفحة تحمل
+    // Instead of redirect, return null or an error message
     return; 
   }
 
-  // فحص الصلاحيات من قاعدة البيانات لبقية الأدمنز
+  // Check roles from database for other admins
   const { data: profile } = await supabase
     .from("profiles")
     .select("role, phone")

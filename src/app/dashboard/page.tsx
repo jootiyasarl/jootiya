@@ -10,7 +10,7 @@ export default async function DashboardPage() {
     redirect("/login?redirectTo=/dashboard");
   }
 
-  // 🚩 الفحص الذهبي: إذا كان الأدمن يحاول دخول لوحة البائعين
+  // Admin Check: redirect if admin tries to access seller dashboard
   if (user.email === 'jootiyasarl@gmail.com') {
     console.log("Admin detected in /dashboard, redirecting to /admin");
     redirect("/admin");

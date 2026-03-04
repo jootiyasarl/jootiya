@@ -30,8 +30,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     if (!cityData) return { title: 'Ville non trouvée' };
 
     return {
-        title: `بيع وشراء في ${cityData.name} | أوقات الصلاة والطقس - Jootiya`,
-        description: `اكتشف أفضل العروض والهمزات في ${cityData.name}. سوق ${cityData.name} المفتوح لبيع وشراء السيارات، الهواتف، والعقارات. تابع أيضاً أوقات الصلاة وحالة الطقس في ${cityData.name}.`,
+        title: `Achat et vente à ${cityData.name} | Horaires de prière et météo - Jootiya`,
+        description: `Découvrez les meilleures offres à ${cityData.name}. Marché ouvert pour l'achat et la vente de voitures, téléphones et immobilier. Suivez également les horaires de prière et la météo à ${cityData.name}.`,
     };
 }
 
@@ -54,7 +54,7 @@ export default async function CityLandingPage({ params }: Props) {
         "@context": "https://schema.org",
         "@type": "LocalBusiness",
         "name": `Jootiya ${cityData.name}`,
-        "description": `سوق ${cityData.name} المفتوح: همزات، أوقات الصلاة، وأخبار السوق في ${cityData.name}`,
+        "description": `Marché ouvert à ${cityData.name}: offres, horaires de prière et actualités du marché à ${cityData.name}`,
         "url": `https://jootiya.com/cities/${city}`,
         "logo": "https://jootiya.com/favicon.svg",
         "address": {

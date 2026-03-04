@@ -124,7 +124,7 @@ export default function NotificationsPage() {
             <div>
               <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest">App Installée</p>
               <h4 className="text-2xl font-black text-white">
-                {stats.loading ? "..." : Math.round(stats.total * 0.8)} {/* تقدير تقريبي */}
+                {stats.loading ? "..." : Math.round(stats.total * 0.8)} {/* Estimated */}
               </h4>
             </div>
           </div>

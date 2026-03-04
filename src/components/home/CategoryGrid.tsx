@@ -11,7 +11,7 @@ const CATEGORIES = [
     { id: "vehicles", label: "Véhicules & Transport", icon: Car, bg: "bg-orange-50 text-orange-600", href: "/categories/vehicles" },
     { id: "fashion", label: "Mode & Chaussures", icon: Shirt, bg: "bg-pink-50 text-pink-600", href: "/categories/fashion" },
     { id: "tools-equipment", label: "Outils & Équipement", icon: Hammer, bg: "bg-zinc-100 text-zinc-600", href: "/categories/tools-equipment" },
-    { id: "hobbies", label: "Loisirs & Diverتissement", icon: Gamepad2, bg: "bg-purple-50 text-purple-600", href: "/categories/hobbies" },
+    { id: "hobbies", label: "Loisirs & Divertissement", icon: Gamepad2, bg: "bg-purple-50 text-purple-600", href: "/categories/hobbies" },
     { id: "animals", label: "Animaux", icon: PawPrint, bg: "bg-amber-50 text-amber-600", href: "/categories/animals" },
     { id: "books", label: "Livres & Études", icon: BookOpen, bg: "bg-sky-50 text-sky-600", href: "/categories/books" },
     { id: "used-clearance", label: "Occasions", icon: Tag, bg: "bg-red-50 text-red-600", href: "/categories/used-clearance" },

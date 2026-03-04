@@ -47,7 +47,7 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
 
                 setIsAdmin(isAuthorized);
 
-                // تزامن الكوكيز للسيرفر عند اكتشاف الأدمن
+                // Session sync for server on admin detection
                 if (isAuthorized) {
                     const { data: { session } } = await supabase.auth.getSession();
                     if (session) {
@@ -163,7 +163,7 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                             <Link
                                 href="/admin"
                                 className="p-2.5 rounded-xl text-orange-600 bg-orange-50 border border-orange-200 dark:text-orange-500 dark:bg-orange-950/20 dark:border-orange-900/30 transition-all shadow-sm shadow-orange-500/10 hover:scale-105"
-                                title="لوحة تحكم الأدمن"
+                                title="Admin Panel"
                                 rel="nofollow"
                             >
                                 <ShieldAlert className="w-5 h-5" />

@@ -36,11 +36,11 @@ const MAJOR_CITIES = [
 export default function Footer() {
     const currentYear = new Date().getFullYear();
     const [prayerTimes, setPrayerTimes] = React.useState<{ [key: string]: string }>({
-        'الفجر': '--:--',
-        'الظهر': '--:--',
-        'العصر': '--:--',
-        'المغرب': '--:--',
-        'العشاء': '--:--'
+        'Fajr': '--:--',
+        'Dhuhr': '--:--',
+        'Asr': '--:--',
+        'Maghrib': '--:--',
+        'Isha': '--:--'
     });
 
     React.useEffect(() => {
@@ -52,11 +52,11 @@ export default function Footer() {
                 if (data.data && data.data.timings) {
                     const t = data.data.timings;
                     setPrayerTimes({
-                        'الفجر': t.Fajr,
-                        'الظهر': t.Dhuhr,
-                        'العصر': t.Asr,
-                        'المغرب': t.Maghrib,
-                        'العشاء': t.Isha
+                        'Fajr': t.Fajr,
+                        'Dhuhr': t.Dhuhr,
+                        'Asr': t.Asr,
+                        'Maghrib': t.Maghrib,
+                        'Isha': t.Isha
                     });
                 }
             } catch (err) {
@@ -190,50 +190,48 @@ export default function Footer() {
 
                 {/* SEO Links Cloud - Morocco Strategy */}
                 <div className="pt-10 border-t border-zinc-800/50">
-                    <div className="flex flex-wrap justify-center gap-x-6 gap-y-3" dir="rtl">
-                        <Link href="/marketplace" className="text-[11px] font-bold text-zinc-500 hover:text-orange-500 transition-colors">جميع إعلانات المغرب</Link>
-                        <Link href="/marketplace" className="text-[11px] font-bold text-zinc-500 hover:text-orange-500 transition-colors">همزة اليوم في المغرب</Link>
-                        <Link href="/marketplace" className="text-[11px] font-bold text-zinc-500 hover:text-orange-500 transition-colors">سوق المغرب المفتوح</Link>
-                        <Link href="/marketplace" className="text-[11px] font-bold text-zinc-500 hover:text-orange-500 transition-colors">بيع واشري في المغرب</Link>
-                        <Link href="/marketplace" className="text-[11px] font-bold text-zinc-500 hover:text-orange-500 transition-colors">إعلانات مبوبة المغرب</Link>
-                        <Link href="/marketplace" className="text-[11px] font-bold text-zinc-500 hover:text-orange-500 transition-colors">جوتيا المغرب</Link>
-                        <Link href="/marketplace" className="text-[11px] font-bold text-zinc-500 hover:text-orange-500 transition-colors">أفضل عروض المغرب</Link>
+                    <div className="flex flex-wrap justify-center gap-x-6 gap-y-3" dir="ltr">
+                        <Link href="/marketplace" className="text-[11px] font-bold text-zinc-500 hover:text-orange-500 transition-colors">Toutes les annonces au Maroc</Link>
+                        <Link href="/marketplace" className="text-[11px] font-bold text-zinc-500 hover:text-orange-500 transition-colors">Bonnes affaires aujourd'hui</Link>
+                        <Link href="/marketplace" className="text-[11px] font-bold text-zinc-500 hover:text-orange-500 transition-colors">Marché Ouvert Maroc</Link>
+                        <Link href="/marketplace" className="text-[11px] font-bold text-zinc-500 hover:text-orange-500 transition-colors">Achat et vente au Maroc</Link>
+                        <Link href="/marketplace" className="text-[11px] font-bold text-zinc-500 hover:text-orange-500 transition-colors">Petites annonces Maroc</Link>
+                        <Link href="/marketplace" className="text-[11px] font-bold text-zinc-500 hover:text-orange-500 transition-colors">Jootiya Maroc</Link>
+                        <Link href="/marketplace" className="text-[11px] font-bold text-zinc-500 hover:text-orange-500 transition-colors">Meilleures offres Maroc</Link>
                     </div>
                 </div>
 
                 {/* Semantic SEO Widgets: Prayer & Weather */}
                 <div className="pt-12 grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 border-t border-zinc-800/20 mt-10">
-                    <div className="bg-white/5 rounded-[2rem] p-5 md:p-8 border border-white/10 text-right" dir="rtl">
+                    <div className="bg-white/5 rounded-[2rem] p-5 md:p-8 border border-white/10 text-left" dir="ltr">
                         <h4 className="text-white text-sm font-black mb-4 flex items-center gap-2">
                             <span className="w-2 h-2 rounded-full bg-orange-500" aria-hidden="true"></span>
-                            مواقيت الصلاة وأخبار السوق
+                            Horaires de Prière
                         </h4>
-                        <p className="text-[11px] md:text-xs text-zinc-500 mb-6 leading-relaxed">
-                            تابع أوقات الصلاة في <Link href="/cities/casablanca" className="text-zinc-300 hover:text-orange-500 underline underline-offset-4 decoration-zinc-700">الدار البيضاء</Link>، <Link href="/cities/marrakech" className="text-zinc-300 hover:text-orange-500 underline underline-offset-4 decoration-zinc-700">مراكش</Link>، و<Link href="/cities/rabat" className="text-zinc-300 hover:text-orange-500 underline underline-offset-4 decoration-zinc-700">الرباط</Link>. Jootiya هو دليلك في المغرب لمعرفة آخر الهمزات وتوقيت المدن المغربية.
-                        </p>
-                        <div className="flex gap-2.5 overflow-x-auto pb-4 no-scrollbar snap-x">
+                        <div className="grid grid-cols-2 gap-3">
                             {Object.entries(prayerTimes).map(([name, time]) => (
-                                <div key={name} className="flex-shrink-0 bg-black/40 px-4 py-3 rounded-2xl border border-white/5 text-center min-w-[85px] snap-center">
-                                    <span className="block text-[10px] text-zinc-500 font-bold mb-1">{name}</span>
-                                    <span className="block text-sm text-orange-500 font-black tracking-tight">{time}</span>
+                                <div key={name} className="flex items-center justify-between bg-black/40 p-3 rounded-xl border border-white/5">
+                                    <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500">{name}</span>
+                                    <span className="text-xs font-black text-white">{time}</span>
                                 </div>
                             ))}
                         </div>
                     </div>
-                    <div className="bg-white/5 rounded-[2rem] p-5 md:p-8 border border-white/10 text-right" dir="rtl">
+
+                    <div className="bg-white/5 rounded-[2rem] p-5 md:p-8 border border-white/10 text-left" dir="ltr">
                         <h4 className="text-white text-sm font-black mb-4 flex items-center gap-2">
                             <span className="w-2 h-2 rounded-full bg-blue-500" aria-hidden="true"></span>
-                            حالة الطقس في المغرب
+                            Météo au Maroc
                         </h4>
                         <p className="text-[11px] md:text-xs text-zinc-500 mb-6 leading-relaxed">
-                            تعرف على حالة الطقس اليوم قبل خروجك للتسوق في <Link href="/cities/tanger" className="text-zinc-300 hover:text-orange-500 underline underline-offset-4 decoration-zinc-700">طنجة</Link>، <Link href="/cities/agadir" className="text-zinc-300 hover:text-orange-500 underline underline-offset-4 decoration-zinc-700">أكادير</Link>، و<Link href="/cities/fes" className="text-zinc-300 hover:text-orange-500 underline underline-offset-4 decoration-zinc-700">فاس</Link>.
+                            Consultez la météo avant de sortir faire vos achats à <Link href="/cities/tanger" className="text-zinc-300 hover:text-orange-500 underline underline-offset-4 decoration-zinc-700">Tanger</Link>, <Link href="/cities/agadir" className="text-zinc-300 hover:text-orange-500 underline underline-offset-4 decoration-zinc-700">Agadir</Link>, et <Link href="/cities/fes" className="text-zinc-300 hover:text-orange-500 underline underline-offset-4 decoration-zinc-700">Fès</Link>.
                         </p>
                         <div className="flex items-center justify-between bg-black/40 p-4 rounded-2xl border border-white/5 shadow-inner">
                             <div className="flex items-center gap-4">
                                 <span className="text-3xl filter drop-shadow-md">☀️</span>
-                                <div className="text-right">
-                                    <span className="block text-sm text-white font-black">مشمس غالباً</span>
-                                    <span className="block text-[10px] text-zinc-500 font-bold mt-0.5 uppercase tracking-wider">تحديث مباشر</span>
+                                <div className="text-left">
+                                    <span className="block text-sm text-white font-black">Généralement Ensoleillé</span>
+                                    <span className="block text-[10px] text-zinc-500 font-bold mt-0.5 uppercase tracking-wider">Mise à jour directe</span>
                                 </div>
                             </div>
                             <span className="text-2xl font-black text-orange-500 tracking-tighter">22°C</span>

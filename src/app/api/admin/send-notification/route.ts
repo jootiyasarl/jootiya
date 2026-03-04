@@ -56,7 +56,7 @@ export async function POST(request: Request) {
             return NextResponse.json({ 
                 success: true, 
                 count: 0, 
-                message: "Aucun abonné trouvé في قاعدة البيانات." 
+                message: "Aucun abonné trouvé dans la base de données." 
             });
         }
 
