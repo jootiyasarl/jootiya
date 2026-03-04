@@ -86,7 +86,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-600 text-xs font-bold uppercase tracking-widest">
               Plateforme Premium
             </div>
-            <h2 className="text-6xl font-black text-zinc-900 leading-none tracking-tighter">
+            <h2 className="text-4xl font-black text-zinc-900 leading-none tracking-tighter">
               Vendez plus vite sur <span className="text-orange-500">Jootiya.</span>
             </h2>
           </div>
