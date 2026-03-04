@@ -25,90 +25,65 @@ CREATE INDEX IF NOT EXISTS idx_semantic_keywords_category ON public.semantic_key
 
 -- 3. Insert Semantic Keyword Mappings
 
--- Vehicles (مركبات)
+-- Vehicles
 INSERT INTO public.semantic_keywords (keyword, category, synonyms) VALUES
-('سيارة', 'vehicles', ARRAY['طنوبيل', 'طوموبيل', 'توموبيل', 'مركبة', 'عربة', 'car', 'voiture', 'vehicle', 'auto', 'automobile']),
-('طنوبيل', 'vehicles', ARRAY['سيارة', 'طوموبيل', 'توموبيل', 'مركبة', 'عربة', 'car', 'voiture', 'vehicle']),
-('car', 'vehicles', ARRAY['سيارة', 'طنوبيل', 'طوموبيل', 'مركبة', 'voiture', 'vehicle', 'auto']),
-('voiture', 'vehicles', ARRAY['سيارة', 'طنوبيل', 'car', 'vehicle', 'مركبة']),
-('مرسيدس', 'vehicles', ARRAY['Mercedes', 'Benz', 'سيارة', 'طنوبيل', 'car']),
-('Mercedes', 'vehicles', ARRAY['مرسيدس', 'Benz', 'سيارة', 'car']),
-('BMW', 'vehicles', ARRAY['بي ام دبليو', 'سيارة', 'طنوبيل', 'car']),
-('Toyota', 'vehicles', ARRAY['تويوتا', 'سيارة', 'طنوبيل', 'car']),
-('Renault', 'vehicles', ARRAY['رينو', 'سيارة', 'طنوبيل', 'car']),
-('Peugeot', 'vehicles', ARRAY['بيجو', 'سيارة', 'طنوبيل', 'car'])
+('voiture', 'vehicles', ARRAY['car', 'auto', 'automobile', 'vehicule']),
+('car', 'vehicles', ARRAY['voiture', 'vehicle', 'auto']),
+('mercedes', 'vehicles', ARRAY['Mercedes', 'Benz', 'car']),
+('bmw', 'vehicles', ARRAY['car']),
+('toyota', 'vehicles', ARRAY['car']),
+('renault', 'vehicles', ARRAY['car']),
+('peugeot', 'vehicles', ARRAY['car'])
 ON CONFLICT DO NOTHING;
 
--- Electronics - Phones (هواتف)
+-- Electronics - Phones
 INSERT INTO public.semantic_keywords (keyword, category, synonyms) VALUES
-('هاتف', 'electronics', ARRAY['تيليفون', 'موبايل', 'جوال', 'phone', 'smartphone', 'téléphone', 'mobile']),
-('تيليفون', 'electronics', ARRAY['هاتف', 'موبايل', 'جوال', 'phone', 'smartphone', 'téléphone']),
-('موبايل', 'electronics', ARRAY['هاتف', 'تيليفون', 'جوال', 'phone', 'smartphone', 'mobile']),
-('phone', 'electronics', ARRAY['هاتف', 'تيليفون', 'موبايل', 'smartphone', 'téléphone']),
-('smartphone', 'electronics', ARRAY['هاتف', 'تيليفون', 'موبايل', 'phone', 'téléphone']),
-('iPhone', 'electronics', ARRAY['ايفون', 'آيفون', 'Apple', 'هاتف', 'تيليفون', 'phone']),
-('ايفون', 'electronics', ARRAY['iPhone', 'آيفون', 'Apple', 'هاتف', 'phone']),
-('Samsung', 'electronics', ARRAY['سامسونج', 'سامسونغ', 'هاتف', 'phone']),
-('سامسونج', 'electronics', ARRAY['Samsung', 'سامسونغ', 'هاتف', 'phone'])
+('telephone', 'electronics', ARRAY['phone', 'smartphone', 'mobile']),
+('phone', 'electronics', ARRAY['telephone', 'smartphone', 'mobile']),
+('smartphone', 'electronics', ARRAY['telephone', 'phone', 'mobile']),
+('iphone', 'electronics', ARRAY['iPhone', 'Apple', 'phone']),
+('samsung', 'electronics', ARRAY['Samsung', 'phone'])
 ON CONFLICT DO NOTHING;
 
--- Electronics - Computers (حواسيب)
+-- Electronics - Computers
 INSERT INTO public.semantic_keywords (keyword, category, synonyms) VALUES
-('كمبيوتر', 'electronics', ARRAY['حاسوب', 'كومبيوتر', 'ordinateur', 'computer', 'PC']),
-('حاسوب', 'electronics', ARRAY['كمبيوتر', 'كومبيوتر', 'ordinateur', 'computer', 'PC']),
-('ordinateur', 'electronics', ARRAY['كمبيوتر', 'حاسوب', 'computer', 'PC']),
-('computer', 'electronics', ARRAY['كمبيوتر', 'حاسوب', 'ordinateur', 'PC']),
-('laptop', 'electronics', ARRAY['لابتوب', 'حاسوب محمول', 'portable', 'كمبيوتر محمول']),
-('لابتوب', 'electronics', ARRAY['laptop', 'حاسوب محمول', 'portable', 'كمبيوتر'])
+('ordinateur', 'electronics', ARRAY['computer', 'pc', 'laptop']),
+('computer', 'electronics', ARRAY['ordinateur', 'pc', 'laptop']),
+('laptop', 'electronics', ARRAY['portable', 'ordinateur']),
+('portable', 'electronics', ARRAY['laptop', 'ordinateur'])
 ON CONFLICT DO NOTHING;
 
--- Electronics - TV (تلفاز)
+-- Electronics - TV
 INSERT INTO public.semantic_keywords (keyword, category, synonyms) VALUES
-('تلفاز', 'electronics', ARRAY['تلفزيون', 'TV', 'télévision', 'television']),
-('تلفزيون', 'electronics', ARRAY['تلفاز', 'TV', 'télévision', 'television']),
-('TV', 'electronics', ARRAY['تلفاز', 'تلفزيون', 'télévision', 'television'])
+('television', 'electronics', ARRAY['tv', 'tele']),
+('tv', 'electronics', ARRAY['television', 'tele'])
 ON CONFLICT DO NOTHING;
 
--- Furniture (أثاث)
+-- Furniture
 INSERT INTO public.semantic_keywords (keyword, category, synonyms) VALUES
-('أثاث', 'furniture', ARRAY['meuble', 'furniture', 'mobilier']),
-('كنبة', 'furniture', ARRAY['صالون', 'canapé', 'sofa', 'أثاث']),
-('صالون', 'furniture', ARRAY['كنبة', 'canapé', 'sofa', 'أثاث']),
-('canapé', 'furniture', ARRAY['كنبة', 'صالون', 'sofa', 'أثاث']),
-('sofa', 'furniture', ARRAY['كنبة', 'صالون', 'canapé', 'أثاث']),
-('طاولة', 'furniture', ARRAY['table', 'mesa', 'أثاث']),
-('table', 'furniture', ARRAY['طاولة', 'mesa', 'أثاث']),
-('سرير', 'furniture', ARRAY['فراش', 'lit', 'bed', 'أثاث']),
-('lit', 'furniture', ARRAY['سرير', 'فراش', 'bed', 'أثاث']),
-('bed', 'furniture', ARRAY['سرير', 'فراش', 'lit', 'أثاث'])
+('meuble', 'furniture', ARRAY['furniture', 'mobilier']),
+('canape', 'furniture', ARRAY['sofa', 'meuble']),
+('sofa', 'furniture', ARRAY['canape', 'meuble']),
+('table', 'furniture', ARRAY['meuble']),
+('lit', 'furniture', ARRAY['bed', 'meuble']),
+('bed', 'furniture', ARRAY['lit', 'meuble'])
 ON CONFLICT DO NOTHING;
 
--- Clothing (ملابس)
+-- Clothing
 INSERT INTO public.semantic_keywords (keyword, category, synonyms) VALUES
-('ملابس', 'clothing', ARRAY['لباس', 'vêtements', 'clothes', 'clothing']),
-('قميص', 'clothing', ARRAY['chemise', 'shirt', 'ملابس']),
-('chemise', 'clothing', ARRAY['قميص', 'shirt', 'ملابس']),
-('shirt', 'clothing', ARRAY['قميص', 'chemise', 'ملابس']),
-('سروال', 'clothing', ARRAY['بنطلون', 'pantalon', 'pants', 'ملابس']),
-('بنطلون', 'clothing', ARRAY['سروال', 'pantalon', 'pants', 'ملابس']),
-('pantalon', 'clothing', ARRAY['سروال', 'بنطلون', 'pants', 'ملابس']),
-('حذاء', 'clothing', ARRAY['صباط', 'chaussures', 'shoes', 'ملابس']),
-('صباط', 'clothing', ARRAY['حذاء', 'chaussures', 'shoes', 'ملابس']),
-('chaussures', 'clothing', ARRAY['حذاء', 'صباط', 'shoes', 'ملابس'])
+('vetements', 'clothing', ARRAY['clothes', 'mode']),
+('chemise', 'clothing', ARRAY['shirt', 'mode']),
+('shirt', 'clothing', ARRAY['chemise', 'mode']),
+('pantalon', 'clothing', ARRAY['pants', 'mode']),
+('chaussures', 'clothing', ARRAY['shoes', 'mode'])
 ON CONFLICT DO NOTHING;
 
--- Real Estate (عقارات)
+-- Real Estate
 INSERT INTO public.semantic_keywords (keyword, category, synonyms) VALUES
-('دار', 'real_estate', ARRAY['منزل', 'بيت', 'maison', 'house', 'عقار']),
-('منزل', 'real_estate', ARRAY['دار', 'بيت', 'maison', 'house', 'عقار']),
-('بيت', 'real_estate', ARRAY['دار', 'منزل', 'maison', 'house', 'عقار']),
-('maison', 'real_estate', ARRAY['دار', 'منزل', 'بيت', 'house', 'عقار']),
-('house', 'real_estate', ARRAY['دار', 'منزل', 'بيت', 'maison', 'عقار']),
-('شقة', 'real_estate', ARRAY['appartement', 'apartment', 'عقار']),
-('appartement', 'real_estate', ARRAY['شقة', 'apartment', 'عقار']),
-('apartment', 'real_estate', ARRAY['شقة', 'appartement', 'عقار']),
-('أرض', 'real_estate', ARRAY['terrain', 'land', 'عقار']),
-('terrain', 'real_estate', ARRAY['أرض', 'land', 'عقار'])
+('maison', 'real_estate', ARRAY['house', 'villa']),
+('house', 'real_estate', ARRAY['maison', 'villa']),
+('appartement', 'real_estate', ARRAY['flat', 'studio']),
+('terrain', 'real_estate', ARRAY['land'])
 ON CONFLICT DO NOTHING;
 
 -- 4. Function to Generate Search Tags

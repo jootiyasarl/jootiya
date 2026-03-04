@@ -45,7 +45,7 @@ export async function middleware(request: NextRequest) {
       try {
         const { data: { user }, error } = await supabaseAdmin.auth.getUser(supabaseToken);
         
-        // إذا كان المستخدم هو الأدمن، لا تسمح له بدخول لوحة البائعين، بل وجهه للإدارة
+        // If user is admin, don't allow access to seller dashboard, redirect to admin
         if (user?.email === 'jootiyasarl@gmail.com') {
           return NextResponse.redirect(new URL('/admin', request.url));
         }

@@ -52,7 +52,7 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete, pr
 
   return (
     <article className="group relative flex flex-col h-full bg-white dark:bg-zinc-900 rounded-[1.5rem] overflow-hidden shadow-sm border border-zinc-100 dark:border-zinc-800 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
-      {/* الجزء المسؤول عن الصورة - هنا يكمن الحل */}
+      {/* Image Section */}
       <div className="relative w-full aspect-[4/3] bg-zinc-100 dark:bg-zinc-800 overflow-hidden shrink-0">
         {linkHref && (
           <Link href={linkHref} className="absolute inset-0 z-10" aria-label={ad.title}>
@@ -106,7 +106,7 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete, pr
         )}
       </div>
 
-      {/* جزء المعلومات - لضمان بقاء النصوص متساوية */}
+      {/* Info Section */}
       <div className="p-4 flex flex-col flex-grow">
         <h3 className="text-sm font-bold text-zinc-800 dark:text-zinc-100 line-clamp-2 h-10 mb-2 leading-snug">
           {ad.title}

@@ -29,7 +29,7 @@ export function QuickActionFooter({ phone, adTitle, adPrice, adId, sellerId, cur
         ? '212' + cleanPhone.substring(1)
         : cleanPhone;
 
-    const whatsappMessage = `السلام عليكم، شفت الإعلان ديالك ${adTitle} في تطبيق Jootiya بـ ${adPrice} وعجبني. واش مزال موجود؟`;
+    const whatsappMessage = `Bonjour, j'ai vu votre annonce ${adTitle} sur Jootiya à ${adPrice} et cela m'intéresse. Est-elle toujours disponible ?`;
     const whatsappUrl = `https://wa.me/${formatPhone}?text=${encodeURIComponent(whatsappMessage)}`;
 
     // Check favorite status on mount

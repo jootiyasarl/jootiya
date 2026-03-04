@@ -360,7 +360,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
 
                         <div className="space-y-4 pt-4 text-left">
                             <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-1 flex items-center gap-2">
-                                <MapPin size={14} className="text-orange-500" /> Localisation على الخريطة (Optionnel)
+                                <MapPin size={14} className="text-orange-500" /> Localisation sur la carte (Optionnel)
                             </Label>
                             <AdLocationPicker 
                                 latitude={watch('latitude') || null}

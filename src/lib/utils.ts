@@ -10,7 +10,7 @@ export function toSlug(text: string) {
     .toString()
     .toLowerCase()
     .trim()
-    .replace(/\s+/g, '-')     // تحويل المسافات لشرطات
-    .replace(/[^\w\u0621-\u064A-]+/g, '') // دعم العربية والانجليزية وحذف الرموز
-    .replace(/--+/g, '-');    // منع تكرار الشرطات
+    .replace(/\s+/g, '-')
+    .replace(/[^\w-]+/g, '')
+    .replace(/--+/g, '-');
 }

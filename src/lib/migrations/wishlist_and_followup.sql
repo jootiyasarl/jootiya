@@ -64,8 +64,8 @@ BEGIN
         INSERT INTO public.notifications (user_id, title, message, type)
         VALUES (
             ad_record.seller_id,
-            'متابعة الإعلان: ' || ad_record.title,
-            'هل بعت ' || ad_record.title || '؟ لا تنسَ تحديث حالة الإعلان إلى (تم البيع) لتجنب الاتصالات غير الضرورية وللحفاظ على مصداقية بروفايلك.',
+            'Annonce Follow-up: ' || ad_record.title,
+            'Avez-vous vendu ' || ad_record.title || ' ? N''oubliez pas de mettre à jour le statut de l''annonce pour éviter les appels inutiles.',
             'follow_up'
         );
     END LOOP;
@@ -94,8 +94,8 @@ BEGIN
             INSERT INTO public.notifications (user_id, title, message, type)
             VALUES (
                 fav_record.user_id,
-                'خبر سار! انخفاض في السعر 🎉',
-                'خبر سار! الهمزة التي تتابعها "' || NEW.title || '" انخفض سعرها الآن! سارع بالشراء',
+                'Bonne nouvelle ! Baisse de prix 🎉',
+                'Bonne nouvelle ! L''offre que vous suivez "' || NEW.title || '" a baissé de prix ! Profitez-en vite.',
                 'price_drop'
             );
         END LOOP;

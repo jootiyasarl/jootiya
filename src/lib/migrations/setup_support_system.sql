@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS public.reports (
     reporter_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
     reporter_email TEXT,
     reporter_name TEXT,
-    reason TEXT NOT NULL, -- 'احتيال', 'محتوى غير لائق', 'سعر وهمي'
+    reason TEXT NOT NULL, -- 'scam', 'inappropriate', 'fake_price'
     status TEXT DEFAULT 'open', -- 'open', 'dismissed', 'resolved'
     details JSONB
 );
@@ -51,7 +51,7 @@ DECLARE
 BEGIN
     -- Only act on 'ad' reports with scam-related reasons
     IF NEW.target_type = 'ad' AND NEW.ad_id IS NOT NULL 
-       AND (NEW.reason ILIKE '%scam%' OR NEW.reason ILIKE '%fraud%' OR NEW.reason ILIKE '%احتيال%') THEN
+       AND (NEW.reason ILIKE '%scam%' OR NEW.reason ILIKE '%fraud%') THEN
         
         -- Count scam reports in the last hour for this specific ad
         SELECT COUNT(*) INTO scam_report_count
@@ -59,7 +59,7 @@ BEGIN
         WHERE ad_id = NEW.ad_id
           AND target_type = 'ad'
           AND created_at > NOW() - INTERVAL '1 hour'
-          AND (reason ILIKE '%scam%' OR reason ILIKE '%fraud%' OR reason ILIKE '%احتيال%');
+          AND (reason ILIKE '%scam%' OR reason ILIKE '%fraud%');
 
         -- If count >= 3, shadow ban the ad by changing its status
         IF scam_report_count >= 3 THEN

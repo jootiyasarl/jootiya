@@ -19,13 +19,13 @@ export function ViralShareButton({ adId, adTitle, adPrice, sellerId }: ViralShar
   const baseUrl = typeof window !== "undefined" ? window.location.origin : "https://jootiya.com";
   const referralLink = `${baseUrl}/ads/${adId}?ref=${sellerId}`;
 
-  const whatsappMessage = `شوف هاد الهمزة فـ Jootiya! 🤩\n\n*${adTitle}*\n💰 الثمن: *${adPrice}*\n\nدخل شوف الصور والمعلومات هنا:\n${referralLink}`;
+  const whatsappMessage = `Regardez cette offre sur Jootiya ! 🤩\n\n*${adTitle}*\n💰 Prix : *${adPrice}*\n\nVoir plus de détails ici :\n${referralLink}`;
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(referralLink);
     setCopied(true);
-    toast.success("تم نسخ رابط الإحالة بنجاح!");
+    toast.success("Lien de parrainage copié avec succès !");
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -34,7 +34,7 @@ export function ViralShareButton({ adId, adTitle, adPrice, sellerId }: ViralShar
       try {
         await navigator.share({
           title: adTitle,
-          text: `شوف هاد الهمزة فـ Jootiya! ${adTitle} بـ ${adPrice}`,
+          text: `Regardez cette offre sur Jootiya ! ${adTitle} à ${adPrice}`,
           url: referralLink,
         });
       } catch (err) {
@@ -47,14 +47,14 @@ export function ViralShareButton({ adId, adTitle, adPrice, sellerId }: ViralShar
 
   return (
     <div className="space-y-3">
-      <p className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest text-center">شارك وحصل على تمييز مجاني</p>
+      <p className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest text-center">Partagez et obtenez un boost gratuit</p>
       <div className="flex gap-2">
         <Button
           onClick={() => window.open(whatsappUrl, "_blank")}
           className="flex-1 h-12 bg-[#25D366] hover:bg-[#22c35e] text-white font-black rounded-xl gap-2 shadow-lg shadow-green-100 dark:shadow-none"
         >
           <MessageCircle className="w-5 h-5 fill-current" />
-          واتساب
+          WhatsApp
         </Button>
         <Button
           variant="outline"

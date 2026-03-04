@@ -57,8 +57,8 @@ export function ViralProgressBar({ adId, initialCount, isFeatured, sellerId, cur
               <CheckCircle2 className="w-5 h-5" />
             </div>
             <div>
-              <p className="font-bold text-sm">إعلانك مُميز الآن! ✨</p>
-              <p className="text-[10px] opacity-90 text-right">بفضل مشاركاتك، إعلانك يظهر في المقدمة مجاناً.</p>
+              <p className="font-bold text-sm">Votre annonce est Premium ! ✨</p>
+              <p className="text-[10px] opacity-90 text-left">Grâce à vos partages, votre annonce apparaît en priorité gratuitement.</p>
             </div>
           </div>
         </div>
@@ -75,20 +75,20 @@ export function ViralProgressBar({ adId, initialCount, isFeatured, sellerId, cur
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-orange-500" />
-          <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100">هدايا جولتيا المجانية</span>
+          <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100">Récompenses Jootiya</span>
         </div>
         <span className="text-[10px] font-black bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full uppercase">Viral Engine</span>
       </div>
       
       <div className="space-y-2">
         <div className="flex justify-between items-end">
-          <p className="text-[11px] text-zinc-500 font-medium">باقي ليك <span className="text-orange-600 font-bold">{remaining}</span> دي الخلال (Clicks) باش يولي إعلانك مُميز مجاناً!</p>
+          <p className="text-[11px] text-zinc-500 font-medium">Il vous reste <span className="text-orange-600 font-bold">{remaining}</span> clics pour que votre annonce devienne Premium gratuitement !</p>
           <span className="text-[10px] font-bold text-zinc-400">{count}/5</span>
         </div>
         <Progress value={progress} className="h-2 bg-zinc-100" />
       </div>
 
-      <p className="text-[10px] text-zinc-400 leading-relaxed">شارط الرابط ديالك مع صحابك فواتساب، وكل واحد دخل يشوف الإعلان كيقربك للتمييز المجاني.</p>
+      <p className="text-[10px] text-zinc-400 leading-relaxed">Partagez votre lien avec vos amis sur WhatsApp, chaque visite vous rapproche du statut Premium gratuit.</p>
     </div>
   );
 }
