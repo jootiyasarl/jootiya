@@ -58,13 +58,13 @@ async function loginAction(formData: FormData) {
   // Set cookies for the session
   await setAuthSession(data.session);
   
-  // 2. الفحص الذهبي: إذا كان هذا هو الأدمن، اقطرعه للمسار الصحيح فوراً
+  // 2. Admin Check: if this is the admin, redirect to admin panel
   if (data.session.user.email === 'jootiyasarl@gmail.com') {
     console.log("Admin detected, forcing redirect to /admin");
-    redirect("/admin"); // ✅ استخدام مسار مطلق ومباشر
+    redirect("/admin");
   }
 
-  // 3. لبقية المستخدمين، اذهب للوجهة المطلوبة أو المتجر
+  // 3. For other users, redirect to the intended destination or shop
   redirect(redirectTo);
 }
 
@@ -112,7 +112,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
               Bon retour !
             </h1>
             <p className="text-zinc-500 font-medium">
-              Connectez-vous pour gérer vos annonces و favoris.
+              Connectez-vous pour gérer vos annonces et favoris.
             </p>
           </div>
 

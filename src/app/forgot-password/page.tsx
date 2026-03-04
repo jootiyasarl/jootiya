@@ -28,7 +28,7 @@ async function forgotPasswordAction(formData: FormData) {
     redirect(`/forgot-password?error=${encodeURIComponent(error.message)}`);
   }
 
-  redirect("/forgot-password?success=Un e-mail de réinitialisation قد تم إرساله.");
+  redirect("/forgot-password?success=Un e-mail de réinitialisation a été envoyé.");
 }
 
 export default async function ForgotPasswordPage({

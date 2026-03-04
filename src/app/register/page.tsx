@@ -89,7 +89,7 @@ async function registerAction(formData: FormData) {
 
   if (error || !data.user) {
     const params = new URLSearchParams();
-    params.set("error", error?.message ?? "فشل إنشاء الحساب.");
+    params.set("error", error?.message ?? "Erreur lors de la création du compte.");
     redirect(`/register?${params.toString()}`);
   }
 
