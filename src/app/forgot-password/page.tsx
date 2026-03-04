@@ -102,9 +102,11 @@ export default async function ForgotPasswordPage({
           </div>
 
           {/* Branding removed as requested */}
-          <div className="pt-12 border-t border-zinc-900/50 flex items-center justify-end opacity-50">
-            <Link href="/" className="text-xs font-bold text-zinc-500 hover:text-white transition-colors">
-              Accueil
+          {/* Navigation Links */}
+          <div className="pt-10 border-t border-zinc-100 flex items-center justify-between">
+            <Link href="/login" className="inline-flex items-center gap-2 text-zinc-500 hover:text-zinc-900 transition-all mb-4 group">
+              <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+              <span className="text-sm font-medium">Retour à la connexion</span>
             </Link>
           </div>
         </div>
