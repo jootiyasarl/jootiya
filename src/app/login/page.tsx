@@ -89,9 +89,6 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             <h2 className="text-6xl font-black text-zinc-900 leading-none tracking-tighter">
               Vendez plus vite sur <span className="text-orange-500">Jootiya.</span>
             </h2>
-            <p className="text-xl text-zinc-600 font-medium leading-relaxed">
-              La marketplace marocaine réinventée pour une expérience fluide و sécurisée.
-            </p>
           </div>
 
           <div className="grid grid-cols-2 gap-4 pt-8">
