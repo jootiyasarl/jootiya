@@ -163,28 +163,32 @@ export default function BlogAdminPage() {
       console.log("Prepared payload:", payload);
 
       let error;
+      let data;
       if (id) {
         console.log("Updating post with ID:", id);
-        const { error: updateError } = await supabase
+        const { data: updateData, error: updateError } = await supabase
           .from("posts")
           .update(payload)
-          .eq("id", id);
+          .eq("id", id)
+          .select();
         error = updateError;
+        data = updateData;
       } else {
         console.log("Inserting new post...");
-        const { error: insertError } = await supabase
+        const { data: insertData, error: insertError } = await supabase
           .from("posts")
           .insert([payload])
           .select();
         error = insertError;
+        data = insertData;
       }
 
       if (error) {
-        console.error("Supabase error:", error);
+        console.error("Supabase error detail:", error);
         throw error;
       }
 
-      console.log("Save operation successful!");
+      console.log("Save operation successful, received data:", data);
       toast.success("Article enregistré avec succès !");
       await fetchPosts();
       console.log("Posts refetched, switching to list view");
