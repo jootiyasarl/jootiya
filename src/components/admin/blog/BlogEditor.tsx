@@ -6,6 +6,8 @@ import Underline from "@tiptap/extension-underline";
 import Placeholder from "@tiptap/extension-placeholder";
 import TextAlign from "@tiptap/extension-text-align";
 import Typography from "@tiptap/extension-typography";
+import Dropcursor from "@tiptap/extension-dropcursor";
+import Gapcursor from "@tiptap/extension-gapcursor";
 import imageCompression from "browser-image-compression";
 import { supabase } from "@/lib/supabaseClient";
 import { 
@@ -49,6 +51,11 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
       }),
       Underline,
       Typography,
+      Dropcursor.configure({
+        color: '#f97316',
+        width: 2,
+      }),
+      Gapcursor,
       TextAlign.configure({
         types: ["heading", "paragraph"],
       }),
@@ -107,6 +114,10 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
         
         // 4. Flatten spans but keep content (removes nested wrappers that often carry font data)
         cleaned = cleaned.replace(/<span\b[^>]*>([\s\S]*?)<\/span>/gim, "$1");
+
+        // 5. SEO Optimization: Replace <b> with <strong> and <i> with <em>
+        cleaned = cleaned.replace(/<b\b[^>]*>([\s\S]*?)<\/b>/gim, "<strong>$1</strong>");
+        cleaned = cleaned.replace(/<i\b[^>]*>([\s\S]*?)<\/i>/gim, "<em>$1</em>");
         
         return cleaned;
       },
