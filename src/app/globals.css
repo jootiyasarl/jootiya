@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -218,5 +219,44 @@
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
+  }
+
+  /* Tiptap Typography Customization */
+  .prose {
+    --tw-prose-body: var(--color-zinc-300);
+    --tw-prose-headings: var(--color-white);
+    --tw-prose-links: var(--color-orange-500);
+    --tw-prose-bold: var(--color-white);
+    --tw-prose-counters: var(--color-zinc-500);
+    --tw-prose-bullets: var(--color-orange-500);
+    --tw-prose-quotes: var(--color-zinc-100);
+    --tw-prose-quote-borders: var(--color-orange-500);
+    --tw-prose-hr: var(--color-zinc-800);
+    max-width: none;
+  }
+
+  .prose h1 {
+    @apply text-5xl font-black mb-8 mt-12 tracking-tighter leading-none;
+  }
+  .prose h2 {
+    @apply text-3xl font-black mb-6 mt-10 tracking-tight;
+  }
+  .prose h3 {
+    @apply text-xl font-bold mb-4 mt-8;
+  }
+  .prose p {
+    @apply mb-6 leading-relaxed text-zinc-400;
+  }
+  .prose ul {
+    @apply list-disc pl-6 mb-6 space-y-2;
+  }
+  .prose ol {
+    @apply list-decimal pl-6 mb-6 space-y-2;
+  }
+  .prose li {
+    @apply pl-2;
+  }
+  .prose blockquote {
+    @apply border-l-4 border-orange-500 pl-6 italic text-zinc-300 my-8;
   }
 }
