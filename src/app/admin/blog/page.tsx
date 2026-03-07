@@ -160,7 +160,8 @@ export default function BlogAdminPage() {
         // Insert - let Supabase generate the ID
         const { error: insertError } = await supabase
           .from("posts")
-          .insert([payload]);
+          .insert([payload])
+          .select();
         error = insertError;
       }
 
