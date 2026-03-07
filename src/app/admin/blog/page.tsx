@@ -192,13 +192,15 @@ export default function BlogAdminPage() {
       toast.success("Article enregistré avec succès !");
       await fetchPosts();
       console.log("Posts refetched, switching to list view");
+      
+      // Reset loading explicitly before view change
+      setLoading(false);
       setView("list");
+      return; // Early return to prevent falling through
     } catch (error: any) {
       console.error("Caught error in handleSave:", error);
       toast.error(error.message || "Erreur lors de l'enregistrement");
-    } finally {
-      console.log("Finishing handleSave, setting loading to false");
-      setLoading(false);
+      setLoading(false); // Reset loading on error
     }
   };
 
