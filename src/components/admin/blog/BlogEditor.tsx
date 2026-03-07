@@ -157,8 +157,8 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
     try {
       setIsUploading(true);
       const options = {
-        maxSizeMB: 0.5,
-        maxWidthOrHeight: 1600,
+        maxSizeMB: 1, // Increased to 1MB to allow better quality for large images
+        maxWidthOrHeight: 1920, // Increased to Full HD
         useWebWorker: true,
         fileType: "image/webp",
       };
@@ -170,7 +170,11 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
       const bucketName = "ad-images";
       const { data, error } = await supabase.storage
         .from(bucketName)
-        .upload(filePath, compressedFile);
+        .upload(filePath, compressedFile, {
+          cacheControl: "3600",
+          upsert: false,
+          contentType: "image/webp" // Explicitly set content type
+        });
 
       if (error) throw error;
 
