@@ -136,28 +136,42 @@ export default function BlogAdminPage() {
     }
 
     setLoading(true);
+    console.log("Starting handleSave with formData:", formData);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError) {
+        console.error("Session error:", sessionError);
+        throw sessionError;
+      }
+      
+      if (!session) {
+        console.error("No active session found");
+        throw new Error("Vous devez être connecté pour publier");
+      }
+
       const slug = formData.slug || generateSlug(formData.title);
+      console.log("Generated slug:", slug);
       
       const { id, ...dataWithoutId } = formData;
       const payload = {
         ...dataWithoutId,
         slug,
-        author_id: session?.user.id,
+        author_id: session.user.id,
         published_at: formData.status === "published" ? new Date().toISOString() : null
       };
 
+      console.log("Prepared payload:", payload);
+
       let error;
       if (id) {
-        // Update
+        console.log("Updating post with ID:", id);
         const { error: updateError } = await supabase
           .from("posts")
           .update(payload)
           .eq("id", id);
         error = updateError;
       } else {
-        // Insert - let Supabase generate the ID
+        console.log("Inserting new post...");
         const { error: insertError } = await supabase
           .from("posts")
           .insert([payload])
@@ -165,13 +179,21 @@ export default function BlogAdminPage() {
         error = insertError;
       }
 
-      if (error) throw error;
+      if (error) {
+        console.error("Supabase error:", error);
+        throw error;
+      }
+
+      console.log("Save operation successful!");
       toast.success("Article enregistré avec succès !");
-      fetchPosts();
+      await fetchPosts();
+      console.log("Posts refetched, switching to list view");
       setView("list");
     } catch (error: any) {
+      console.error("Caught error in handleSave:", error);
       toast.error(error.message || "Erreur lors de l'enregistrement");
     } finally {
+      console.log("Finishing handleSave, setting loading to false");
       setLoading(false);
     }
   };
