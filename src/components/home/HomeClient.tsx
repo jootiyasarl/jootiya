@@ -166,30 +166,36 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
                   </section>
                 ) : (
                   <>
-                    {[
-                      { id: 'electronics', label: 'Électronique' },
-                      { id: 'vehicles', label: 'Véhicules' },
-                      { id: 'fashion', label: 'Mode' },
-                      { id: 'tools-equipment', label: 'Outils' }
-                    ].map((cat) => {
-                      const catAds = ads.filter(ad => ad.categorySlug === cat.id).slice(0, 6);
-                      if (catAds.length === 0) return null;
-                      return (
-                        <section key={cat.id} className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <h2 className="text-lg font-bold text-zinc-900">{cat.label}</h2>
-                            <Link href={`/categories/${cat.id}`} className="text-sm font-bold text-zinc-900 hover:text-orange-500 flex items-center gap-1 group">
-                              Voir plus <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                            </Link>
-                          </div>
-                          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4">
-                            {catAds.map((ad, index) => (
-                              <AdCard key={ad.id} ad={ad} href={`/ads/${ad.id}`} priority={index < 2} />
-                            ))}
-                          </div>
-                        </section>
-                      );
-                    })}
+                      {[
+                        { id: 'electronics', label: 'Électronique' },
+                        { id: 'vehicles', label: 'Véhicules' },
+                        { id: 'home-furniture', label: 'Maison' },
+                        { id: 'fashion', label: 'Mode' },
+                        { id: 'hobbies', label: 'Loisirs' },
+                        { id: 'animals', label: 'Animaux' },
+                        { id: 'tools-equipment', label: 'Outils' },
+                        { id: 'books', label: 'Livres' },
+                        { id: 'used-clearance', label: 'Occasions' },
+                        { id: 'other', label: 'Autres' }
+                      ].map((cat) => {
+                        const catAds = ads.filter(ad => ad.categorySlug === cat.id).slice(0, 8);
+                        if (catAds.length === 0) return null;
+                        return (
+                          <section key={cat.id} className="space-y-4">
+                            <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-2">
+                              <h2 className="text-xl font-black text-zinc-900 dark:text-white uppercase tracking-tight">{cat.label}</h2>
+                              <Link href={`/categories/${cat.id}`} className="text-sm font-bold text-orange-600 hover:text-orange-700 flex items-center gap-1 group transition-colors">
+                                Voir tout <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                              </Link>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4">
+                              {catAds.map((ad, index) => (
+                                <AdCard key={ad.id} ad={ad} href={`/ads/${ad.id}`} priority={index < 2} />
+                              ))}
+                            </div>
+                          </section>
+                        );
+                      })}
                   </>
                 )}
                 
