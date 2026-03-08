@@ -16,7 +16,7 @@ export default async function AdRedirectPage({ params }: AdRedirectPageProps) {
     const { data: ad } = await supabase
         .from("ads")
         .select("title, slug")
-        .eq("id", id)
+        .or(`id.eq.${id},slug.eq.${id}`)
         .maybeSingle();
 
     if (!ad) {
