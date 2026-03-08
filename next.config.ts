@@ -39,6 +39,7 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  turbopack: {},
   experimental: {
     optimizeCss: true,
   },
