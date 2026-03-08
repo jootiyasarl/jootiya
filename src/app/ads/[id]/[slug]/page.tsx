@@ -64,9 +64,12 @@ export default async function AdPage({ params }: AdPageProps) {
   const user = await getServerUser();
   const supabase = createSupabaseServerClient();
 
-  const { data: ad, error } = await supabase
+    const { data: ad, error } = await supabase
     .from("ads")
-    .select(`*, profiles(phone, full_name, avatar_url, created_at)`)
+    .select(`
+      *, 
+      profiles!ads_seller_id_fkey(phone, full_name, avatar_url, created_at)
+    `)
     .or(`id.eq.${id},slug.eq.${id}`)
     .maybeSingle();
 
