@@ -68,7 +68,7 @@ export default async function AdPage({ params }: AdPageProps) {
     .from("ads")
     .select(`
       *, 
-      profiles:profiles(phone, full_name, avatar_url, created_at)
+      profiles:seller_id(phone, full_name, avatar_url, created_at)
     `)
     .or(`id.eq.${id},slug.eq.${id}`)
     .maybeSingle();
