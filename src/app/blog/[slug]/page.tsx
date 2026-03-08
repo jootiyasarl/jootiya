@@ -105,7 +105,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
                 <div className="h-8 w-8 rounded-full bg-orange-500 flex items-center justify-center text-[10px] text-white">
                   {post.author_name?.charAt(0) || 'J'}
                 </div>
-                <div className="flex items-center gap-2"><User className="h-4 w-4 text-orange-500" />{post.author_name || "L'├®quipe Jootiya"}</div>
+                <div className="flex items-center gap-2"><User className="h-4 w-4 text-orange-500" />{post.author_name || "L'équipe Jootiya"}</div>
               </div>
               <div className="flex items-center gap-2 text-white/60">
                 <Calendar className="h-4 w-4 text-orange-500" />
@@ -113,7 +113,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               </div>
               <div className="flex items-center gap-2 text-white/60">
                 <Tag className="h-4 w-4 text-orange-500" />
-                {post.category || "Actualit├®s"}
+                {post.category || "Actualités"}
               </div>
             </div>
           </div>
@@ -144,11 +144,11 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           <div className="mt-20 pt-10 border-t border-zinc-100 dark:border-zinc-800 flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex flex-col gap-1">
               <span className="text-[10px] font-black uppercase text-zinc-400 tracking-[0.2em]">Partager cet article</span>
-              <div className="text-zinc-900 dark:text-white font-bold">Aidez votre communaut├® ├á s'informer</div>
+              <div className="text-zinc-900 dark:text-white font-bold text-xl md:text-2xl tracking-tight">Aidez votre communauté à s'informer</div>
             </div>
             <Button className="rounded-2xl bg-orange-600 hover:bg-orange-700 text-white px-8 h-14 font-black shadow-xl shadow-orange-500/20 transition-all active:scale-95 gap-3">
               <Share2 className="h-5 w-5" />
-              Partager maintenant
+              PARTAGER MAINTENANT
             </Button>
           </div>
         </div>
