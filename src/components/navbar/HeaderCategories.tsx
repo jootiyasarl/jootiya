@@ -46,7 +46,40 @@ export function HeaderCategories() {
                     )}
                 </Link>
 
-                {CATEGORIES.map((category) => {
+                {/* Électronique en premier pour mobile */}
+                {CATEGORIES.filter(c => c.id === "electronics").map((category) => {
+                    const isActive = currentCategory === category.id;
+                    const Icon = category.icon;
+
+                    return (
+                        <Link
+                            key={category.id}
+                            href={`/categories/${category.id}`}
+                            className={cn(
+                                "group flex min-w-fit flex-col items-center gap-1 transition-all relative pb-1",
+                                isActive ? "text-orange-600" : "text-zinc-500 hover:text-orange-600"
+                            )}
+                        >
+                            <div className={cn(
+                                "flex h-9 w-9 items-center justify-center rounded-lg transition-all duration-300 group-hover:scale-105 group-hover:-translate-y-0.5",
+                                isActive 
+                                    ? "bg-orange-50 dark:bg-orange-950/30" 
+                                    : "bg-zinc-50 dark:bg-zinc-900 group-hover:bg-orange-50 dark:group-hover:bg-orange-950/30"
+                            )}>
+                                <Icon className={cn("h-5 w-5 transition-transform", isActive ? "scale-110" : category.color)} />
+                            </div>
+                            <span className={cn("text-[10px] font-bold tracking-tight", isActive && "text-orange-600")}>
+                                {category.label}
+                            </span>
+                            
+                            {isActive && (
+                                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-orange-600" />
+                            )}
+                        </Link>
+                    );
+                })}
+
+                {CATEGORIES.filter(c => c.id !== "electronics").map((category) => {
                     const isActive = currentCategory === category.id;
                     const Icon = category.icon;
 
