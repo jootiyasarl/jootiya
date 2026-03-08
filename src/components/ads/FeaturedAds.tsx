@@ -7,7 +7,7 @@ async function RecentAdsList() {
     const { data: ads, error } = await supabase
         .from('ads')
         .select('*')
-        .eq('status', 'approved')
+        .in('status', ['active', 'approved'])
         .order('created_at', { ascending: false })
         .limit(8);
 
