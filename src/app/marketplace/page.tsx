@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { 
+    Home,
     Smartphone, 
     Car, 
     Shirt, 
@@ -21,6 +22,7 @@ export const metadata = {
 };
 
 const CATEGORIES_GRID = [
+    { id: "home", label: "Accueil", icon: Home, bg: "bg-orange-50 text-orange-600", border: "border-orange-100", href: "/", count: "Page principale" },
     { id: "electronics", label: "Électronique", icon: Smartphone, bg: "bg-blue-50 text-blue-600", border: "border-blue-100", href: "/categories/electronics", count: "Mobiles, PC, TV" },
     { id: "home-furniture", label: "Maison & Ameublement", icon: Armchair, bg: "bg-green-50 text-green-600", border: "border-green-100", href: "/categories/home-furniture", count: "Salons, Déco" },
     { id: "vehicles", label: "Véhicules", icon: Car, bg: "bg-orange-50 text-orange-600", border: "border-orange-100", href: "/categories/vehicles", count: "Voitures, Motos" },
