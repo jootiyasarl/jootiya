@@ -91,6 +91,12 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
         return optimized === src ? "" : optimized; // If same as src, don't use it as blurDataURL to avoid double-loading high-res
     };
 
+    // Lightbox Modal
+    const [isMounted, setIsMounted] = useState(false);
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
     return (
         <div className="flex flex-col gap-4">
             {/* Clean Modern Slider Layout */}
@@ -175,7 +181,7 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
             )}
 
             {/* Lightbox Modal */}
-            {isLightboxOpen && typeof document !== "undefined" && createPortal(
+            {isLightboxOpen && isMounted && createPortal(
                 <div className="fixed inset-0 z-[999999] flex flex-col bg-black/95 backdrop-blur-sm animate-in fade-in duration-300">
                     <div className="flex items-center justify-between p-4 md:p-6 z-[1000001] bg-gradient-to-b from-black/80 to-transparent absolute top-0 left-0 right-0">
                         <div className="flex flex-col">
