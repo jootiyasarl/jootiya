@@ -64,16 +64,20 @@ export default async function AdPage({ params }: AdPageProps) {
   const user = await getServerUser();
   const supabase = createSupabaseServerClient();
 
-    const { data: ad, error } = await supabase
+    const { data: ad, error: adError } = await supabase
     .from("ads")
     .select(`
       *, 
-      profiles!ads_seller_id_fkey(phone, full_name, avatar_url, created_at)
+      profiles:profiles(phone, full_name, avatar_url, created_at)
     `)
     .or(`id.eq.${id},slug.eq.${id}`)
     .maybeSingle();
 
-  if (error || !ad) notFound();
+  if (adError) {
+    console.error("Ad Fetch Error:", adError);
+  }
+
+  if (adError || !ad) notFound();
 
   const sellerProfile = (ad as any).profiles;
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://jootiya.com';
