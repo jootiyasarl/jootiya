@@ -166,15 +166,6 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
                   </section>
                 ) : (
                   <>
-                    <section className="space-y-4">
-                      <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-2">
-                        <h2 className="text-xl font-black text-zinc-900 dark:text-white uppercase tracking-tight">Accueil</h2>
-                        <Link href="/" className="text-sm font-bold text-orange-600 hover:text-orange-700 flex items-center gap-1 group transition-colors">
-                          <Home className="w-4 h-4" />
-                        </Link>
-                      </div>
-                    </section>
-                    
                       {[
                         { id: 'electronics', label: 'Électronique' },
                         { id: 'vehicles', label: 'Véhicules' },

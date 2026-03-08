@@ -82,6 +82,7 @@ export function MobileMenu({ initialUserEmail = null }: MobileMenuProps) {
     };
 
     const navLinks = [
+        { name: "Accueil", href: "/", icon: Home, color: "text-orange-600", bg: "bg-orange-50" },
         { name: "Électronique", href: "/categories/electronics", icon: Smartphone, color: "text-blue-600", bg: "bg-blue-50" },
         { name: "Véhicules", href: "/categories/vehicles", icon: Car, color: "text-orange-600", bg: "bg-orange-50" },
         { name: "Immobilier", href: "/categories/real-estate", icon: Home, color: "text-emerald-600", bg: "bg-emerald-50" },
