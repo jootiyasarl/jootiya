@@ -1,4 +1,11 @@
 import { NextConfig } from "next";
+import withPWAInit from "@ducanh2912/next-pwa";
+
+const withPWA = withPWAInit({
+  dest: "public",
+  disable: process.env.NODE_ENV === "development",
+  register: true,
+});
 
 const securityHeaders = [
   {
@@ -37,7 +44,8 @@ const nextConfig: NextConfig = {
   },
   images: {
     formats: ['image/avif', 'image/webp'],
-    deviceSizes: [320, 420, 640, 750, 828, 1080],
+    deviceSizes: [320, 420, 640, 750, 828, 1080, 1200, 1920, 2048],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     remotePatterns: [
       {
         protocol: 'https',
@@ -61,6 +69,9 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  compress: true,
+  poweredByHeader: false,
+  reactStrictMode: true,
 };
 
-export default nextConfig;
+export default withPWA(nextConfig);
