@@ -48,8 +48,12 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const { data: post, error } = await supabase
     .from("posts")
     .select("*")
-    .or(`slug.eq."${decodedSlug}",slug.ilike."${decodedSlug}",slug.eq."${slug}",slug.ilike."${slug}"`)
+    .or(`slug.eq."${decodedSlug}",slug.eq."${slug}"`)
     .maybeSingle();
+
+  if (error) {
+    console.error("Supabase Error fetching post:", error);
+  }
 
   // If found but status is not published, we might want to handle it (e.g. for admins)
   if (post && post.status !== "published") {
