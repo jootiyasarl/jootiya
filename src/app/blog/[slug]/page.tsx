@@ -45,13 +45,17 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     decodedSlug.split(/[,-]/).slice(0, 3).join('-') + '%' // Clean slice with regex
   ];
 
-  // Clean the slug to handle any double encoding or special characters
+  // Clean the slug and handle special cases
   const cleanSlug = decodedSlug.trim();
   
+  // Create a search term from the slug by removing special characters and keeping keywords
+  const keywords = cleanSlug.split(/[^a-zA-Z0-9]/).filter(word => word.length > 3);
+  const searchOrStr = keywords.map(word => `slug.ilike.%${word}%,title.ilike.%${word}%`).join(',');
+
   const { data: post, error } = await supabase
     .from("posts")
     .select("*")
-    .or(`slug.eq."${decodedSlug}",slug.ilike."${decodedSlug}",slug.eq."${slug}",slug.ilike."${slug}",slug.ilike."%afribaba%",title.ilike."%Afribaba Maroc%"`)
+    .or(`slug.eq."${decodedSlug}",slug.ilike."${decodedSlug}",slug.eq."${slug}",slug.ilike."${slug}"${searchOrStr ? ',' + searchOrStr : ''}`)
     .maybeSingle();
 
   if (error) {
