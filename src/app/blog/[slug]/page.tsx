@@ -45,10 +45,13 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     decodedSlug.split(/[,-]/).slice(0, 3).join('-') + '%' // Clean slice with regex
   ];
 
+  // Clean the slug to handle any double encoding or special characters
+  const cleanSlug = decodedSlug.trim();
+  
   const { data: post, error } = await supabase
     .from("posts")
     .select("*")
-    .or(`slug.eq."${decodedSlug}",slug.eq."${slug}"`)
+    .or(`slug.eq."${decodedSlug}",slug.ilike."${decodedSlug}",slug.eq."${slug}",slug.ilike."${slug}",title.ilike."%${decodedSlug}%"`)
     .maybeSingle();
 
   if (error) {
