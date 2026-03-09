@@ -75,7 +75,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     `slug.eq.${decodedSlug}`,
     `slug.ilike.${decodedSlug}`,
     `slug.eq.${slug}`,
-    `slug.ilike.${slug}`
+    `slug.ilike.${slug}`,
+    `slug.ilike.%${cleanSlug.split(/[^a-zA-Z0-9]/)[0]}%`
   ];
   
   // Add keyword matching if available
@@ -85,6 +86,14 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   });
 
   const finalOrQuery = conditions.join(',');
+
+  console.log("Debug Blog Query:", {
+    slug,
+    decodedSlug,
+    cleanSlug,
+    keywords,
+    finalOrQuery
+  });
 
   const { data: post, error } = await supabase
     .from("posts")
@@ -96,8 +105,21 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     console.error("Supabase Error fetching post:", error);
   }
 
+  // If still not found, try a very broad search as last resort
+  let finalPost = post;
+  if (!finalPost && keywords.length > 0) {
+    const { data: broadData } = await supabase
+      .from("posts")
+      .select("*")
+      .ilike('title', `%${keywords[0]}%`)
+      .limit(1)
+      .maybeSingle();
+    finalPost = broadData;
+  }
+
   // If found but status is not published, we might want to handle it (e.g. for admins)
-  if (post && post.status !== "published") {
+  const currentPost = finalPost;
+  if (currentPost && currentPost.status !== "published") {
     // If you want to allow admins to see it, you can add check here
     // For now, let's treat as not found to avoid 404 for public users
     return (
@@ -111,11 +133,11 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     );
   }
 
-  if (!post) {
+  if (!currentPost) {
     notFound();
   }
 
-  const formattedDate = new Date(post.published_at || post.created_at).toLocaleDateString("fr-FR", {
+  const formattedDate = new Date(currentPost.published_at || currentPost.created_at).toLocaleDateString("fr-FR", {
     day: "numeric",
     month: "long",
     year: "numeric"
@@ -125,10 +147,10 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     <article className="min-h-screen bg-white dark:bg-zinc-950 pb-20">
       {/* Header Image Section */}
       <div className="relative h-[45vh] md:h-[65vh] w-full bg-zinc-900">
-        {post.featured_image && (
+        {currentPost.featured_image && (
           <Image 
-            src={post.featured_image} 
-            alt={post.title} 
+            src={currentPost.featured_image} 
+            alt={currentPost.title} 
             fill 
             className="object-cover opacity-70" 
             priority 
@@ -143,14 +165,14 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               Retour au blog
             </Link>
             <h1 className="text-4xl md:text-6xl font-black text-white leading-tight mb-8 tracking-tighter">
-              {post.title}
+              {currentPost.title}
             </h1>
             <div className="flex flex-wrap items-center gap-6 text-white/90 text-sm md:text-base font-bold">
               <div className="flex items-center gap-2">
                 <div className="h-8 w-8 rounded-full bg-orange-500 flex items-center justify-center text-[10px] text-white">
-                  {post.author_name?.charAt(0) || 'J'}
+                  {currentPost.author_name?.charAt(0) || 'J'}
                 </div>
-                <div className="flex items-center gap-2"><User className="h-4 w-4 text-orange-500" />{post.author_name || "L'équipe Jootiya"}</div>
+                <div className="flex items-center gap-2"><User className="h-4 w-4 text-orange-500" />{currentPost.author_name || "L'équipe Jootiya"}</div>
               </div>
               <div className="flex items-center gap-2 text-white/60">
                 <Calendar className="h-4 w-4 text-orange-500" />
@@ -158,7 +180,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               </div>
               <div className="flex items-center gap-2 text-white/60">
                 <Tag className="h-4 w-4 text-orange-500" />
-                {post.category || "Actualités"}
+                {currentPost.category || "Actualités"}
               </div>
             </div>
           </div>
@@ -168,10 +190,10 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       {/* Main Content Area */}
       <div className="max-w-4xl mx-auto px-6 -mt-12 relative z-10">
         <div className="bg-white dark:bg-zinc-900 rounded-[2.5rem] p-8 md:p-16 shadow-2xl border border-zinc-100 dark:border-zinc-800">
-          {post.excerpt && (
+          {currentPost.excerpt && (
             <div className="mb-12">
               <p className="text-xl md:text-2xl text-zinc-600 dark:text-zinc-400 font-medium leading-relaxed italic border-l-4 border-orange-500 pl-8">
-                {post.excerpt}
+                {currentPost.excerpt}
               </p>
             </div>
           )}
@@ -183,7 +205,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               prose-img:rounded-3xl prose-img:shadow-2xl prose-img:my-12
               prose-strong:text-zinc-900 dark:prose-strong:text-white
               prose-a:text-orange-600 prose-a:font-bold prose-a:no-underline hover:prose-a:underline"
-            dangerouslySetInnerHTML={{ __html: post.content }}
+            dangerouslySetInnerHTML={{ __html: currentPost.content }}
           />
 
           <div className="mt-20 pt-10 border-t border-zinc-100 dark:border-zinc-800 flex flex-col md:flex-row items-center justify-between gap-6">
