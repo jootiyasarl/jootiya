@@ -1,20 +1,37 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Home, Heart, Plus, MessageCircle, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/lib/supabaseClient";
 
 const navItems = [
     { id: "home", label: "Accueil", icon: Home, href: "/marketplace" },
-    { id: "favorites", label: "Favoris", icon: Heart, href: "/dashboard/favorites" },
+    { id: "favorites", label: "Favoris", icon: Heart, href: "/dashboard/favorites", authRequired: true },
     { id: "vendre", label: "Vendre", icon: Plus, href: "/ads/new", isHero: true },
-    { id: "messages", label: "Messages", icon: MessageCircle, href: "/dashboard/messages" },
-    { id: "profile", label: "Profil", icon: User, href: "/dashboard" },
+    { id: "messages", label: "Messages", icon: MessageCircle, href: "/dashboard/messages", authRequired: true },
+    { id: "profile", label: "Profil", icon: User, href: "/dashboard", authRequired: true },
 ];
 
 export function FloatingBottomNav() {
     const pathname = usePathname();
+    const [user, setUser] = useState<any>(null);
+
+    useEffect(() => {
+        const checkUser = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            setUser(session?.user ?? null);
+        };
+        checkUser();
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            setUser(session?.user ?? null);
+        });
+
+        return () => subscription.unsubscribe();
+    }, []);
 
     return (
         <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-[100] pb-safe">
@@ -23,6 +40,8 @@ export function FloatingBottomNav() {
                 <div className="mx-auto max-w-7xl px-4">
                     <div className="flex items-center justify-around h-16 relative">
                         {navItems.map((item) => {
+                            if (item.authRequired && !user) return null;
+
                             const Icon = item.icon;
                             const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
 
