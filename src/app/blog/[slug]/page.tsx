@@ -11,14 +11,29 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const decodedSlug = decodeURIComponent(slug);
   const supabase = createSupabaseServerClient();
   
-  // Same logic as main page for consistency
-  const keywords = decodedSlug.split(/[^a-zA-Z0-9]/).filter(word => word.length > 3);
-  const searchOrStr = keywords.map(word => `slug.ilike.%${word}%,title.ilike.%${word}%`).join(',');
+  // Clean the slug and handle special cases
+  const cleanSlug = decodedSlug.trim();
+  
+  // Create keywords from slug (handling special characters like '/')
+  const keywords = cleanSlug.split(/[^a-zA-Z0-9]/).filter(word => word.length > 3);
+  
+  // Build a broad OR filter for metadata
+  const conditions = [
+    `slug.eq.${decodedSlug}`,
+    `slug.ilike.${decodedSlug}`,
+    `slug.eq.${slug}`,
+    `slug.ilike.${slug}`
+  ];
+  
+  keywords.forEach(word => {
+    conditions.push(`slug.ilike.%${word}%`);
+    conditions.push(`title.ilike.%${word}%`);
+  });
 
   const { data: post } = await supabase
     .from("posts")
     .select("title, seo_title, excerpt, featured_image")
-    .or(`slug.eq."${decodedSlug}",slug.ilike."${decodedSlug}",slug.eq."${slug}",slug.ilike."${slug}"${searchOrStr ? ',' + searchOrStr : ''}`)
+    .or(conditions.join(','))
     .eq("status", "published")
     .maybeSingle();
 
