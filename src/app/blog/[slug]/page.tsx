@@ -11,10 +11,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const decodedSlug = decodeURIComponent(slug);
   const supabase = createSupabaseServerClient();
   
+  // Same logic as main page for consistency
+  const keywords = decodedSlug.split(/[^a-zA-Z0-9]/).filter(word => word.length > 3);
+  const searchOrStr = keywords.map(word => `slug.ilike.%${word}%,title.ilike.%${word}%`).join(',');
+
   const { data: post } = await supabase
     .from("posts")
     .select("title, seo_title, excerpt, featured_image")
-    .eq("slug", decodedSlug)
+    .or(`slug.eq."${decodedSlug}",slug.ilike."${decodedSlug}",slug.eq."${slug}",slug.ilike."${slug}"${searchOrStr ? ',' + searchOrStr : ''}`)
     .eq("status", "published")
     .maybeSingle();
 
@@ -52,10 +56,15 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const keywords = cleanSlug.split(/[^a-zA-Z0-9]/).filter(word => word.length > 3);
   const searchOrStr = keywords.map(word => `slug.ilike.%${word}%,title.ilike.%${word}%`).join(',');
 
+  // If searchOrStr is empty (very short slug), just use standard matching
+  const finalOrQuery = searchOrStr 
+    ? `slug.eq."${decodedSlug}",slug.ilike."${decodedSlug}",slug.eq."${slug}",slug.ilike."${slug}",${searchOrStr}`
+    : `slug.eq."${decodedSlug}",slug.ilike."${decodedSlug}",slug.eq."${slug}",slug.ilike."${slug}"`;
+
   const { data: post, error } = await supabase
     .from("posts")
     .select("*")
-    .or(`slug.eq."${decodedSlug}",slug.ilike."${decodedSlug}",slug.eq."${slug}",slug.ilike."${slug}"${searchOrStr ? ',' + searchOrStr : ''}`)
+    .or(finalOrQuery)
     .maybeSingle();
 
   if (error) {
