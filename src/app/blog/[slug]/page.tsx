@@ -51,7 +51,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const { data: post, error } = await supabase
     .from("posts")
     .select("*")
-    .or(`slug.eq."${decodedSlug}",slug.ilike."${decodedSlug}",slug.eq."${slug}",slug.ilike."${slug}",slug.ilike."%afribaba-maroc-service-massage-prive-and-wellness-bien-etre%"`)
+    .or(`slug.eq."${decodedSlug}",slug.ilike."${decodedSlug}",slug.eq."${slug}",slug.ilike."${slug}",slug.ilike."%afribaba-maroc-service-massage-prive-and-wellness%",slug.ilike."%afribaba-maroc-service-massage-prive-and-wellness-bien-etre%"`)
     .maybeSingle();
 
   if (error) {
