@@ -52,14 +52,24 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   // Clean the slug and handle special cases
   const cleanSlug = decodedSlug.trim();
   
-  // Create a search term from the slug by removing special characters and keeping keywords
+  // Create keywords from slug (handling special characters like '/')
   const keywords = cleanSlug.split(/[^a-zA-Z0-9]/).filter(word => word.length > 3);
-  const searchOrStr = keywords.map(word => `slug.ilike.%${word}%,title.ilike.%${word}%`).join(',');
+  
+  // Build a broad OR filter
+  const conditions = [
+    `slug.eq.${decodedSlug}`,
+    `slug.ilike.${decodedSlug}`,
+    `slug.eq.${slug}`,
+    `slug.ilike.${slug}`
+  ];
+  
+  // Add keyword matching if available
+  keywords.forEach(word => {
+    conditions.push(`slug.ilike.%${word}%`);
+    conditions.push(`title.ilike.%${word}%`);
+  });
 
-  // If searchOrStr is empty (very short slug), just use standard matching
-  const finalOrQuery = searchOrStr 
-    ? `slug.eq."${decodedSlug}",slug.ilike."${decodedSlug}",slug.eq."${slug}",slug.ilike."${slug}",${searchOrStr}`
-    : `slug.eq."${decodedSlug}",slug.ilike."${decodedSlug}",slug.eq."${slug}",slug.ilike."${slug}"`;
+  const finalOrQuery = conditions.join(',');
 
   const { data: post, error } = await supabase
     .from("posts")
