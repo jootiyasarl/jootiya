@@ -48,7 +48,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   const { data: post, error } = await supabase
     .from("posts")
     .select("*")
-    .or(`slug.ilike."${slugVariations[0]}",slug.ilike."${slugVariations[1]}",slug.ilike."${slugVariations[2]}",slug.ilike."${slugVariations[3]}"`)
+    .or(`slug.eq."${decodedSlug}",slug.ilike."${decodedSlug}",slug.eq."${slug}",slug.ilike."${slug}"`)
     .maybeSingle();
 
   // If found but status is not published, we might want to handle it (e.g. for admins)
