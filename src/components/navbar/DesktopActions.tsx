@@ -131,34 +131,34 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
     return (
         <div className="hidden lg:flex items-center gap-1.5 ml-2 border-l border-zinc-200 dark:border-zinc-800 pl-3">
             <ThemeToggle compact />
-            <NotificationBell />
+            
+            {userEmail ? (
+                <>
+                    <NotificationBell />
+                    <Link
+                        href="/dashboard/favorites"
+                        className="p-2 rounded-xl text-zinc-500 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all relative"
+                        aria-label="Voir vos annonces favorites"
+                        title="Favoris"
+                        rel="nofollow"
+                    >
+                        <Heart className="w-5 h-5" />
+                    </Link>
 
-            <Link
-                href="/dashboard/favorites"
-                className="p-2 rounded-xl text-zinc-500 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all relative"
-                aria-label="Voir vos annonces favorites"
-                title="Favoris"
-                rel="nofollow"
-            >
-                <Heart className="w-5 h-5" />
-            </Link>
+                    <Link
+                        href="/dashboard/messages"
+                        className="p-2.5 rounded-xl text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all relative"
+                        aria-label="Voir vos messages"
+                        title="Messages"
+                        rel="nofollow"
+                    >
+                        <MessageCircle className="w-5 h-5" />
+                        {hasUnreadMessages && (
+                            <span className="absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-orange-500 rounded-full border-2 border-white dark:border-zinc-900" />
+                        )}
+                    </Link>
 
-            <Link
-                href="/dashboard/messages"
-                className="p-2.5 rounded-xl text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all relative"
-                aria-label="Voir vos messages"
-                title="Messages"
-                rel="nofollow"
-            >
-                <MessageCircle className="w-5 h-5" />
-                {hasUnreadMessages && (
-                    <span className="absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-orange-500 rounded-full border-2 border-white dark:border-zinc-900" />
-                )}
-            </Link>
-
-            <div className="ml-1 pl-1 border-l border-zinc-200 dark:border-zinc-800 flex items-center gap-1">
-                {userEmail ? (
-                    <>
+                    <div className="ml-1 pl-1 border-l border-zinc-200 dark:border-zinc-800 flex items-center gap-1">
                         {isAdmin ? (
                             <Link
                                 href="/admin"
@@ -185,21 +185,20 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                         >
                             <LogOut className="w-5 h-5" />
                         </button>
-                    </>
-                ) : (
-                    <div className="flex items-center gap-1">
-                        <Link
-                            href="/login"
-                            className="p-2.5 rounded-xl text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all"
-                            aria-label="Se connecter à votre compte"
-                            title="Connexion"
-                            rel="nofollow"
-                        >
-                            <User className="w-5 h-5" />
-                        </Link>
                     </div>
-                )}
-            </div>
+                </>
+            ) : (
+                <div className="ml-1 pl-1 border-l border-zinc-200 dark:border-zinc-800 flex items-center gap-1">
+                    <Link
+                        href="/login"
+                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-sm font-bold shadow-sm transition-all active:scale-[0.98]"
+                        rel="nofollow"
+                    >
+                        <User className="w-4 h-4" />
+                        <span>Connexion</span>
+                    </Link>
+                </div>
+            )}
         </div>
     );
 }
