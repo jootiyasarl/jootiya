@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     .from("posts")
     .select("title, seo_title, excerpt, featured_image")
     .or(conditions.join(','))
-    .eq("status", "published")
+    .limit(1)
     .maybeSingle();
 
   if (!post) return { title: "Article introuvable | Jootiya" };
