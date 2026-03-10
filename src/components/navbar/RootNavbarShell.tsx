@@ -1,14 +1,13 @@
 "use client";
 
-import { ReactNode, Suspense } from "react";
+import { ReactNode, Suspense, useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { PageTransition } from "@/components/layout/PageTransition";
 import dynamic from "next/dynamic";
 
 const MobileBottomNav = dynamic(() => import("./MobileBottomNav").then(mod => mod.MobileBottomNav), {
-  ssr: false,
-  loading: () => <div className="h-16 w-full lg:hidden fixed bottom-0 bg-white border-t border-zinc-100" />
+  ssr: false
 });
 
 const SidebarAd = dynamic(() => import("@/components/ads/SidebarAd").then(mod => mod.SidebarAd), {
@@ -23,6 +22,11 @@ interface RootNavbarShellProps {
 
 export function RootNavbarShell({ children, navbar, footer }: RootNavbarShellProps) {
   const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const isSpecialPath =
     pathname?.startsWith("/dashboard") ||
@@ -40,6 +44,17 @@ export function RootNavbarShell({ children, navbar, footer }: RootNavbarShellPro
     pathname === "/forgot-password" ||
     pathname?.includes("/forgot-password");
 
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-white dark:bg-zinc-950 flex flex-col">
+        <div className="h-16 w-full border-b border-zinc-100" />
+        <main className="flex-1 w-full pt-[56px] md:pt-[64px]">
+          {children}
+        </main>
+      </div>
+    );
+  }
+
   return (
     <>
       {!isSpecialPath && (
@@ -47,7 +62,6 @@ export function RootNavbarShell({ children, navbar, footer }: RootNavbarShellPro
           <Suspense fallback={<div className="h-16 w-full bg-white border-b border-zinc-200" />}>
             {navbar}
           </Suspense>
-          {/* Hide Bottom Nav on Post Ad and Ad Details pages to prevent overlap with sticky actions */}
           <div className={cn(
             (pathname?.startsWith('/marketplace/post') || pathname?.startsWith('/ads/')) && "hidden"
           )}>
