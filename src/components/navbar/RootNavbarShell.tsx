@@ -10,6 +10,10 @@ const MobileBottomNav = dynamic(() => import("./MobileBottomNav").then(mod => mo
   ssr: false
 });
 
+const MobileMenu = dynamic(() => import("./MobileMenu").then(mod => mod.MobileMenu), {
+  ssr: false
+});
+
 const SidebarAd = dynamic(() => import("@/components/ads/SidebarAd").then(mod => mod.SidebarAd), {
   ssr: false
 });
