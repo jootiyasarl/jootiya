@@ -1,21 +1,14 @@
 "use client";
 
-import { ReactNode, Suspense, useState, useEffect } from "react";
+import { ReactNode, Suspense } from "react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { PageTransition } from "@/components/layout/PageTransition";
 import dynamic from "next/dynamic";
 
 const MobileBottomNav = dynamic(() => import("./MobileBottomNav").then(mod => mod.MobileBottomNav), {
-  ssr: false
-});
-
-const MobileMenu = dynamic(() => import("./MobileMenu").then(mod => mod.MobileMenu), {
-  ssr: false
-});
-
-const DesktopActions = dynamic(() => import("./DesktopActions").then(mod => mod.DesktopActions), {
-  ssr: false
+  ssr: false,
+  loading: () => <div className="h-16 w-full lg:hidden fixed bottom-0 bg-white border-t border-zinc-100" />
 });
 
 const SidebarAd = dynamic(() => import("@/components/ads/SidebarAd").then(mod => mod.SidebarAd), {
@@ -30,16 +23,6 @@ interface RootNavbarShellProps {
 
 export function RootNavbarShell({ children, navbar, footer }: RootNavbarShellProps) {
   const pathname = usePathname();
-  const [isDesktop, setIsDesktop] = useState(false);
-
-  useEffect(() => {
-    const checkDesktop = () => {
-      setIsDesktop(window.innerWidth >= 1280); // xl breakpoint
-    };
-    checkDesktop();
-    window.addEventListener('resize', checkDesktop);
-    return () => window.removeEventListener('resize', checkDesktop);
-  }, []);
 
   const isSpecialPath =
     pathname?.startsWith("/dashboard") ||
@@ -81,24 +64,20 @@ export function RootNavbarShell({ children, navbar, footer }: RootNavbarShellPro
             {!isSpecialPath ? (
               <div className="max-w-[1440px] mx-auto px-4 md:px-8 relative">
                 <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start relative">
-                  {/* Left Global Sidebar Ad - Only rendered on desktop */}
-                  {isDesktop && (
-                    <aside className="hidden xl:block w-40 sticky top-24 shrink-0">
-                      <SidebarAd />
-                    </aside>
-                  )}
+                  {/* Left Global Sidebar Ad */}
+                  <aside className="hidden xl:block w-40 sticky top-24 shrink-0">
+                    <SidebarAd />
+                  </aside>
 
                   {/* Main Page Content */}
                   <div className="flex-1 min-w-0 w-full">
                     {children}
                   </div>
 
-                  {/* Right Global Sidebar Ad - Only rendered on desktop */}
-                  {isDesktop && (
-                    <aside className="hidden xl:block w-40 sticky top-24 shrink-0">
-                      <SidebarAd />
-                    </aside>
-                  )}
+                  {/* Right Global Sidebar Ad */}
+                  <aside className="hidden xl:block w-40 sticky top-24 shrink-0">
+                    <SidebarAd />
+                  </aside>
                 </div>
               </div>
             ) : (
