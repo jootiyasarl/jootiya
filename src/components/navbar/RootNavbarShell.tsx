@@ -6,8 +6,7 @@ import { cn } from "@/lib/utils";
 import dynamic from "next/dynamic";
 
 const MobileBottomNav = dynamic(() => import("./MobileBottomNav").then(mod => mod.MobileBottomNav), {
-  ssr: false,
-  loading: () => <div className="h-16 w-full lg:hidden fixed bottom-0 bg-white border-t border-zinc-100" />
+  ssr: false
 });
 
 const SidebarAd = dynamic(() => import("@/components/ads/SidebarAd").then(mod => mod.SidebarAd), {
@@ -28,6 +27,10 @@ export function RootNavbarShell({ children, navbar, footer }: RootNavbarShellPro
     setMounted(true);
   }, []);
 
+  if (!mounted) {
+    return <div className="min-h-screen bg-white" />;
+  }
+
   const isSpecialPath =
     pathname?.startsWith("/dashboard") ||
     pathname?.startsWith("/admin") ||
@@ -43,23 +46,6 @@ export function RootNavbarShell({ children, navbar, footer }: RootNavbarShellPro
     pathname?.startsWith("/forgot-password") ||
     pathname === "/forgot-password" ||
     pathname?.includes("/forgot-password");
-
-  if (!mounted) {
-    return (
-      <div className="min-h-screen bg-white flex flex-col">
-        <div className="h-16 w-full border-b border-zinc-100" />
-        <main className="flex-1 w-full pt-[56px] md:pt-[64px]">
-          <div className="max-w-[1440px] mx-auto px-4 md:px-8 relative">
-            <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start relative">
-              <div className="flex-1 min-w-0 w-full">
-                {children}
-              </div>
-            </div>
-          </div>
-        </main>
-      </div>
-    );
-  }
 
   return (
     <>
