@@ -118,7 +118,7 @@ async function registerAction(formData: FormData) {
   // Handle session correctly for Next.js Server Components
   if (data.session) {
     await setAuthSession(data.session);
-    redirect("/marketplace");
+    redirect("/marketplace/post");
   } else if (user && !error) {
     // If no session but user created (e.g. email confirmation enabled or delay in session sync)
     // We try to sign in immediately since we have the credentials
@@ -129,7 +129,7 @@ async function registerAction(formData: FormData) {
 
     if (!signInError && signInData.session) {
       await setAuthSession(signInData.session);
-      redirect("/marketplace");
+      redirect("/marketplace/post");
     }
   }
 }
