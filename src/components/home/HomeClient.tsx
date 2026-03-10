@@ -5,8 +5,7 @@ import Link from "next/link";
 import { SellBanner } from "@/components/home/SellBanner";
 import { BlogSection } from "@/components/home/BlogSection";
 import { AdCard } from "@/components/AdCard";
-import { LocationFilterSidebar } from "@/components/home/LocationFilterSidebar";
-import { Home, Package, ArrowRight, WifiOff } from "lucide-react";
+import { Package, ArrowRight, WifiOff, Image as ImageIcon } from "lucide-react";
 import { getCachedAds, saveAds } from "@/lib/pwa/jootiya-db";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -135,14 +134,17 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
         <div className="block mb-6 md:mb-10">
           <SellBanner />
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
-          <div className="hidden lg:block lg:col-span-3 lg:mt-[44px]">
-            <Suspense fallback={<div className="min-h-[400px] w-full bg-zinc-50 animate-pulse rounded-3xl" />}>
-              <LocationFilterSidebar ads={mapAds} />
-            </Suspense>
-          </div>
+        
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start relative">
+          {/* Left Sidebar Ad (Desktop) */}
+          <aside className="hidden xl:block w-40 sticky top-24 shrink-0">
+            <div className="bg-zinc-50 border border-dashed border-zinc-200 rounded-2xl aspect-[1/4] flex flex-col items-center justify-center p-4 text-center">
+              <ImageIcon className="w-8 h-8 text-zinc-300 mb-2" />
+              <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Publicité</span>
+            </div>
+          </aside>
 
-          <div className="lg:col-span-9 space-y-12 sm:space-y-16">
+          <div className="flex-1 space-y-12 sm:space-y-16 min-w-0">
             {ads.length === 0 && !loading ? (
               <div className="flex flex-col items-center justify-center py-24 text-center border border-dashed border-zinc-200 rounded-[2.5rem] bg-zinc-50/40">
                 <div className="bg-white p-6 rounded-2xl mb-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-zinc-100">
@@ -203,6 +205,14 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
               </>
             )}
           </div>
+
+          {/* Right Sidebar Ad (Desktop) */}
+          <aside className="hidden xl:block w-40 sticky top-24 shrink-0">
+            <div className="bg-zinc-50 border border-dashed border-zinc-200 rounded-2xl aspect-[1/4] flex flex-col items-center justify-center p-4 text-center">
+              <ImageIcon className="w-8 h-8 text-zinc-300 mb-2" />
+              <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Publicité</span>
+            </div>
+          </aside>
         </div>
       </main>
     </div>
