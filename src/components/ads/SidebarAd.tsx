@@ -20,7 +20,7 @@ export const SidebarAd = () => {
         <div className="space-y-2">
           <span className="text-[10px] font-black uppercase tracking-[0.2em] text-orange-100 opacity-80">Jootiya Market</span>
           <h3 className="text-xl font-black leading-tight tracking-tighter uppercase">
-            Vendez et achetez sur Jootiya
+            Vendez et achetez sur <span className="text-zinc-950 dark:text-white">Jootiya</span>
           </h3>
         </div>
 
