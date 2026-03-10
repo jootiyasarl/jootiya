@@ -14,6 +14,10 @@ const MobileMenu = dynamic(() => import("./MobileMenu").then(mod => mod.MobileMe
   ssr: false
 });
 
+const DesktopActions = dynamic(() => import("./DesktopActions").then(mod => mod.DesktopActions), {
+  ssr: false
+});
+
 const SidebarAd = dynamic(() => import("@/components/ads/SidebarAd").then(mod => mod.SidebarAd), {
   ssr: false
 });
