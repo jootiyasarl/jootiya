@@ -84,13 +84,6 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
         <div className="min-h-screen bg-zinc-50 pb-20">
             <div className="main-content-wrapper container-standard py-4 sm:py-6 lg:py-8">
                 <div className="flex flex-col lg:flex-row gap-6">
-                    {/* Left Sidebar for Ads (Desktop) */}
-                    <div className="hidden lg:block lg:w-[160px] flex-shrink-0">
-                        <div className="sticky top-24 w-full min-h-[600px] bg-white rounded-xl">
-                            {/* AdSense Left */}
-                        </div>
-                    </div>
-
                     {/* Main Content */}
                     <div className="flex-1 min-w-0">
                         <Breadcrumbs items={breadcrumbs} className="mb-2" />
@@ -199,13 +192,6 @@ export default async function CategoryPage({ params, searchParams }: CategoryPag
                                 )}
                             </>
                         )}
-                    </div>
-
-                    {/* Right Sidebar for Ads (Desktop) */}
-                    <div className="hidden xl:block xl:w-[160px] flex-shrink-0">
-                        <div className="sticky top-24 w-full min-h-[600px] bg-white rounded-xl">
-                            {/* AdSense Right */}
-                        </div>
                     </div>
                 </div>
             </div>
