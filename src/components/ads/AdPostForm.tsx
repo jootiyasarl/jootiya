@@ -190,6 +190,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
             if (!result.success) throw new Error(result.error);
 
             setIsSuccess(true);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
             window.dispatchEvent(new CustomEvent('trigger-push-prompt'));
             if (onSuccess) onSuccess();
         } catch (error: any) {
