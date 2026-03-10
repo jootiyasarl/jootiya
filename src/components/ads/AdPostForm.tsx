@@ -341,8 +341,8 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
 
                         <div className="grid md:grid-cols-3 gap-6">
                             <div className="space-y-4">
-                                <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-1">Ville</Label>
-                                <select {...register('city')} className="w-full h-14 px-6 rounded-2xl border-2 border-zinc-100 bg-zinc-50/30 font-bold focus:border-orange-500 transition-all appearance-none cursor-pointer text-sm">
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-1">Ville / المدينة</Label>
+                                <select {...register('city')} className="w-full h-14 px-4 rounded-2xl border-2 border-zinc-100 bg-zinc-50/30 font-bold focus:border-orange-500 transition-all appearance-none cursor-pointer text-sm">
                                     <option value="">Sélectionnez une ville</option>
                                     {MOROCCAN_CITIES.map(region => (
                                         <optgroup key={region.region} label={region.region}>
@@ -354,12 +354,12 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
                             </div>
                             <div className="space-y-4">
                                 <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-1">Quartier / الحي</Label>
-                                <Input {...register('neighborhood')} className="h-14 px-6 rounded-2xl border-zinc-100 bg-zinc-50/30 font-bold" placeholder="Ex: Maarif, Agdal..." />
+                                <Input {...register('neighborhood')} className="h-14 px-4 rounded-2xl border-zinc-100 bg-zinc-50/30 font-bold text-sm" placeholder="Ex: Maarif, Agdal..." />
                                 {errors.neighborhood && <p className="text-red-500 text-[10px] font-bold uppercase">{errors.neighborhood.message}</p>}
                             </div>
                             <div className="space-y-4">
-                                <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-1">Téléphone</Label>
-                                <Input {...register('phone')} className="h-14 px-6 rounded-2xl border-zinc-100 bg-zinc-50/30 font-bold" placeholder="06XXXXXXXX" />
+                                <Label className="text-[10px] font-black uppercase tracking-widest text-zinc-400 ml-1">Téléphone / الهاتف</Label>
+                                <Input {...register('phone')} className="h-14 px-4 rounded-2xl border-zinc-100 bg-zinc-50/30 font-bold text-sm" placeholder="06XXXXXXXX" />
                                 {errors.phone && <p className="text-red-500 text-[10px] font-bold uppercase">{errors.phone.message}</p>}
                             </div>
                         </div>
