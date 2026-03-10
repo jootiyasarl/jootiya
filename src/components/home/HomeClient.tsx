@@ -121,6 +121,33 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
 
   const mapAds = ads.filter(a => a.latitude && a.longitude).slice(0, 10);
 
+  const categoryMapping: { [key: string]: string } = {
+    "electronics": "electronics",
+    "home-furniture": "home-furniture",
+    "vehicles": "vehicles",
+    "fashion": "fashion",
+    "tools-equipment": "tools-equipment",
+    "hobbies": "hobbies",
+    "animals": "animals",
+    "books": "books",
+    "used-clearance": "used-clearance",
+    "other": "other",
+    "Électronique": "electronics",
+    "Maison & Ameublement": "home-furniture",
+    "Véhicules & Transport": "vehicles",
+    "Mode & Chaussures": "fashion",
+    "Outils & Équipement": "tools-equipment",
+    "Loisirs & Diverتissement": "hobbies",
+    "Animaux": "animals",
+    "Livres & Études": "books",
+    "Occasions / Vide-grenier": "used-clearance",
+    "Autres": "other"
+  };
+
+  const getCategorySlug = (categoryName: string) => {
+    return categoryMapping[categoryName] || "other";
+  };
+
   const groupedAds = ads.reduce((acc: any, ad) => {
     const category = ad.categorySlug || "Autre";
     if (!acc[category]) acc[category] = [];
@@ -177,8 +204,8 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
                             </h2>
                           </div>
                           <Link 
-                            href={`/marketplace?category=${encodeURIComponent(category)}`}
-                            className="group flex items-center gap-2 text-sm font-bold text-zinc-500 hover:text-orange-600 transition-colors"
+                            href={`/categories/${getCategorySlug(category)}`}
+                            className="group flex items-center gap-2 text-sm font-bold text-zinc-500 hover:text-orange-600 transition-all duration-300"
                           >
                             Voir tout
                             <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center group-hover:bg-orange-500 group-hover:text-white transition-all">
