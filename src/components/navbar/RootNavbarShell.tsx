@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { MobileBottomNav } from "./MobileBottomNav";
 import { cn } from "@/lib/utils";
 import { PageTransition } from "@/components/layout/PageTransition";
+import { SidebarAd } from "@/components/ads/SidebarAd";
 
 interface RootNavbarShellProps {
   children: ReactNode;
@@ -52,7 +53,28 @@ export function RootNavbarShell({ children, navbar, footer }: RootNavbarShellPro
       )}>
         <div className={cn(!isSpecialPath && "main-content-wrapper")}>
           <PageTransition>
-            {children}
+            {!isSpecialPath ? (
+              <div className="max-w-[1440px] mx-auto px-4 md:px-8 relative">
+                <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start relative">
+                  {/* Left Global Sidebar Ad */}
+                  <aside className="hidden xl:block w-40 sticky top-24 shrink-0">
+                    <SidebarAd />
+                  </aside>
+
+                  {/* Main Page Content */}
+                  <div className="flex-1 min-w-0 w-full">
+                    {children}
+                  </div>
+
+                  {/* Right Global Sidebar Ad */}
+                  <aside className="hidden xl:block w-40 sticky top-24 shrink-0">
+                    <SidebarAd />
+                  </aside>
+                </div>
+              </div>
+            ) : (
+              children
+            )}
           </PageTransition>
         </div>
       </main>

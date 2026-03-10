@@ -5,7 +5,6 @@ import Link from "next/link";
 import { SellBanner } from "@/components/home/SellBanner";
 import { BlogSection } from "@/components/home/BlogSection";
 import { AdCard } from "@/components/AdCard";
-import { SidebarAd } from "@/components/ads/SidebarAd";
 import { Package, ArrowRight, WifiOff } from "lucide-react";
 import { getCachedAds, saveAds } from "@/lib/pwa/jootiya-db";
 import { supabase } from "@/lib/supabaseClient";
@@ -122,6 +121,13 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
 
   const mapAds = ads.filter(a => a.latitude && a.longitude).slice(0, 10);
 
+  const groupedAds = ads.reduce((acc: any, ad) => {
+    const category = ad.categorySlug || "Autre";
+    if (!acc[category]) acc[category] = [];
+    acc[category].push(ad);
+    return acc;
+  }, {});
+
   return (
     <div dir="ltr" className="min-h-screen bg-white font-sans text-zinc-900 pb-12">
       {isOfflineData && (
@@ -136,78 +142,65 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
           <SellBanner />
         </div>
         
-        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start relative">
-          {/* Left Sidebar Ad (Desktop) */}
-          <aside className="hidden xl:block w-40 sticky top-24 shrink-0">
-            <SidebarAd />
-          </aside>
-
-          <div className="flex-1 space-y-12 sm:space-y-16 min-w-0">
-            {ads.length === 0 && !loading ? (
-              <div className="flex flex-col items-center justify-center py-24 text-center border border-dashed border-zinc-200 rounded-[2.5rem] bg-zinc-50/40">
-                <div className="bg-white p-6 rounded-2xl mb-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-zinc-100">
-                  <Package className="w-10 h-10 text-zinc-400" />
-                </div>
-                <h3 className="text-xl font-bold text-zinc-900">Aucune annonce trouvée</h3>
-                <Link href="/marketplace/post" className="mt-8 inline-flex items-center justify-center px-8 h-12 bg-orange-500 text-white rounded-2xl font-black hover:bg-orange-600 transition-all shadow-[0_12px_30px_rgba(255,102,0,0.18)] hover:shadow-[0_18px_40px_rgba(255,102,0,0.22)] active:scale-[0.98]">
-                  Déposer une annonce
-                </Link>
+        <div className="space-y-12 sm:space-y-16 min-w-0">
+          {ads.length === 0 && !loading ? (
+            <div className="flex flex-col items-center justify-center py-24 text-center border border-dashed border-zinc-200 rounded-[2.5rem] bg-zinc-50/40">
+              <div className="bg-white p-6 rounded-2xl mb-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-zinc-100">
+                <Package className="w-10 h-10 text-zinc-400" />
               </div>
-            ) : (
-              <>
-                {latParam ? (
-                  <section className="space-y-6">
-                    <h2 className="text-xl font-bold text-zinc-900">Résultats à proximité ({ads.length})</h2>
-                    <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4">
-                      {ads.map((ad, index) => (
-                        <AdCard key={ad.id} ad={ad} href={`/ads/${ad.id}`} priority={index < 4} />
-                      ))}
-                    </div>
-                  </section>
-                ) : (
-                  <>
-                      {[
-                        { id: 'electronics', label: 'Électronique' },
-                        { id: 'vehicles', label: 'Véhicules' },
-                        { id: 'home-furniture', label: 'Maison' },
-                        { id: 'fashion', label: 'Mode' },
-                        { id: 'hobbies', label: 'Loisirs' },
-                        { id: 'animals', label: 'Animaux' },
-                        { id: 'tools-equipment', label: 'Outils' },
-                        { id: 'books', label: 'Livres' },
-                        { id: 'used-clearance', label: 'Occasions' },
-                        { id: 'other', label: 'Autres' }
-                      ].map((cat) => {
-                        const catAds = ads.filter(ad => ad.categorySlug === cat.id).slice(0, 8);
-                        if (catAds.length === 0) return null;
-                        return (
-                          <section key={cat.id} className="space-y-4">
-                            <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-2">
-                              <h2 className="text-xl font-black text-zinc-900 dark:text-white uppercase tracking-tight">{cat.label}</h2>
-                              <Link href={`/categories/${cat.id}`} className="text-sm font-bold text-orange-600 hover:text-orange-700 flex items-center gap-1 group transition-colors">
-                                Voir tout <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                              </Link>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4">
-                              {catAds.map((ad, index) => (
-                                <AdCard key={ad.id} ad={ad} href={`/ads/${ad.id}`} priority={index < 2} />
-                              ))}
-                            </div>
-                          </section>
-                        );
-                      })}
-                  </>
-                )}
-                
-                <BlogSection />
-              </>
-            )}
-          </div>
+              <h3 className="text-xl font-bold text-zinc-900">Aucune annonce trouvée</h3>
+              <Link href="/marketplace/post" className="mt-8 inline-flex items-center justify-center px-8 h-12 bg-orange-500 text-white rounded-2xl font-black hover:bg-orange-600 transition-all shadow-[0_12px_30px_rgba(255,102,0,0.18)] hover:shadow-[0_18px_40px_rgba(255,102,0,0.22)] active:scale-[0.98]">
+                Déposer une annonce
+              </Link>
+            </div>
+          ) : (
+            <>
+              {loading ? (
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                  {[...Array(8)].map((_, i) => (
+                    <div key={i} className="aspect-[3/4] bg-zinc-100 animate-pulse rounded-[2rem]" />
+                  ))}
+                </div>
+              ) : (
+                <>
+                  {Object.keys(groupedAds).map((category) => {
+                    const categoryAds = groupedAds[category];
+                    if (categoryAds.length === 0) return null;
 
-          {/* Right Sidebar Ad (Desktop) */}
-          <aside className="hidden xl:block w-40 sticky top-24 shrink-0">
-            <SidebarAd />
-          </aside>
+                    return (
+                      <section key={category} className="space-y-6">
+                        <div className="flex items-center justify-between">
+                          <div className="flex flex-col gap-1">
+                            <span className="text-[10px] font-black uppercase text-orange-500 tracking-[0.2em]">{category}</span>
+                            <h2 className="text-2xl md:text-3xl font-black text-zinc-900 dark:text-white tracking-tighter">
+                              {category}
+                            </h2>
+                          </div>
+                          <Link 
+                            href={`/marketplace?category=${encodeURIComponent(category)}`}
+                            className="group flex items-center gap-2 text-sm font-bold text-zinc-500 hover:text-orange-600 transition-colors"
+                          >
+                            Voir tout
+                            <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center group-hover:bg-orange-500 group-hover:text-white transition-all">
+                              <ArrowRight className="w-4 h-4" />
+                            </div>
+                          </Link>
+                        </div>
+
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                          {categoryAds.map((ad: any) => (
+                            <AdCard key={ad.id} ad={ad} />
+                          ))}
+                        </div>
+                      </section>
+                    );
+                  })}
+                </>
+              )}
+              
+              <BlogSection />
+            </>
+          )}
         </div>
       </main>
     </div>
