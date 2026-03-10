@@ -16,7 +16,8 @@ import {
   ChevronRight,
   Eye,
   Award,
-  Star
+  Star,
+  Image as ImageIcon
 } from "lucide-react";
 import { QuickActionFooter } from "@/components/ads/QuickActionFooter";
 import Image from "next/image";
@@ -124,9 +125,19 @@ export default async function AdPage({ params }: AdPageProps) {
       </div>
       
       <main className="max-w-[1440px] mx-auto px-4 md:px-8 pt-4 md:pt-14 pb-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          {/* Main Content Column */}
-          <div className="lg:col-span-8 space-y-6">
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start relative">
+          {/* Left Sidebar Ad (Desktop) */}
+          <aside className="hidden xl:block w-40 sticky top-24 shrink-0">
+            <div className="bg-zinc-50 border border-dashed border-zinc-200 rounded-2xl aspect-[1/4] flex flex-col items-center justify-center p-4 text-center">
+              <ImageIcon className="w-8 h-8 text-zinc-300 mb-2" />
+              <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Publicité</span>
+            </div>
+          </aside>
+
+          <div className="flex-1 min-w-0">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              {/* Main Content Column */}
+              <div className="lg:col-span-8 space-y-6">
             <section className="rounded-2xl overflow-hidden bg-white dark:bg-zinc-900 shadow-sm ring-1 ring-zinc-100 dark:ring-white/5">
               <AdImageGallery images={images} />
             </section>
@@ -245,6 +256,14 @@ export default async function AdPage({ params }: AdPageProps) {
                   <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4" /> Support 24/7</li>
                 </ul>
               </div>
+            </div>
+          </aside>
+
+          {/* Right Sidebar Ad (Desktop) */}
+          <aside className="hidden xl:block w-40 sticky top-24 shrink-0">
+            <div className="bg-zinc-50 border border-dashed border-zinc-200 rounded-2xl aspect-[1/4] flex flex-col items-center justify-center p-4 text-center">
+              <ImageIcon className="w-8 h-8 text-zinc-300 mb-2" />
+              <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Publicité</span>
             </div>
           </aside>
         </div>
