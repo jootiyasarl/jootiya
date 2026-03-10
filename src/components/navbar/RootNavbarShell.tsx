@@ -2,10 +2,13 @@
 
 import { ReactNode, Suspense } from "react";
 import { usePathname } from "next/navigation";
-import { MobileBottomNav } from "./MobileBottomNav";
 import { cn } from "@/lib/utils";
 import { PageTransition } from "@/components/layout/PageTransition";
 import dynamic from "next/dynamic";
+
+const MobileBottomNav = dynamic(() => import("./MobileBottomNav").then(mod => mod.MobileBottomNav), {
+  ssr: false
+});
 
 const SidebarAd = dynamic(() => import("@/components/ads/SidebarAd").then(mod => mod.SidebarAd), {
   ssr: false
