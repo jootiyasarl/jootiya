@@ -11,11 +11,11 @@ import {
     PawPrint, 
     BookOpen, 
     Tag,
-    ArrowRight,
-    Image as ImageIcon
+    ArrowRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SellBanner } from '@/components/home/SellBanner';
+import { SidebarAd } from '@/components/ads/SidebarAd';
 
 export const metadata = {
   title: 'Catégories - Jootiya',
@@ -44,10 +44,7 @@ export default function MarketplacePage() {
           
           {/* Left Sidebar Ad */}
           <aside className="hidden xl:block w-40 sticky top-24 shrink-0">
-            <div className="bg-zinc-50 border border-dashed border-zinc-200 rounded-2xl aspect-[1/4] flex flex-col items-center justify-center p-4 text-center">
-              <ImageIcon className="w-8 h-8 text-zinc-300 mb-2" />
-              <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Publicité</span>
-            </div>
+            <SidebarAd />
           </aside>
 
           {/* Main Content Area */}
@@ -111,10 +108,7 @@ export default function MarketplacePage() {
 
           {/* Right Sidebar Ad */}
           <aside className="hidden xl:block w-40 sticky top-24 shrink-0">
-            <div className="bg-zinc-50 border border-dashed border-zinc-200 rounded-2xl aspect-[1/4] flex flex-col items-center justify-center p-4 text-center">
-              <ImageIcon className="w-8 h-8 text-zinc-300 mb-2" />
-              <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Publicité</span>
-            </div>
+            <SidebarAd />
           </aside>
 
         </div>

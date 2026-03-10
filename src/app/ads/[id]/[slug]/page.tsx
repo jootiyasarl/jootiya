@@ -8,6 +8,7 @@ import { AdCard } from "@/components/ads/AdCard";
 import { FavoriteButton } from "@/components/ads/FavoriteButton";
 import { ViralShareButton } from "@/components/ads/ViralShareButton";
 import { ShadowViewTracker } from "@/components/ads/ShadowViewTracker";
+import { SidebarAd } from "@/components/ads/SidebarAd";
 import {
   MapPin,
   Calendar,
@@ -128,10 +129,7 @@ export default async function AdPage({ params }: AdPageProps) {
         <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start relative">
           {/* Left Sidebar Ad */}
           <aside className="hidden xl:block w-40 sticky top-24 shrink-0">
-            <div className="bg-zinc-50 border border-dashed border-zinc-200 rounded-2xl aspect-[1/4] flex flex-col items-center justify-center p-4 text-center">
-              <ImageIcon className="w-8 h-8 text-zinc-300 mb-2" />
-              <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Publicité</span>
-            </div>
+            <SidebarAd />
           </aside>
 
           {/* Center Content Area */}
@@ -263,10 +261,7 @@ export default async function AdPage({ params }: AdPageProps) {
 
           {/* Right Sidebar Ad */}
           <aside className="hidden xl:block w-40 sticky top-24 shrink-0">
-            <div className="bg-zinc-50 border border-dashed border-zinc-200 rounded-2xl aspect-[1/4] flex flex-col items-center justify-center p-4 text-center">
-              <ImageIcon className="w-8 h-8 text-zinc-300 mb-2" />
-              <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Publicité</span>
-            </div>
+            <SidebarAd />
           </aside>
         </div>
       </main>

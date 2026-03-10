@@ -5,7 +5,8 @@ import Link from "next/link";
 import { SellBanner } from "@/components/home/SellBanner";
 import { BlogSection } from "@/components/home/BlogSection";
 import { AdCard } from "@/components/AdCard";
-import { Package, ArrowRight, WifiOff, Image as ImageIcon } from "lucide-react";
+import { SidebarAd } from "@/components/ads/SidebarAd";
+import { Package, ArrowRight, WifiOff } from "lucide-react";
 import { getCachedAds, saveAds } from "@/lib/pwa/jootiya-db";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -138,10 +139,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
         <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start relative">
           {/* Left Sidebar Ad (Desktop) */}
           <aside className="hidden xl:block w-40 sticky top-24 shrink-0">
-            <div className="bg-zinc-50 border border-dashed border-zinc-200 rounded-2xl aspect-[1/4] flex flex-col items-center justify-center p-4 text-center">
-              <ImageIcon className="w-8 h-8 text-zinc-300 mb-2" />
-              <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Publicité</span>
-            </div>
+            <SidebarAd />
           </aside>
 
           <div className="flex-1 space-y-12 sm:space-y-16 min-w-0">
@@ -208,10 +206,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
 
           {/* Right Sidebar Ad (Desktop) */}
           <aside className="hidden xl:block w-40 sticky top-24 shrink-0">
-            <div className="bg-zinc-50 border border-dashed border-zinc-200 rounded-2xl aspect-[1/4] flex flex-col items-center justify-center p-4 text-center">
-              <ImageIcon className="w-8 h-8 text-zinc-300 mb-2" />
-              <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Publicité</span>
-            </div>
+            <SidebarAd />
           </aside>
         </div>
       </main>

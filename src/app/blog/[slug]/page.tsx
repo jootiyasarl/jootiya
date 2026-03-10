@@ -2,6 +2,7 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { Calendar, Share2, User, ArrowLeft, Clock, Tag, Image as ImageIcon } from 'lucide-react';
+import { SidebarAd } from "@/components/ads/SidebarAd";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Metadata } from 'next';
@@ -194,10 +195,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             
             {/* Left Sidebar Ad */}
             <aside className="hidden xl:block w-40 sticky top-24 shrink-0">
-              <div className="bg-zinc-50 border border-dashed border-zinc-200 rounded-2xl aspect-[1/4] flex flex-col items-center justify-center p-4 text-center">
-                <ImageIcon className="w-8 h-8 text-zinc-300 mb-2" />
-                <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Publicité</span>
-              </div>
+              <SidebarAd />
             </aside>
 
             {/* Content Column */}
@@ -238,10 +236,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
             {/* Right Sidebar Ad */}
             <aside className="hidden xl:block w-40 sticky top-24 shrink-0">
-              <div className="bg-zinc-50 border border-dashed border-zinc-200 rounded-2xl aspect-[1/4] flex flex-col items-center justify-center p-4 text-center">
-                <ImageIcon className="w-8 h-8 text-zinc-300 mb-2" />
-                <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Publicité</span>
-              </div>
+              <SidebarAd />
             </aside>
 
           </div>
