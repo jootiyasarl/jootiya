@@ -5,7 +5,11 @@ import { usePathname } from "next/navigation";
 import { MobileBottomNav } from "./MobileBottomNav";
 import { cn } from "@/lib/utils";
 import { PageTransition } from "@/components/layout/PageTransition";
-import { SidebarAd } from "@/components/ads/SidebarAd";
+import dynamic from "next/dynamic";
+
+const SidebarAd = dynamic(() => import("@/components/ads/SidebarAd").then(mod => mod.SidebarAd), {
+  ssr: false
+});
 
 interface RootNavbarShellProps {
   children: ReactNode;
