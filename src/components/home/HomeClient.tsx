@@ -115,40 +115,10 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
             const currency = typeof row.currency === 'string' ? row.currency.trim() : "MAD";
             const priceLabel = row.price != null ? `${row.price} ${currency || "MAD"}` : "—";
 
-            // LOG FOR DATA INSPECTION
-            console.log("HOME_ROW_DATA:", row);
-
-            // Explicitly map all possible fields to ensure nothing is lost
-            const rawProfile = row.profiles;
-            let extractedName = "";
-            let extractedAvatar = null;
-
-            if (rawProfile) {
-              if (Array.isArray(rawProfile) && rawProfile.length > 0) {
-                extractedName = rawProfile[0]?.full_name || rawProfile[0]?.username || "";
-                extractedAvatar = rawProfile[0]?.avatar_url;
-              } else if (typeof rawProfile === 'object') {
-                extractedName = (rawProfile as any).full_name || (rawProfile as any).username || "";
-                extractedAvatar = (rawProfile as any).avatar_url;
-              }
-            }
-
-            // Fallback chain: Profile -> row fields -> placeholder
-            let finalSellerName = extractedName || 
-                                   row.seller_name || 
-                                   row.sellerName || 
-                                   (row as any).seller_full_name || 
-                                   (row as any).seller_username || 
-                                   "Utilisateur Jootiya";
-            
-            let finalSellerAvatar = extractedAvatar || 
-                                     row.seller_avatar || 
-                                     row.sellerAvatar;
-
-            // FORCE REPLACE "Vendeur Jootiya" if it comes from DB
-            if (finalSellerName === "Vendeur Jootiya") {
-              finalSellerName = "Utilisateur Jootiya";
-            }
+            // Get seller name from profiles join if available
+            const profile = row.profiles;
+            const sellerName = (Array.isArray(profile) ? profile[0]?.full_name || profile[0]?.username : profile?.full_name || profile?.username) || "Utilisateur Jootiya";
+            const sellerAvatar = (Array.isArray(profile) ? profile[0]?.avatar_url : profile?.avatar_url);
 
             return {
               id: row.id,
@@ -163,8 +133,8 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
               latitude: row.latitude || 0,
               longitude: row.longitude || 0,
               distanceKm: row.distanceKm,
-              sellerName: finalSellerName,
-              sellerAvatar: finalSellerAvatar,
+              sellerName: sellerName,
+              sellerAvatar: sellerAvatar,
             };
           });
 
@@ -281,7 +251,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
                         </div>
 
                         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-                          {categoryAds.map((ad: HomepageAd) => (
+                          {categoryAds.map((ad: any) => (
                             <ListingCard 
                               key={ad.id} 
                               id={ad.id}

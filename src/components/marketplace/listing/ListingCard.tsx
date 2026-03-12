@@ -13,11 +13,6 @@ function formatDistance(distanceKm?: number): string | null {
   return `${distanceKm.toFixed(1)} كلم`;
 }
 
-function formatPrice(price: any): string {
-  if (price === null || price === undefined) return "—";
-  return String(price);
-}
-
 export function ListingCard(props: ListingCardProps) {
   const {
     id,
@@ -32,9 +27,9 @@ export function ListingCard(props: ListingCardProps) {
     distanceKm,
   } = props;
 
-  const displayName = sellerName === "Vendeur Jootiya" ? "Utilisateur Jootiya" : (sellerName || "Utilisateur Jootiya");
-
   const distanceLabel = formatDistance(distanceKm);
+  const normalizedSellerName = typeof sellerName === "string" ? sellerName.trim() : "";
+  const displaySellerName = normalizedSellerName || "Utilisateur";
 
   return (
     <article className="group cursor-pointer flex flex-col bg-white dark:bg-zinc-900 rounded-3xl p-2 sm:p-3 shadow-sm hover:shadow-md transition-all duration-300 active:scale-[0.98] select-none border border-zinc-100 dark:border-zinc-800">
@@ -45,16 +40,16 @@ export function ListingCard(props: ListingCardProps) {
             {sellerAvatar ? (
               <Image 
                 src={sellerAvatar} 
-                alt={sellerName || "Seller"} 
+                alt={displaySellerName} 
                 width={32} 
                 height={32} 
                 className="object-cover"
               />
             ) : (
-              <User className="w-4 h-4 sm:w-5 h-5 text-zinc-400" />
+              <User className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-400" />
             )}
           </div>
-          <span className="text-[11px] sm:text-sm font-bold text-zinc-900 dark:text-zinc-100 truncate">{displayName}</span>
+          <span className="text-[11px] sm:text-sm font-bold text-zinc-900 dark:text-zinc-100 truncate">{displaySellerName}</span>
         </div>
 
         {/* Image Container */}
