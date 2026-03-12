@@ -70,7 +70,23 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
         } else {
           const { data: standardData, error } = await supabase
             .from("ads")
-            .select("id, title, price, currency, city, neighborhood, created_at, is_featured, image_urls, category, status, latitude, longitude, profiles(full_name, username, avatar_url)")
+            .select(`
+              id, 
+              title, 
+              price, 
+              currency, 
+              city, 
+              neighborhood, 
+              created_at, 
+              is_featured, 
+              image_urls, 
+              category, 
+              status, 
+              latitude, 
+              longitude, 
+              seller_id,
+              profiles:seller_id(full_name, username, avatar_url)
+            `)
             .or("status.eq.active,status.eq.approved")
             .order("is_featured", { ascending: false })
             .order("created_at", { ascending: false })
@@ -101,8 +117,8 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
 
             // Get seller name from profiles join if available
             const profile = row.profiles;
-            const sellerName = (Array.isArray(profile) ? profile[0]?.full_name || profile[0]?.username : profile?.full_name || profile?.username) || row.seller_name || "Vendeur Jootiya";
-            const sellerAvatar = (Array.isArray(profile) ? profile[0]?.avatar_url : profile?.avatar_url) || row.seller_avatar;
+            const sellerName = (Array.isArray(profile) ? profile[0]?.full_name || profile[0]?.username : profile?.full_name || profile?.username) || "Utilisateur Jootiya";
+            const sellerAvatar = (Array.isArray(profile) ? profile[0]?.avatar_url : profile?.avatar_url);
 
             return {
               id: row.id,
