@@ -115,10 +115,21 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
             const currency = typeof row.currency === 'string' ? row.currency.trim() : "MAD";
             const priceLabel = row.price != null ? `${row.price} ${currency || "MAD"}` : "—";
 
-            // Get seller name from profiles join if available
+            // Get seller name/avatar (supports both regular select join and nearby RPC results)
             const profile = row.profiles;
-            const sellerName = (Array.isArray(profile) ? profile[0]?.full_name || profile[0]?.username : profile?.full_name || profile?.username) || "Utilisateur Jootiya";
-            const sellerAvatar = (Array.isArray(profile) ? profile[0]?.avatar_url : profile?.avatar_url);
+            const profileObj = Array.isArray(profile) ? profile[0] : profile;
+
+            const sellerName =
+              (typeof row.sellerName === 'string' ? row.sellerName : undefined) ||
+              (typeof row.seller_name === 'string' ? row.seller_name : undefined) ||
+              profileObj?.full_name ||
+              profileObj?.username ||
+              "Utilisateur";
+
+            const sellerAvatar =
+              (typeof row.sellerAvatar === 'string' ? row.sellerAvatar : undefined) ||
+              (typeof row.seller_avatar === 'string' ? row.seller_avatar : undefined) ||
+              profileObj?.avatar_url;
 
             return {
               id: row.id,
