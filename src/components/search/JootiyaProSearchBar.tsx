@@ -137,7 +137,7 @@ export function JootiyaProSearchBar() {
         >
           {/* Product */}
           <div className="flex-[2] flex items-center px-4 py-2 min-w-0 border-r border-zinc-100 dark:border-zinc-800">
-            <Search className="w-5 h-5 text-zinc-400 mr-2 shrink-0" />
+            <Search className="w-4.5 h-4.5 text-zinc-400 mr-2 shrink-0" />
             <input
               value={query}
               onChange={(e) => {
@@ -268,7 +268,8 @@ export function JootiyaProSearchBar() {
       </div>
 
       {/* Mobile: icon -> drawer-like fullscreen */}
-      <div className="lg:hidden flex items-center justify-end">
+      <div className={cn("lg:hidden", mobileOpen && "hidden")}>
+        <div className="flex items-center justify-end">
         <button
           type="button"
           onClick={() => setMobileOpen(true)}
@@ -278,6 +279,7 @@ export function JootiyaProSearchBar() {
         >
           <Search className="w-5 h-5" />
         </button>
+        </div>
       </div>
 
       {mobileOpen && (
