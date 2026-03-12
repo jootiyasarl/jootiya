@@ -2,10 +2,13 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Search, MapPin, LayoutGrid, X, Check } from "lucide-react";
+import Link from "next/link";
+import { Search, MapPin, LayoutGrid, X, Check, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { MOROCCAN_CITIES } from "@/lib/constants/cities";
+import { supabase } from "@/lib/supabaseClient";
+import { generateSlug } from "@/lib/seo-utils";
 
 const CATEGORIES = [
   { id: "all", label: "Toutes les catégories" },
@@ -29,9 +32,11 @@ const ALL_CITIES = [
 type AutocompleteSuggestion = {
   id: string;
   title: string;
-  price?: number;
-  currency?: string;
-  image_url?: string | null;
+  price?: number | null;
+  currency?: string | null;
+  city?: string | null;
+  image_urls?: string[] | null;
+  slug?: string | null;
 };
 
 type ActiveField = "product" | "category" | "city" | null;
@@ -51,6 +56,7 @@ export function JootiyaProSearchBar() {
   const [suggestions, setSuggestions] = useState<AutocompleteSuggestion[]>([]);
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
   const debounceRef = useRef<number | null>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
 
   const selectedCategory = useMemo(
     () => CATEGORIES.find((c) => c.id === categoryId) ?? CATEGORIES[0],
@@ -74,6 +80,7 @@ export function JootiyaProSearchBar() {
 
   useEffect(() => {
     const trimmed = query.trim();
+
     if (trimmed.length < 2) {
       setSuggestions([]);
       setLoadingSuggestions(false);
@@ -87,20 +94,63 @@ export function JootiyaProSearchBar() {
     setLoadingSuggestions(true);
     debounceRef.current = window.setTimeout(async () => {
       try {
-        const res = await fetch(`/api/autocomplete?q=${encodeURIComponent(trimmed)}`);
-        const data = await res.json();
-        setSuggestions((data?.suggestions as AutocompleteSuggestion[]) ?? []);
+        let req = supabase
+          .from("ads")
+          .select("id, title, price, currency, city, image_urls, slug")
+          .ilike("title", `%${trimmed}%`)
+          .in("status", ["active", "approved"])
+          .limit(5);
+
+        if (categoryId && categoryId !== "all") {
+          req = req.or(`category.ilike.${categoryId},category_id.ilike.${categoryId}`);
+        }
+
+        if (city && city !== "Toutes les villes") {
+          req = req.eq("city", city);
+        }
+
+        const { data, error } = await req;
+        if (error) {
+          setSuggestions([]);
+        } else {
+          setSuggestions((data as any) ?? []);
+        }
       } catch {
         setSuggestions([]);
       } finally {
         setLoadingSuggestions(false);
       }
-    }, 250);
+    }, 300);
 
     return () => {
       if (debounceRef.current) window.clearTimeout(debounceRef.current);
     };
-  }, [query]);
+  }, [query, categoryId, city]);
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setSuggestions([]);
+        setActiveField(null);
+      }
+    };
+
+    const onMouseDown = (e: MouseEvent) => {
+      const el = rootRef.current;
+      if (!el) return;
+      if (!el.contains(e.target as Node)) {
+        setSuggestions([]);
+        setActiveField(null);
+      }
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("mousedown", onMouseDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("mousedown", onMouseDown);
+    };
+  }, []);
 
   const runSearch = (override?: { q?: string; category?: string; city?: string }) => {
     const q = (override?.q ?? query).trim();
@@ -119,13 +169,8 @@ export function JootiyaProSearchBar() {
     setMobileOpen(false);
   };
 
-  const onPickSuggestion = (s: AutocompleteSuggestion) => {
-    setQuery(s.title);
-    runSearch({ q: s.title });
-  };
-
   return (
-    <div className="w-full">
+    <div className="w-full" ref={rootRef}>
       {/* Desktop (Airbnb-like segmented bar) */}
       <div className="hidden lg:block">
         <div
@@ -190,22 +235,44 @@ export function JootiyaProSearchBar() {
           </Button>
 
           {/* Dropdowns */}
-          {activeField === "product" && (suggestions.length > 0 || loadingSuggestions) && (
+          {(activeField === "product" || suggestions.length > 0 || loadingSuggestions) && (suggestions.length > 0 || loadingSuggestions) && (
             <div className="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl shadow-2xl overflow-hidden z-50">
               {loadingSuggestions && (
                 <div className="px-4 py-3 text-sm text-zinc-500">Chargement...</div>
               )}
               {!loadingSuggestions &&
-                suggestions.map((s) => (
-                  <button
-                    key={s.id}
-                    type="button"
-                    onClick={() => onPickSuggestion(s)}
-                    className="w-full text-left px-4 py-3 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors text-sm font-semibold text-zinc-800 dark:text-zinc-100"
-                  >
-                    {s.title}
-                  </button>
-                ))}
+                suggestions.map((s) => {
+                  const slug = s.slug || generateSlug(s.title);
+                  const href = `/ads/${s.id}/${slug}`;
+                  const img = s.image_urls?.[0] || "/placeholder.png";
+                  const priceText = s.price !== null && s.price !== undefined ? `${s.price} ${s.currency || "MAD"}` : "";
+
+                  return (
+                    <Link
+                      key={s.id}
+                      href={href}
+                      onClick={() => {
+                        setSuggestions([]);
+                        setActiveField(null);
+                      }}
+                      className="flex items-center gap-3 p-3 hover:bg-zinc-50 dark:hover:bg-zinc-800/60 transition-colors group"
+                    >
+                      <div className="w-12 h-12 rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-800 shrink-0">
+                        <img src={img} alt={s.title} className="w-full h-full object-cover" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="text-sm font-bold text-zinc-900 dark:text-zinc-100 truncate group-hover:text-orange-600">
+                          {s.title}
+                        </div>
+                        <div className="text-xs text-zinc-500 dark:text-zinc-400 truncate">
+                          {s.city ? `${s.city} • ` : ""}
+                          {priceText ? <span className="text-orange-600 font-black">{priceText}</span> : null}
+                        </div>
+                      </div>
+                      <ChevronRight className="w-4 h-4 text-zinc-300 group-hover:text-orange-600 shrink-0" />
+                    </Link>
+                  );
+                })}
             </div>
           )}
 
@@ -351,16 +418,39 @@ export function JootiyaProSearchBar() {
                   <div className="px-4 py-3 text-sm text-zinc-500">Chargement...</div>
                 )}
                 {!loadingSuggestions &&
-                  suggestions.map((s) => (
-                    <button
-                      key={s.id}
-                      type="button"
-                      onClick={() => onPickSuggestion(s)}
-                      className="w-full text-left px-4 py-3 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors text-sm font-semibold text-zinc-800 dark:text-zinc-100"
-                    >
-                      {s.title}
-                    </button>
-                  ))}
+                  suggestions.map((s) => {
+                    const slug = s.slug || generateSlug(s.title);
+                    const href = `/ads/${s.id}/${slug}`;
+                    const img = s.image_urls?.[0] || "/placeholder.png";
+                    const priceText = s.price !== null && s.price !== undefined ? `${s.price} ${s.currency || "MAD"}` : "";
+
+                    return (
+                      <Link
+                        key={s.id}
+                        href={href}
+                        onClick={() => {
+                          setSuggestions([]);
+                          setActiveField(null);
+                          setMobileOpen(false);
+                        }}
+                        className="flex items-center gap-3 p-3 hover:bg-zinc-50 dark:hover:bg-zinc-800/60 transition-colors group"
+                      >
+                        <div className="w-12 h-12 rounded-xl overflow-hidden bg-zinc-100 dark:bg-zinc-800 shrink-0">
+                          <img src={img} alt={s.title} className="w-full h-full object-cover" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-sm font-bold text-zinc-900 dark:text-zinc-100 truncate group-hover:text-orange-600">
+                            {s.title}
+                          </div>
+                          <div className="text-xs text-zinc-500 dark:text-zinc-400 truncate">
+                            {s.city ? `${s.city} • ` : ""}
+                            {priceText ? <span className="text-orange-600 font-black">{priceText}</span> : null}
+                          </div>
+                        </div>
+                        <ChevronRight className="w-4 h-4 text-zinc-300 group-hover:text-orange-600 shrink-0" />
+                      </Link>
+                    );
+                  })}
               </div>
             )}
 
