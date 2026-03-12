@@ -138,8 +138,13 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
             }
 
             // Fallback chain: Profile -> Nearby Search Fields -> Row Direct Fields -> Placeholder
-            const finalSellerName = extractedName || seller_name_from_nearby || row.seller_name || row.sellerName || "Utilisateur Jootiya";
-            const finalSellerAvatar = extractedAvatar || seller_avatar_from_nearby || row.seller_avatar || row.sellerAvatar;
+            let finalSellerName = extractedName || seller_name_from_nearby || row.seller_name || row.sellerName || "Utilisateur Jootiya";
+            let finalSellerAvatar = extractedAvatar || seller_avatar_from_nearby || row.seller_avatar || row.sellerAvatar;
+
+            // ABSOLUTE FORCE OVERRIDE FOR TESTING
+            if (finalSellerName === "Vendeur Jootiya") {
+                finalSellerName = "Utilisateur Jootiya";
+            }
 
             return {
               id: row.id,
