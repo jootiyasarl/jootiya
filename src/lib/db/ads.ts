@@ -69,7 +69,7 @@ export async function getAds(supabase: any, { query, category, sellerId, minPric
     // Regular query with status filtering
     let dbQuery = supabase
         .from('ads')
-        .select('*, profiles(full_name, avatar_url, username)', { count: 'exact' })
+        .select('*, profiles:seller_id(full_name, avatar_url, username)', { count: 'exact' })
         .in('status', ['active', 'approved']);
 
     if (sellerId && IS_UUID.test(sellerId)) {

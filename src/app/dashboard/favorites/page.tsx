@@ -58,7 +58,7 @@ export default async function FavoritesPage() {
             status: ad.status,
             createdAt: ad.created_at ? `${new Date(ad.created_at).toLocaleDateString("fr-FR", { day: 'numeric', month: 'short' })} à ${new Date(ad.created_at).toLocaleTimeString("fr-FR", { hour: '2-digit', minute: '2-digit' })}` : 'Aujourd\'hui',
             isFeatured: ad.is_featured,
-            sellerName: profile?.full_name || profile?.username || 'Vendeur Jootiya',
+            sellerName: profile?.full_name || profile?.username || 'Utilisateur',
         };
     });
 
