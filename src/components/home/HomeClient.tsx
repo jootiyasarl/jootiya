@@ -100,8 +100,9 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
             const priceLabel = row.price != null ? `${row.price} ${currency || "MAD"}` : "—";
 
             // Get seller name from profiles join if available
-            const sellerName = row.profiles?.full_name || row.profiles?.username || "Vendeur Jootiya";
-            const sellerAvatar = row.profiles?.avatar_url;
+            const profile = row.profiles;
+            const sellerName = (Array.isArray(profile) ? profile[0]?.full_name || profile[0]?.username : profile?.full_name || profile?.username) || row.seller_name || "Vendeur Jootiya";
+            const sellerAvatar = (Array.isArray(profile) ? profile[0]?.avatar_url : profile?.avatar_url) || row.seller_avatar;
 
             return {
               id: row.id,

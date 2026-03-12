@@ -45,27 +45,51 @@ export function UnifiedSearchBar() {
     const [showSuggestions, setShowSuggestions] = useState(false);
     const suggestionRef = useRef<HTMLDivElement>(null);
 
+    // Fetch suggestions from Supabase
     useEffect(() => {
         const fetchSuggestions = async () => {
-            if (query.trim().length < 2) {
+            const trimmedQuery = query.trim();
+            if (trimmedQuery.length < 1) {
                 setSuggestions([]);
+                setShowSuggestions(false);
                 return;
             }
 
+            // Simplified query to ensure data is returned
             const { data, error } = await supabase
                 .from("ads")
                 .select("title")
-                .ilike("title", `%${query}%`)
-                .eq("status", "approved")
-                .limit(5);
+                .ilike("title", `%${trimmedQuery}%`)
+                .limit(20);
 
-            if (!error && data) {
-                const uniqueTitles = Array.from(new Set(data.map((item: { title: string }) => item.title))) as string[];
-                setSuggestions(uniqueTitles);
+            if (error) {
+                console.error("DEBUG: Suggestion fetch error:", error);
+                return;
+            }
+
+            if (data && data.length > 0) {
+                const uniqueTitles = Array.from(new Set(data.map((item: any) => item.title))) as string[];
+                
+                const sortedTitles = uniqueTitles.sort((a, b) => {
+                    const aLower = a.toLowerCase();
+                    const bLower = b.toLowerCase();
+                    const qLower = trimmedQuery.toLowerCase();
+                    const aStarts = aLower.startsWith(qLower);
+                    const bStarts = bLower.startsWith(qLower);
+                    if (aStarts && !bStarts) return -1;
+                    if (!aStarts && bStarts) return 1;
+                    return a.length - b.length;
+                }).slice(0, 6);
+
+                setSuggestions(sortedTitles);
+                setShowSuggestions(true);
+            } else {
+                setSuggestions([]);
+                setShowSuggestions(false);
             }
         };
 
-        const timer = setTimeout(fetchSuggestions, 300);
+        const timer = setTimeout(fetchSuggestions, 50);
         return () => clearTimeout(timer);
     }, [query]);
 

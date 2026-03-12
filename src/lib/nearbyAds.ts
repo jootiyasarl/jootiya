@@ -83,10 +83,17 @@ export async function fetchNearbyAds(
 
   const rows = (data ?? []) as any[];
 
-  return rows.map((row) => ({
-    ...row,
-    distanceKm: (row.dist_meters ?? 0) / 1000,
-    sellerName: row.profiles?.full_name || row.profiles?.username || "Vendeur Jootiya",
-    sellerAvatar: row.profiles?.avatar_url,
-  }));
+  return rows.map((row) => {
+    // Process profile data which might be inside a JSONB object from RPC
+    const profile = row.profiles;
+    const sellerName = (typeof profile === 'object' ? profile?.full_name || profile?.username : null) || "Vendeur Jootiya";
+    const sellerAvatar = typeof profile === 'object' ? profile?.avatar_url : null;
+
+    return {
+      ...row,
+      distanceKm: (row.dist_meters ?? 0) / 1000,
+      sellerName,
+      sellerAvatar,
+    };
+  });
 }
