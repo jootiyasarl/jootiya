@@ -23,9 +23,9 @@ export function HeaderCategories() {
     const currentCategory = searchParams?.get("category");
 
     return (
-        <div className="w-full bg-white dark:bg-zinc-950 relative z-0 overflow-hidden">
-            <div className="mx-auto max-w-7xl px-4 md:px-6 mt-1 pb-4">
-                <div className="flex w-full items-center justify-between gap-2 overflow-x-auto py-3 scrollbar-hide">
+        <div className="w-full bg-white dark:bg-zinc-950 relative z-0">
+            <div className="mx-auto max-w-7xl px-4 md:px-6">
+                <div className="flex w-full items-center justify-between gap-2 overflow-x-auto py-2 scrollbar-hide">
                     <Link
                         href="/marketplace"
                         className={cn(
