@@ -3,7 +3,6 @@
 import { Search, MapPin, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { UnifiedSearchBar } from "@/components/search/UnifiedSearchBar";
 
 export function HeroSection() {
     return (
@@ -24,11 +23,6 @@ export function HeroSection() {
                     <p className="mt-4 sm:mt-6 text-sm sm:text-lg leading-relaxed text-zinc-300 font-medium px-4 sm:px-0">
                         Le meilleur marché en ligne au Maroc. Électronique, immobilier, voitures, et plus encore. Vendez et achetez en toute sécurité.
                     </p>
-
-                    {/* Unified Search Bar */}
-                    <div className="mt-8 sm:mt-10">
-                        <UnifiedSearchBar />
-                    </div>
 
                     <div className="mt-8 hidden sm:flex items-center justify-center gap-x-6 text-sm">
                         <span className="text-zinc-400">Les plus recherchés :</span>
