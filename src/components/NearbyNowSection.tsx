@@ -20,6 +20,32 @@ export function NearbyNowSection({ radiusKm = 5, limit = 6 }: NearbyNowSectionPr
       return;
     }
 
+    const storedLocationStr = localStorage.getItem("user_location");
+    const storedLocation = storedLocationStr ? JSON.parse(storedLocationStr) : null;
+
+    if (storedLocation && storedLocation.lat && storedLocation.lon) {
+      const { lat, lon } = storedLocation;
+      setLoadingLocation(false);
+      setLoadingAds(true);
+      fetchNearbyAds({
+        latitude: lat,
+        longitude: lon,
+        radiusKm,
+        limit,
+      })
+        .then((result) => {
+          setAds(result);
+          setError(null);
+        })
+        .catch((err) => {
+          setError(err?.message ?? "Une erreur s'est produite.");
+        })
+        .finally(() => {
+          setLoadingAds(false);
+        });
+      return;
+    }
+
     if (!("geolocation" in navigator)) {
       setLoadingLocation(false);
       setError("Nous n'avons pas pu accéder à votre position depuis ce navigateur.");
@@ -96,10 +122,7 @@ export function NearbyNowSection({ radiusKm = 5, limit = 6 }: NearbyNowSectionPr
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {ads.map((ad) => {
-        const locationParts: string[] = [];
-        if (ad.neighborhood) locationParts.push(ad.neighborhood);
-        if (ad.city) locationParts.push(ad.city);
-        const location = locationParts.join(", ") || "Près de chez vous";
+        const location = ad.location || "Près de chez vous";
 
         const distanceValue =
           ad.distanceKm < 1

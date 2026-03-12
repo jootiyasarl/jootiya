@@ -1,0 +1,60 @@
+-- Enable PostGIS extension
+CREATE EXTENSION IF NOT EXISTS postgis;
+
+-- Add location geography column to ads table
+ALTER TABLE public.ads 
+ADD COLUMN IF NOT EXISTS location_coords geography(POINT, 4326);
+
+-- Create a spatial index for better performance
+CREATE INDEX IF NOT EXISTS ads_location_coords_idx ON public.ads USING GIST (location_coords);
+
+-- Function to search for nearby ads
+CREATE OR REPLACE FUNCTION get_nearby_ads(
+  lat float,
+  lon float,
+  distance_meters float DEFAULT 50000,
+  limit_count int DEFAULT 20
+)
+RETURNS TABLE (
+  id UUID,
+  seller_id UUID,
+  category_id UUID,
+  title TEXT,
+  description TEXT,
+  price DECIMAL,
+  currency TEXT,
+  images TEXT[],
+  location TEXT,
+  status TEXT,
+  views_count INT,
+  created_at TIMESTAMPTZ,
+  dist_meters float
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  RETURN QUERY
+  SELECT
+    a.id,
+    a.seller_id,
+    a.category_id,
+    a.title,
+    a.description,
+    a.price,
+    a.currency,
+    a.images,
+    a.location,
+    a.status,
+    a.views_count,
+    a.created_at,
+    ST_Distance(a.location_coords, ST_SetSRID(ST_MakePoint(lon, lat), 4326)::geography) as dist_meters
+  FROM
+    public.ads a
+  WHERE
+    a.status = 'approved'
+    AND ST_DWithin(a.location_coords, ST_SetSRID(ST_MakePoint(lon, lat), 4326)::geography, distance_meters)
+  ORDER BY
+    a.location_coords <-> ST_SetSRID(ST_MakePoint(lon, lat), 4326)::geography
+  LIMIT limit_count;
+END;
+$$;

@@ -4,16 +4,18 @@ import { supabase } from "@/lib/supabaseClient";
 
 export interface NearbyAdRow {
   id: string;
+  seller_id: string;
+  category_id: string | null;
   title: string;
+  description: string | null;
   price: number | null;
   currency: string | null;
-  city: string | null;
-  neighborhood: string | null;
-  latitude: number | null;
-  longitude: number | null;
-  image_urls: string[] | null;
+  images: string[] | null;
+  location: string | null;
+  status: string | null;
+  views_count: number | null;
   created_at: string | null;
-  status?: string | null;
+  dist_meters?: number;
 }
 
 export interface NearbyAd extends NearbyAdRow {
@@ -65,74 +67,24 @@ export async function fetchNearbyAds(
     throw new Error("A valid latitude and longitude are required.");
   }
 
-  const effectiveRadiusKm = radiusKm > 0 ? radiusKm : 1;
+  const distanceMeters = radiusKm * 1000;
 
-  const latDelta = effectiveRadiusKm / 111.32;
-  const lngDelta =
-    effectiveRadiusKm /
-    (111.32 * Math.max(Math.cos(toRadians(latitude)), 0.01));
-
-  const minLat = latitude - latDelta;
-  const maxLat = latitude + latDelta;
-  const minLon = longitude - lngDelta;
-  const maxLon = longitude + lngDelta;
-
-  const { data, error } = await supabase
-    .from("ads")
-    .select(
-      "id, title, price, currency, city, neighborhood, latitude, longitude, image_urls, created_at, status",
-    )
-    .or("status.eq.active,status.eq.approved")
-    .not("latitude", "is", null)
-    .not("longitude", "is", null)
-    .gte("latitude", minLat)
-    .lte("latitude", maxLat)
-    .gte("longitude", minLon)
-    .lte("longitude", maxLon)
-    .limit(limit);
+  const { data, error } = await supabase.rpc("get_nearby_items", {
+    lat: latitude,
+    lon: longitude,
+    distance_meters: distanceMeters,
+    limit_count: limit,
+  });
 
   if (error) {
+    console.error("Error fetching nearby ads via PostGIS:", error);
     throw error;
   }
 
   const rows = (data ?? []) as NearbyAdRow[];
 
-  const withDistance = rows
-    .map((row) => {
-      if (
-        row.latitude == null ||
-        row.longitude == null ||
-        !Number.isFinite(row.latitude) ||
-        !Number.isFinite(row.longitude)
-      ) {
-        return null;
-      }
-
-      const distanceKm = haversineDistanceKm(
-        latitude,
-        longitude,
-        row.latitude,
-        row.longitude,
-      );
-
-      return {
-        ...row,
-        distanceKm,
-      } as NearbyAd;
-    })
-    .filter((row): row is NearbyAd => row !== null)
-    .filter((row) => row.distanceKm <= effectiveRadiusKm);
-
-  withDistance.sort((a, b) => {
-    if (a.distanceKm !== b.distanceKm) {
-      return a.distanceKm - b.distanceKm;
-    }
-
-    const aTime = a.created_at ? new Date(a.created_at).getTime() : 0;
-    const bTime = b.created_at ? new Date(b.created_at).getTime() : 0;
-
-    return bTime - aTime;
-  });
-
-  return withDistance;
+  return rows.map((row) => ({
+    ...row,
+    distanceKm: (row.dist_meters ?? 0) / 1000,
+  }));
 }

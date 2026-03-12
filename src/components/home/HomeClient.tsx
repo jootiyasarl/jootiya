@@ -8,6 +8,8 @@ import { AdCard } from "@/components/AdCard";
 import { Package, ArrowRight, WifiOff } from "lucide-react";
 import { getCachedAds, saveAds } from "@/lib/pwa/jootiya-db";
 import { supabase } from "@/lib/supabaseClient";
+import { LocationPrompt } from "@/components/LocationPrompt";
+import { fetchNearbyAds } from "@/lib/nearbyAds";
 
 type HomepageAd = {
   id: string;
@@ -47,15 +49,20 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
 
       try {
         let data: any[] | null = [];
-        if (latParam && lngParam) {
-          const { data: rpcData, error } = await supabase.rpc('get_ads_nearby', {
-            user_lat: latParam,
-            user_lon: lngParam,
-            radius_km: radiusParam,
-            limit_count: 50
+        const storedLocationStr = localStorage.getItem("user_location");
+        const storedLocation = storedLocationStr ? JSON.parse(storedLocationStr) : null;
+
+        const lat = latParam || storedLocation?.lat;
+        const lon = lngParam || storedLocation?.lon;
+
+        if (lat && lon) {
+          const result = await fetchNearbyAds({
+            latitude: lat,
+            longitude: lon,
+            radiusKm: radiusParam,
+            limit: 60,
           });
-          if (error) throw error;
-          data = rpcData;
+          data = result;
         } else {
           const { data: standardData, error } = await supabase
             .from("ads")
@@ -157,6 +164,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
 
   return (
     <div dir="ltr" className="min-h-screen bg-white font-sans text-zinc-900 pb-12">
+      <LocationPrompt />
       {isOfflineData && (
         <div className="bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest py-1 text-center flex items-center justify-center gap-2">
           <WifiOff className="w-3 h-3" />
