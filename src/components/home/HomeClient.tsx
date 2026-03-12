@@ -118,33 +118,35 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
             // LOG FOR DATA INSPECTION
             console.log("HOME_ROW_DATA:", row);
 
-            // Explicitly check for seller fields returned by fetchNearbyAds or Supabase
-            const seller_name_from_nearby = (row as any).seller_name;
-            const seller_avatar_from_nearby = (row as any).seller_avatar;
-
-            // Map profiles join
-            const rawProfile = row.profiles;
+            // Get seller name from profiles join if available
+            const profile = row.profiles;
             let extractedName = "";
             let extractedAvatar = null;
 
-            if (rawProfile) {
-              if (Array.isArray(rawProfile) && rawProfile.length > 0) {
-                extractedName = rawProfile[0]?.full_name || rawProfile[0]?.username || "";
-                extractedAvatar = rawProfile[0]?.avatar_url;
-              } else if (typeof rawProfile === 'object') {
-                extractedName = (rawProfile as any).full_name || (rawProfile as any).username || "";
-                extractedAvatar = (rawProfile as any).avatar_url;
+            if (profile) {
+              if (Array.isArray(profile) && profile.length > 0) {
+                extractedName = profile[0]?.full_name || profile[0]?.username || "";
+                extractedAvatar = profile[0]?.avatar_url;
+              } else if (typeof profile === 'object') {
+                extractedName = (profile as any).full_name || (profile as any).username || "";
+                extractedAvatar = (profile as any).avatar_url;
               }
             }
 
-            // Fallback chain: Profile -> Nearby Search Fields -> Row Direct Fields -> Placeholder
-            let finalSellerName = extractedName || seller_name_from_nearby || row.seller_name || row.sellerName || "Utilisateur Jootiya";
-            let finalSellerAvatar = extractedAvatar || seller_avatar_from_nearby || row.seller_avatar || row.sellerAvatar;
+            // Fallback chain to ensure we get a name
+            const finalSellerName = extractedName || 
+                                   row.seller_name || 
+                                   row.sellerName || 
+                                   (row as any).seller_full_name || 
+                                   (row as any).seller_username || 
+                                   "Utilisateur Jootiya";
+            
+            const finalSellerAvatar = extractedAvatar || 
+                                     row.seller_avatar || 
+                                     row.sellerAvatar;
 
-            // ABSOLUTE FORCE OVERRIDE FOR TESTING
-            if (finalSellerName === "Vendeur Jootiya") {
-                finalSellerName = "Utilisateur Jootiya";
-            }
+            // If the name is STILL showing as the hardcoded default in standard SQL results
+            const displaySellerName = finalSellerName === "Vendeur Jootiya" ? "Utilisateur Jootiya" : finalSellerName;
 
             return {
               id: row.id,
@@ -159,7 +161,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
               latitude: row.latitude || 0,
               longitude: row.longitude || 0,
               distanceKm: row.distanceKm,
-              sellerName: finalSellerName,
+              sellerName: displaySellerName,
               sellerAvatar: finalSellerAvatar,
             };
           });
