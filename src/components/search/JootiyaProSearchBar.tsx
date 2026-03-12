@@ -87,6 +87,14 @@ export function JootiyaProSearchBar() {
       return;
     }
 
+    const normalizedQuery = (() => {
+      const q = trimmed.toLowerCase();
+      if (["tomobil", "tomobile", "automobil", "automobile", "auto", "car"].includes(q)) {
+        return "voiture سيارة";
+      }
+      return trimmed;
+    })();
+
     if (debounceRef.current) {
       window.clearTimeout(debounceRef.current);
     }
@@ -94,27 +102,47 @@ export function JootiyaProSearchBar() {
     setLoadingSuggestions(true);
     debounceRef.current = window.setTimeout(async () => {
       try {
-        let req = supabase
-          .from("ads")
-          .select("id, title, price, currency, city, image_urls, slug")
-          .ilike("title", `%${trimmed}%`)
-          .in("status", ["active", "approved"])
-          .limit(5);
+        const { data, error } = await supabase.rpc("search_ads_smart", {
+          search_query: normalizedQuery,
+          similarity_threshold: 0.3,
+          result_limit: 20,
+        });
+
+        if (error || !data) {
+          setSuggestions([]);
+          return;
+        }
+
+        let filtered: any[] = data;
 
         if (categoryId && categoryId !== "all") {
-          req = req.or(`category.ilike.${categoryId},category_id.ilike.${categoryId}`);
+          filtered = filtered.filter((ad) => {
+            const c = (ad?.category ?? "") as string;
+            const cid = (ad?.category_id ?? "") as string;
+            return (
+              c.toLowerCase() === categoryId.toLowerCase() ||
+              c.toLowerCase().includes(categoryId.toLowerCase()) ||
+              cid.toLowerCase() === categoryId.toLowerCase() ||
+              cid.toLowerCase().includes(categoryId.toLowerCase())
+            );
+          });
         }
 
         if (city && city !== "Toutes les villes") {
-          req = req.eq("city", city);
+          filtered = filtered.filter((ad) => ad?.city === city);
         }
 
-        const { data, error } = await req;
-        if (error) {
-          setSuggestions([]);
-        } else {
-          setSuggestions((data as any) ?? []);
-        }
+        const mapped: AutocompleteSuggestion[] = filtered.slice(0, 5).map((ad) => ({
+          id: ad.id,
+          title: ad.title,
+          price: ad.price,
+          currency: ad.currency,
+          city: ad.city,
+          image_urls: ad.image_urls,
+          slug: ad.slug,
+        }));
+
+        setSuggestions(mapped);
       } catch {
         setSuggestions([]);
       } finally {

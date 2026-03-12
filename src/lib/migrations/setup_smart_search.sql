@@ -78,7 +78,7 @@ BEGIN
         ) AS similarity
     FROM public.ads a
     WHERE 
-        a.status = 'approved'
+        a.status IN ('approved', 'active')
         AND (
             -- Full-text search match
             (
@@ -129,7 +129,7 @@ BEGIN
         END AS image_url
     FROM public.ads a
     WHERE 
-        a.status = 'approved'
+        a.status IN ('approved', 'active')
         AND (
             -- Prefix match on title
             a.title ILIKE search_prefix || '%'
@@ -188,7 +188,7 @@ BEGIN
         a.views_count
     FROM public.ads a
     WHERE 
-        a.status = 'approved'
+        a.status IN ('approved', 'active')
         AND (
             -- Match category if provided
             (search_category IS NULL OR a.category = search_category)
@@ -213,7 +213,7 @@ END;
 $$ LANGUAGE plpgsql STABLE;
 
 -- 6. Create indexes for better performance on filters
-CREATE INDEX IF NOT EXISTS idx_ads_category ON public.ads (category) WHERE status = 'approved';
-CREATE INDEX IF NOT EXISTS idx_ads_city ON public.ads (city) WHERE status = 'approved';
+CREATE INDEX IF NOT EXISTS idx_ads_category ON public.ads (category) WHERE status IN ('approved', 'active');
+CREATE INDEX IF NOT EXISTS idx_ads_city ON public.ads (city) WHERE status IN ('approved', 'active');
 CREATE INDEX IF NOT EXISTS idx_ads_status_created ON public.ads (status, created_at DESC);
-CREATE INDEX IF NOT EXISTS idx_ads_views_count ON public.ads (views_count DESC) WHERE status = 'approved';
+CREATE INDEX IF NOT EXISTS idx_ads_views_count ON public.ads (views_count DESC) WHERE status IN ('approved', 'active');
