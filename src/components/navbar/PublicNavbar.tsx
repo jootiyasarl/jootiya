@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { PlusCircle } from "lucide-react";
-import { SimpleSearchBar } from "@/components/search/SimpleSearchBar";
+import { JootiyaProSearchBar } from "@/components/search/JootiyaProSearchBar";
 import { DesktopActions } from "./DesktopActions";
 import { MobileMenu } from "./MobileMenu";
 import { getServerUser } from "@/lib/supabase-server";
@@ -23,9 +23,9 @@ export default async function PublicNavbar() {
           </div>
 
           {/* Center: Search Bar */}
-          <div className="hidden lg:flex flex-1 justify-center px-6">
+          <div className="flex flex-1 justify-center px-3 lg:px-6">
             <div className="w-full max-w-2xl">
-            <SimpleSearchBar />
+              <JootiyaProSearchBar />
             </div>
           </div>
 
