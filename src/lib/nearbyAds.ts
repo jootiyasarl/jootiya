@@ -81,10 +81,12 @@ export async function fetchNearbyAds(
     throw error;
   }
 
-  const rows = (data ?? []) as NearbyAdRow[];
+  const rows = (data ?? []) as any[];
 
   return rows.map((row) => ({
     ...row,
     distanceKm: (row.dist_meters ?? 0) / 1000,
+    sellerName: row.profiles?.full_name || row.profiles?.username || "Vendeur Jootiya",
+    sellerAvatar: row.profiles?.avatar_url,
   }));
 }

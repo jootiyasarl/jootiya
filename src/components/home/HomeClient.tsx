@@ -25,6 +25,8 @@ type HomepageAd = {
   latitude: number;
   longitude: number;
   distanceKm?: number;
+  sellerName?: string;
+  sellerAvatar?: string;
 };
 
 export default function HomeClient({ initialParams }: { initialParams: any }) {
@@ -68,7 +70,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
         } else {
           const { data: standardData, error } = await supabase
             .from("ads")
-            .select("id, title, price, currency, city, neighborhood, created_at, is_featured, image_urls, category, status, latitude, longitude")
+            .select("id, title, price, currency, city, neighborhood, created_at, is_featured, image_urls, category, status, latitude, longitude, profiles(full_name, username, avatar_url)")
             .or("status.eq.active,status.eq.approved")
             .order("is_featured", { ascending: false })
             .order("created_at", { ascending: false })
@@ -97,6 +99,10 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
             const currency = typeof row.currency === 'string' ? row.currency.trim() : "MAD";
             const priceLabel = row.price != null ? `${row.price} ${currency || "MAD"}` : "—";
 
+            // Get seller name from profiles join if available
+            const sellerName = row.profiles?.full_name || row.profiles?.username || "Vendeur Jootiya";
+            const sellerAvatar = row.profiles?.avatar_url;
+
             return {
               id: row.id,
               title: row.title,
@@ -110,6 +116,8 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
               latitude: row.latitude || 0,
               longitude: row.longitude || 0,
               distanceKm: row.distanceKm,
+              sellerName: sellerName,
+              sellerAvatar: sellerAvatar,
             };
           });
 
@@ -237,6 +245,8 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
                               badgeLabel={ad.sellerBadge}
                               href={`/ads/${ad.id}`}
                               distanceKm={ad.distanceKm}
+                              sellerName={ad.sellerName}
+                              sellerAvatar={ad.sellerAvatar}
                             />
                           ))}
                         </div>

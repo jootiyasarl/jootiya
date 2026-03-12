@@ -21,6 +21,7 @@ export function ListingCard(props: ListingCardProps) {
     price,
     imageUrl,
     sellerName,
+    sellerAvatar,
     badgeLabel,
     href,
     distanceKm,
@@ -33,8 +34,18 @@ export function ListingCard(props: ListingCardProps) {
       <Link href={href} className="flex flex-col gap-2">
         {/* Seller Info */}
         <div className="flex items-center gap-2 px-1">
-          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center overflow-hidden shrink-0">
-            <User className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-400" />
+          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center overflow-hidden shrink-0 border border-zinc-100 dark:border-zinc-800">
+            {sellerAvatar ? (
+              <Image 
+                src={sellerAvatar} 
+                alt={sellerName || "Seller"} 
+                width={32} 
+                height={32} 
+                className="object-cover"
+              />
+            ) : (
+              <User className="w-4 h-4 sm:w-5 h-5 text-zinc-400" />
+            )}
           </div>
           <span className="text-[11px] sm:text-sm font-bold text-zinc-900 dark:text-zinc-100 truncate">{sellerName || "Vendeur Jootiya"}</span>
         </div>

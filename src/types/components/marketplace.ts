@@ -7,6 +7,7 @@ export interface ListingCardProps {
   ratingCount?: number;
   imageUrl?: string;
   sellerName?: string;
+  sellerAvatar?: string;
   badgeLabel?: string;
   href: string;
   distanceKm?: number;
