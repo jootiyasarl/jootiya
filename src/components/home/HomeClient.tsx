@@ -115,6 +115,9 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
             const currency = typeof row.currency === 'string' ? row.currency.trim() : "MAD";
             const priceLabel = row.price != null ? `${row.price} ${currency || "MAD"}` : "—";
 
+            // LOG FOR DATA INSPECTION
+            console.log("HOME_ROW_DATA:", JSON.stringify(row));
+
             // Explicitly map all possible fields to ensure nothing is lost
             const rawProfile = row.profiles;
             let extractedName = "";
@@ -130,8 +133,8 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
               }
             }
 
-            // Fallback chain: Profile -> seller_name -> sellerName -> Placeholder
-            const finalSellerName = extractedName || row.seller_name || row.sellerName || "Utilisateur Jootiya";
+            // Fallback chain: Profile -> seller_name -> sellerName -> seller_full_name -> placeholder
+            const finalSellerName = extractedName || row.seller_name || row.sellerName || row.seller_full_name || row.seller_username || "Utilisateur Jootiya";
             const finalSellerAvatar = extractedAvatar || row.seller_avatar || row.sellerAvatar;
 
             return {
