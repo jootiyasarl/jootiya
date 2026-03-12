@@ -8,6 +8,7 @@ import { MOROCCAN_CITIES } from "@/lib/constants/cities";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { createPortal } from "react-dom";
+import { supabase } from "@/lib/supabaseClient";
 
 const CATEGORIES = [
     { id: "all", label: "Toutes les catégories", icon: LayoutGrid },
@@ -40,20 +41,66 @@ export function UnifiedSearchBar() {
     const [activeMenu, setActiveMenu] = useState<'category' | 'location' | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    const handleSearch = () => {
-        const trimmedQuery = query.trim();
+    const [suggestions, setSuggestions] = useState<string[]>([]);
+    const [showSuggestions, setShowSuggestions] = useState(false);
+    const suggestionRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const fetchSuggestions = async () => {
+            if (query.trim().length < 2) {
+                setSuggestions([]);
+                return;
+            }
+
+            const { data, error } = await supabase
+                .from("ads")
+                .select("title")
+                .ilike("title", `%${query}%`)
+                .eq("status", "approved")
+                .limit(5);
+
+            if (!error && data) {
+                const uniqueTitles = Array.from(new Set(data.map((item: { title: string }) => item.title))) as string[];
+                setSuggestions(uniqueTitles);
+            }
+        };
+
+        const timer = setTimeout(fetchSuggestions, 300);
+        return () => clearTimeout(timer);
+    }, [query]);
+
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+                setActiveMenu(null);
+            }
+            if (suggestionRef.current && !suggestionRef.current.contains(event.target as Node)) {
+                setShowSuggestions(false);
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    const handleSearch = (overrideQuery?: string | React.MouseEvent, overrideLocation?: string) => {
+        // If it's a click event, overrideQuery will be the event object
+        const finalQuery = typeof overrideQuery === 'string' ? overrideQuery : query;
+        const trimmedQuery = finalQuery.trim();
+        const currentLocation = overrideLocation || location;
         
         // Case 1: Only Category is selected (SEO Path)
-        if (category.id !== "all" && !trimmedQuery && location === "Toutes les villes") {
+        if (category.id !== "all" && !trimmedQuery && currentLocation === "Toutes les villes") {
             router.push(`/categories/${category.id}`);
             setActiveMenu(null);
+            setShowSuggestions(false);
             return;
         }
 
         // Case 2: Only City is selected (SEO Path)
-        if (location !== "Toutes les villes" && !trimmedQuery && category.id === "all") {
-            router.push(`/cities/${location.toLowerCase()}`);
+        if (currentLocation !== "Toutes les villes" && !trimmedQuery && category.id === "all") {
+            router.push(`/cities/${currentLocation.toLowerCase()}`);
             setActiveMenu(null);
+            setShowSuggestions(false);
             return;
         }
 
@@ -61,13 +108,14 @@ export function UnifiedSearchBar() {
         const params = new URLSearchParams();
         if (trimmedQuery) params.set("q", trimmedQuery);
         if (category.id !== "all") params.set("category", category.id);
-        if (location !== "Toutes les villes") {
-            params.set("city", location);
+        if (currentLocation !== "Toutes les villes") {
+            params.set("city", currentLocation);
         }
 
         const queryString = params.toString();
         router.push(`/marketplace${queryString ? `?${queryString}` : ""}`);
         setActiveMenu(null);
+        setShowSuggestions(false);
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -76,16 +124,6 @@ export function UnifiedSearchBar() {
             handleSearch();
         }
     };
-
-    useEffect(() => {
-        function handleClickOutside(event: MouseEvent) {
-            if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
-                setActiveMenu(null);
-            }
-        }
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
 
     // Prevent scrolling when mobile modal is open
     useEffect(() => {
@@ -102,16 +140,47 @@ export function UnifiedSearchBar() {
             {/* Desktop Version - Refined & Compact Pill */}
             <div className="hidden lg:flex items-center bg-white/70 dark:bg-zinc-900/70 backdrop-blur-xl border border-white/20 dark:border-zinc-800/20 rounded-full p-1 h-12 transition-all shadow-sm ring-1 ring-zinc-200/50 dark:ring-zinc-800/50 hover:shadow-md hover:bg-white dark:hover:bg-zinc-900">
                 {/* Keyword Search */}
-                <div className="flex-[2] flex items-center px-4 gap-2.5 min-w-0">
+                <div className="flex-[2] flex items-center px-4 gap-2.5 min-w-0 relative" ref={suggestionRef}>
                     <Search className="w-4 h-4 text-orange-500/70 shrink-0" />
                     <input
                         type="text"
                         value={query}
-                        onChange={(e) => setQuery(e.target.value)}
+                        onChange={(e) => {
+                            setQuery(e.target.value);
+                            setShowSuggestions(true);
+                        }}
+                        onFocus={() => setShowSuggestions(true)}
                         onKeyDown={handleKeyDown}
                         placeholder="Que recherchez-vous ?"
                         className="w-full bg-transparent outline-none text-[13px] font-semibold text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 placeholder:font-medium"
                     />
+                    
+                    <AnimatePresence>
+                        {showSuggestions && suggestions.length > 0 && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 5 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: 5 }}
+                                className="absolute top-full left-0 right-0 mt-3 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl shadow-2xl py-2 z-[60] overflow-hidden"
+                            >
+                                {suggestions.map((suggestion, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setQuery(suggestion);
+                                            setShowSuggestions(false);
+                                            handleSearch(suggestion);
+                                        }}
+                                        className="w-full text-left px-5 py-2.5 text-[12px] font-bold text-zinc-600 dark:text-zinc-400 transition-all hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600 flex items-center gap-3"
+                                    >
+                                        <Search className="w-3.5 h-3.5 opacity-40" />
+                                        <span className="truncate">{suggestion}</span>
+                                    </button>
+                                ))}
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </div>
 
                 {/* Separator */}
@@ -142,7 +211,18 @@ export function UnifiedSearchBar() {
                                 className="absolute top-full left-0 mt-3 w-64 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl shadow-2xl py-2 z-50 max-h-[400px] overflow-y-auto"
                             >
                                 {CATEGORIES.map((cat) => (
-                                    <button key={cat.id} onClick={(e) => { e.stopPropagation(); setCategory(cat); setActiveMenu(null); }}
+                                    <button key={cat.id} onClick={(e) => { 
+                                        e.stopPropagation(); 
+                                        setCategory(cat); 
+                                        setActiveMenu(null);
+                                        // Trigger search when category changes if no query
+                                        if (!query.trim()) {
+                                            const params = new URLSearchParams();
+                                            if (cat.id !== "all") params.set("category", cat.id);
+                                            if (location !== "Toutes les villes") params.set("city", location);
+                                            router.push(cat.id !== "all" && location === "Toutes les villes" ? `/categories/${cat.id}` : `/marketplace?${params.toString()}`);
+                                        }
+                                    }}
                                         className={cn("w-full text-left px-5 py-2.5 text-[12px] font-bold transition-all hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600 flex items-center justify-between", category.id === cat.id ? "text-orange-600 bg-orange-50/50 dark:bg-orange-900/30 font-black" : "text-zinc-600 dark:text-zinc-400")}
                                     >
                                         {cat.label}
@@ -182,7 +262,19 @@ export function UnifiedSearchBar() {
                                 className="absolute top-full right-0 mt-3 w-64 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl shadow-2xl py-2 z-50 max-h-[400px] overflow-y-auto"
                             >
                                 {ALL_CITIES.map((city) => (
-                                    <button key={city} onClick={(e) => { e.stopPropagation(); setLocation(city); setActiveMenu(null); }}
+                                    <button key={city} onClick={(e) => { 
+                                        e.stopPropagation(); 
+                                        setLocation(city); 
+                                        setActiveMenu(null); 
+                                        // Trigger search when city changes
+                                        if (!query.trim()) {
+                                            if (city === "Toutes les villes") {
+                                                router.push(category.id === "all" ? "/marketplace" : `/categories/${category.id}`);
+                                            } else {
+                                                router.push(category.id === "all" ? `/cities/${city.toLowerCase()}` : `/marketplace?category=${category.id}&city=${city}`);
+                                            }
+                                        }
+                                    }}
                                         className={cn("w-full text-left px-5 py-2.5 text-[12px] font-bold transition-all hover:bg-orange-50 dark:hover:bg-orange-900/20 hover:text-orange-600 flex items-center justify-between", location === city ? "text-orange-600 bg-orange-50/50 dark:bg-orange-900/30 font-black" : "text-zinc-600 dark:text-zinc-400")}
                                     >
                                         {city}
@@ -204,7 +296,7 @@ export function UnifiedSearchBar() {
             </div>
 
             {/* Mobile Version - Sleek & Premium Search Bar */}
-            <div className="flex flex-col gap-2.5 lg:hidden relative">
+            <div className="flex flex-col gap-2.5 lg:hidden relative" ref={suggestionRef}>
                 {/* Main Search Input */}
                 <div className="relative group">
                     <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center pointer-events-none">
@@ -213,12 +305,43 @@ export function UnifiedSearchBar() {
                     <input
                         type="text"
                         value={query}
-                        onChange={(e) => setQuery(e.target.value)}
+                        onChange={(e) => {
+                            setQuery(e.target.value);
+                            setShowSuggestions(true);
+                        }}
+                        onFocus={() => setShowSuggestions(true)}
                         onKeyDown={handleKeyDown}
                         placeholder="Que recherchez-vous ?"
                         className="w-full h-[52px] pl-11 pr-4 bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-2xl text-[14px] font-semibold text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 placeholder:font-medium focus:bg-white dark:focus:bg-zinc-900 focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all outline-none"
                     />
                 </div>
+
+                <AnimatePresence>
+                    {showSuggestions && suggestions.length > 0 && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 5 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 5 }}
+                            className="absolute top-[56px] left-0 right-0 bg-white dark:bg-zinc-950 border border-zinc-100 dark:border-zinc-900 rounded-2xl shadow-2xl py-2 z-[60] overflow-hidden"
+                        >
+                            {suggestions.map((suggestion, index) => (
+                                <button
+                                    key={index}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setQuery(suggestion);
+                                        setShowSuggestions(false);
+                                        handleSearch(suggestion);
+                                    }}
+                                    className="w-full text-left px-5 py-3.5 text-[13px] font-bold text-zinc-700 dark:text-zinc-300 transition-all hover:bg-zinc-50 dark:hover:bg-zinc-900 hover:text-orange-600 flex items-center gap-3"
+                                >
+                                    <Search className="w-4 h-4 opacity-40" />
+                                    <span className="truncate">{suggestion}</span>
+                                </button>
+                            ))}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
                 {/* Filters Row */}
                 <div className="flex items-center gap-2">
@@ -312,8 +435,24 @@ export function UnifiedSearchBar() {
                                             <button
                                                 key={typeof item === 'string' ? item : item.id}
                                                 onClick={() => {
-                                                    if (activeMenu === 'category') setCategory(item);
-                                                    else setLocation(item);
+                                                    if (activeMenu === 'category') {
+                                                        setCategory(item);
+                                                        if (!query.trim()) {
+                                                            const params = new URLSearchParams();
+                                                            if (item.id !== "all") params.set("category", item.id);
+                                                            if (location !== "Toutes les villes") params.set("city", location);
+                                                            router.push(item.id !== "all" && location === "Toutes les villes" ? `/categories/${item.id}` : `/marketplace?${params.toString()}`);
+                                                        }
+                                                    } else {
+                                                        setLocation(item);
+                                                        if (!query.trim()) {
+                                                            if (item === "Toutes les villes") {
+                                                                router.push(category.id === "all" ? "/marketplace" : `/categories/${category.id}`);
+                                                            } else {
+                                                                router.push(category.id === "all" ? `/cities/${item.toLowerCase()}` : `/marketplace?category=${category.id}&city=${item}`);
+                                                            }
+                                                        }
+                                                    }
                                                     setActiveMenu(null);
                                                 }}
                                                 className={cn(
