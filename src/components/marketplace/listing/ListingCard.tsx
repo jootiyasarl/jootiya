@@ -32,7 +32,7 @@ export function ListingCard(props: ListingCardProps) {
     distanceKm,
   } = props;
 
-  console.log(`LISTING_CARD_DEBUG: Rendering ad "${title}" with sellerName: "${sellerName}"`);
+  const displayName = sellerName === "Vendeur Jootiya" ? "Utilisateur Jootiya" : (sellerName || "Utilisateur Jootiya");
 
   const distanceLabel = formatDistance(distanceKm);
 
@@ -54,7 +54,7 @@ export function ListingCard(props: ListingCardProps) {
               <User className="w-4 h-4 sm:w-5 h-5 text-zinc-400" />
             )}
           </div>
-          <span className="text-[11px] sm:text-sm font-bold text-zinc-900 dark:text-zinc-100 truncate">{sellerName || "Utilisateur Jootiya"}</span>
+          <span className="text-[11px] sm:text-sm font-bold text-zinc-900 dark:text-zinc-100 truncate">{displayName}</span>
         </div>
 
         {/* Image Container */}
