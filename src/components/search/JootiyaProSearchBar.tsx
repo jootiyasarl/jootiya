@@ -217,7 +217,10 @@ export function JootiyaProSearchBar() {
                 setQuery(e.target.value);
                 setActiveField("product");
               }}
-              onFocus={() => setActiveField("product")}
+              onFocus={(e) => {
+                e.stopPropagation();
+                setActiveField("product");
+              }}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
@@ -230,26 +233,36 @@ export function JootiyaProSearchBar() {
           </div>
 
           {/* Category */}
-          <button
-            type="button"
-            onClick={() => setActiveField((v) => (v === "category" ? null : "category"))}
-            className="flex-1 flex items-center px-4 py-2 min-w-0 border-r border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50/60 dark:hover:bg-zinc-800/30 rounded-xl transition-colors"
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setActiveField((v) => (v === "category" ? null : "category"));
+            }}
+            className="flex-1 flex items-center px-4 py-2 min-w-0 border-r border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50/60 dark:hover:bg-zinc-800/30 rounded-xl transition-colors cursor-pointer z-[110]"
           >
             <LayoutGrid className="w-5 h-5 text-zinc-400 mr-2 shrink-0" />
             <span className="truncate text-[13px] font-bold text-zinc-600 dark:text-zinc-300">
               {selectedCategory.label}
             </span>
-          </button>
+          </div>
 
           {/* City */}
-          <button
-            type="button"
-            onClick={() => setActiveField((v) => (v === "city" ? null : "city"))}
-            className="flex-1 flex items-center px-4 py-2 min-w-0 hover:bg-zinc-50/60 dark:hover:bg-zinc-800/30 rounded-xl transition-colors"
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setActiveField((v) => (v === "city" ? null : "city"));
+            }}
+            className="flex-1 flex items-center px-4 py-2 min-w-0 hover:bg-zinc-50/60 dark:hover:bg-zinc-800/30 rounded-xl transition-colors cursor-pointer z-[110]"
           >
             <MapPin className="w-5 h-5 text-zinc-400 mr-2 shrink-0" />
             <span className="truncate text-[13px] font-bold text-zinc-600 dark:text-zinc-300">{city}</span>
-          </button>
+          </div>
 
           {/* Search Button */}
           <Button
@@ -263,10 +276,13 @@ export function JootiyaProSearchBar() {
           </Button>
 
           {/* Dropdowns */}
-          {(activeField === "product" || suggestions.length > 0 || loadingSuggestions) && (suggestions.length > 0 || loadingSuggestions) && (
-            <div className="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl shadow-2xl overflow-hidden z-50">
+          {activeField === "product" && (suggestions.length > 0 || loadingSuggestions) && (
+            <div className="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl shadow-2xl overflow-hidden z-[100] min-h-[50px]">
               {loadingSuggestions && (
-                <div className="px-4 py-3 text-sm text-zinc-500">Chargement...</div>
+                <div className="px-4 py-3 text-sm text-zinc-500 flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />
+                  Chargement...
+                </div>
               )}
               {!loadingSuggestions &&
                 suggestions.map((s) => {
@@ -305,7 +321,7 @@ export function JootiyaProSearchBar() {
           )}
 
           {activeField === "category" && (
-            <div className="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl shadow-2xl overflow-hidden z-50 max-h-[360px] overflow-y-auto">
+            <div className="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl shadow-2xl overflow-hidden z-[100] max-h-[360px] overflow-y-auto min-w-[200px]">
               {CATEGORIES.map((c) => {
                 const selected = c.id === categoryId;
                 return (
@@ -333,7 +349,7 @@ export function JootiyaProSearchBar() {
           )}
 
           {activeField === "city" && (
-            <div className="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl shadow-2xl overflow-hidden z-50 max-h-[360px] overflow-y-auto">
+            <div className="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl shadow-2xl overflow-hidden z-[100] max-h-[360px] overflow-y-auto min-w-[200px]">
               {ALL_CITIES.map((c) => {
                 const selected = c === city;
                 return (

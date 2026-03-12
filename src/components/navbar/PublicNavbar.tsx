@@ -13,17 +13,17 @@ export default async function PublicNavbar() {
   const isAdmin = userEmail === "jootiyasarl@gmail.com";
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 w-full bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-800 flex flex-col justify-center min-h-[56px] md:min-h-[64px]">
+    <header className="fixed top-0 left-0 right-0 w-full bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-800 flex flex-col justify-center min-h-[56px] md:min-h-[64px]">
       <div className="container-standard w-full">
         {/* Main Nav Row */}
-        <div className="flex h-12 md:h-14 items-center justify-between gap-8 relative">
+        <div className="flex h-12 md:h-14 items-center justify-between gap-8 relative z-[70]">
           {/* Left: Logo (Centered on Mobile, Left on Desktop) */}
-          <div className="flex items-center md:relative absolute left-1/2 md:left-0 -translate-x-1/2 md:translate-x-0 shrink-0">
+          <div className="flex items-center md:static absolute left-1/2 md:left-0 -translate-x-1/2 md:translate-x-0 shrink-0">
             <NavbarLogo />
           </div>
 
           {/* Center: Search Bar */}
-          <div className="flex flex-1 justify-center px-3 lg:px-6">
+          <div className="flex flex-1 justify-center px-3 lg:px-6 relative z-[100]">
             <div className="w-full max-w-2xl">
               <JootiyaProSearchBar />
             </div>
