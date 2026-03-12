@@ -118,35 +118,37 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
             // LOG FOR DATA INSPECTION
             console.log("HOME_ROW_DATA:", row);
 
-            // Get seller name from profiles join if available
-            const profile = row.profiles;
+            // Explicitly map all possible fields to ensure nothing is lost
+            const rawProfile = row.profiles;
             let extractedName = "";
             let extractedAvatar = null;
 
-            if (profile) {
-              if (Array.isArray(profile) && profile.length > 0) {
-                extractedName = profile[0]?.full_name || profile[0]?.username || "";
-                extractedAvatar = profile[0]?.avatar_url;
-              } else if (typeof profile === 'object') {
-                extractedName = (profile as any).full_name || (profile as any).username || "";
-                extractedAvatar = (profile as any).avatar_url;
+            if (rawProfile) {
+              if (Array.isArray(rawProfile) && rawProfile.length > 0) {
+                extractedName = rawProfile[0]?.full_name || rawProfile[0]?.username || "";
+                extractedAvatar = rawProfile[0]?.avatar_url;
+              } else if (typeof rawProfile === 'object') {
+                extractedName = (rawProfile as any).full_name || (rawProfile as any).username || "";
+                extractedAvatar = (rawProfile as any).avatar_url;
               }
             }
 
-            // Fallback chain to ensure we get a name
-            const finalSellerName = extractedName || 
+            // Fallback chain: Profile -> row fields -> placeholder
+            let finalSellerName = extractedName || 
                                    row.seller_name || 
                                    row.sellerName || 
                                    (row as any).seller_full_name || 
                                    (row as any).seller_username || 
                                    "Utilisateur Jootiya";
             
-            const finalSellerAvatar = extractedAvatar || 
+            let finalSellerAvatar = extractedAvatar || 
                                      row.seller_avatar || 
                                      row.sellerAvatar;
 
-            // If the name is STILL showing as the hardcoded default in standard SQL results
-            const displaySellerName = finalSellerName === "Vendeur Jootiya" ? "Utilisateur Jootiya" : finalSellerName;
+            // FORCE REPLACE "Vendeur Jootiya" if it comes from DB
+            if (finalSellerName === "Vendeur Jootiya") {
+              finalSellerName = "Utilisateur Jootiya";
+            }
 
             return {
               id: row.id,
@@ -161,7 +163,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
               latitude: row.latitude || 0,
               longitude: row.longitude || 0,
               distanceKm: row.distanceKm,
-              sellerName: displaySellerName,
+              sellerName: finalSellerName,
               sellerAvatar: finalSellerAvatar,
             };
           });
