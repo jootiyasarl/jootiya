@@ -107,6 +107,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
               categorySlug: row.category,
               latitude: row.latitude || 0,
               longitude: row.longitude || 0,
+              distanceKm: row.distanceKm,
             };
           });
 
@@ -224,7 +225,17 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
 
                         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                           {categoryAds.map((ad: any) => (
-                            <AdCard key={ad.id} ad={ad} />
+                            <ListingCard 
+                              key={ad.id} 
+                              id={ad.id}
+                              title={ad.title}
+                              subtitle={ad.location}
+                              price={ad.price}
+                              imageUrl={ad.imageUrl}
+                              badgeLabel={ad.sellerBadge}
+                              href={`/ads/${ad.id}`}
+                              distanceKm={ad.distanceKm}
+                            />
                           ))}
                         </div>
                       </section>

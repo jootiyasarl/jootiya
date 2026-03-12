@@ -3,7 +3,15 @@
 import type { ListingCardProps } from "@/types/components/marketplace";
 import Image from "next/image";
 import Link from "next/link";
-import { Heart, User } from "lucide-react";
+import { Heart, User, MapPin } from "lucide-react";
+
+function formatDistance(distanceKm?: number): string | null {
+  if (distanceKm === undefined || distanceKm === null || isNaN(distanceKm)) return null;
+  if (distanceKm < 1) {
+    return `${Math.round(distanceKm * 1000)} متر`;
+  }
+  return `${distanceKm.toFixed(1)} كلم`;
+}
 
 export function ListingCard(props: ListingCardProps) {
   const {
@@ -15,7 +23,10 @@ export function ListingCard(props: ListingCardProps) {
     sellerName,
     badgeLabel,
     href,
+    distanceKm,
   } = props;
+
+  const distanceLabel = formatDistance(distanceKm);
 
   return (
     <article className="group cursor-pointer flex flex-col gap-4 bg-white dark:bg-zinc-900 rounded-[1.25rem] p-4 shadow-premium hover:shadow-2xl transition-all duration-300 active:scale-[0.98] select-none border border-zinc-100 dark:border-zinc-800">
@@ -72,8 +83,17 @@ export function ListingCard(props: ListingCardProps) {
               {price}
             </span>
             <div className="flex items-center gap-1.5 text-zinc-500 text-xs mt-1">
-              <span className="text-base text-zinc-500 truncate">{subtitle || "Maroc"}</span>
-              <span className="shrink-0">•</span>
+              <div className="flex items-center gap-1 shrink-0">
+                <MapPin className="w-3 h-3 text-orange-500/70" />
+                <span className="text-zinc-500 truncate max-w-[80px]">{subtitle || "Maroc"}</span>
+              </div>
+              {distanceLabel && (
+                <>
+                  <span className="shrink-0 text-zinc-300">•</span>
+                  <span className="shrink-0 text-orange-600/80 font-medium">{distanceLabel}</span>
+                </>
+              )}
+              <span className="shrink-0 text-zinc-300">•</span>
               <span className="shrink-0">Aujourd'hui</span>
             </div>
           </div>

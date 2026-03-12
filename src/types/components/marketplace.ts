@@ -9,6 +9,7 @@ export interface ListingCardProps {
   sellerName?: string;
   badgeLabel?: string;
   href: string;
+  distanceKm?: number;
 }
 
 export interface ListingGridProps {

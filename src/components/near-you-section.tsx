@@ -80,14 +80,11 @@ function formatTimeAgo(iso: string | null): string {
 
 function NearbyAdCard({ ad, className }: NearbyAdCardProps) {
   const imageUrl =
-    Array.isArray(ad.image_urls) && ad.image_urls.length > 0
-      ? ad.image_urls[0]
+    Array.isArray(ad.images) && ad.images.length > 0
+      ? ad.images[0]
       : null;
 
-  const locationLabel =
-    ad.neighborhood && ad.city
-      ? `${ad.neighborhood}, ${ad.city}`
-      : ad.neighborhood ?? ad.city ?? "Nearby";
+  const locationLabel = ad.location || "Nearby";
 
   const distanceLabel = formatDistance(ad.distanceKm);
   const timeAgo = formatTimeAgo(ad.created_at ?? null);
