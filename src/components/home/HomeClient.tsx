@@ -10,6 +10,7 @@ import { getCachedAds, saveAds } from "@/lib/pwa/jootiya-db";
 import { supabase } from "@/lib/supabaseClient";
 import { LocationPrompt } from "@/components/LocationPrompt";
 import { fetchNearbyAds } from "@/lib/nearbyAds";
+import { ListingCard } from "@/components/marketplace/listing/ListingCard";
 
 type HomepageAd = {
   id: string;
@@ -23,6 +24,7 @@ type HomepageAd = {
   categorySlug?: string;
   latitude: number;
   longitude: number;
+  distanceKm?: number;
 };
 
 export default function HomeClient({ initialParams }: { initialParams: any }) {
