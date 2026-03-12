@@ -13,6 +13,11 @@ function formatDistance(distanceKm?: number): string | null {
   return `${distanceKm.toFixed(1)} كلم`;
 }
 
+function formatPrice(price: any): string {
+  if (price === null || price === undefined) return "—";
+  return String(price);
+}
+
 export function ListingCard(props: ListingCardProps) {
   const {
     id,
@@ -26,6 +31,8 @@ export function ListingCard(props: ListingCardProps) {
     href,
     distanceKm,
   } = props;
+
+  console.log(`LISTING_CARD_DEBUG: Rendering ad "${title}" with sellerName: "${sellerName}"`);
 
   const distanceLabel = formatDistance(distanceKm);
 

@@ -115,24 +115,24 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
             const currency = typeof row.currency === 'string' ? row.currency.trim() : "MAD";
             const priceLabel = row.price != null ? `${row.price} ${currency || "MAD"}` : "—";
 
-            // Get seller name from profiles join if available
-            const profile = row.profiles;
-            let sellerName = "";
-            let sellerAvatar = null;
+            // Explicitly map all possible fields to ensure nothing is lost
+            const rawProfile = row.profiles;
+            let extractedName = "";
+            let extractedAvatar = null;
 
-            if (profile) {
-              if (Array.isArray(profile) && profile.length > 0) {
-                sellerName = profile[0]?.full_name || profile[0]?.username || "";
-                sellerAvatar = profile[0]?.avatar_url;
-              } else if (typeof profile === 'object') {
-                sellerName = (profile as any).full_name || (profile as any).username || "";
-                sellerAvatar = (profile as any).avatar_url;
+            if (rawProfile) {
+              if (Array.isArray(rawProfile) && rawProfile.length > 0) {
+                extractedName = rawProfile[0]?.full_name || rawProfile[0]?.username || "";
+                extractedAvatar = rawProfile[0]?.avatar_url;
+              } else if (typeof rawProfile === 'object') {
+                extractedName = (rawProfile as any).full_name || (rawProfile as any).username || "";
+                extractedAvatar = (rawProfile as any).avatar_url;
               }
             }
 
-            // Fallback chain
-            const finalSellerName = sellerName || row.seller_name || row.sellerName || row.seller_full_name || row.seller_username || "Utilisateur Jootiya";
-            const finalSellerAvatar = sellerAvatar || row.seller_avatar || row.sellerAvatar;
+            // Fallback chain: Profile -> seller_name -> sellerName -> Placeholder
+            const finalSellerName = extractedName || row.seller_name || row.sellerName || "Utilisateur Jootiya";
+            const finalSellerAvatar = extractedAvatar || row.seller_avatar || row.sellerAvatar;
 
             return {
               id: row.id,
