@@ -116,9 +116,13 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
             const priceLabel = row.price != null ? `${row.price} ${currency || "MAD"}` : "—";
 
             // LOG FOR DATA INSPECTION
-            console.log("HOME_ROW_DATA:", JSON.stringify(row));
+            console.log("HOME_ROW_DATA:", row);
 
-            // Explicitly map all possible fields to ensure nothing is lost
+            // Explicitly check for seller fields returned by fetchNearbyAds or Supabase
+            const seller_name_from_nearby = (row as any).seller_name;
+            const seller_avatar_from_nearby = (row as any).seller_avatar;
+
+            // Map profiles join
             const rawProfile = row.profiles;
             let extractedName = "";
             let extractedAvatar = null;
@@ -133,9 +137,9 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
               }
             }
 
-            // Fallback chain: Profile -> seller_name -> sellerName -> seller_full_name -> placeholder
-            const finalSellerName = extractedName || row.seller_name || row.sellerName || row.seller_full_name || row.seller_username || "Utilisateur Jootiya";
-            const finalSellerAvatar = extractedAvatar || row.seller_avatar || row.sellerAvatar;
+            // Fallback chain: Profile -> Nearby Search Fields -> Row Direct Fields -> Placeholder
+            const finalSellerName = extractedName || seller_name_from_nearby || row.seller_name || row.sellerName || "Utilisateur Jootiya";
+            const finalSellerAvatar = extractedAvatar || seller_avatar_from_nearby || row.seller_avatar || row.sellerAvatar;
 
             return {
               id: row.id,
