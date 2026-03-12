@@ -131,8 +131,8 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
             }
 
             // Fallback chain
-            sellerName = sellerName || row.seller_name || row.sellerName || row.seller_full_name || row.seller_username || "Utilisateur Jootiya";
-            sellerAvatar = sellerAvatar || row.seller_avatar || row.sellerAvatar;
+            const finalSellerName = sellerName || row.seller_name || row.sellerName || row.seller_full_name || row.seller_username || "Utilisateur Jootiya";
+            const finalSellerAvatar = sellerAvatar || row.seller_avatar || row.sellerAvatar;
 
             return {
               id: row.id,
@@ -147,8 +147,8 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
               latitude: row.latitude || 0,
               longitude: row.longitude || 0,
               distanceKm: row.distanceKm,
-              sellerName: sellerName,
-              sellerAvatar: sellerAvatar,
+              sellerName: finalSellerName,
+              sellerAvatar: finalSellerAvatar,
             };
           });
 
