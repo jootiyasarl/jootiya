@@ -131,12 +131,18 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
             }
 
             // Explicit fallback check for direct seller fields from fetchNearbyAds or other sources
+            // Use a specific check for "Vendeur Jootiya" to override it if we have something better
             const directSellerName = row.seller_name || row.sellerName;
             const directSellerAvatar = row.seller_avatar || row.sellerAvatar;
 
-            if ((sellerName === "Utilisateur Jootiya") && directSellerName) {
+            if ((sellerName === "Utilisateur Jootiya" || sellerName === "Vendeur Jootiya" || !sellerName) && directSellerName) {
               sellerName = directSellerName;
               sellerAvatar = directSellerAvatar || sellerAvatar;
+            }
+
+            // Final safety check to replace any instance of the old name
+            if (!sellerName || sellerName === "Vendeur Jootiya") {
+              sellerName = "Utilisateur Jootiya";
             }
 
             return {
@@ -270,7 +276,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
                         </div>
 
                         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-                          {categoryAds.map((ad: any) => (
+                          {categoryAds.map((ad: HomepageAd) => (
                             <ListingCard 
                               key={ad.id} 
                               id={ad.id}
