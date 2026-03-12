@@ -23,8 +23,8 @@ export function HeaderCategories() {
     const currentCategory = searchParams?.get("category");
 
     return (
-        <div className="w-full bg-white dark:bg-zinc-950 relative z-0">
-            <div className="mx-auto max-w-7xl px-4 md:px-6 mt-1">
+        <div className="w-full bg-white dark:bg-zinc-950 relative z-0 overflow-hidden">
+            <div className="mx-auto max-w-7xl px-4 md:px-6 mt-1 pb-4">
                 <div className="flex w-full items-center justify-between gap-2 overflow-x-auto py-3 scrollbar-hide">
                     <Link
                         href="/marketplace"
@@ -39,7 +39,7 @@ export function HeaderCategories() {
                         )}>
                             <LayoutGrid className="h-4 w-4" />
                         </div>
-                        <span className="text-[11px] font-bold tracking-tight">Tout</span>
+                        <span className="text-[11px] font-bold tracking-tight whitespace-nowrap overflow-visible">Tout</span>
                         {!currentCategory && (
                             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-orange-600" />
                         )}
@@ -66,7 +66,7 @@ export function HeaderCategories() {
                                 )}>
                                     <Icon className={cn("h-4 w-4 transition-colors", isActive ? "text-orange-600" : category.color)} />
                                 </div>
-                                <span className={cn("text-[11px] font-bold tracking-tight", isActive && "text-orange-600")}>
+                                <span className={cn("text-[11px] font-bold tracking-tight whitespace-nowrap overflow-visible", isActive && "text-orange-600")}>
                                     {category.label}
                                 </span>
                                 {isActive && (
