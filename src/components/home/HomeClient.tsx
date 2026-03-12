@@ -117,33 +117,22 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
 
             // Get seller name from profiles join if available
             const profile = row.profiles;
-            let sellerName = "Utilisateur Jootiya";
+            let sellerName = "";
             let sellerAvatar = null;
 
             if (profile) {
               if (Array.isArray(profile) && profile.length > 0) {
-                sellerName = profile[0]?.full_name || profile[0]?.username || "Utilisateur Jootiya";
+                sellerName = profile[0]?.full_name || profile[0]?.username || "";
                 sellerAvatar = profile[0]?.avatar_url;
               } else if (typeof profile === 'object') {
-                sellerName = (profile as any).full_name || (profile as any).username || "Utilisateur Jootiya";
+                sellerName = (profile as any).full_name || (profile as any).username || "";
                 sellerAvatar = (profile as any).avatar_url;
               }
             }
 
-            // Explicit fallback check for direct seller fields from fetchNearbyAds or other sources
-            // Use a specific check for "Vendeur Jootiya" to override it if we have something better
-            const directSellerName = row.seller_name || row.sellerName;
-            const directSellerAvatar = row.seller_avatar || row.sellerAvatar;
-
-            if ((sellerName === "Utilisateur Jootiya" || sellerName === "Vendeur Jootiya" || !sellerName) && directSellerName) {
-              sellerName = directSellerName;
-              sellerAvatar = directSellerAvatar || sellerAvatar;
-            }
-
-            // Final safety check to replace any instance of the old name
-            if (!sellerName || sellerName === "Vendeur Jootiya") {
-              sellerName = "Utilisateur Jootiya";
-            }
+            // Fallback chain
+            sellerName = sellerName || row.seller_name || row.sellerName || row.seller_full_name || row.seller_username || "Utilisateur Jootiya";
+            sellerAvatar = sellerAvatar || row.seller_avatar || row.sellerAvatar;
 
             return {
               id: row.id,
