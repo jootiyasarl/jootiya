@@ -117,8 +117,27 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
 
             // Get seller name from profiles join if available
             const profile = row.profiles;
-            const sellerName = (Array.isArray(profile) ? profile[0]?.full_name || profile[0]?.username : profile?.full_name || profile?.username) || "Utilisateur Jootiya";
-            const sellerAvatar = (Array.isArray(profile) ? profile[0]?.avatar_url : profile?.avatar_url);
+            let sellerName = "Utilisateur Jootiya";
+            let sellerAvatar = null;
+
+            if (profile) {
+              if (Array.isArray(profile) && profile.length > 0) {
+                sellerName = profile[0]?.full_name || profile[0]?.username || "Utilisateur Jootiya";
+                sellerAvatar = profile[0]?.avatar_url;
+              } else if (typeof profile === 'object') {
+                sellerName = (profile as any).full_name || (profile as any).username || "Utilisateur Jootiya";
+                sellerAvatar = (profile as any).avatar_url;
+              }
+            }
+
+            // Explicit fallback check for direct seller fields from fetchNearbyAds or other sources
+            const directSellerName = row.seller_name || row.sellerName;
+            const directSellerAvatar = row.seller_avatar || row.sellerAvatar;
+
+            if ((sellerName === "Utilisateur Jootiya") && directSellerName) {
+              sellerName = directSellerName;
+              sellerAvatar = directSellerAvatar || sellerAvatar;
+            }
 
             return {
               id: row.id,

@@ -47,7 +47,7 @@ export function ListingCard(props: ListingCardProps) {
               <User className="w-4 h-4 sm:w-5 h-5 text-zinc-400" />
             )}
           </div>
-          <span className="text-[11px] sm:text-sm font-bold text-zinc-900 dark:text-zinc-100 truncate">{sellerName || "Vendeur Jootiya"}</span>
+          <span className="text-[11px] sm:text-sm font-bold text-zinc-900 dark:text-zinc-100 truncate">{sellerName || "Utilisateur Jootiya"}</span>
         </div>
 
         {/* Image Container */}
