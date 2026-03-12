@@ -15,12 +15,7 @@ export default async function PublicNavbar() {
   return (
     <header className="fixed top-0 left-0 right-0 z-[60] w-full bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-800 flex flex-col justify-center min-h-[56px] md:min-h-[64px]">
       <div className="container-standard w-full">
-        {/* Categories Row (Now on TOP) */}
-        <div className="hidden md:block border-b border-zinc-50 dark:border-zinc-900/50">
-          <HeaderCategories />
-        </div>
-
-        {/* Main Nav Row (Now on BOTTOM) */}
+        {/* Main Nav Row (TOP) */}
         <div className="flex h-12 md:h-14 items-center justify-between gap-8 relative z-[70] py-2">
           {/* Left: Logo (Centered on Mobile, Left on Desktop) */}
           <div className="flex items-center md:static absolute left-1/2 md:left-0 -translate-x-1/2 md:translate-x-0 shrink-0">
@@ -54,6 +49,11 @@ export default async function PublicNavbar() {
             {/* Mobile Menu Component (Client-side) */}
             <MobileMenu initialUserEmail={userEmail} />
           </div>
+        </div>
+
+        {/* Categories Row (BOTTOM) */}
+        <div className="hidden md:block border-t border-zinc-50 dark:border-zinc-900/50">
+          <HeaderCategories />
         </div>
       </div>
     </header>
