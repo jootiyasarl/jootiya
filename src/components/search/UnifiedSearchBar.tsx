@@ -58,6 +58,14 @@ export function UnifiedSearchBar() {
         if (category.id !== "all") extra.push(trimmed + " " + category.id);
         if (location !== "Toutes les villes") extra.push(trimmed + " " + location);
 
+        const qLower = trimmed.toLowerCase();
+        const allCities = MOROCCAN_CITIES.flatMap((r) => r.cities);
+        const cityMatch = allCities
+            .find((c) => typeof c === "string" && c.toLowerCase().startsWith(qLower));
+        if (cityMatch) {
+            extra.unshift(cityMatch);
+        }
+
         const tags = [...base, ...extra]
             .map((t) => t.replace(/\s+/g, " ").trim())
             .filter(Boolean)
@@ -65,6 +73,15 @@ export function UnifiedSearchBar() {
 
         return tags;
     })();
+
+    const detectExactCity = (q: string): string | null => {
+        const trimmed = q.trim();
+        if (!trimmed) return null;
+        const qLower = trimmed.toLowerCase();
+        const allCities = MOROCCAN_CITIES.flatMap((r) => r.cities);
+        const exact = allCities.find((c) => typeof c === "string" && c.toLowerCase() === qLower);
+        return exact || null;
+    };
 
     // Fetch suggestions from Supabase
     useEffect(() => {
@@ -166,6 +183,13 @@ export function UnifiedSearchBar() {
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === "Enter") {
             e.preventDefault();
+            const exactCity = detectExactCity(query);
+            if (exactCity) {
+                router.push(`/cities/${exactCity.toLowerCase()}`);
+                setActiveMenu(null);
+                setShowSuggestions(false);
+                return;
+            }
             handleSearch();
         }
     };
@@ -215,6 +239,15 @@ export function UnifiedSearchBar() {
                                         type="button"
                                         onClick={(e) => {
                                             e.stopPropagation();
+                                            const exactCity = detectExactCity(t);
+                                            if (exactCity) {
+                                                setQuery(exactCity);
+                                                setShowSuggestions(false);
+                                                router.push(`/cities/${exactCity.toLowerCase()}`);
+                                                setActiveMenu(null);
+                                                return;
+                                            }
+
                                             setQuery(t);
                                             setShowSuggestions(false);
                                             handleSearch(t);
