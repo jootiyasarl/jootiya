@@ -1,6 +1,6 @@
 "use client";
 
-import { MapContainer, TileLayer, Marker, Popup, Circle } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, Circle, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import Link from "next/link";
@@ -55,16 +55,7 @@ interface MultiMarkerMapProps {
     radiusKm?: number;
 }
 
-// Helper to update map view when props change
-function MapUpdater({ center, zoom }: { center: [number, number]; zoom: number }) {
-    const map = useMap(); // This won't work unless inside MapContainer
-    // Actually simpler: just key the MapContainer to force re-render on significant changes 
-    // or use a component inside.
-    return null;
-}
-
 // Better approach: component inside that uses useMap
-import { useMap } from "react-leaflet";
 function ChangeView({ center, zoom }: { center: [number, number]; zoom: number }) {
     const map = useMap();
     useEffect(() => {
@@ -89,7 +80,7 @@ export default function MultiMarkerMap({ ads, center, zoom, userLocation, radius
 
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}"
             />
 
             {/* Search Radius Circle around User */}

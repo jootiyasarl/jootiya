@@ -50,7 +50,7 @@ export default function LeafletMap({ center, zoom, radius }: LeafletMapProps) {
         >
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+                url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}"
             />
             <Marker position={center} icon={orangeMarkerIcon} />
             <OpenGoogleMapsOnClick center={center} />
