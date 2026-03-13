@@ -45,6 +45,27 @@ export function UnifiedSearchBar() {
     const [showSuggestions, setShowSuggestions] = useState(false);
     const suggestionRef = useRef<HTMLDivElement>(null);
 
+    const autoTags = (() => {
+        const trimmed = query.trim();
+        if (trimmed.length < 2) return [] as string[];
+
+        const base = suggestions
+            .map((s) => s.trim())
+            .filter(Boolean)
+            .slice(0, 3);
+
+        const extra: string[] = [];
+        if (category.id !== "all") extra.push(trimmed + " " + category.id);
+        if (location !== "Toutes les villes") extra.push(trimmed + " " + location);
+
+        const tags = [...base, ...extra]
+            .map((t) => t.replace(/\s+/g, " ").trim())
+            .filter(Boolean)
+            .slice(0, 4);
+
+        return tags;
+    })();
+
     // Fetch suggestions from Supabase
     useEffect(() => {
         const fetchSuggestions = async () => {
@@ -178,6 +199,34 @@ export function UnifiedSearchBar() {
                         placeholder="Que recherchez-vous ?"
                         className="w-full bg-transparent outline-none text-[13px] font-semibold text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-500 dark:placeholder:text-zinc-400 placeholder:font-medium"
                     />
+
+                    <AnimatePresence>
+                        {autoTags.length > 0 && query.trim().length >= 2 && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 6 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: 6 }}
+                                transition={{ duration: 0.16 }}
+                                className="absolute top-full left-0 right-0 mt-2 flex flex-wrap gap-2 z-[55]"
+                            >
+                                {autoTags.map((t) => (
+                                    <button
+                                        key={t}
+                                        type="button"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setQuery(t);
+                                            setShowSuggestions(false);
+                                            handleSearch(t);
+                                        }}
+                                        className="px-3 py-1.5 rounded-full bg-zinc-800 text-orange-500 text-[11px] font-black tracking-tight hover:bg-zinc-700 transition-colors"
+                                    >
+                                        #{t.replace(/\s+/g, "_")}
+                                    </button>
+                                ))}
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                     
                     <AnimatePresence>
                         {showSuggestions && suggestions.length > 0 && (
