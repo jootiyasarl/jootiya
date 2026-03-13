@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useMemo, useEffect, useCallback } from "react";
-import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from "react-leaflet";
 import type { LeafletMouseEvent, Marker as LeafletMarker } from "leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -29,6 +29,19 @@ interface AdLocationPickerProps {
     longitude: number | null;
     onChange: (lat: number, lng: number) => void;
     onAddressSelect?: (address: { city: string; neighborhood: string }) => void;
+}
+
+function MapAutoResize({ center }: { center: [number, number] }) {
+    const map = useMap();
+
+    useEffect(() => {
+        const t = window.setTimeout(() => {
+            map.invalidateSize();
+        }, 120);
+        return () => window.clearTimeout(t);
+    }, [map, center]);
+
+    return null;
 }
 
 function LocationMarker({ position, onChange }: { position: L.LatLngExpression, onChange: (lat: number, lng: number) => void }) {
@@ -153,6 +166,7 @@ export function AdLocationPicker({ latitude, longitude, onChange, onAddressSelec
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                         url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
                     />
+                    <MapAutoResize center={center} />
                     <LocationMarker
                         position={center}
                         onChange={onChange}
