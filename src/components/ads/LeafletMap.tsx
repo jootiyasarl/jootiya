@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { MapContainer, TileLayer, Marker, useMapEvent } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -10,6 +10,32 @@ interface LeafletMapProps {
     zoom: number;
     radius: number;
 }
+
+type TileProvider = {
+    id: string;
+    url: string;
+    attribution: string;
+    subdomains?: string | string[];
+};
+
+const TILE_PROVIDERS: TileProvider[] = [
+    {
+        id: "esri_dark_gray",
+        url: "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    },
+    {
+        id: "stadia_smooth_dark",
+        url: "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png",
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    },
+    {
+        id: "osm",
+        url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        subdomains: ["a", "b", "c"],
+    },
+];
 
 const orangeMarkerIcon = new L.DivIcon({
     className: "",
@@ -37,6 +63,17 @@ function OpenGoogleMapsOnClick({ center }: { center: [number, number] }) {
 }
 
 export default function LeafletMap({ center, zoom, radius }: LeafletMapProps) {
+    const [providerIndex, setProviderIndex] = useState(0);
+    const tileErrorCountRef = useRef(0);
+    const provider = TILE_PROVIDERS[Math.min(providerIndex, TILE_PROVIDERS.length - 1)];
+
+    const tileLayerKey = useMemo(() => `${provider.id}-${providerIndex}`, [provider.id, providerIndex]);
+
+    useEffect(() => {
+        // reset error counter when provider changes
+        tileErrorCountRef.current = 0;
+    }, [providerIndex]);
+
     return (
         <MapContainer
             center={center}
@@ -49,8 +86,28 @@ export default function LeafletMap({ center, zoom, radius }: LeafletMapProps) {
             doubleClickZoom={false} // Disable double click zoom
         >
             <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}"
+                key={tileLayerKey}
+                attribution={provider.attribution}
+                url={provider.url}
+                subdomains={provider.subdomains as any}
+                eventHandlers={{
+                    tileerror: (e) => {
+                        tileErrorCountRef.current += 1;
+                        if (tileErrorCountRef.current <= 3) {
+                            console.warn("Leaflet tileerror", {
+                                provider: provider.id,
+                                url: provider.url,
+                                count: tileErrorCountRef.current,
+                                error: e,
+                            });
+                        }
+
+                        // Switch provider after a few errors to avoid infinite retries
+                        if (tileErrorCountRef.current >= 6) {
+                            setProviderIndex((prev) => Math.min(prev + 1, TILE_PROVIDERS.length - 1));
+                        }
+                    },
+                }}
             />
             <Marker position={center} icon={orangeMarkerIcon} />
             <OpenGoogleMapsOnClick center={center} />

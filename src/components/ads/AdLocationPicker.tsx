@@ -9,6 +9,32 @@ import { Button } from "@/components/ui/button";
 import { MapPin, Navigation, Loader2 } from "lucide-react";
 import { getBrowserGeolocation } from "@/lib/adLocation";
 
+type TileProvider = {
+    id: string;
+    url: string;
+    attribution: string;
+    subdomains?: string | string[];
+};
+
+const TILE_PROVIDERS: TileProvider[] = [
+    {
+        id: "esri_dark_gray",
+        url: "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}",
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    },
+    {
+        id: "stadia_smooth_dark",
+        url: "https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png",
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    },
+    {
+        id: "osm",
+        url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        subdomains: ["a", "b", "c"],
+    },
+];
+
 // Fix Leaflet default icon issue in Next.js
 const iconUrl = "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png";
 const iconRetinaUrl = "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png";
@@ -81,6 +107,8 @@ function LocationMarker({ position, onChange }: { position: L.LatLngExpression, 
 export function AdLocationPicker({ latitude, longitude, onChange, onAddressSelect }: AdLocationPickerProps) {
     const [isReverseGeocoding, setIsReverseGeocoding] = useState(false);
     const lastCoords = useRef<{ lat: number; lng: number } | null>(null);
+    const [providerIndex, setProviderIndex] = useState(0);
+    const tileErrorCountRef = useRef(0);
 
     // Debounced Reverse Geocoding
     useEffect(() => {
@@ -124,6 +152,13 @@ export function AdLocationPicker({ latitude, longitude, onChange, onAddressSelec
     const defaultCenter: [number, number] = [33.5731, -7.5898];
     const center: [number, number] = latitude && longitude ? [latitude, longitude] : defaultCenter;
 
+    const provider = TILE_PROVIDERS[Math.min(providerIndex, TILE_PROVIDERS.length - 1)];
+    const tileLayerKey = `${provider.id}-${providerIndex}`;
+
+    useEffect(() => {
+        tileErrorCountRef.current = 0;
+    }, [providerIndex]);
+
     const handleLocateMe = async () => {
         try {
             const pos = await getBrowserGeolocation();
@@ -163,8 +198,27 @@ export function AdLocationPicker({ latitude, longitude, onChange, onAddressSelec
                     style={{ zIndex: 0 }}
                 >
                     <TileLayer
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                        url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}"
+                        key={tileLayerKey}
+                        attribution={provider.attribution}
+                        url={provider.url}
+                        subdomains={provider.subdomains as any}
+                        eventHandlers={{
+                            tileerror: (e) => {
+                                tileErrorCountRef.current += 1;
+                                if (tileErrorCountRef.current <= 3) {
+                                    console.warn("AdLocationPicker tileerror", {
+                                        provider: provider.id,
+                                        url: provider.url,
+                                        count: tileErrorCountRef.current,
+                                        error: e,
+                                    });
+                                }
+
+                                if (tileErrorCountRef.current >= 6) {
+                                    setProviderIndex((prev) => Math.min(prev + 1, TILE_PROVIDERS.length - 1));
+                                }
+                            },
+                        }}
                     />
                     <MapAutoResize center={center} />
                     <LocationMarker
