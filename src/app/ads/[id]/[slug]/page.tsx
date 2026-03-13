@@ -169,8 +169,19 @@ export default async function AdPage({ params }: AdPageProps) {
               </div>
 
               {ad.latitude && ad.longitude && (
-                <div className="rounded-2xl overflow-hidden shadow-sm ring-1 ring-zinc-100 dark:ring-white/5 h-[300px]">
-                  <AdLocationMapDynamic lat={Number(ad.latitude)} lng={Number(ad.longitude)} city={ad.city} />
+                <div className="space-y-3">
+                  <div className="rounded-2xl overflow-hidden shadow-sm ring-1 ring-zinc-100 dark:ring-white/5 h-[300px]">
+                    <AdLocationMapDynamic lat={Number(ad.latitude)} lng={Number(ad.longitude)} city={ad.city} />
+                  </div>
+                  <a
+                    href={`https://www.google.com/maps/search/?api=1&query=${Number(ad.latitude)},${Number(ad.longitude)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 w-full bg-zinc-900 hover:bg-zinc-800 text-white font-black py-3 rounded-xl transition-all border border-zinc-800"
+                  >
+                    <MapPin className="w-5 h-5 text-orange-500" />
+                    تحديد الاتجاه في خرائط جوجل
+                  </a>
                 </div>
               )}
             </div>
