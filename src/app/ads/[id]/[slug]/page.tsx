@@ -3,7 +3,6 @@ import Link from "next/link";
 import { createSupabaseServerClient, getServerUser } from "@/lib/supabase-server";
 import { AdImageGallery } from "@/components/ads/AdImageGallery";
 import { ContactActions } from "@/components/ads/ContactActions";
-import { AdLocationMapDynamic } from "@/components/ads/AdLocationMapDynamic";
 import { AdCard } from "@/components/ads/AdCard";
 import { FavoriteButton } from "@/components/ads/FavoriteButton";
 import { ViralShareButton } from "@/components/ads/ViralShareButton";
@@ -168,22 +167,7 @@ export default async function AdPage({ params }: AdPageProps) {
                 </div>
               </div>
 
-              {ad.latitude && ad.longitude && (
-                <div className="space-y-3">
-                  <div className="rounded-2xl overflow-hidden shadow-sm ring-1 ring-zinc-100 dark:ring-white/5 h-[300px]">
-                    <AdLocationMapDynamic lat={Number(ad.latitude)} lng={Number(ad.longitude)} city={ad.city} />
-                  </div>
-                  <a
-                    href={`https://www.google.com/maps/search/?api=1&query=${Number(ad.latitude)},${Number(ad.longitude)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 w-full bg-zinc-900 hover:bg-zinc-800 text-white font-black py-3 rounded-xl transition-all border border-zinc-800"
-                  >
-                    <MapPin className="w-5 h-5 text-orange-500" />
-                    تحديد الاتجاه في خرائط جوجل
-                  </a>
-                </div>
-              )}
+
             </div>
 
             {similarAds && similarAds.length > 0 && (
