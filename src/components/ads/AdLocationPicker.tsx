@@ -7,6 +7,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { Button } from "@/components/ui/button";
 import { MapPin, Navigation, Loader2 } from "lucide-react";
+import { getBrowserGeolocation } from "@/lib/adLocation";
 
 // Fix Leaflet default icon issue in Next.js
 const iconUrl = "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png";
@@ -110,20 +111,13 @@ export function AdLocationPicker({ latitude, longitude, onChange, onAddressSelec
     const defaultCenter: [number, number] = [33.5731, -7.5898];
     const center: [number, number] = latitude && longitude ? [latitude, longitude] : defaultCenter;
 
-    const handleLocateMe = () => {
-        if (!navigator.geolocation) {
-            alert("La géolocalisation n'est pas supportée par votre navigateur.");
-            return;
+    const handleLocateMe = async () => {
+        try {
+            const pos = await getBrowserGeolocation();
+            onChange(pos.latitude, pos.longitude);
+        } catch (err: any) {
+            alert(err?.message || "Impossible de récupérer votre position.");
         }
-
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                onChange(position.coords.latitude, position.coords.longitude);
-            },
-            () => {
-                alert("Impossible de récupérer votre position.");
-            }
-        );
     };
 
     return (
