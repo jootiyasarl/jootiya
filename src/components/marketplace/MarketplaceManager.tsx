@@ -11,6 +11,7 @@ import { Package } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { shadowTracker } from "@/lib/shadow-tracker";
+import { MarketplaceSearchBar } from "@/components/marketplace/search/MarketplaceSearchBar";
 
 // Transform Supabase Ad to AdCard expected format
 function transformAdToCard(ad: any) {
@@ -110,6 +111,15 @@ export default function MarketplaceManager({ ads }: { ads: any[] }) {
                         items: [], // Passing empty since we will render grid here for better control
                         isLoading: false,
                     }}
+                />
+
+                <MarketplaceSearchBar
+                    query={query}
+                    onQueryChange={setQuery}
+                    onSubmit={handleSearch}
+                    ads={ads as any}
+                    selectedCity={activeCity || undefined}
+                    selectedCategory={activeCategory || undefined}
                 />
             </div>
 

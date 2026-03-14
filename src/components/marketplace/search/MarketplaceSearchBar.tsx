@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { MarketplaceSearchBarProps } from "@/types/components/marketplace";
-import { Search, Loader2 } from "lucide-react";
+import { Search } from "lucide-react";
 
 import Image from "next/image";
 import { getOptimizedImageUrl } from "@/lib/storageUtils";
@@ -13,57 +13,85 @@ interface AutocompleteSuggestion {
   price: number;
   currency: string;
   image_url: string | null;
+  city?: string | null;
+  category?: string | null;
 }
+
+type MarketplaceSearchBarLocalAd = {
+  id: string;
+  title?: string | null;
+  price?: number | null;
+  currency?: string | null;
+  image_urls?: string[] | null;
+  images?: string[] | null;
+  city?: string | null;
+  category?: string | null;
+};
 
 export function MarketplaceSearchBar({
   query,
   onQueryChange,
   onSubmit,
   placeholder = "Rechercher des services, des produits ou des vendeurs...",
-}: MarketplaceSearchBarProps) {
-  const [suggestions, setSuggestions] = useState<AutocompleteSuggestion[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  ads,
+  selectedCity,
+  selectedCategory,
+}: MarketplaceSearchBarProps & {
+  ads?: MarketplaceSearchBarLocalAd[];
+  selectedCity?: string;
+  selectedCategory?: string;
+}) {
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Fetch autocomplete suggestions
-  useEffect(() => {
-    if (query.trim().length < 2) {
-      setSuggestions([]);
-      setShowDropdown(false);
-      return;
-    }
+  const normalizeKey = (s: string) =>
+    s
+      .trim()
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
 
-    // Debounce the API call
-    if (debounceTimer.current) {
-      clearTimeout(debounceTimer.current);
-    }
+  const suggestions = useMemo<AutocompleteSuggestion[]>(() => {
+    const q = normalizeKey(query);
+    if (!ads || q.length < 2) return [];
 
-    setIsLoading(true);
-    debounceTimer.current = setTimeout(async () => {
-      try {
-        const response = await fetch(`/api/autocomplete?q=${encodeURIComponent(query)}`);
-        const data = await response.json();
-        setSuggestions(data.suggestions || []);
-        setShowDropdown(true);
-      } catch (error) {
-        console.error("Autocomplete error:", error);
-        setSuggestions([]);
-      } finally {
-        setIsLoading(false);
-      }
-    }, 300); // 300ms debounce
+    const cityKey = selectedCity ? normalizeKey(selectedCity) : "";
+    const categoryKey = selectedCategory ? normalizeKey(selectedCategory) : "";
 
-    return () => {
-      if (debounceTimer.current) {
-        clearTimeout(debounceTimer.current);
-      }
-    };
-  }, [query]);
+    return ads
+      .filter((ad) => {
+        const title = normalizeKey(String(ad.title || ""));
+        if (!title.includes(q)) return false;
 
-  // Close dropdown when clicking outside
+        if (cityKey) {
+          const adCity = normalizeKey(String(ad.city || ""));
+          if (adCity !== cityKey) return false;
+        }
+
+        if (categoryKey) {
+          const adCat = normalizeKey(String(ad.category || ""));
+          if (adCat !== categoryKey) return false;
+        }
+
+        return true;
+      })
+      .slice(0, 8)
+      .map((ad) => ({
+        id: String(ad.id),
+        title: String(ad.title || ""),
+        price: Number(ad.price || 0),
+        currency: String(ad.currency || "MAD"),
+        image_url: (ad.image_urls?.[0] || ad.images?.[0] || null) as any,
+        city: ad.city || null,
+        category: ad.category || null,
+      }));
+  }, [ads, query, selectedCity, selectedCategory]);
+
+  const handleFocus = () => {
+    if (suggestions.length > 0) setShowDropdown(true);
+  };
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -112,9 +140,7 @@ export function MarketplaceSearchBar({
           setSelectedIndex(-1);
         }}
         onKeyDown={handleKeyDown}
-        onFocus={() => {
-          if (suggestions.length > 0) setShowDropdown(true);
-        }}
+        onFocus={handleFocus}
         placeholder={placeholder}
       />
       <button
@@ -122,11 +148,7 @@ export function MarketplaceSearchBar({
         onClick={onSubmit}
         className="absolute right-2 p-2 bg-orange-600 rounded-lg text-white hover:bg-orange-700 transition-colors"
       >
-        {isLoading ? (
-          <Loader2 className="h-4 w-4 animate-spin" />
-        ) : (
-          <Search className="h-4 w-4" />
-        )}
+        <Search className="h-4 w-4" />
       </button>
 
       {/* Autocomplete Dropdown: Pro Glass Design */}

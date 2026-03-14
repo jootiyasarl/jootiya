@@ -8,7 +8,6 @@ import { MOROCCAN_CITIES } from "@/lib/constants/cities";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { createPortal } from "react-dom";
-import { supabase } from "@/lib/supabaseClient";
 
 const CATEGORIES = [
     { id: "all", label: "Toutes les catégories", icon: LayoutGrid },
@@ -32,7 +31,14 @@ function SearchPortal({ children }: { children: React.ReactNode }) {
     return mounted ? createPortal(children, document.body) : null;
 }
 
-export function UnifiedSearchBar() {
+type UnifiedSearchBarLocalAd = {
+    id: string;
+    title?: string | null;
+    city?: string | null;
+    category?: string | null;
+};
+
+export function UnifiedSearchBar({ ads = [] }: { ads?: UnifiedSearchBarLocalAd[] }) {
     const router = useRouter();
     const [query, setQuery] = useState("");
     const [category, setCategory] = useState(CATEGORIES[0]);
@@ -41,7 +47,6 @@ export function UnifiedSearchBar() {
     const [activeMenu, setActiveMenu] = useState<'category' | 'location' | null>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    const [suggestions, setSuggestions] = useState<string[]>([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const suggestionRef = useRef<HTMLDivElement>(null);
 
@@ -78,6 +83,50 @@ export function UnifiedSearchBar() {
         return exact ? { id: exact.id, label: exact.label } : null;
     };
 
+    const suggestions = (() => {
+        const trimmedQuery = query.trim();
+        if (!trimmedQuery) return [] as string[];
+
+        const q = normalizeKey(trimmedQuery);
+        const cityKey = location !== "Toutes les villes" ? normalizeKey(location) : "";
+        const categoryKey = category.id !== "all" ? normalizeKey(category.id) : "";
+
+        const matches = ads
+            .filter((ad) => {
+                const titleKey = normalizeKey(String(ad.title || ""));
+                if (!titleKey.includes(q)) return false;
+
+                if (cityKey) {
+                    const adCityKey = normalizeKey(String(ad.city || ""));
+                    if (adCityKey !== cityKey) return false;
+                }
+
+                if (categoryKey) {
+                    const adCatKey = normalizeKey(String(ad.category || ""));
+                    if (adCatKey !== categoryKey) return false;
+                }
+
+                return true;
+            })
+            .map((ad) => String(ad.title || "").trim())
+            .filter(Boolean);
+
+        const uniqueTitles = Array.from(new Set(matches));
+        const sortedTitles = uniqueTitles
+            .sort((a, b) => {
+                const aKey = normalizeKey(a);
+                const bKey = normalizeKey(b);
+                const aStarts = aKey.startsWith(q);
+                const bStarts = bKey.startsWith(q);
+                if (aStarts && !bStarts) return -1;
+                if (!aStarts && bStarts) return 1;
+                return a.length - b.length;
+            })
+            .slice(0, 6);
+
+        return sortedTitles;
+    })();
+
     const autoTags = (() => {
         const trimmed = query.trim();
         if (trimmed.length < 2) return [] as string[];
@@ -111,54 +160,6 @@ export function UnifiedSearchBar() {
 
         return tags;
     })();
-
-    // Fetch suggestions from Supabase
-    useEffect(() => {
-        const fetchSuggestions = async () => {
-            const trimmedQuery = query.trim();
-            if (trimmedQuery.length < 1) {
-                setSuggestions([]);
-                setShowSuggestions(false);
-                return;
-            }
-
-            // Simplified query to ensure data is returned
-            const { data, error } = await supabase
-                .from("ads")
-                .select("title")
-                .ilike("title", `%${trimmedQuery}%`)
-                .limit(20);
-
-            if (error) {
-                console.error("DEBUG: Suggestion fetch error:", error);
-                return;
-            }
-
-            if (data && data.length > 0) {
-                const uniqueTitles = Array.from(new Set(data.map((item: any) => item.title))) as string[];
-                
-                const sortedTitles = uniqueTitles.sort((a, b) => {
-                    const aLower = a.toLowerCase();
-                    const bLower = b.toLowerCase();
-                    const qLower = trimmedQuery.toLowerCase();
-                    const aStarts = aLower.startsWith(qLower);
-                    const bStarts = bLower.startsWith(qLower);
-                    if (aStarts && !bStarts) return -1;
-                    if (!aStarts && bStarts) return 1;
-                    return a.length - b.length;
-                }).slice(0, 6);
-
-                setSuggestions(sortedTitles);
-                setShowSuggestions(true);
-            } else {
-                setSuggestions([]);
-                setShowSuggestions(false);
-            }
-        };
-
-        const timer = setTimeout(fetchSuggestions, 50);
-        return () => clearTimeout(timer);
-    }, [query]);
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
