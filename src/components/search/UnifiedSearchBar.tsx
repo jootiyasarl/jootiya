@@ -57,7 +57,12 @@ export function UnifiedSearchBar() {
         if (!trimmed) return null;
         const qLower = normalizeKey(trimmed);
         const allCities = MOROCCAN_CITIES.flatMap((r) => r.cities);
-        const exact = allCities.find((c) => typeof c === "string" && normalizeKey(c) === qLower);
+        const exact = allCities.find((c) => {
+            if (typeof c !== "string") return false;
+            const key = normalizeKey(c);
+            const slugKey = normalizeKey(c.toLowerCase());
+            return key === qLower || slugKey === qLower;
+        });
         return exact || null;
     };
 
@@ -65,7 +70,11 @@ export function UnifiedSearchBar() {
         const trimmed = q.trim();
         if (!trimmed) return null;
         const qLower = normalizeKey(trimmed);
-        const exact = CATEGORIES.find((c) => c.id !== "all" && normalizeKey(c.label) === qLower);
+        const exact = CATEGORIES.find(
+            (c) =>
+                c.id !== "all" &&
+                (normalizeKey(c.label) === qLower || normalizeKey(c.id) === qLower)
+        );
         return exact ? { id: exact.id, label: exact.label } : null;
     };
 
@@ -212,7 +221,7 @@ export function UnifiedSearchBar() {
             }
             const exactCity = detectExactCity(query);
             if (exactCity) {
-                router.push(`/cities/${exactCity.toLowerCase()}`);
+                router.push(`/cities/${encodeURIComponent(exactCity.toLowerCase())}`);
                 setActiveMenu(null);
                 setShowSuggestions(false);
                 return;
@@ -278,7 +287,7 @@ export function UnifiedSearchBar() {
                                             if (exactCity) {
                                                 setQuery(exactCity);
                                                 setShowSuggestions(false);
-                                                router.push(`/cities/${exactCity.toLowerCase()}`);
+                                                router.push(`/cities/${encodeURIComponent(exactCity.toLowerCase())}`);
                                                 setActiveMenu(null);
                                                 return;
                                             }
