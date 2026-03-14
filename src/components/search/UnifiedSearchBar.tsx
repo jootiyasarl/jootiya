@@ -1,7 +1,7 @@
 "use client";
 
 import { Search, MapPin, ChevronDown, LayoutGrid, X, Check } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { MOROCCAN_CITIES } from "@/lib/constants/cities";
@@ -83,7 +83,7 @@ export function UnifiedSearchBar({ ads = [] }: { ads?: UnifiedSearchBarLocalAd[]
         return exact ? { id: exact.id, label: exact.label } : null;
     };
 
-    const suggestions = (() => {
+    const suggestions = useMemo(() => {
         const trimmedQuery = query.trim();
         if (!trimmedQuery) return [] as string[];
 
@@ -94,22 +94,33 @@ export function UnifiedSearchBar({ ads = [] }: { ads?: UnifiedSearchBarLocalAd[]
         const matches = ads
             .filter((ad) => {
                 const titleKey = normalizeKey(String(ad.title || ""));
-                if (!titleKey.includes(q)) return false;
+                const passTitle = titleKey.includes(q);
 
+                let passCity = true;
                 if (cityKey) {
                     const adCityKey = normalizeKey(String(ad.city || ""));
-                    if (adCityKey !== cityKey) return false;
+                    passCity = adCityKey === cityKey;
                 }
 
+                let passCategory = true;
                 if (categoryKey) {
                     const adCatKey = normalizeKey(String(ad.category || ""));
-                    if (adCatKey !== categoryKey) return false;
+                    passCategory = adCatKey === categoryKey;
                 }
 
-                return true;
+                const ok = passTitle && passCity && passCategory;
+                return ok;
             })
             .map((ad) => String(ad.title || "").trim())
             .filter(Boolean);
+
+        console.log("DEBUG UnifiedSearchBar filter", {
+            q: trimmedQuery,
+            adsCount: ads.length,
+            city: location,
+            category: category.id,
+            matches: matches.length,
+        });
 
         const uniqueTitles = Array.from(new Set(matches));
         const sortedTitles = uniqueTitles
@@ -125,7 +136,7 @@ export function UnifiedSearchBar({ ads = [] }: { ads?: UnifiedSearchBarLocalAd[]
             .slice(0, 6);
 
         return sortedTitles;
-    })();
+    }, [ads, query, location, category.id]);
 
     const autoTags = (() => {
         const trimmed = query.trim();
