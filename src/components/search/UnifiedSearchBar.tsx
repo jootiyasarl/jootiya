@@ -45,6 +45,23 @@ export function UnifiedSearchBar() {
     const [showSuggestions, setShowSuggestions] = useState(false);
     const suggestionRef = useRef<HTMLDivElement>(null);
 
+    const detectExactCity = (q: string): string | null => {
+        const trimmed = q.trim();
+        if (!trimmed) return null;
+        const qLower = trimmed.toLowerCase();
+        const allCities = MOROCCAN_CITIES.flatMap((r) => r.cities);
+        const exact = allCities.find((c) => typeof c === "string" && c.toLowerCase() === qLower);
+        return exact || null;
+    };
+
+    const detectExactCategory = (q: string): { id: string; label: string } | null => {
+        const trimmed = q.trim();
+        if (!trimmed) return null;
+        const qLower = trimmed.toLowerCase();
+        const exact = CATEGORIES.find((c) => c.id !== "all" && c.label.toLowerCase() === qLower);
+        return exact ? { id: exact.id, label: exact.label } : null;
+    };
+
     const autoTags = (() => {
         const trimmed = query.trim();
         if (trimmed.length < 2) return [] as string[];
@@ -66,6 +83,11 @@ export function UnifiedSearchBar() {
             extra.unshift(cityMatch);
         }
 
+        const categoryMatch = CATEGORIES.find((c) => c.id !== "all" && c.label.toLowerCase().startsWith(qLower));
+        if (categoryMatch) {
+            extra.unshift(categoryMatch.label);
+        }
+
         const tags = [...base, ...extra]
             .map((t) => t.replace(/\s+/g, " ").trim())
             .filter(Boolean)
@@ -73,15 +95,6 @@ export function UnifiedSearchBar() {
 
         return tags;
     })();
-
-    const detectExactCity = (q: string): string | null => {
-        const trimmed = q.trim();
-        if (!trimmed) return null;
-        const qLower = trimmed.toLowerCase();
-        const allCities = MOROCCAN_CITIES.flatMap((r) => r.cities);
-        const exact = allCities.find((c) => typeof c === "string" && c.toLowerCase() === qLower);
-        return exact || null;
-    };
 
     // Fetch suggestions from Supabase
     useEffect(() => {
@@ -183,6 +196,13 @@ export function UnifiedSearchBar() {
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === "Enter") {
             e.preventDefault();
+            const exactCategory = detectExactCategory(query);
+            if (exactCategory) {
+                router.push(`/categories/${exactCategory.id}`);
+                setActiveMenu(null);
+                setShowSuggestions(false);
+                return;
+            }
             const exactCity = detectExactCity(query);
             if (exactCity) {
                 router.push(`/cities/${exactCity.toLowerCase()}`);
@@ -239,6 +259,14 @@ export function UnifiedSearchBar() {
                                         type="button"
                                         onClick={(e) => {
                                             e.stopPropagation();
+                                            const exactCategory = detectExactCategory(t);
+                                            if (exactCategory) {
+                                                setQuery(exactCategory.label);
+                                                setShowSuggestions(false);
+                                                router.push(`/categories/${exactCategory.id}`);
+                                                setActiveMenu(null);
+                                                return;
+                                            }
                                             const exactCity = detectExactCity(t);
                                             if (exactCity) {
                                                 setQuery(exactCity);
