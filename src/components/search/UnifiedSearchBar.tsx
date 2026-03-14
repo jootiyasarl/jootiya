@@ -45,20 +45,27 @@ export function UnifiedSearchBar() {
     const [showSuggestions, setShowSuggestions] = useState(false);
     const suggestionRef = useRef<HTMLDivElement>(null);
 
+    const normalizeKey = (s: string) =>
+        s
+            .trim()
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "");
+
     const detectExactCity = (q: string): string | null => {
         const trimmed = q.trim();
         if (!trimmed) return null;
-        const qLower = trimmed.toLowerCase();
+        const qLower = normalizeKey(trimmed);
         const allCities = MOROCCAN_CITIES.flatMap((r) => r.cities);
-        const exact = allCities.find((c) => typeof c === "string" && c.toLowerCase() === qLower);
+        const exact = allCities.find((c) => typeof c === "string" && normalizeKey(c) === qLower);
         return exact || null;
     };
 
     const detectExactCategory = (q: string): { id: string; label: string } | null => {
         const trimmed = q.trim();
         if (!trimmed) return null;
-        const qLower = trimmed.toLowerCase();
-        const exact = CATEGORIES.find((c) => c.id !== "all" && c.label.toLowerCase() === qLower);
+        const qLower = normalizeKey(trimmed);
+        const exact = CATEGORIES.find((c) => c.id !== "all" && normalizeKey(c.label) === qLower);
         return exact ? { id: exact.id, label: exact.label } : null;
     };
 
@@ -75,15 +82,15 @@ export function UnifiedSearchBar() {
         if (category.id !== "all") extra.push(trimmed + " " + category.id);
         if (location !== "Toutes les villes") extra.push(trimmed + " " + location);
 
-        const qLower = trimmed.toLowerCase();
+        const qLower = normalizeKey(trimmed);
         const allCities = MOROCCAN_CITIES.flatMap((r) => r.cities);
         const cityMatch = allCities
-            .find((c) => typeof c === "string" && c.toLowerCase().startsWith(qLower));
+            .find((c) => typeof c === "string" && normalizeKey(c).startsWith(qLower));
         if (cityMatch) {
             extra.unshift(cityMatch);
         }
 
-        const categoryMatch = CATEGORIES.find((c) => c.id !== "all" && c.label.toLowerCase().startsWith(qLower));
+        const categoryMatch = CATEGORIES.find((c) => c.id !== "all" && normalizeKey(c.label).startsWith(qLower));
         if (categoryMatch) {
             extra.unshift(categoryMatch.label);
         }
@@ -165,7 +172,7 @@ export function UnifiedSearchBar() {
         
         // Case 1: Only Category is selected (SEO Path)
         if (category.id !== "all" && !trimmedQuery && currentLocation === "Toutes les villes") {
-            router.push(`/categories/${category.id}`);
+            router.push(`/marketplace/category/${category.id}`);
             setActiveMenu(null);
             setShowSuggestions(false);
             return;
@@ -198,7 +205,7 @@ export function UnifiedSearchBar() {
             e.preventDefault();
             const exactCategory = detectExactCategory(query);
             if (exactCategory) {
-                router.push(`/categories/${exactCategory.id}`);
+                router.push(`/marketplace/category/${exactCategory.id}`);
                 setActiveMenu(null);
                 setShowSuggestions(false);
                 return;
@@ -263,7 +270,7 @@ export function UnifiedSearchBar() {
                                             if (exactCategory) {
                                                 setQuery(exactCategory.label);
                                                 setShowSuggestions(false);
-                                                router.push(`/categories/${exactCategory.id}`);
+                                                router.push(`/marketplace/category/${exactCategory.id}`);
                                                 setActiveMenu(null);
                                                 return;
                                             }
