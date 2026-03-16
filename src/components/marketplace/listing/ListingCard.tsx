@@ -4,6 +4,8 @@ import type { ListingCardProps } from "@/types/components/marketplace";
 import Image from "next/image";
 import Link from "next/link";
 import { Heart, User, MapPin } from "lucide-react";
+import useEmblaCarousel from "embla-carousel-react";
+import { useEffect, useState } from "react";
 
 function formatDistance(distanceKm?: number): string | null {
   if (distanceKm === undefined || distanceKm === null || isNaN(distanceKm)) return null;
@@ -20,6 +22,7 @@ export function ListingCard(props: ListingCardProps) {
     subtitle,
     price,
     imageUrl,
+    image_urls,
     sellerName,
     sellerAvatar,
     badgeLabel,
@@ -30,6 +33,37 @@ export function ListingCard(props: ListingCardProps) {
   const distanceLabel = formatDistance(distanceKm);
   const normalizedSellerName = typeof sellerName === "string" ? sellerName.trim() : "";
   const displaySellerName = normalizedSellerName || "Utilisateur";
+
+  const images = Array.isArray(image_urls) && image_urls.length > 0
+    ? image_urls
+    : (imageUrl ? [imageUrl] : []);
+
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: false,
+    align: "start",
+    containScroll: "trimSnaps",
+  });
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+
+    setScrollSnaps(emblaApi.scrollSnapList());
+    setSelectedIndex(emblaApi.selectedScrollSnap());
+
+    const onSelect = () => {
+      setSelectedIndex(emblaApi.selectedScrollSnap());
+    };
+
+    emblaApi.on("select", onSelect);
+    emblaApi.on("reInit", onSelect);
+
+    return () => {
+      emblaApi.off("select", onSelect);
+      emblaApi.off("reInit", onSelect);
+    };
+  }, [emblaApi]);
 
   return (
     <article className="group cursor-pointer flex flex-col bg-white dark:bg-zinc-900 rounded-3xl p-2 sm:p-3 shadow-sm hover:shadow-md transition-all duration-300 active:scale-[0.98] select-none border border-zinc-100 dark:border-zinc-800">
@@ -54,14 +88,46 @@ export function ListingCard(props: ListingCardProps) {
 
         {/* Image Container */}
         <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-zinc-50 dark:bg-zinc-800">
-          {imageUrl ? (
-            <Image
-              src={imageUrl}
-              alt={title}
-              fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-            />
+          {images.length > 0 ? (
+            <div className="absolute inset-0">
+              <div className="overflow-hidden w-full h-full" ref={emblaRef}>
+                <div className="flex h-full">
+                  {images.map((src, idx) => (
+                    <div key={`${id}-${idx}`} className="relative min-w-0 flex-[0_0_100%] h-full">
+                      <Image
+                        src={src}
+                        alt={title}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {scrollSnaps.length > 1 && (
+                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5">
+                  {scrollSnaps.map((_, i) => (
+                    <button
+                      key={`${id}-dot-${i}`}
+                      type="button"
+                      className={
+                        "h-1.5 w-1.5 rounded-full transition-all " +
+                        (i === selectedIndex
+                          ? "bg-white shadow-sm"
+                          : "bg-white/50")
+                      }
+                      onClick={(e) => {
+                        e.preventDefault();
+                        emblaApi?.scrollTo(i);
+                      }}
+                      aria-label={`Aller à l'image ${i + 1}`}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
           ) : (
             <div className="flex h-full w-full items-center justify-center text-zinc-400">
               <span className="text-[10px]">Aucune image</span>

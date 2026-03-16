@@ -6,6 +6,7 @@ export interface ListingCardProps {
   rating?: number;
   ratingCount?: number;
   imageUrl?: string;
+  image_urls?: string[];
   sellerName?: string;
   sellerAvatar?: string;
   badgeLabel?: string;
