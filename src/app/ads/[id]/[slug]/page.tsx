@@ -21,6 +21,7 @@ import {
 import { QuickActionFooter } from "@/components/ads/QuickActionFooter";
 import Image from "next/image";
 import { generateSlug } from "@/lib/seo-utils";
+import { SimilarAdsCarousel } from "@/components/ads/SimilarAdsCarousel";
 
 export const revalidate = 3600;
 
@@ -173,11 +174,7 @@ export default async function AdPage({ params }: AdPageProps) {
             {similarAds && similarAds.length > 0 && (
               <section className="pt-8">
                 <h2 className="text-xl font-black mb-6">Annonces similaires</h2>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {similarAds.map((simAd) => (
-                    <AdCard key={simAd.id} ad={{...simAd, images: simAd.image_urls}} />
-                  ))}
-                </div>
+                <SimilarAdsCarousel ads={similarAds as any[]} />
               </section>
             )}
           </div>
