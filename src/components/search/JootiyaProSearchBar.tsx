@@ -277,7 +277,7 @@ export function JootiyaProSearchBar() {
 
           {/* Dropdowns */}
           {activeField === "product" && (suggestions.length > 0 || loadingSuggestions) && (
-            <div className="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl shadow-2xl overflow-hidden z-[100] min-h-[50px]">
+            <div className="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl shadow-2xl overflow-hidden z-[9999] min-h-[50px]">
               {loadingSuggestions && (
                 <div className="px-4 py-3 text-sm text-zinc-500 flex items-center gap-2">
                   <div className="w-4 h-4 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />
@@ -321,7 +321,7 @@ export function JootiyaProSearchBar() {
           )}
 
           {activeField === "category" && (
-            <div className="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl shadow-2xl overflow-hidden z-[100] max-h-[360px] overflow-y-auto min-w-[200px]">
+            <div className="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl shadow-2xl overflow-hidden z-[9999] max-h-[360px] overflow-y-auto min-w-[200px]">
               {CATEGORIES.map((c) => {
                 const selected = c.id === categoryId;
                 return (
@@ -349,7 +349,7 @@ export function JootiyaProSearchBar() {
           )}
 
           {activeField === "city" && (
-            <div className="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl shadow-2xl overflow-hidden z-[100] max-h-[360px] overflow-y-auto min-w-[200px]">
+            <div className="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 rounded-2xl shadow-2xl overflow-hidden z-[9999] max-h-[360px] overflow-y-auto min-w-[200px]">
               {ALL_CITIES.map((c) => {
                 const selected = c === city;
                 return (
