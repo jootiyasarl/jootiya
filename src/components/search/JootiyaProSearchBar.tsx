@@ -267,8 +267,13 @@ export function JootiyaProSearchBar() {
           {/* Search Button */}
           <Button
             size="icon"
-            onClick={() => runSearch()}
-            className="ml-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white shadow-lg shadow-orange-600/20"
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              runSearch();
+            }}
+            className="ml-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white shadow-lg shadow-orange-600/20 shrink-0"
             aria-label="بحث"
             title="بحث"
           >
