@@ -197,88 +197,84 @@ export function JootiyaProSearchBar() {
     setMobileOpen(false);
   };
 
-  return (
-    <div className="w-full" ref={rootRef}>
-      {/* Desktop (Airbnb-like segmented bar) */}
-      <div className="hidden lg:block">
-        <div
-          className={cn(
-            "relative max-w-4xl mx-auto",
-            "flex items-center bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl p-1",
-            "transition-all hover:border-orange-500"
-          )}
-        >
-          {/* Product */}
-          <div className="flex-[2] flex items-center px-4 py-2 min-w-0 border-r border-zinc-100 dark:border-zinc-800">
-            <Search className="w-4.5 h-4.5 text-zinc-400 mr-2 shrink-0" />
-            <input
-              value={query}
-              onChange={(e) => {
-                setQuery(e.target.value);
-                setActiveField("product");
-              }}
-              onFocus={(e) => {
-                e.stopPropagation();
-                setActiveField("product");
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
+    return (
+      <form 
+        onSubmit={(e) => {
+          e.preventDefault();
+          runSearch();
+        }}
+        className="w-full"
+      >
+        <div className="w-full" ref={rootRef}>
+          {/* Desktop (Airbnb-like segmented bar) */}
+          <div className="hidden lg:block">
+            <div
+              className={cn(
+                "relative max-w-4xl mx-auto",
+                "flex items-center bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl p-1",
+                "transition-all hover:border-orange-500"
+              )}
+            >
+              {/* Product */}
+              <div className="flex-[2] flex items-center px-4 py-2 min-w-0 border-r border-zinc-100 dark:border-zinc-800">
+                <Search className="w-4.5 h-4.5 text-zinc-400 mr-2 shrink-0" />
+                <input
+                  value={query}
+                  onChange={(e) => {
+                    setQuery(e.target.value);
+                    setActiveField("product");
+                  }}
+                  onFocus={(e) => {
+                    e.stopPropagation();
+                    setActiveField("product");
+                  }}
+                  placeholder="شنو كتقلب؟ (مثلا: Golf 7...)"
+                  className="w-full bg-transparent outline-none text-zinc-700 dark:text-zinc-200 placeholder:text-zinc-400"
+                />
+              </div>
+
+              {/* Category */}
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={(e) => {
                   e.preventDefault();
-                  runSearch();
-                }
-              }}
-              placeholder="شنو كتقلب؟ (مثلا: Golf 7...)"
-              className="w-full bg-transparent outline-none text-zinc-700 dark:text-zinc-200 placeholder:text-zinc-400"
-            />
-          </div>
+                  e.stopPropagation();
+                  setActiveField((v) => (v === "category" ? null : "category"));
+                }}
+                className="flex-1 flex items-center px-4 py-2 min-w-0 border-r border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50/60 dark:hover:bg-zinc-800/30 rounded-xl transition-colors cursor-pointer z-[110]"
+              >
+                <LayoutGrid className="w-5 h-5 text-zinc-400 mr-2 shrink-0" />
+                <span className="truncate text-[13px] font-bold text-zinc-600 dark:text-zinc-300">
+                  {selectedCategory.label}
+                </span>
+              </div>
 
-          {/* Category */}
-          <div
-            role="button"
-            tabIndex={0}
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setActiveField((v) => (v === "category" ? null : "category"));
-            }}
-            className="flex-1 flex items-center px-4 py-2 min-w-0 border-r border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50/60 dark:hover:bg-zinc-800/30 rounded-xl transition-colors cursor-pointer z-[110]"
-          >
-            <LayoutGrid className="w-5 h-5 text-zinc-400 mr-2 shrink-0" />
-            <span className="truncate text-[13px] font-bold text-zinc-600 dark:text-zinc-300">
-              {selectedCategory.label}
-            </span>
-          </div>
+              {/* City */}
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setActiveField((v) => (v === "city" ? null : "city"));
+                }}
+                className="flex-1 flex items-center px-4 py-2 min-w-0 hover:bg-zinc-50/60 dark:hover:bg-zinc-800/30 rounded-xl transition-colors cursor-pointer z-[110]"
+              >
+                <MapPin className="w-5 h-5 text-zinc-400 mr-2 shrink-0" />
+                <span className="truncate text-[13px] font-bold text-zinc-600 dark:text-zinc-300">{city}</span>
+              </div>
 
-          {/* City */}
-          <div
-            role="button"
-            tabIndex={0}
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              setActiveField((v) => (v === "city" ? null : "city"));
-            }}
-            className="flex-1 flex items-center px-4 py-2 min-w-0 hover:bg-zinc-50/60 dark:hover:bg-zinc-800/30 rounded-xl transition-colors cursor-pointer z-[110]"
-          >
-            <MapPin className="w-5 h-5 text-zinc-400 mr-2 shrink-0" />
-            <span className="truncate text-[13px] font-bold text-zinc-600 dark:text-zinc-300">{city}</span>
-          </div>
-
-          {/* Search Button */}
-          <Button
-            size="icon"
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              runSearch();
-            }}
-            className="ml-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white shadow-lg shadow-orange-600/20 shrink-0"
-            aria-label="بحث"
-            title="بحث"
-          >
-            <Search className="w-5 h-5" />
-          </Button>
+              {/* Search Button */}
+              <Button
+                size="icon"
+                type="submit"
+                className="ml-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white shadow-lg shadow-orange-600/20 shrink-0"
+                aria-label="بحث"
+                title="بحث"
+              >
+                <Search className="w-5 h-5" />
+              </Button>
 
           {/* Dropdowns */}
           {activeField === "product" && (suggestions.length > 0 || loadingSuggestions) && (
@@ -559,6 +555,7 @@ export function JootiyaProSearchBar() {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </form>
   );
 }
