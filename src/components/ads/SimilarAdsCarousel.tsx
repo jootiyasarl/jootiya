@@ -5,7 +5,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import { AdCard } from "@/components/ads/AdCard";
 
 export function SimilarAdsCarousel({ ads }: { ads: any[] }) {
-  const slides = (ads || []).slice(0, 10);
+  const slides = (ads || []).slice(0, 6);
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: false,
     align: "start",
