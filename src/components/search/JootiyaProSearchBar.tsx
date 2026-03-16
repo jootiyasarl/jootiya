@@ -51,7 +51,7 @@ export function JootiyaProSearchBar() {
     if (categoryId !== "all") params.set("category", categoryId);
     if (city !== "Toutes les villes") params.set("city", city);
     
-    router.push(`/marketplace?${params.toString()}`);
+    router.push(`/marketplace/search?${params.toString()}`);
     setActiveField(null);
   };
 
