@@ -1,7 +1,7 @@
 "use client";
 
 import type { ListingGridProps } from "@/types/components/marketplace";
-import { ListingCard } from "./ListingCard";
+import { AdCard } from "@/components/AdCard";
 import { NoResultsFallback } from "../NoResultsFallback";
 
 export function ListingGrid({ items, isLoading, skeletonCount = 8, searchQuery, category, city }: ListingGridProps) {
@@ -25,7 +25,19 @@ export function ListingGrid({ items, isLoading, skeletonCount = 8, searchQuery, 
   return (
     <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 px-4 md:px-6 max-w-7xl mx-auto w-full" style={{ gridTemplateColumns: 'repeat(2, minmax(0, 1fr))' }}>
       {items.map((item) => (
-        <ListingCard key={item.id} {...item} />
+        <AdCard
+          key={item.id}
+          ad={{
+            id: item.id,
+            title: item.title,
+            price: item.price,
+            location: item.subtitle || "Maroc",
+            sellerBadge: item.badgeLabel,
+            isFeatured: item.badgeLabel === "Featured",
+            imageUrl: item.imageUrl,
+          } as any}
+          href={item.href}
+        />
       ))}
     </div>
   );

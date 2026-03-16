@@ -10,7 +10,6 @@ import { getCachedAds, saveAds } from "@/lib/pwa/jootiya-db";
 import { supabase } from "@/lib/supabaseClient";
 import { LocationPrompt } from "@/components/LocationPrompt";
 import { fetchNearbyAds } from "@/lib/nearbyAds";
-import { ListingCard } from "@/components/marketplace/listing/ListingCard";
 
 type HomepageAd = {
   id: string;
@@ -201,6 +200,17 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
     return acc;
   }, {});
 
+  const toAdCard = (ad: HomepageAd) => ({
+    id: ad.id,
+    title: ad.title,
+    price: ad.price,
+    location: ad.location,
+    createdAt: ad.createdAt,
+    sellerBadge: ad.sellerBadge,
+    isFeatured: ad.isFeatured,
+    imageUrl: ad.imageUrl,
+  });
+
   return (
     <div dir="ltr" className="min-h-screen bg-white font-sans text-zinc-900 pb-12">
       <LocationPrompt />
@@ -261,20 +271,12 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
                           </Link>
                         </div>
 
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-                          {categoryAds.map((ad: any) => (
-                            <ListingCard 
-                              key={ad.id} 
-                              id={ad.id}
-                              title={ad.title}
-                              subtitle={ad.location}
-                              price={ad.price}
-                              imageUrl={ad.imageUrl}
-                              badgeLabel={ad.sellerBadge}
+                        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+                          {categoryAds.slice(0, 12).map((ad: HomepageAd) => (
+                            <AdCard
+                              key={ad.id}
+                              ad={toAdCard(ad) as any}
                               href={`/ads/${ad.id}`}
-                              distanceKm={ad.distanceKm}
-                              sellerName={ad.sellerName}
-                              sellerAvatar={ad.sellerAvatar}
                             />
                           ))}
                         </div>
