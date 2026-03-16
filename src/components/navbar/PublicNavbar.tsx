@@ -23,14 +23,14 @@ export default async function PublicNavbar() {
           </div>
 
           {/* Center: Search Bar */}
-          <div className="flex flex-1 justify-center px-3 lg:px-6 relative z-[100]">
-            <div className="w-full max-w-2xl">
+          <div className="flex flex-1 justify-center px-2 lg:px-6 relative z-[100] md:ml-0 ml-12 mr-1">
+            <div className="w-full max-w-2xl flex justify-end lg:justify-center">
               <JootiyaProSearchBar />
             </div>
           </div>
 
           {/* Right: User Actions / Info */}
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-2 md:gap-3 shrink-0 relative z-[110]">
             <Link
               href="/marketplace/post"
               className="hidden xl:block shrink-0"
