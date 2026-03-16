@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, Suspense } from "react";
+import React, { useEffect, useState, Suspense, useCallback } from "react";
 import Link from "next/link";
 import { SellBanner } from "@/components/home/SellBanner";
 import { BlogSection } from "@/components/home/BlogSection";
@@ -10,6 +10,7 @@ import { getCachedAds, saveAds } from "@/lib/pwa/jootiya-db";
 import { supabase } from "@/lib/supabaseClient";
 import { LocationPrompt } from "@/components/LocationPrompt";
 import { fetchNearbyAds } from "@/lib/nearbyAds";
+import useEmblaCarousel from "embla-carousel-react";
 
 type HomepageAd = {
   id: string;
@@ -211,6 +212,52 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
     imageUrl: ad.imageUrl,
   });
 
+  function CategoryCarousel({ items }: { items: HomepageAd[] }) {
+    const slides = items.slice(0, 10);
+    const [emblaRef, emblaApi] = useEmblaCarousel({
+      loop: false,
+      align: "start",
+      containScroll: "trimSnaps",
+    });
+
+    const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
+    const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
+
+    return (
+      <div className="relative">
+        <div className="overflow-hidden" ref={emblaRef}>
+          <div className="flex gap-4">
+            {slides.map((ad) => (
+              <div
+                key={ad.id}
+                className="flex-[0_0_78%] sm:flex-[0_0_45%] md:flex-[0_0_32%] lg:flex-[0_0_24%]"
+              >
+                <AdCard ad={toAdCard(ad) as any} href={`/ads/${ad.id}`} />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={scrollPrev}
+          className="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm border border-zinc-200 shadow-sm items-center justify-center text-zinc-800 hover:text-orange-600 transition-colors"
+          aria-label="Précédent"
+        >
+          <span className="text-lg font-black">‹</span>
+        </button>
+        <button
+          type="button"
+          onClick={scrollNext}
+          className="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm border border-zinc-200 shadow-sm items-center justify-center text-zinc-800 hover:text-orange-600 transition-colors"
+          aria-label="Suivant"
+        >
+          <span className="text-lg font-black">›</span>
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div dir="ltr" className="min-h-screen bg-white font-sans text-zinc-900 pb-12">
       <LocationPrompt />
@@ -271,15 +318,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
                           </Link>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-                          {categoryAds.slice(0, 12).map((ad: HomepageAd) => (
-                            <AdCard
-                              key={ad.id}
-                              ad={toAdCard(ad) as any}
-                              href={`/ads/${ad.id}`}
-                            />
-                          ))}
-                        </div>
+                        <CategoryCarousel items={categoryAds} />
                       </section>
                     );
                   })}
