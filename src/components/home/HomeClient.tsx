@@ -201,6 +201,16 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
     return acc;
   }, {});
 
+  const orderedCategories = Object.keys(groupedAds).sort((a, b) => {
+    const preferredOrder = ["electronics", "Électronique", "electronique", "electronics"];
+    const aIndex = preferredOrder.indexOf(a);
+    const bIndex = preferredOrder.indexOf(b);
+    const aRank = aIndex === -1 ? Number.MAX_SAFE_INTEGER : aIndex;
+    const bRank = bIndex === -1 ? Number.MAX_SAFE_INTEGER : bIndex;
+    if (aRank !== bRank) return aRank - bRank;
+    return a.localeCompare(b, "fr", { sensitivity: "base" });
+  });
+
   const toAdCard = (ad: HomepageAd) => ({
     id: ad.id,
     title: ad.title,
@@ -294,7 +304,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
                 </div>
               ) : (
                 <>
-                  {Object.keys(groupedAds).map((category) => {
+                  {orderedCategories.map((category) => {
                     const categoryAds = groupedAds[category];
                     if (categoryAds.length === 0) return null;
 
