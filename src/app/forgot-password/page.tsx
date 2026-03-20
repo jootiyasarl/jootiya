@@ -21,7 +21,7 @@ async function forgotPasswordAction(formData: FormData) {
 
   const supabase = createSupabaseServerClient();
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/auth/reset-password`,
+    redirectTo: `https://jootiya.com/auth/reset-password`,
   });
 
   if (error) {
