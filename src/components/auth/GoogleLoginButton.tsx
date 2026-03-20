@@ -76,7 +76,7 @@ export function GoogleLoginButton() {
           </svg>
         </span>
       )}
-      <span>{isLoading ? "Connexion..." : "Connectez-vous pour trouver vos amis sur Jootiya"}</span>
+      <span>{isLoading ? "Connexion..." : "Continuer avec Google"}</span>
     </button>
   );
 }

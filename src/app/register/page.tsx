@@ -1,3 +1,4 @@
+import { GoogleLoginButton } from "@/components/auth/GoogleLoginButton";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -226,6 +227,17 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
                   className="w-full h-14 text-lg font-black rounded-2xl bg-orange-500 hover:bg-orange-600 text-white shadow-lg shadow-orange-500/20 transition-all active:scale-[0.98]"
                 />
               </div>
+
+              <div className="relative py-2">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t border-zinc-100" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-white px-2 text-zinc-400 font-bold tracking-widest">Ou s'inscrire avec</span>
+                </div>
+              </div>
+
+              <GoogleLoginButton />
             </form>
 
             <div className="pt-4 text-center">
