@@ -41,11 +41,13 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
   useEffect(() => {
     async function initData() {
       try {
-        const cached = await getCachedAds();
-        if (cached && cached.length > 0) {
-          setAds(cached);
-          setIsOfflineData(true);
-          setLoading(false);
+        if (typeof window !== "undefined") {
+          const cached = await getCachedAds();
+          if (cached && cached.length > 0) {
+            setAds(cached);
+            setIsOfflineData(true);
+            setLoading(false);
+          }
         }
       } catch (e) {
         console.error("IndexedDB error:", e);
@@ -53,8 +55,16 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
 
       try {
         let data: any[] | null = [];
-        const storedLocationStr = localStorage.getItem("user_location");
-        const storedLocation = storedLocationStr ? JSON.parse(storedLocationStr) : null;
+        let storedLocation = null;
+        
+        if (typeof window !== "undefined") {
+          try {
+            const storedLocationStr = localStorage.getItem("user_location");
+            storedLocation = storedLocationStr ? JSON.parse(storedLocationStr) : null;
+          } catch (e) {
+            console.error("LocalStorage error:", e);
+          }
+        }
 
         const lat = latParam || storedLocation?.lat;
         const lon = lngParam || storedLocation?.lon;

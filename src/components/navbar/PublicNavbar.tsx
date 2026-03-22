@@ -16,14 +16,14 @@ export default async function PublicNavbar() {
     <header className="fixed top-0 left-0 right-0 z-[60] w-full bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-800 flex flex-col justify-center min-h-[56px] md:min-h-[64px]">
       <div className="container-standard w-full">
         {/* Main Nav Row (TOP) */}
-        <div className="flex h-12 md:h-14 items-center justify-between gap-2 md:gap-8 relative z-[70] py-2">
+        <div className="flex h-12 md:h-14 items-center justify-between gap-1 md:gap-8 relative z-[70] py-2">
           {/* Left: Logo */}
-          <div className="flex items-center shrink-0">
+          <div className="flex items-center shrink-0 min-w-0">
             <NavbarLogo />
           </div>
 
           {/* Center: Search Bar */}
-          <div className="flex flex-1 justify-center px-1 md:px-6 relative z-[100]">
+          <div className="flex flex-1 justify-center px-0 md:px-6 relative z-[100] min-w-0">
             <div className="w-full max-w-2xl flex justify-center md:justify-center">
               <JootiyaProSearchBar />
             </div>
