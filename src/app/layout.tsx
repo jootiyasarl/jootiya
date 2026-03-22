@@ -76,14 +76,14 @@ export default function RootLayout({
             width: 100%;
             margin-right: auto;
             margin-left: auto;
-            padding-right: 1rem;
-            padding-left: 1rem;
+            padding-right: 0.75rem;
+            padding-left: 0.75rem;
             max-width: 1440px;
           }
-          @media (min-width: 768px) {
+          @media (min-width: 640px) {
             .container-standard {
-              padding-right: 2rem;
-              padding-left: 2rem;
+              padding-right: 1.5rem;
+              padding-left: 1.5rem;
             }
           }
           .main-content-wrapper {

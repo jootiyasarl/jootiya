@@ -236,11 +236,11 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
     return (
       <div className="relative">
         <div className="overflow-hidden" ref={emblaRef}>
-          <div className="flex gap-4">
+          <div className="flex -mx-4 px-4 overflow-x-auto no-scrollbar gap-3 pb-4">
             {slides.map((ad) => (
               <div
                 key={ad.id}
-                className="flex-[0_0_78%] sm:flex-[0_0_45%] md:flex-[0_0_32%] lg:flex-[0_0_24%]"
+                className="flex-[0_0_72%] sm:flex-[0_0_45%] md:flex-[0_0_32%] lg:flex-[0_0_24%]"
               >
                 <AdCard ad={toAdCard(ad) as any} href={`/ads/${ad.id}`} />
               </div>
