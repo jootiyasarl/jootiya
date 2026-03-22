@@ -19,16 +19,24 @@ async function forgotPasswordAction(formData: FormData) {
     redirect("/forgot-password?error=Veuillez entrer votre email");
   }
 
-  const supabase = createSupabaseServerClient();
-  const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `https://jootiya.com/auth/reset-password`,
-  });
+  try {
+    const supabase = createSupabaseServerClient();
+    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `https://jootiya.com/auth/reset-password`,
+    });
 
-  if (error) {
-    redirect(`/forgot-password?error=${encodeURIComponent(error.message)}`);
+    if (error) {
+      console.error("Supabase Reset Password Error:", error);
+      redirect(`/forgot-password?error=${encodeURIComponent(error.message)}`);
+    }
+
+    // Explicitly return success for UI feedback
+    redirect("/forgot-password?success=Un e-mail de réinitialisation a été envoyé à " + encodeURIComponent(email) + ". Veuillez vérifier votre boîte de réception (et vos spams).");
+  } catch (err) {
+    if (err instanceof Error && err.message.includes('NEXT_REDIRECT')) throw err;
+    console.error("Forgot Password Action Error:", err);
+    redirect("/forgot-password?error=Une erreur inattendue est survenue.");
   }
-
-  redirect("/forgot-password?success=Un e-mail de réinitialisation a été envoyé.");
 }
 
 export default async function ForgotPasswordPage({
