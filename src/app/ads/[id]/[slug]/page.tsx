@@ -49,11 +49,41 @@ export async function generateMetadata({ params }: AdPageProps) {
     const formattedPrice = ad.price ? `${Number(ad.price).toLocaleString()} ${ad.currency || 'MAD'}` : "Prix sur demande";
     const metaTitle = `${ad.title} - ${formattedPrice} | Jootiya`;
     const adSlug = ad.slug || urlSlug || generateSlug(ad.title);
+    const canonicalUrl = `${baseUrl}/ads/${ad.id}/${adSlug}`;
+    
+    // Get primary image and ensure it's an absolute URL
+    let ogImage = `${baseUrl}/og-image.png`; // Fallback image
+    if (ad.image_urls && Array.isArray(ad.image_urls) && ad.image_urls.length > 0) {
+      const firstImage = ad.image_urls[0];
+      ogImage = firstImage.startsWith('http') ? firstImage : `${baseUrl}${firstImage.startsWith('/') ? '' : '/'}${firstImage}`;
+    }
     
     return {
       title: metaTitle,
       description: ad.description?.slice(0, 160),
-      alternates: { canonical: `${baseUrl}/ads/${ad.id}/${adSlug}` },
+      alternates: { canonical: canonicalUrl },
+      openGraph: {
+        title: metaTitle,
+        description: ad.description?.slice(0, 160),
+        url: canonicalUrl,
+        siteName: 'Jootiya',
+        images: [
+          {
+            url: ogImage,
+            width: 1200,
+            height: 630,
+            alt: ad.title,
+          },
+        ],
+        locale: 'fr_FR',
+        type: 'website',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: metaTitle,
+        description: ad.description?.slice(0, 160),
+        images: [ogImage],
+      },
     };
   } catch (err) {
     return { title: "Petites Annonces au Maroc | Jootiya" };
