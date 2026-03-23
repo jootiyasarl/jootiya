@@ -107,7 +107,10 @@ export default async function AdPage({ params }: AdPageProps) {
 
     const { data: ad, error: adError } = await supabase
     .from("ads")
-    .select(`*`)
+    .select(`
+      *,
+      profiles:seller_id(phone, full_name, avatar_url, created_at)
+    `)
     .or(`id.eq.${id},slug.eq.${id}`)
     .maybeSingle();
 
@@ -117,12 +120,7 @@ export default async function AdPage({ params }: AdPageProps) {
 
   if (adError || !ad) notFound();
 
-  // Fetch profile separately to avoid join issues
-  const { data: sellerProfile } = await supabase
-    .from("profiles")
-    .select("phone, full_name, avatar_url, created_at")
-    .eq("id", ad.seller_id)
-    .single();
+  const sellerProfile = ad.profiles;
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://jootiya.com';
   const formattedPrice = ad.price ? `${Number(ad.price).toLocaleString()} ${ad.currency || 'MAD'}` : "Sur demande";
   const formattedDate = new Date(ad.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
