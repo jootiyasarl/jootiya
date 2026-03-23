@@ -33,6 +33,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
   const [ads, setAds] = useState<HomepageAd[]>([]);
   const [isOfflineData, setIsOfflineData] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const latParam = typeof initialParams.lat === 'string' ? parseFloat(initialParams.lat) : null;
   const lngParam = typeof initialParams.lng === 'string' ? parseFloat(initialParams.lng) : null;
@@ -171,8 +172,10 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
             saveAds(formattedAds);
           }
         }
-      } catch (err) {
+      } catch (err: any) {
         console.error("Fetch error:", err);
+        setError(err.message || "Erreur de chargement");
+        setLoading(false);
       }
     }
 
@@ -294,6 +297,17 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
       )}
       
       <main className="main-content-wrapper container-standard py-4 sm:py-6 lg:py-8">
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-2xl text-red-600 text-sm font-bold flex flex-col items-center gap-3">
+            <p>Impossible de charger les annonces : {error}</p>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="px-4 py-2 bg-red-600 text-white rounded-xl text-xs"
+            >
+              Réessayer
+            </button>
+          </div>
+        )}
         <div className="block mb-6 md:mb-10">
           <SellBanner />
         </div>
