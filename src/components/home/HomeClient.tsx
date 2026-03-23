@@ -39,11 +39,15 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
   const radiusParam = typeof initialParams.radius === 'string' ? parseInt(initialParams.radius) : 50;
 
   useEffect(() => {
+    let isMounted = true;
+    
     async function initData() {
+      if (!isMounted) return;
+      
       try {
         if (typeof window !== "undefined") {
           const cached = await getCachedAds();
-          if (cached && cached.length > 0) {
+          if (cached && cached.length > 0 && isMounted) {
             setAds(cached);
             setIsOfflineData(true);
             setLoading(false);
@@ -69,14 +73,14 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
         const lat = latParam || storedLocation?.lat;
         const lon = lngParam || storedLocation?.lon;
 
+        let resultData: any[] | null = null;
         if (lat && lon) {
-          const result = await fetchNearbyAds({
+          resultData = await fetchNearbyAds({
             latitude: lat,
             longitude: lon,
             radiusKm: radiusParam,
             limit: 60,
           });
-          data = result;
         } else {
           const { data: standardData, error } = await supabase
             .from("ads")
@@ -102,11 +106,11 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
             .order("created_at", { ascending: false })
             .limit(60);
           if (error) throw error;
-          data = standardData;
+          resultData = standardData;
         }
 
-        if (data) {
-          const formattedAds = data.map((row: any): HomepageAd => {
+        if (resultData && isMounted) {
+          const formattedAds = resultData.map((row: any): HomepageAd => {
             const locationParts: string[] = [];
             if (row.neighborhood) locationParts.push(row.neighborhood);
             if (row.city) locationParts.push(row.city);
@@ -173,6 +177,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
     }
 
     initData();
+    return () => { isMounted = false; };
   }, [latParam, lngParam, radiusParam]);
 
   const mapAds = ads.filter(a => a.latitude && a.longitude).slice(0, 10);

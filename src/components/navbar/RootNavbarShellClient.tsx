@@ -27,16 +27,11 @@ export function RootNavbarShellClient({ children, navbar, footer }: RootNavbarSh
     pathname?.startsWith("/admin") ||
     pathname?.startsWith("/moderator") ||
     pathname?.startsWith("/login") ||
-    pathname === "/login" ||
-    pathname?.includes("/login") ||
     pathname?.startsWith("/register") ||
-    pathname === "/register" ||
-    pathname?.includes("/register") ||
     pathname?.startsWith("/sign-in") ||
     pathname?.startsWith("/onboarding") ||
     pathname?.startsWith("/forgot-password") ||
-    pathname === "/forgot-password" ||
-    pathname?.includes("/forgot-password");
+    pathname?.startsWith("/auth/reset-password");
 
   return (
     <>
