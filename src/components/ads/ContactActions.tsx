@@ -43,7 +43,8 @@ export function ContactActions({ adId, sellerId, sellerPhone, currentUser }: Con
             ? '212' + cleanPhone.substring(1)
             : cleanPhone;
 
-        window.open(`https://wa.me/${formatPhone}`, '_blank');
+        const message = "Bonjour, j'ai vu votre annonce sur Jootiya و أنا مهتم بها. هل لا زالت متوفرة؟";
+        window.open(`https://wa.me/${formatPhone}?text=${encodeURIComponent(message)}`, '_blank');
     };
 
     const handleQuickMessage = async () => {
