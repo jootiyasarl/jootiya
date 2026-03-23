@@ -16,8 +16,8 @@ export function MobileBottomNav() {
     }
 
     return (
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-t border-zinc-100 px-2 pb-safe-bottom shadow-[0_-10px_20px_rgba(0,0,0,0.02)]">
-            <div className="grid h-16 grid-cols-5 mx-auto max-w-md items-center">
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-t border-zinc-100 px-2 shadow-[0_-10px_20px_rgba(0,0,0,0.02)] pb-[env(safe-area-inset-bottom)]">
+            <div className="grid h-16 grid-cols-5 mx-auto max-w-md items-center px-1">
                 <Link
                     href="/"
                     className={cn(
