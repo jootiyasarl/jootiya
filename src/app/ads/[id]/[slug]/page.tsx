@@ -105,7 +105,9 @@ export default async function AdPage({ params }: AdPageProps) {
   const user = await getServerUser();
   const supabase = createSupabaseServerClient();
 
-    const { data: ad, error: adError } = await supabase
+  console.log("DEBUG: Fetching ad with ID:", id, "and Slug:", slug);
+
+  const { data: ad, error: adError } = await supabase
     .from("ads")
     .select(`
       *,
@@ -115,10 +117,142 @@ export default async function AdPage({ params }: AdPageProps) {
     .maybeSingle();
 
   if (adError) {
-    console.error("Ad Fetch Error:", adError);
+    console.error("DEBUG: Ad Fetch Error:", adError);
   }
 
-  if (adError || !ad) notFound();
+  if (!ad) {
+    console.error("DEBUG: Ad not found for ID:", id);
+    // Try a simpler query if the first one fails
+    const { data: retryAd, error: retryError } = await supabase
+      .from("ads")
+      .select("*")
+      .eq("id", id)
+      .maybeSingle();
+    
+    if (retryError) {
+      console.error("DEBUG: Retry Error:", retryError);
+    }
+
+    if (retryAd) {
+      console.log("DEBUG: Ad found on retry without join:", retryAd.id);
+      // If found on retry, use it
+      const finalAd = { ...retryAd, profiles: null };
+      
+      const sellerProfile = null;
+      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://jootiya.com';
+      const formattedPrice = finalAd.price ? `${Number(finalAd.price).toLocaleString()} ${finalAd.currency || 'MAD'}` : "Sur demande";
+      const formattedDate = new Date(finalAd.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+      const sellerName = "Utilisateur Jootiya";
+      const memberSince = "2024";
+
+      const images = (finalAd.image_urls || []).map((img: string) => 
+        img.startsWith('http') ? img : `${baseUrl}/${img.startsWith('/') ? img.substring(1) : img}`
+      );
+
+      const { data: stats } = await supabase.rpc('get_seller_stats', { target_seller_id: finalAd.seller_id });
+      const avgRating = stats?.[0]?.avg_rating || 0;
+      const totalReviews = stats?.[0]?.total_reviews || 0;
+      const isTrusted = totalReviews > 10 && avgRating >= 4.5;
+
+      const { data: similarAds } = await supabase
+        .from("ads")
+        .select("*")
+        .eq("category", finalAd.category)
+        .neq("id", finalAd.id)
+        .limit(4);
+
+      return (
+        <div dir="ltr" className="bg-[#F8FAFC] dark:bg-zinc-950 pb-8 font-sans">
+          <ShadowViewTracker adId={finalAd.id} category={finalAd.category} />
+          
+          <div className="mb-4 md:mb-6">
+            <nav className="flex items-center gap-2 text-[10px] md:text-[11px] font-bold text-zinc-500 uppercase tracking-wider overflow-x-auto no-scrollbar whitespace-nowrap">
+              <Link href="/" className="hover:text-orange-600 shrink-0">Accueil</Link>
+              <ChevronRight className="h-3 w-3 text-zinc-300 shrink-0" />
+              <Link href="/marketplace" className="hover:text-orange-600 shrink-0">Marché</Link>
+              <ChevronRight className="h-3 w-3 text-zinc-300 shrink-0" />
+              <span className="text-orange-600 font-black shrink-0">{finalAd.category || "Annonce"}</span>
+            </nav>
+          </div>
+          
+          <main className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              <div className="lg:col-span-8 space-y-6">
+                <section className="rounded-2xl overflow-hidden bg-white dark:bg-zinc-900 shadow-sm ring-1 ring-zinc-100 dark:ring-white/5">
+                  <AdImageGallery images={images} />
+                </section>
+
+                <div className="space-y-4">
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center justify-between">
+                      <p className="text-2xl font-black text-orange-600 tracking-tight">{formattedPrice}</p>
+                      <FavoriteButton adId={finalAd.id} className="h-10 w-10 hover:bg-red-50 rounded-xl" />
+                    </div>
+                    <h1 className="text-2xl md:text-3xl font-black tracking-tighter text-zinc-900 dark:text-white leading-tight">
+                      {finalAd.title}
+                    </h1>
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm font-medium text-zinc-500">
+                      <span className="flex items-center gap-1.5"><MapPin className="h-4 w-4 text-orange-500" />{finalAd.city}</span>
+                      <span className="h-1 w-1 rounded-full bg-zinc-300" />
+                      <span className="flex items-center gap-1.5"><Calendar className="h-4 w-4 text-orange-500" />{formattedDate}</span>
+                      <span className="h-1 w-1 rounded-full bg-zinc-300" />
+                      <span className="flex items-center gap-1.5"><Eye className="h-4 w-4 text-orange-500" />{finalAd.views_count || 1} vues</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-white dark:bg-zinc-900 rounded-2xl p-6 shadow-sm ring-1 ring-zinc-100 dark:ring-white/5">
+                    <h2 className="text-lg font-black mb-4">Description</h2>
+                    <p className="whitespace-pre-wrap leading-relaxed text-zinc-700 dark:text-zinc-300">
+                      {finalAd.description || "Aucune description fournie."}
+                    </p>
+                    
+                    <div className="mt-8 pt-8 border-t border-zinc-100 dark:border-zinc-800">
+                      <ViralShareButton 
+                        adId={finalAd.id} 
+                        adTitle={finalAd.title} 
+                        adPrice={formattedPrice} 
+                        sellerId={finalAd.seller_id} 
+                        showAsMainAction={true}
+                      />
+                    </div>
+
+                    <div className="mt-8 pt-8 border-t border-zinc-100 dark:border-zinc-800 grid grid-cols-2 md:grid-cols-3 gap-4">
+                      <div className="space-y-1">
+                        <p className="text-[10px] uppercase font-black text-zinc-400 tracking-widest">Catégorie</p>
+                        <p className="font-bold">{finalAd.category || "Autre"}</p>
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-[10px] uppercase font-black text-zinc-400 tracking-widest">État</p>
+                        <p className="font-bold">{finalAd.condition === 'new' ? "Neuf" : "Occasion"}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {similarAds && similarAds.length > 0 && (
+                  <section className="pt-8">
+                    <h2 className="text-xl font-black mb-6">Annonces similaires</h2>
+                    <SimilarAdsCarousel ads={similarAds as any[]} />
+                  </section>
+                )}
+              </div>
+
+              <aside className="lg:col-span-4 space-y-4">
+                <div className="lg:sticky lg:top-[180px] space-y-4">
+                  <div className="bg-white dark:bg-zinc-900 p-6 rounded-2xl shadow-sm ring-1 ring-zinc-100 dark:ring-white/5">
+                    <p className="text-sm font-black text-zinc-400 uppercase tracking-widest mb-1">Prix</p>
+                    <p className="text-3xl font-black text-orange-600 mb-6">{formattedPrice}</p>
+                    <ContactActions adId={finalAd.id} sellerId={finalAd.seller_id} currentUser={user} sellerPhone={finalAd.phone} />
+                  </div>
+                </div>
+              </aside>
+          </main>
+          <QuickActionFooter phone={finalAd.phone} adTitle={finalAd.title} adPrice={formattedPrice} adId={finalAd.id} sellerId={finalAd.seller_id} currentUser={user} />
+        </div>
+      );
+    } else {
+      notFound();
+    }
+  }
 
   const sellerProfile = ad.profiles;
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://jootiya.com';
