@@ -150,8 +150,8 @@ export default async function AdPage({ params }: AdPageProps) {
       <ShadowViewTracker adId={ad.id} category={ad.category} />
       
       {/* Unified Breadcrumbs */}
-      <div className="sticky top-[50px] md:top-[128px] z-30 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-100 dark:border-zinc-800">
-        <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-3">
+      <div className="sticky top-[50px] md:top-[115px] z-30 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-100 dark:border-zinc-800 transition-all duration-300">
+        <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-2 md:py-3">
           <nav className="flex items-center gap-2 text-[12px] font-bold text-zinc-500 uppercase tracking-wider overflow-x-auto no-scrollbar whitespace-nowrap">
             <Link href="/" className="hover:text-orange-600 shrink-0">Accueil</Link>
             <ChevronRight className="h-3.5 w-3.5 text-zinc-300 shrink-0" />
