@@ -118,27 +118,9 @@ export default async function AdPage({ params }: AdPageProps) {
     console.error("Ad Fetch Error:", adError);
   }
 
-  // If not found by ID or slug, try one more time with just the ID if it looks like a UUID
-  let finalAd = ad;
-  if (!finalAd && !adError) {
-    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
-    if (isUuid) {
-      const { data: retryAd } = await supabase
-        .from("ads")
-        .select(`
-          *,
-          profiles:seller_id(phone, full_name, avatar_url, created_at)
-        `)
-        .eq("id", id)
-        .maybeSingle();
-      finalAd = retryAd;
-    }
-  }
+  if (adError || !ad) notFound();
 
-  if (!finalAd) notFound();
-
-  const adData = finalAd;
-  const sellerProfile = adData.profiles;
+  const sellerProfile = ad.profiles;
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://jootiya.com';
   const formattedPrice = ad.price ? `${Number(ad.price).toLocaleString()} ${ad.currency || 'MAD'}` : "Sur demande";
   const formattedDate = new Date(ad.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
@@ -176,7 +158,7 @@ export default async function AdPage({ params }: AdPageProps) {
         </nav>
       </div>
       
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <main className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Main Content Column */}
           <div className="lg:col-span-8 space-y-6">
             <section className="rounded-2xl overflow-hidden bg-white dark:bg-zinc-900 shadow-sm ring-1 ring-zinc-100 dark:ring-white/5">
@@ -300,7 +282,7 @@ export default async function AdPage({ params }: AdPageProps) {
               </div>
             </div>
           </aside>
-        </div>
+      </main>
       <QuickActionFooter phone={ad.phone || sellerProfile?.phone} adTitle={ad.title} adPrice={formattedPrice} adId={ad.id} sellerId={ad.seller_id} currentUser={user} />
     </div>
   );
