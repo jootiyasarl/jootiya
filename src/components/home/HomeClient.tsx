@@ -367,8 +367,6 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
                   })}
                 </>
               )}
-              
-              <BlogSection />
             </>
           )}
         </div>
