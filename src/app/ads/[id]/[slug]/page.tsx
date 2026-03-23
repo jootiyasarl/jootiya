@@ -147,23 +147,18 @@ export default async function AdPage({ params }: AdPageProps) {
     <div dir="ltr" className="bg-[#F8FAFC] dark:bg-zinc-950 pb-8 font-sans">
       <ShadowViewTracker adId={ad.id} category={ad.category} />
       
-      {/* Unified Breadcrumbs */}
-      <div className="sticky top-[56px] md:top-[112px] z-30 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-100 dark:border-zinc-800">
-        <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-2 md:py-2.5">
-          <nav className="flex items-center gap-2 text-[11px] md:text-[12px] font-bold text-zinc-500 uppercase tracking-wider overflow-x-auto no-scrollbar whitespace-nowrap">
-            <Link href="/" className="hover:text-orange-600 shrink-0">Accueil</Link>
-            <ChevronRight className="h-3.5 w-3.5 text-zinc-300 shrink-0" />
-            <Link href="/marketplace" className="hover:text-orange-600 shrink-0">Marché</Link>
-            <ChevronRight className="h-3.5 w-3.5 text-zinc-300 shrink-0" />
-            <span className="text-orange-600 font-black shrink-0">{ad.category || "Annonce"}</span>
-            <ChevronRight className="h-3.5 w-3.5 text-zinc-300 shrink-0" />
-            <span className="text-zinc-400 truncate max-w-[200px] md:max-w-none font-medium shrink-0">{ad.title}</span>
-          </nav>
-        </div>
+      {/* Breadcrumbs for Page context */}
+      <div className="mb-4 md:mb-6">
+        <nav className="flex items-center gap-2 text-[10px] md:text-[11px] font-bold text-zinc-500 uppercase tracking-wider overflow-x-auto no-scrollbar whitespace-nowrap">
+          <Link href="/" className="hover:text-orange-600 shrink-0">Accueil</Link>
+          <ChevronRight className="h-3 w-3 text-zinc-300 shrink-0" />
+          <Link href="/marketplace" className="hover:text-orange-600 shrink-0">Marché</Link>
+          <ChevronRight className="h-3 w-3 text-zinc-300 shrink-0" />
+          <span className="text-orange-600 font-black shrink-0">{ad.category || "Annonce"}</span>
+        </nav>
       </div>
       
-      <main className="max-w-[1440px] mx-auto px-4 md:px-8 pt-2 md:pt-4 pb-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Main Content Column */}
           <div className="lg:col-span-8 space-y-6">
             <section className="rounded-2xl overflow-hidden bg-white dark:bg-zinc-900 shadow-sm ring-1 ring-zinc-100 dark:ring-white/5">
@@ -288,6 +283,7 @@ export default async function AdPage({ params }: AdPageProps) {
             </div>
           </aside>
         </div>
+      <QuickActionFooter phone={ad.phone || sellerProfile?.phone} adTitle={ad.title} adPrice={formattedPrice} adId={ad.id} sellerId={ad.seller_id} currentUser={user} />
     </div>
   );
 }
