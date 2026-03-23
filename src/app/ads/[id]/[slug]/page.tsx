@@ -55,7 +55,17 @@ export async function generateMetadata({ params }: AdPageProps) {
     let ogImage = `${baseUrl}/og-image.png`; // Fallback image
     if (ad.image_urls && Array.isArray(ad.image_urls) && ad.image_urls.length > 0) {
       const firstImage = ad.image_urls[0];
-      ogImage = firstImage.startsWith('http') ? firstImage : `${baseUrl}${firstImage.startsWith('/') ? '' : '/'}${firstImage}`;
+      if (firstImage.startsWith('http')) {
+        ogImage = firstImage;
+      } else {
+        const cleanPath = firstImage.startsWith('/') ? firstImage.substring(1) : firstImage;
+        // Check if it's a Supabase path that needs the public URL prefix
+        if (!cleanPath.startsWith('storage/v1/object/public/')) {
+          ogImage = `https://mshnkdqclscfytvdbmre.supabase.co/storage/v1/object/public/ad-images/${cleanPath}`;
+        } else {
+          ogImage = `${baseUrl}/${cleanPath}`;
+        }
+      }
     }
     
     return {
