@@ -330,16 +330,16 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
           ) : (
             <>
               {loading ? (
-                <div className="space-y-12 py-4">
-                  {[...Array(3)].map((_, sectionIndex) => (
-                    <div key={sectionIndex} className="space-y-6">
+                <div className="space-y-8 py-4 px-2">
+                  {[...Array(2)].map((_, sectionIndex) => (
+                    <div key={sectionIndex} className="space-y-4">
                       <div className="flex flex-col gap-1 px-1">
-                        <div className="h-3 w-20 bg-zinc-100 animate-pulse rounded-full" />
-                        <div className="h-8 w-48 bg-zinc-100 animate-pulse rounded-xl mt-1" />
+                        <div className="h-3 w-16 bg-zinc-100 animate-pulse rounded-full" />
+                        <div className="h-6 w-32 bg-zinc-100 animate-pulse rounded-lg mt-1" />
                       </div>
-                      <div className="flex overflow-x-auto no-scrollbar gap-4 pb-4 px-1">
-                        {[...Array(4)].map((_, i) => (
-                          <div key={i} className="flex-[0_0_72%] sm:flex-[0_0_45%] md:flex-[0_0_32%] lg:flex-[0_0_24%] aspect-[3/4] bg-zinc-100 animate-pulse rounded-[2rem] shrink-0" />
+                      <div className="flex overflow-x-auto no-scrollbar gap-3 pb-2">
+                        {[...Array(3)].map((_, i) => (
+                          <div key={i} className="flex-[0_0_75%] min-[400px]:flex-[0_0_60%] aspect-[3/4] bg-zinc-100 animate-pulse rounded-[1.5rem] shrink-0" />
                         ))}
                       </div>
                     </div>

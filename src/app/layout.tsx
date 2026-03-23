@@ -55,7 +55,10 @@ export const metadata: Metadata = {
 export const viewport = {
   width: "device-width",
   initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
   themeColor: "#f97316",
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
@@ -69,9 +72,9 @@ export default function RootLayout({
         <style dangerouslySetInnerHTML={{ __html: `
           :root { --primary: 25 95% 53%; --background: 0 0% 100%; --foreground: 222 47% 11%; }
           .dark { --background: 224 71% 4%; --foreground: 213 31% 91%; }
-          body { background-color: #fff; color: #0f172a; font-family: sans-serif; margin: 0; }
+          body { background-color: #fff; color: #0f172a; font-family: sans-serif; margin: 0; width: 100%; max-width: 100%; overflow-x: hidden; position: relative; }
           .dark body { background-color: #020617; color: #e2e8f0; }
-          main { min-height: 100vh; }
+          main { min-height: 100vh; width: 100%; overflow-x: hidden; }
           .container-standard {
             width: 100%;
             margin-right: auto;
