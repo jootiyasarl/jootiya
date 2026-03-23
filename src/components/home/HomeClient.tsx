@@ -46,9 +46,11 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
       if (!isMounted) return;
       
       try {
+        console.log("Starting data fetch...");
         if (typeof window !== "undefined") {
           const cached = await getCachedAds();
           if (cached && cached.length > 0 && isMounted) {
+            console.log("Loaded from cache:", cached.length);
             setAds(cached);
             setIsOfflineData(true);
             setLoading(false);
@@ -76,6 +78,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
 
         let resultData: any[] | null = null;
         if (lat && lon) {
+          console.log("Fetching nearby ads...");
           resultData = await fetchNearbyAds({
             latitude: lat,
             longitude: lon,
@@ -83,7 +86,8 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
             limit: 60,
           });
         } else {
-          const { data: standardData, error } = await supabase
+          console.log("Fetching standard ads...");
+          const { data: standardData, error: fetchError } = await supabase
             .from("ads")
             .select(`
               id, 
@@ -106,11 +110,12 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
             .order("is_featured", { ascending: false })
             .order("created_at", { ascending: false })
             .limit(60);
-          if (error) throw error;
+          if (fetchError) throw fetchError;
           resultData = standardData;
         }
 
         if (resultData && isMounted) {
+          console.log("Data fetched successfully:", resultData.length);
           const formattedAds = resultData.map((row: any): HomepageAd => {
             const locationParts: string[] = [];
             if (row.neighborhood) locationParts.push(row.neighborhood);
