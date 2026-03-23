@@ -295,7 +295,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
         
         <div className="space-y-12 sm:space-y-16 min-w-0">
           {ads.length === 0 && !loading ? (
-            <div className="flex flex-col items-center justify-center py-24 text-center border border-dashed border-zinc-200 rounded-[2.5rem] bg-zinc-50/40">
+            <div className="flex flex-col items-center justify-center py-24 text-center border border-dashed border-zinc-200 rounded-[2.5rem] bg-zinc-50/40 px-4">
               <div className="bg-white p-6 rounded-2xl mb-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-zinc-100">
                 <Package className="w-10 h-10 text-zinc-400" />
               </div>
@@ -307,9 +307,9 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
           ) : (
             <>
               {loading ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                <div className="flex overflow-x-auto no-scrollbar gap-4 pb-4 px-1 md:grid md:grid-cols-3 lg:grid-cols-4 md:gap-6">
                   {[...Array(8)].map((_, i) => (
-                    <div key={i} className="aspect-[3/4] bg-zinc-100 animate-pulse rounded-[2rem]" />
+                    <div key={i} className="flex-[0_0_72%] md:flex-none aspect-[3/4] bg-zinc-100 animate-pulse rounded-[2rem] shrink-0" />
                   ))}
                 </div>
               ) : (

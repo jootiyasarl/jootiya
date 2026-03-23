@@ -62,14 +62,14 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete, pr
         
         {ad.imageUrl ? (
           <Image
-            src={getOptimizedImageUrl(ensureFullUrl(ad.imageUrl), { width: 400, height: 300, quality: 75 })}
+            src={getOptimizedImageUrl(ensureFullUrl(ad.imageUrl), { width: 400, height: 300, quality: 80, format: 'webp' })}
             alt={ad.title}
             fill
             priority={priority}
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             loading={priority ? "eager" : "lazy"}
-            unoptimized
+            unoptimized={false}
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center text-zinc-400">
