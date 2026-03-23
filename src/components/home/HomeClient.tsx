@@ -103,8 +103,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
               status, 
               latitude, 
               longitude, 
-              seller_id,
-              profiles:seller_id(full_name, username, avatar_url)
+              seller_id
             `)
             .or("status.eq.active,status.eq.approved")
             .order("is_featured", { ascending: false })
