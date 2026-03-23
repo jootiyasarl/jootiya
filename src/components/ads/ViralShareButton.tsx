@@ -10,10 +10,12 @@ interface ViralShareButtonProps {
   adTitle: string;
   adPrice: string;
   sellerId: string;
+  showAsMainAction?: boolean;
 }
 
-export function ViralShareButton({ adId, adTitle, adPrice, sellerId }: ViralShareButtonProps) {
+export function ViralShareButton({ adId, adTitle, adPrice, sellerId, showAsMainAction = false }: ViralShareButtonProps) {
   const [copied, setCopied] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
 
   // Generate unique referral link
   const baseUrl = typeof window !== "undefined" ? window.location.origin : "https://jootiya.com";
@@ -25,25 +27,44 @@ export function ViralShareButton({ adId, adTitle, adPrice, sellerId }: ViralShar
   const handleCopy = () => {
     navigator.clipboard.writeText(referralLink);
     setCopied(true);
-    toast.success("Lien de parrainage copié avec succès !");
+    toast.success("Lien copié !");
     setTimeout(() => setCopied(false), 2000);
   };
 
   const handleNativeShare = async () => {
     if (navigator.share) {
       try {
+        setIsSharing(true);
         await navigator.share({
           title: adTitle,
           text: `Regardez cette offre sur Jootiya ! ${adTitle} à ${adPrice}`,
           url: referralLink,
         });
       } catch (err) {
-        console.error("Error sharing:", err);
+        if ((err as Error).name !== 'AbortError') {
+          console.error("Error sharing:", err);
+        }
+      } finally {
+        setIsSharing(false);
       }
     } else {
       handleCopy();
     }
   };
+
+  if (showAsMainAction) {
+    return (
+      <div className="w-full">
+        <Button
+          onClick={handleNativeShare}
+          className="w-full h-14 text-lg font-black rounded-2xl bg-white border-2 border-orange-500 text-orange-600 hover:bg-orange-50 transition-all active:scale-[0.98] gap-3 shadow-sm group"
+        >
+          <Share2 className="w-6 h-6 group-hover:rotate-12 transition-transform" />
+          {copied ? "Lien copié !" : "Partager l'annonce"}
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-3">
@@ -51,7 +72,7 @@ export function ViralShareButton({ adId, adTitle, adPrice, sellerId }: ViralShar
       <div className="flex gap-2">
         <Button
           onClick={() => window.open(whatsappUrl, "_blank")}
-          className="flex-1 h-12 bg-[#25D366] hover:bg-[#22c35e] text-white font-black rounded-xl gap-2 shadow-lg shadow-green-100 dark:shadow-none"
+          className="flex-[2] h-12 bg-[#25D366] hover:bg-[#22c35e] text-white font-black rounded-xl gap-2 shadow-lg shadow-green-100 dark:shadow-none"
         >
           <MessageCircle className="w-5 h-5 fill-current" />
           WhatsApp
@@ -59,16 +80,10 @@ export function ViralShareButton({ adId, adTitle, adPrice, sellerId }: ViralShar
         <Button
           variant="outline"
           onClick={handleNativeShare}
-          className="h-12 w-12 rounded-xl border-zinc-200 dark:border-zinc-800"
+          className="flex-1 h-12 rounded-xl border-zinc-200 dark:border-zinc-800 gap-2 font-bold"
         >
-          <Share2 className="w-5 h-5" />
-        </Button>
-        <Button
-          variant="outline"
-          onClick={handleCopy}
-          className="h-12 w-12 rounded-xl border-zinc-200 dark:border-zinc-800"
-        >
-          {copied ? <Check className="w-5 h-5 text-green-500" /> : <Copy className="w-5 h-5" />}
+          <Share2 className="w-4 h-4" />
+          {isSharing ? "..." : "Plus"}
         </Button>
       </div>
     </div>

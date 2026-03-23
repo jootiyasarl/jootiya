@@ -156,6 +156,16 @@ export default async function AdPage({ params }: AdPageProps) {
                   {ad.description || "Aucune description fournie."}
                 </p>
                 
+                <div className="mt-8 pt-8 border-t border-zinc-100 dark:border-zinc-800">
+                  <ViralShareButton 
+                    adId={ad.id} 
+                    adTitle={ad.title} 
+                    adPrice={formattedPrice} 
+                    sellerId={ad.seller_id} 
+                    showAsMainAction={true}
+                  />
+                </div>
+
                 <div className="mt-8 pt-8 border-t border-zinc-100 dark:border-zinc-800 grid grid-cols-2 md:grid-cols-3 gap-4">
                   <div className="space-y-1">
                     <p className="text-[10px] uppercase font-black text-zinc-400 tracking-widest">Catégorie</p>
