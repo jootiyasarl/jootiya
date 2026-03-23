@@ -31,8 +31,7 @@ export function RootNavbarShellClient({ children, navbar, footer }: RootNavbarSh
     pathname?.startsWith("/sign-in") ||
     pathname?.startsWith("/onboarding") ||
     pathname?.startsWith("/forgot-password") ||
-    pathname?.startsWith("/auth/reset-password") ||
-    pathname?.startsWith("/ads/");
+    pathname?.startsWith("/auth/reset-password");
 
   return (
     <>
@@ -53,7 +52,7 @@ export function RootNavbarShellClient({ children, navbar, footer }: RootNavbarSh
       >
         <div className={cn(!isSpecialPath && "main-content-wrapper")}
         >
-          {!isSpecialPath && !pathname?.startsWith("/ads/") ? (
+          {!isSpecialPath ? (
             <div className="max-w-[1440px] mx-auto px-4 md:px-8 relative">
               <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start relative">
                 <aside className="hidden xl:block w-40 sticky top-24 shrink-0">

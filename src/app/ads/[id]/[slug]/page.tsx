@@ -288,8 +288,6 @@ export default async function AdPage({ params }: AdPageProps) {
             </div>
           </aside>
         </div>
-      </main>
-      <QuickActionFooter phone={ad.phone || sellerProfile?.phone} adTitle={ad.title} adPrice={formattedPrice} adId={ad.id} sellerId={ad.seller_id} currentUser={user} />
     </div>
   );
 }
