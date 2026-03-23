@@ -150,9 +150,9 @@ export default async function AdPage({ params }: AdPageProps) {
       <ShadowViewTracker adId={ad.id} category={ad.category} />
       
       {/* Unified Breadcrumbs */}
-      <div className="sticky top-[50px] md:top-[105px] z-30 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-100 dark:border-zinc-800 transition-all duration-300">
-        <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-1 md:py-2">
-          <nav className="flex items-center gap-2 text-[12px] font-bold text-zinc-500 uppercase tracking-wider overflow-x-auto no-scrollbar whitespace-nowrap">
+      <div className="sticky top-[56px] md:top-[112px] z-30 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-100 dark:border-zinc-800">
+        <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-2 md:py-2.5">
+          <nav className="flex items-center gap-2 text-[11px] md:text-[12px] font-bold text-zinc-500 uppercase tracking-wider overflow-x-auto no-scrollbar whitespace-nowrap">
             <Link href="/" className="hover:text-orange-600 shrink-0">Accueil</Link>
             <ChevronRight className="h-3.5 w-3.5 text-zinc-300 shrink-0" />
             <Link href="/marketplace" className="hover:text-orange-600 shrink-0">Marché</Link>
@@ -164,7 +164,7 @@ export default async function AdPage({ params }: AdPageProps) {
         </div>
       </div>
       
-      <main className="max-w-[1440px] mx-auto px-4 md:px-8 pt-4 md:pt-14 pb-12">
+      <main className="max-w-[1440px] mx-auto px-4 md:px-8 pt-2 md:pt-4 pb-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Main Content Column */}
           <div className="lg:col-span-8 space-y-6">
