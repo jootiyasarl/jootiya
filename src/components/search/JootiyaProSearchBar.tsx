@@ -70,24 +70,24 @@ export function JootiyaProSearchBar() {
   return (
     <div className="w-full relative z-[200]" ref={rootRef}>
       {/* Desktop Version */}
-      <div className="hidden lg:flex items-center gap-2 bg-white dark:bg-zinc-900 p-1.5 rounded-full border border-zinc-200 dark:border-zinc-800 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all duration-300 max-w-3xl mx-auto group/bar">
+      <div className="hidden lg:flex items-center gap-2 bg-white dark:bg-zinc-900 p-1 rounded-full border border-zinc-200 dark:border-zinc-800 shadow-[0_2px_10px_-3px_rgba(0,0,0,0.07)] hover:shadow-[0_5px_20px_rgb(0,0,0,0.1)] transition-all duration-300 max-w-2xl mx-auto group/bar">
         {/* City Filter - Professional Minimalist */}
         <div className="relative">
           <button
             type="button"
             onClick={() => setActiveField(activeField === "city" ? null : "city")}
             className={cn(
-              "flex items-center gap-2 h-11 px-5 rounded-full transition-all duration-200 min-w-[140px]",
+              "flex items-center gap-2 h-9 px-4 rounded-full transition-all duration-200 min-w-[120px]",
               activeField === "city" 
                 ? "bg-orange-50 dark:bg-orange-950/20 text-orange-600" 
                 : "hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400"
             )}
           >
-            <MapPin className={cn("w-4 h-4", activeField === "city" ? "text-orange-600" : "text-zinc-400")} />
-            <span className="text-sm font-bold truncate">
+            <MapPin className={cn("w-3.5 h-3.5", activeField === "city" ? "text-orange-600" : "text-zinc-400")} />
+            <span className="text-xs font-bold truncate">
               {city === "Toutes les villes" ? "Ville" : city}
             </span>
-            <ChevronDown className={cn("w-3.5 h-3.5 transition-transform duration-200", activeField === "city" && "rotate-180")} />
+            <ChevronDown className={cn("w-3 h-3 transition-transform duration-200", activeField === "city" && "rotate-180")} />
           </button>
 
           {/* City Dropdown - Elevated Glassmorphism */}
@@ -113,10 +113,10 @@ export function JootiyaProSearchBar() {
           )}
         </div>
 
-        <div className="h-6 w-px bg-zinc-200 dark:bg-zinc-800 mx-1" />
+        <div className="h-5 w-px bg-zinc-200 dark:bg-zinc-800 mx-0.5" />
 
         {/* Search Main Bar - Seamless Integration */}
-        <div className="flex-1 flex items-center h-11 relative">
+        <div className="flex-1 flex items-center h-9 relative">
           <form 
             onSubmit={handleSearch} 
             className="flex flex-1 items-center h-full"
@@ -126,28 +126,28 @@ export function JootiyaProSearchBar() {
               type="button"
               onClick={() => setActiveField(activeField === "category" ? null : "category")}
               className={cn(
-                "flex items-center gap-2 px-5 h-full rounded-full transition-all duration-200 min-w-[150px]",
+                "flex items-center gap-2 px-4 h-full rounded-full transition-all duration-200 min-w-[130px]",
                 activeField === "category" 
                   ? "bg-orange-50 dark:bg-orange-950/20 text-orange-600" 
                   : "hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200"
               )}
             >
-              <LayoutGrid className={cn("w-4 h-4", activeField === "category" ? "text-orange-600" : "text-zinc-400")} />
-              <span className="text-sm font-bold truncate max-w-[110px]">
+              <LayoutGrid className={cn("w-3.5 h-3.5", activeField === "category" ? "text-orange-600" : "text-zinc-400")} />
+              <span className="text-xs font-bold truncate max-w-[90px]">
                 {selectedCategory.id === "all" ? "Catégories" : selectedCategory.label}
               </span>
-              <ChevronDown className={cn("w-3.5 h-3.5 transition-transform duration-200", activeField === "category" && "rotate-180")} />
+              <ChevronDown className={cn("w-3 h-3 transition-transform duration-200", activeField === "category" && "rotate-180")} />
             </button>
 
             {/* Input Field */}
-            <div className="flex-1 flex items-center px-4 h-full">
+            <div className="flex-1 flex items-center px-3 h-full">
               <input
                 type="text"
                 placeholder="Search any item..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onFocus={() => setActiveField("product")}
-                className="w-full bg-transparent outline-none text-sm font-bold text-zinc-800 dark:text-zinc-100 placeholder:text-zinc-400 h-full"
+                className="w-full bg-transparent outline-none text-xs font-bold text-zinc-800 dark:text-zinc-100 placeholder:text-zinc-400 h-full"
               />
             </div>
 
@@ -155,9 +155,9 @@ export function JootiyaProSearchBar() {
             <div className="pr-1">
               <Button 
                 type="submit" 
-                className="bg-[#2DB4B4] hover:bg-[#259797] rounded-full h-10 w-10 p-0 flex items-center justify-center shrink-0 transition-all duration-300 active:scale-90 shadow-lg shadow-[#2DB4B4]/30 hover:shadow-[#2DB4B4]/50 group/btn"
+                className="bg-orange-500 hover:bg-orange-600 rounded-full h-8 w-8 p-0 flex items-center justify-center shrink-0 transition-all duration-300 active:scale-90 shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 group/btn"
               >
-                <Search className="w-5 h-5 text-white group-hover/btn:scale-110 transition-transform" />
+                <Search className="w-4 h-4 text-white group-hover/btn:scale-110 transition-transform" />
               </Button>
             </div>
           </form>
