@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Search, MapPin, LayoutGrid, X, Check, ChevronRight } from "lucide-react";
+import { Search, MapPin, LayoutGrid, X, Check, ChevronRight, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { MOROCCAN_CITIES } from "@/lib/constants/cities";
@@ -70,75 +70,95 @@ export function JootiyaProSearchBar() {
   return (
     <div className="w-full" ref={rootRef}>
       {/* Desktop Version */}
-      <div className="hidden lg:block relative">
-        <form onSubmit={handleSearch} className="flex items-center bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-sm p-1.5 gap-1">
-          {/* Input Field */}
-          <div className="flex-[2] flex items-center px-3 border-r border-zinc-100 dark:border-zinc-800">
-            <Search className="w-4 h-4 text-zinc-400 mr-2" />
-            <input
-              type="text"
-              placeholder="شنو كتقلب؟"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onFocus={() => setActiveField("product")}
-              className="w-full bg-transparent outline-none text-sm py-2"
-            />
-          </div>
-
-          {/* Category Selector */}
-          <div 
-            onClick={() => setActiveField(activeField === "category" ? null : "category")}
-            className="flex-1 flex items-center px-3 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded-xl py-2 border-r border-zinc-100 dark:border-zinc-800"
-          >
-            <LayoutGrid className="w-4 h-4 text-zinc-400 mr-2" />
-            <span className="text-xs font-bold truncate">{selectedCategory.label}</span>
-          </div>
-
-          {/* City Selector */}
-          <div 
+      <div className="hidden lg:flex items-center gap-3">
+        {/* City Filter - Separate Box */}
+        <div className="relative">
+          <button
+            type="button"
             onClick={() => setActiveField(activeField === "city" ? null : "city")}
-            className="flex-1 flex items-center px-3 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded-xl py-2"
+            className="flex items-center gap-2 h-[52px] px-5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl hover:border-orange-500 transition-colors shadow-sm min-w-[160px]"
           >
-            <MapPin className="w-4 h-4 text-zinc-400 mr-2" />
-            <span className="text-xs font-bold truncate">{city}</span>
-          </div>
+            <MapPin className="w-4 h-4 text-zinc-400" />
+            <span className="text-sm font-medium text-zinc-600 dark:text-zinc-300 truncate">
+              {city === "Toutes les villes" ? "Ville" : city}
+            </span>
+          </button>
 
-          {/* Action Button */}
-          <Button type="submit" size="icon" className="bg-orange-600 hover:bg-orange-700 rounded-xl shrink-0">
-            <Search className="w-4 h-4 text-white" />
-          </Button>
-        </form>
+          {/* City Dropdown */}
+          {activeField === "city" && (
+            <div className="absolute top-full left-0 mt-2 w-64 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xl z-[999] max-h-80 overflow-y-auto p-2 animate-in fade-in slide-in-from-top-2 duration-200">
+              {ALL_CITIES.map((c) => (
+                <div
+                  key={c}
+                  onClick={() => { setCity(c); setActiveField(null); }}
+                  className="flex items-center justify-between p-3 hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded-xl cursor-pointer group"
+                >
+                  <span className="text-sm font-medium text-zinc-600 dark:text-zinc-300 group-hover:text-orange-600 transition-colors">{c}</span>
+                  {city === c && <Check className="w-4 h-4 text-orange-600" />}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
 
-        {/* Dropdowns Desktop */}
-        {activeField === "category" && (
-          <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xl z-[999] max-h-60 overflow-y-auto p-2">
-            {CATEGORIES.map((c) => (
-              <div
-                key={c.id}
-                onClick={() => { setCategoryId(c.id); setActiveField(null); }}
-                className="flex items-center justify-between p-2 hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded-lg cursor-pointer"
+        {/* Search Main Bar */}
+        <div className="flex-1 relative">
+          <form 
+            onSubmit={handleSearch} 
+            className="flex items-center bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-sm hover:border-orange-500 transition-colors h-[52px] overflow-hidden group"
+          >
+            {/* Category Dropdown Trigger */}
+            <button
+              type="button"
+              onClick={() => setActiveField(activeField === "category" ? null : "category")}
+              className="flex items-center gap-2 px-6 h-full border-r border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors min-w-[140px]"
+            >
+              <span className="text-sm font-semibold text-zinc-700 dark:text-zinc-200 truncate max-w-[120px]">
+                {selectedCategory.id === "all" ? "Categories" : selectedCategory.label}
+              </span>
+              <ChevronDown className={cn("w-4 h-4 text-zinc-400 transition-transform", activeField === "category" && "rotate-180")} />
+            </button>
+
+            {/* Input Field */}
+            <div className="flex-1 flex items-center px-4 h-full">
+              <input
+                type="text"
+                placeholder="Search any item..."
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onFocus={() => setActiveField("product")}
+                className="w-full bg-transparent outline-none text-sm font-medium text-zinc-700 dark:text-zinc-200 placeholder:text-zinc-400 h-full"
+              />
+            </div>
+
+            {/* Search Action Button */}
+            <div className="px-2">
+              <Button 
+                type="submit" 
+                size="icon" 
+                className="bg-[#2DB4B4] hover:bg-[#259797] rounded-xl h-10 w-10 shrink-0 transition-transform active:scale-95 shadow-lg shadow-[#2DB4B4]/20"
               >
-                <span className="text-sm">{c.label}</span>
-                {categoryId === c.id && <Check className="w-4 h-4 text-orange-600" />}
-              </div>
-            ))}
-          </div>
-        )}
+                <Search className="w-5 h-5 text-white" />
+              </Button>
+            </div>
+          </form>
 
-        {activeField === "city" && (
-          <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xl z-[999] max-h-60 overflow-y-auto p-2">
-            {ALL_CITIES.map((c) => (
-              <div
-                key={c}
-                onClick={() => { setCity(c); setActiveField(null); }}
-                className="flex items-center justify-between p-2 hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded-lg cursor-pointer"
-              >
-                <span className="text-sm">{c}</span>
-                {city === c && <Check className="w-4 h-4 text-orange-600" />}
-              </div>
-            ))}
-          </div>
-        )}
+          {/* Categories Dropdown Content */}
+          {activeField === "category" && (
+            <div className="absolute top-full left-0 w-64 mt-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xl z-[999] max-h-80 overflow-y-auto p-2 animate-in fade-in slide-in-from-top-2 duration-200">
+              {CATEGORIES.map((c) => (
+                <div
+                  key={c.id}
+                  onClick={() => { setCategoryId(c.id); setActiveField(null); }}
+                  className="flex items-center justify-between p-3 hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded-xl cursor-pointer group"
+                >
+                  <span className="text-sm font-medium text-zinc-600 dark:text-zinc-300 group-hover:text-orange-600 transition-colors">{c.label}</span>
+                  {categoryId === c.id && <Check className="w-4 h-4 text-orange-600" />}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Mobile Version */}
