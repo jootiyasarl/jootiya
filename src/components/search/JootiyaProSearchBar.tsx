@@ -70,53 +70,53 @@ export function JootiyaProSearchBar() {
   return (
     <div className="w-full" ref={rootRef}>
       {/* Desktop Version */}
-      <div className="hidden lg:flex items-center gap-3">
-        {/* City Filter - Separate Box */}
+      <div className="hidden lg:flex items-center gap-2 bg-zinc-100/50 dark:bg-zinc-900/50 p-1 rounded-full border border-zinc-200 dark:border-zinc-800 shadow-sm max-w-3xl mx-auto">
+        {/* City Filter - Pill Shape */}
         <div className="relative">
           <button
             type="button"
             onClick={() => setActiveField(activeField === "city" ? null : "city")}
-            className="flex items-center gap-2 h-[52px] px-5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl hover:border-orange-500 transition-colors shadow-sm min-w-[160px]"
+            className="flex items-center gap-2 h-10 px-4 bg-white dark:bg-zinc-900 rounded-full hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-sm min-w-[120px] border border-transparent hover:border-zinc-200"
           >
-            <MapPin className="w-4 h-4 text-zinc-400" />
-            <span className="text-sm font-medium text-zinc-600 dark:text-zinc-300 truncate">
+            <MapPin className="w-3.5 h-3.5 text-orange-500" />
+            <span className="text-xs font-bold text-zinc-600 dark:text-zinc-300 truncate">
               {city === "Toutes les villes" ? "Ville" : city}
             </span>
           </button>
 
           {/* City Dropdown */}
           {activeField === "city" && (
-            <div className="absolute top-full left-0 mt-2 w-64 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xl z-[999] max-h-80 overflow-y-auto p-2 animate-in fade-in slide-in-from-top-2 duration-200">
+            <div className="absolute top-full left-0 mt-2 w-64 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xl z-[100] max-h-80 overflow-y-auto p-2 animate-in fade-in slide-in-from-top-2 duration-200">
               {ALL_CITIES.map((c) => (
                 <div
                   key={c}
                   onClick={() => { setCity(c); setActiveField(null); }}
-                  className="flex items-center justify-between p-3 hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded-xl cursor-pointer group"
+                  className="flex items-center justify-between p-2.5 hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded-xl cursor-pointer group"
                 >
-                  <span className="text-sm font-medium text-zinc-600 dark:text-zinc-300 group-hover:text-orange-600 transition-colors">{c}</span>
-                  {city === c && <Check className="w-4 h-4 text-orange-600" />}
+                  <span className="text-xs font-bold text-zinc-600 dark:text-zinc-300 group-hover:text-orange-600 transition-colors">{c}</span>
+                  {city === c && <Check className="w-3.5 h-3.5 text-orange-600" />}
                 </div>
               ))}
             </div>
           )}
         </div>
 
-        {/* Search Main Bar */}
-        <div className="flex-1 relative">
+        {/* Search Main Bar - Integrated Pill */}
+        <div className="flex-1 flex items-center bg-white dark:bg-zinc-900 rounded-full shadow-sm border border-transparent hover:border-zinc-200 transition-all h-10 relative">
           <form 
             onSubmit={handleSearch} 
-            className="flex items-center bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-sm hover:border-orange-500 transition-colors h-[52px] overflow-hidden group"
+            className="flex flex-1 items-center h-full"
           >
             {/* Category Dropdown Trigger */}
             <button
               type="button"
               onClick={() => setActiveField(activeField === "category" ? null : "category")}
-              className="flex items-center gap-2 px-6 h-full border-r border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors min-w-[140px]"
+              className="flex items-center gap-2 px-4 h-full border-r border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors min-w-[120px]"
             >
-              <span className="text-sm font-semibold text-zinc-700 dark:text-zinc-200 truncate max-w-[120px]">
+              <span className="text-xs font-black text-zinc-700 dark:text-zinc-200 truncate max-w-[100px] uppercase tracking-tight">
                 {selectedCategory.id === "all" ? "Categories" : selectedCategory.label}
               </span>
-              <ChevronDown className={cn("w-4 h-4 text-zinc-400 transition-transform", activeField === "category" && "rotate-180")} />
+              <ChevronDown className={cn("w-3.5 h-3.5 text-zinc-400 transition-transform", activeField === "category" && "rotate-180")} />
             </button>
 
             {/* Input Field */}
@@ -127,33 +127,33 @@ export function JootiyaProSearchBar() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onFocus={() => setActiveField("product")}
-                className="w-full bg-transparent outline-none text-sm font-medium text-zinc-700 dark:text-zinc-200 placeholder:text-zinc-400 h-full"
+                className="w-full bg-transparent outline-none text-xs font-bold text-zinc-700 dark:text-zinc-200 placeholder:text-zinc-400 h-full"
               />
             </div>
 
             {/* Search Action Button */}
-            <div className="px-2">
+            <div className="pr-1">
               <Button 
                 type="submit" 
                 size="icon" 
-                className="bg-[#2DB4B4] hover:bg-[#259797] rounded-xl h-10 w-10 shrink-0 transition-transform active:scale-95 shadow-lg shadow-[#2DB4B4]/20"
+                className="bg-[#2DB4B4] hover:bg-[#259797] rounded-full h-8 w-8 shrink-0 transition-transform active:scale-95 shadow-md shadow-[#2DB4B4]/20"
               >
-                <Search className="w-5 h-5 text-white" />
+                <Search className="w-4 h-4 text-white" />
               </Button>
             </div>
           </form>
 
           {/* Categories Dropdown Content */}
           {activeField === "category" && (
-            <div className="absolute top-full left-0 w-64 mt-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xl z-[999] max-h-80 overflow-y-auto p-2 animate-in fade-in slide-in-from-top-2 duration-200">
+            <div className="absolute top-full left-0 w-64 mt-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xl z-[100] max-h-80 overflow-y-auto p-2 animate-in fade-in slide-in-from-top-2 duration-200">
               {CATEGORIES.map((c) => (
                 <div
                   key={c.id}
                   onClick={() => { setCategoryId(c.id); setActiveField(null); }}
-                  className="flex items-center justify-between p-3 hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded-xl cursor-pointer group"
+                  className="flex items-center justify-between p-2.5 hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded-xl cursor-pointer group"
                 >
-                  <span className="text-sm font-medium text-zinc-600 dark:text-zinc-300 group-hover:text-orange-600 transition-colors">{c.label}</span>
-                  {categoryId === c.id && <Check className="w-4 h-4 text-orange-600" />}
+                  <span className="text-xs font-bold text-zinc-600 dark:text-zinc-300 group-hover:text-orange-600 transition-colors">{c.label}</span>
+                  {categoryId === c.id && <Check className="w-3.5 h-3.5 text-orange-600" />}
                 </div>
               ))}
             </div>
