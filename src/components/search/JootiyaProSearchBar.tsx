@@ -1,49 +1,72 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Search, MapPin, LayoutGrid, X, Check, ChevronRight, ChevronDown } from "lucide-react";
+import { Search, MapPin, LayoutGrid, X, Check, ChevronDown, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { MOROCCAN_CITIES } from "@/lib/constants/cities";
 import { supabase } from "@/lib/supabaseClient";
-import { generateSlug } from "@/lib/seo-utils";
-import Link from "next/link";
 
-const CATEGORIES = [
-  { id: "all", label: "Toutes les catégories" },
-  { id: "electronics", label: "Électronique" },
-  { id: "home-furniture", label: "Maison & Ameublement" },
-  { id: "vehicles", label: "Véhicules & Transport" },
-  { id: "fashion", label: "Mode & Chaussures" },
-  { id: "tools-equipment", label: "Outils & Équipement" },
-  { id: "hobbies", label: "Loisirs & Divertissement" },
-  { id: "animals", label: "Animaux" },
-  { id: "books", label: "Livres & Études" },
-  { id: "used-clearance", label: "Occasions / Vide-grenier" },
-  { id: "other", label: "Autres" },
-] as const;
-
-const ALL_CITIES = [
-  "Toutes les villes",
-  ...MOROCCAN_CITIES.flatMap((r) => r.cities).sort((a, b) => a.localeCompare(b)),
-];
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
+}
 
 export function JootiyaProSearchBar() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [query, setQuery] = useState("");
-  const [categoryId, setCategoryId] = useState("all");
-  const [city, setCity] = useState("Toutes les villes");
+  const [query, setQuery] = useState(searchParams.get("q") || "");
+  const [categoryId, setCategoryId] = useState(searchParams.get("category") || "all");
+  const [city, setCity] = useState(searchParams.get("city") || "Toutes les villes");
+  
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [cities, setCities] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   const [activeField, setActiveField] = useState<null | "product" | "category" | "city">(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
-  const selectedCategory = useMemo(
-    () => CATEGORIES.find((c) => c.id === categoryId) ?? CATEGORIES[0],
-    [categoryId]
-  );
+  // Fetch real data from Supabase
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        setIsLoading(true);
+        
+        // Fetch Categories from Categories table
+        const { data: catData } = await supabase
+          .from("categories")
+          .select("id, name, slug")
+          .order("name");
+        
+        if (catData) setCategories(catData);
+
+        // Fetch unique Cities from ads table
+        const { data: adsData } = await supabase
+          .from("ads")
+          .select("city")
+          .not("city", "is", null);
+        
+        if (adsData) {
+          const uniqueCities = Array.from(new Set(adsData.map(ad => ad.city))).sort();
+          setCities(uniqueCities);
+        }
+      } catch (error) {
+        console.error("Error fetching search bar data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  const selectedCategoryLabel = useMemo(() => {
+    if (categoryId === "all") return "Catégories";
+    return categories.find(c => c.id === categoryId)?.name || "Catégories";
+  }, [categoryId, categories]);
 
   const handleSearch = (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -71,7 +94,7 @@ export function JootiyaProSearchBar() {
     <div className="w-full relative z-[200]" ref={rootRef}>
       {/* Desktop Version */}
       <div className="hidden lg:flex items-center gap-2 bg-white dark:bg-zinc-900 p-1 rounded-full border border-zinc-200 dark:border-zinc-800 shadow-[0_2px_10px_-3px_rgba(0,0,0,0.07)] hover:shadow-[0_5px_20px_rgb(0,0,0,0.1)] transition-all duration-300 max-w-2xl mx-auto group/bar">
-        {/* City Filter - Professional Minimalist */}
+        {/* City Filter */}
         <div className="relative">
           <button
             type="button"
@@ -90,11 +113,22 @@ export function JootiyaProSearchBar() {
             <ChevronDown className={cn("w-3 h-3 transition-transform duration-200", activeField === "city" && "rotate-180")} />
           </button>
 
-          {/* City Dropdown - Elevated Glassmorphism */}
           {activeField === "city" && (
             <div className="absolute top-[calc(100%+8px)] left-0 w-72 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xl border border-zinc-200/50 dark:border-zinc-800/50 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] z-[9999] max-h-[400px] overflow-y-auto p-2 animate-in fade-in zoom-in-95 duration-200">
-              <div className="px-3 py-2 mb-1 text-[10px] font-black uppercase tracking-widest text-zinc-400">Sélectionner une ville</div>
-              {ALL_CITIES.map((c) => (
+              <div className="px-3 py-2 mb-1 text-[10px] font-black uppercase tracking-widest text-zinc-400">Villes disponibles</div>
+              <div
+                onClick={() => { setCity("Toutes les villes"); setActiveField(null); }}
+                className={cn(
+                  "flex items-center justify-between p-3 rounded-2xl cursor-pointer transition-all group/item",
+                  city === "Toutes les villes" 
+                    ? "bg-orange-50 dark:bg-orange-950/20 text-orange-600" 
+                    : "hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-300"
+                )}
+              >
+                <span className="text-sm font-bold">Toutes les villes</span>
+                {city === "Toutes les villes" && <Check className="w-4 h-4 text-orange-600" />}
+              </div>
+              {cities.map((c) => (
                 <div
                   key={c}
                   onClick={() => { setCity(c); setActiveField(null); }}
@@ -115,13 +149,9 @@ export function JootiyaProSearchBar() {
 
         <div className="h-5 w-px bg-zinc-200 dark:bg-zinc-800 mx-0.5" />
 
-        {/* Search Main Bar - Seamless Integration */}
+        {/* Search Main Bar */}
         <div className="flex-1 flex items-center h-9 relative">
-          <form 
-            onSubmit={handleSearch} 
-            className="flex flex-1 items-center h-full"
-          >
-            {/* Category Dropdown Trigger */}
+          <form onSubmit={handleSearch} className="flex flex-1 items-center h-full">
             <button
               type="button"
               onClick={() => setActiveField(activeField === "category" ? null : "category")}
@@ -134,12 +164,11 @@ export function JootiyaProSearchBar() {
             >
               <LayoutGrid className={cn("w-3.5 h-3.5", activeField === "category" ? "text-orange-600" : "text-zinc-400")} />
               <span className="text-xs font-bold truncate max-w-[90px]">
-                {selectedCategory.id === "all" ? "Catégories" : selectedCategory.label}
+                {selectedCategoryLabel}
               </span>
               <ChevronDown className={cn("w-3 h-3 transition-transform duration-200", activeField === "category" && "rotate-180")} />
             </button>
 
-            {/* Input Field */}
             <div className="flex-1 flex items-center px-3 h-full">
               <input
                 type="text"
@@ -151,7 +180,6 @@ export function JootiyaProSearchBar() {
               />
             </div>
 
-            {/* Search Action Button - Iconic */}
             <div className="pr-1">
               <Button 
                 type="submit" 
@@ -162,11 +190,22 @@ export function JootiyaProSearchBar() {
             </div>
           </form>
 
-          {/* Categories Dropdown Content - Elevated Glassmorphism */}
           {activeField === "category" && (
             <div className="absolute top-[calc(100%+8px)] left-0 w-72 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xl border border-zinc-200/50 dark:border-zinc-800/50 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] z-[9999] max-h-[400px] overflow-y-auto p-2 animate-in fade-in zoom-in-95 duration-200">
               <div className="px-3 py-2 mb-1 text-[10px] font-black uppercase tracking-widest text-zinc-400">Toutes les catégories</div>
-              {CATEGORIES.map((c) => (
+              <div
+                onClick={() => { setCategoryId("all"); setActiveField(null); }}
+                className={cn(
+                  "flex items-center justify-between p-3 rounded-2xl cursor-pointer transition-all group/item",
+                  categoryId === "all" 
+                    ? "bg-orange-50 dark:bg-orange-950/20 text-orange-600" 
+                    : "hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-300"
+                )}
+              >
+                <span className="text-sm font-bold">Toutes les catégories</span>
+                {categoryId === "all" && <Check className="w-4 h-4 text-orange-600" />}
+              </div>
+              {categories.map((c) => (
                 <div
                   key={c.id}
                   onClick={() => { setCategoryId(c.id); setActiveField(null); }}
@@ -177,7 +216,7 @@ export function JootiyaProSearchBar() {
                       : "hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-300"
                   )}
                 >
-                  <span className="text-sm font-bold">{c.label}</span>
+                  <span className="text-sm font-bold">{c.name}</span>
                   {categoryId === c.id && <Check className="w-4 h-4 text-orange-600" />}
                 </div>
               ))}
@@ -224,20 +263,26 @@ export function JootiyaProSearchBar() {
                 >
                   <div className="flex items-center gap-3">
                     <LayoutGrid className="w-5 h-5 text-zinc-400" />
-                    <span className="text-sm font-bold">{selectedCategory.label}</span>
+                    <span className="text-sm font-bold">{selectedCategoryLabel}</span>
                   </div>
                   <ChevronRight className="w-4 h-4 text-zinc-300" />
                 </div>
 
                 {activeField === "category" && (
                   <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 max-h-48 overflow-y-auto p-2">
-                    {CATEGORIES.map((c) => (
+                    <div
+                      onClick={() => { setCategoryId("all"); setActiveField(null); }}
+                      className="p-3 hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded-xl text-sm font-medium"
+                    >
+                      Toutes les catégories
+                    </div>
+                    {categories.map((c) => (
                       <div
                         key={c.id}
                         onClick={() => { setCategoryId(c.id); setActiveField(null); }}
                         className="p-3 hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded-xl text-sm font-medium"
                       >
-                        {c.label}
+                        {c.name}
                       </div>
                     ))}
                   </div>
@@ -256,7 +301,13 @@ export function JootiyaProSearchBar() {
 
                 {activeField === "city" && (
                   <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 max-h-48 overflow-y-auto p-2">
-                    {ALL_CITIES.map((c) => (
+                    <div
+                      onClick={() => { setCity("Toutes les villes"); setActiveField(null); }}
+                      className="p-3 hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded-xl text-sm font-medium"
+                    >
+                      Toutes les villes
+                    </div>
+                    {cities.map((c) => (
                       <div
                         key={c}
                         onClick={() => { setCity(c); setActiveField(null); }}
