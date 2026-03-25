@@ -24,20 +24,22 @@ export function SimilarAdsCarousel({ ads }: { ads: any[] }) {
           {slides.map((simAd: any) => (
             <div
               key={simAd.id}
-              className="flex-[0_0_78%] sm:flex-[0_0_45%] md:flex-[0_0_32%] lg:flex-[0_0_24%]"
+              className="flex-[0_0_85%] sm:flex-[0_0_48%] md:flex-[0_0_48%] lg:flex-[0_0_48%]"
             >
-              <AdCard
-                ad={{
-                  id: simAd.id,
-                  title: simAd.title,
-                  price: simAd.price,
-                  currency: simAd.currency,
-                  images: simAd.image_urls || simAd.images || null,
-                  location: simAd.city || null,
-                  created_at: simAd.created_at,
-                  status: simAd.status,
-                }}
-              />
+              <div className="h-full">
+                <AdCard
+                  ad={{
+                    id: simAd.id,
+                    title: simAd.title,
+                    price: simAd.price,
+                    currency: simAd.currency,
+                    images: simAd.image_urls || simAd.images || null,
+                    location: simAd.city || null,
+                    created_at: simAd.created_at,
+                    status: simAd.status,
+                  }}
+                />
+              </div>
             </div>
           ))}
         </div>
