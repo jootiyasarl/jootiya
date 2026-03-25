@@ -116,6 +116,7 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
                                     onClick={() => setIsLightboxOpen(true)}
                                     loading={index === 0 ? "eager" : "lazy"}
                                     unoptimized
+                                    crossOrigin="anonymous"
                                 />
                             </div>
                         ))}
@@ -174,6 +175,7 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
                                 fill
                                 className="object-contain"
                                 unoptimized
+                                crossOrigin="anonymous"
                             />
                         </button>
                     ))}
