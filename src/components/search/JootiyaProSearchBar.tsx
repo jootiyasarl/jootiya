@@ -68,41 +68,55 @@ export function JootiyaProSearchBar() {
   }, []);
 
   return (
-    <div className="w-full relative z-[100]" ref={rootRef}>
+    <div className="w-full relative z-[200]" ref={rootRef}>
       {/* Desktop Version */}
-      <div className="hidden lg:flex items-center gap-2 bg-zinc-100/50 dark:bg-zinc-900/50 p-1 rounded-full border border-zinc-200 dark:border-zinc-800 shadow-sm max-w-3xl mx-auto">
-        {/* City Filter - Pill Shape */}
+      <div className="hidden lg:flex items-center gap-2 bg-white dark:bg-zinc-900 p-1.5 rounded-full border border-zinc-200 dark:border-zinc-800 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] transition-all duration-300 max-w-3xl mx-auto group/bar">
+        {/* City Filter - Professional Minimalist */}
         <div className="relative">
           <button
             type="button"
             onClick={() => setActiveField(activeField === "city" ? null : "city")}
-            className="flex items-center gap-2 h-10 px-4 bg-white dark:bg-zinc-900 rounded-full hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-sm min-w-[120px] border border-transparent hover:border-zinc-200"
+            className={cn(
+              "flex items-center gap-2 h-11 px-5 rounded-full transition-all duration-200 min-w-[140px]",
+              activeField === "city" 
+                ? "bg-orange-50 dark:bg-orange-950/20 text-orange-600" 
+                : "hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400"
+            )}
           >
-            <MapPin className="w-3.5 h-3.5 text-orange-500" />
-            <span className="text-xs font-bold text-zinc-600 dark:text-zinc-300 truncate">
+            <MapPin className={cn("w-4 h-4", activeField === "city" ? "text-orange-600" : "text-zinc-400")} />
+            <span className="text-sm font-bold truncate">
               {city === "Toutes les villes" ? "Ville" : city}
             </span>
+            <ChevronDown className={cn("w-3.5 h-3.5 transition-transform duration-200", activeField === "city" && "rotate-180")} />
           </button>
 
-          {/* City Dropdown */}
+          {/* City Dropdown - Elevated Glassmorphism */}
           {activeField === "city" && (
-            <div className="absolute top-full left-0 mt-2 w-64 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl z-[9999] max-h-80 overflow-y-auto p-2 animate-in fade-in slide-in-from-top-2 duration-200">
+            <div className="absolute top-[calc(100%+8px)] left-0 w-72 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xl border border-zinc-200/50 dark:border-zinc-800/50 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] z-[9999] max-h-[400px] overflow-y-auto p-2 animate-in fade-in zoom-in-95 duration-200">
+              <div className="px-3 py-2 mb-1 text-[10px] font-black uppercase tracking-widest text-zinc-400">Sélectionner une ville</div>
               {ALL_CITIES.map((c) => (
                 <div
                   key={c}
                   onClick={() => { setCity(c); setActiveField(null); }}
-                  className="flex items-center justify-between p-2.5 hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded-xl cursor-pointer group"
+                  className={cn(
+                    "flex items-center justify-between p-3 rounded-2xl cursor-pointer transition-all group/item",
+                    city === c 
+                      ? "bg-orange-50 dark:bg-orange-950/20 text-orange-600" 
+                      : "hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-300"
+                  )}
                 >
-                  <span className="text-xs font-bold text-zinc-600 dark:text-zinc-300 group-hover:text-orange-600 transition-colors">{c}</span>
-                  {city === c && <Check className="w-3.5 h-3.5 text-orange-600" />}
+                  <span className="text-sm font-bold">{c}</span>
+                  {city === c && <Check className="w-4 h-4 text-orange-600" />}
                 </div>
               ))}
             </div>
           )}
         </div>
 
-        {/* Search Main Bar - Integrated Pill */}
-        <div className="flex-1 flex items-center bg-white dark:bg-zinc-900 rounded-full shadow-sm border border-transparent hover:border-zinc-200 transition-all h-10 relative">
+        <div className="h-6 w-px bg-zinc-200 dark:bg-zinc-800 mx-1" />
+
+        {/* Search Main Bar - Seamless Integration */}
+        <div className="flex-1 flex items-center h-11 relative">
           <form 
             onSubmit={handleSearch} 
             className="flex flex-1 items-center h-full"
@@ -111,12 +125,18 @@ export function JootiyaProSearchBar() {
             <button
               type="button"
               onClick={() => setActiveField(activeField === "category" ? null : "category")}
-              className="flex items-center gap-2 px-4 h-full border-r border-zinc-100 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors min-w-[120px]"
+              className={cn(
+                "flex items-center gap-2 px-5 h-full rounded-full transition-all duration-200 min-w-[150px]",
+                activeField === "category" 
+                  ? "bg-orange-50 dark:bg-orange-950/20 text-orange-600" 
+                  : "hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200"
+              )}
             >
-              <span className="text-xs font-black text-zinc-700 dark:text-zinc-200 truncate max-w-[100px] uppercase tracking-tight">
-                {selectedCategory.id === "all" ? "Categories" : selectedCategory.label}
+              <LayoutGrid className={cn("w-4 h-4", activeField === "category" ? "text-orange-600" : "text-zinc-400")} />
+              <span className="text-sm font-bold truncate max-w-[110px]">
+                {selectedCategory.id === "all" ? "Catégories" : selectedCategory.label}
               </span>
-              <ChevronDown className={cn("w-3.5 h-3.5 text-zinc-400 transition-transform", activeField === "category" && "rotate-180")} />
+              <ChevronDown className={cn("w-3.5 h-3.5 transition-transform duration-200", activeField === "category" && "rotate-180")} />
             </button>
 
             {/* Input Field */}
@@ -127,33 +147,38 @@ export function JootiyaProSearchBar() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onFocus={() => setActiveField("product")}
-                className="w-full bg-transparent outline-none text-xs font-bold text-zinc-700 dark:text-zinc-200 placeholder:text-zinc-400 h-full"
+                className="w-full bg-transparent outline-none text-sm font-bold text-zinc-800 dark:text-zinc-100 placeholder:text-zinc-400 h-full"
               />
             </div>
 
-            {/* Search Action Button */}
+            {/* Search Action Button - Iconic */}
             <div className="pr-1">
               <Button 
                 type="submit" 
-                size="icon" 
-                className="bg-[#2DB4B4] hover:bg-[#259797] rounded-full h-8 w-8 shrink-0 transition-transform active:scale-95 shadow-md shadow-[#2DB4B4]/20"
+                className="bg-[#2DB4B4] hover:bg-[#259797] rounded-full h-10 w-10 p-0 flex items-center justify-center shrink-0 transition-all duration-300 active:scale-90 shadow-lg shadow-[#2DB4B4]/30 hover:shadow-[#2DB4B4]/50 group/btn"
               >
-                <Search className="w-4 h-4 text-white" />
+                <Search className="w-5 h-5 text-white group-hover/btn:scale-110 transition-transform" />
               </Button>
             </div>
           </form>
 
-          {/* Categories Dropdown Content */}
+          {/* Categories Dropdown Content - Elevated Glassmorphism */}
           {activeField === "category" && (
-            <div className="absolute top-full left-0 w-64 mt-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xl z-[9999] max-h-80 overflow-y-auto p-2 animate-in fade-in slide-in-from-top-2 duration-200">
+            <div className="absolute top-[calc(100%+8px)] left-0 w-72 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xl border border-zinc-200/50 dark:border-zinc-800/50 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] z-[9999] max-h-[400px] overflow-y-auto p-2 animate-in fade-in zoom-in-95 duration-200">
+              <div className="px-3 py-2 mb-1 text-[10px] font-black uppercase tracking-widest text-zinc-400">Toutes les catégories</div>
               {CATEGORIES.map((c) => (
                 <div
                   key={c.id}
                   onClick={() => { setCategoryId(c.id); setActiveField(null); }}
-                  className="flex items-center justify-between p-2.5 hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded-xl cursor-pointer group"
+                  className={cn(
+                    "flex items-center justify-between p-3 rounded-2xl cursor-pointer transition-all group/item",
+                    categoryId === c.id 
+                      ? "bg-orange-50 dark:bg-orange-950/20 text-orange-600" 
+                      : "hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-300"
+                  )}
                 >
-                  <span className="text-xs font-bold text-zinc-600 dark:text-zinc-300 group-hover:text-orange-600 transition-colors">{c.label}</span>
-                  {categoryId === c.id && <Check className="w-3.5 h-3.5 text-orange-600" />}
+                  <span className="text-sm font-bold">{c.label}</span>
+                  {categoryId === c.id && <Check className="w-4 h-4 text-orange-600" />}
                 </div>
               ))}
             </div>

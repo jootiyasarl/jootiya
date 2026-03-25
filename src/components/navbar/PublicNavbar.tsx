@@ -13,10 +13,10 @@ export default async function PublicNavbar() {
   const isAdmin = userEmail === "jootiyasarl@gmail.com";
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-[60] w-full bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-800 flex flex-col justify-center min-h-[56px] md:min-h-[64px] pt-[env(safe-area-inset-top)] overflow-x-hidden">
-      <div className="w-full px-2 sm:px-4 md:px-8 max-w-[1440px] mx-auto overflow-x-hidden">
+    <header className="fixed top-0 left-0 right-0 z-[100] w-full bg-white dark:bg-zinc-950 border-b border-zinc-100 dark:border-zinc-800 flex flex-col justify-center min-h-[56px] md:min-h-[64px] pt-[env(safe-area-inset-top)] overflow-visible">
+      <div className="w-full px-2 sm:px-4 md:px-8 max-w-[1440px] mx-auto overflow-visible">
         {/* Main Nav Row (TOP) */}
-        <div className="flex h-12 md:h-14 items-center justify-between gap-1 sm:gap-4 relative z-[70] py-2 min-w-0">
+        <div className="flex h-12 md:h-14 items-center justify-between gap-1 sm:gap-4 relative z-[110] py-2 min-w-0 overflow-visible">
           {/* Left: Logo - Hidden on very small screens to give space to search */}
           <div className="flex items-center shrink-0 min-w-0">
             <div className="hidden min-[350px]:block">
@@ -29,14 +29,14 @@ export default async function PublicNavbar() {
           </div>
 
           {/* Center: Search Bar - Takes priority */}
-          <div className="flex-1 flex justify-center px-1 sm:px-6 relative z-[100] min-w-0">
-            <div className="w-full max-w-2xl flex justify-center min-w-0">
+          <div className="flex-1 flex justify-center px-1 sm:px-6 relative z-[120] min-w-0 overflow-visible">
+            <div className="w-full max-w-2xl flex justify-center min-w-0 overflow-visible">
               <JootiyaProSearchBar />
             </div>
           </div>
 
           {/* Right: User Actions / Info */}
-          <div className="flex items-center gap-1 md:gap-3 shrink-0 relative z-[110]">
+          <div className="flex items-center gap-1 md:gap-3 shrink-0 relative z-[130]">
             <Link
               href="/marketplace/post"
               className="hidden xl:block shrink-0"
