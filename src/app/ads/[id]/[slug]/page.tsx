@@ -135,15 +135,25 @@ export default async function AdPage({ params }: AdPageProps) {
 
     if (retryAd) {
       console.log("DEBUG: Ad found on retry without join:", retryAd.id);
-      // If found on retry, use it
-      const finalAd = { ...retryAd, profiles: null };
       
-      const sellerProfile = null;
+      // Attempt to fetch profile separately to avoid join issues
+      const { data: profileData } = await supabase
+        .from("profiles")
+        .select("full_name, avatar_url, created_at, phone")
+        .eq("id", retryAd.seller_id)
+        .maybeSingle();
+
+      const sellerName = profileData?.full_name || "Utilisateur Jootiya";
+      const sellerAvatar = profileData?.avatar_url || null;
+      const memberSince = profileData?.created_at ? new Date(profileData.created_at).getFullYear() : "2024";
+      const sellerPhone = retryAd.phone || profileData?.phone;
+
+      // If found on retry, use it
+      const finalAd = { ...retryAd, profiles: profileData };
+      
       const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://jootiya.com';
       const formattedPrice = finalAd.price ? `${Number(finalAd.price).toLocaleString()} ${finalAd.currency || 'MAD'}` : "Sur demande";
       const formattedDate = new Date(finalAd.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
-      const sellerName = "Utilisateur Jootiya";
-      const memberSince = "2024";
 
       const images = (finalAd.image_urls || []).map((img: string) => 
         img.startsWith('http') ? img : `${baseUrl}/${img.startsWith('/') ? img.substring(1) : img}`
@@ -241,14 +251,18 @@ export default async function AdPage({ params }: AdPageProps) {
           <div className="bg-white dark:bg-zinc-900 p-6 rounded-2xl shadow-sm ring-1 ring-zinc-100 dark:ring-white/5">
             <p className="text-sm font-black text-zinc-400 uppercase tracking-widest mb-1">Prix</p>
             <p className="text-3xl font-black text-orange-600 mb-6">{formattedPrice}</p>
-            <ContactActions adId={finalAd.id} sellerId={finalAd.seller_id} currentUser={user} sellerPhone={finalAd.phone} />
+            <ContactActions adId={finalAd.id} sellerId={finalAd.seller_id} currentUser={user} sellerPhone={sellerPhone} />
           </div>
 
           {/* Seller Card in Fallback */}
           <div className="bg-white dark:bg-zinc-900 p-6 rounded-2xl shadow-sm ring-1 ring-zinc-100 dark:ring-white/5">
             <div className="flex items-center gap-4 mb-6">
               <div className="h-14 w-14 rounded-full bg-zinc-100 flex items-center justify-center text-xl font-black overflow-hidden ring-2 ring-orange-500/10 text-zinc-400">
-                {sellerName.charAt(0).toUpperCase()}
+                {sellerAvatar ? (
+                  <Image src={sellerAvatar} alt={sellerName} width={56} height={56} className="object-cover" />
+                ) : (
+                  sellerName.charAt(0).toUpperCase()
+                )}
               </div>
               <div>
                 <h3 className="font-black text-lg flex items-center gap-2">
@@ -264,9 +278,9 @@ export default async function AdPage({ params }: AdPageProps) {
               </div>
               <div className="bg-zinc-50 dark:bg-zinc-800/50 p-3 rounded-xl text-center">
                 <p className="text-lg font-black flex items-center justify-center gap-1">
-                  - <Star className="w-3 h-3 fill-yellow-500 text-yellow-500" />
+                  {avgRating || '-'}<Star className="w-3 h-3 fill-yellow-500 text-yellow-500" />
                 </p>
-                <p className="text-[10px] text-zinc-400 uppercase font-black tracking-widest">0 Avis</p>
+                <p className="text-[10px] text-zinc-400 uppercase font-black tracking-widest">{totalReviews} Avis</p>
               </div>
             </div>
             <Link href={`/profile/${finalAd.seller_id}`} className="block text-center text-sm font-black text-orange-600 hover:underline">
@@ -288,7 +302,7 @@ export default async function AdPage({ params }: AdPageProps) {
         </div>
       </aside>
           </main>
-          <QuickActionFooter phone={finalAd.phone} adTitle={finalAd.title} adPrice={formattedPrice} adId={finalAd.id} sellerId={finalAd.seller_id} currentUser={user} />
+          <QuickActionFooter phone={sellerPhone} adTitle={finalAd.title} adPrice={formattedPrice} adId={finalAd.id} sellerId={finalAd.seller_id} currentUser={user} />
         </div>
       );
     } else {
