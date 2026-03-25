@@ -68,7 +68,7 @@ export function JootiyaProSearchBar() {
   }, []);
 
   return (
-    <div className="w-full" ref={rootRef}>
+    <div className="w-full relative z-[100]" ref={rootRef}>
       {/* Desktop Version */}
       <div className="hidden lg:flex items-center gap-2 bg-zinc-100/50 dark:bg-zinc-900/50 p-1 rounded-full border border-zinc-200 dark:border-zinc-800 shadow-sm max-w-3xl mx-auto">
         {/* City Filter - Pill Shape */}
@@ -86,7 +86,7 @@ export function JootiyaProSearchBar() {
 
           {/* City Dropdown */}
           {activeField === "city" && (
-            <div className="absolute top-full left-0 mt-2 w-64 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xl z-[100] max-h-80 overflow-y-auto p-2 animate-in fade-in slide-in-from-top-2 duration-200">
+            <div className="absolute top-full left-0 mt-2 w-64 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-2xl z-[9999] max-h-80 overflow-y-auto p-2 animate-in fade-in slide-in-from-top-2 duration-200">
               {ALL_CITIES.map((c) => (
                 <div
                   key={c}
@@ -145,7 +145,7 @@ export function JootiyaProSearchBar() {
 
           {/* Categories Dropdown Content */}
           {activeField === "category" && (
-            <div className="absolute top-full left-0 w-64 mt-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xl z-[100] max-h-80 overflow-y-auto p-2 animate-in fade-in slide-in-from-top-2 duration-200">
+            <div className="absolute top-full left-0 w-64 mt-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl shadow-xl z-[9999] max-h-80 overflow-y-auto p-2 animate-in fade-in slide-in-from-top-2 duration-200">
               {CATEGORIES.map((c) => (
                 <div
                   key={c.id}
