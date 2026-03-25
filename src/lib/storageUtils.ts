@@ -6,23 +6,40 @@ import { supabase } from "./supabaseClient";
  * NOTE: Requires Supabase Pro/Paid plan for image transformations.
  */
 export function getOptimizedImageUrl(url: string, options: { width?: number; height?: number; quality?: number; resize?: 'cover' | 'contain' | 'fill'; format?: 'webp' | 'origin' } = {}) {
+    if (!url) return '/placeholder-ad.jpg';
+
+    // Handle relative paths from Supabase (e.g., "ad-images/photo.jpg")
+    let absoluteUrl = url;
+    if (!url.startsWith('http')) {
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://mshnkdqclscfytvdbmre.supabase.co';
+        const cleanPath = url.startsWith('/') ? url.substring(1) : url;
+        
+        // Check if it's already a full storage path but missing the domain
+        if (cleanPath.startsWith('storage/v1/object/public/')) {
+            absoluteUrl = `${supabaseUrl}/${cleanPath}`;
+        } else {
+            // Assume it's a path inside the ad-images bucket
+            absoluteUrl = `${supabaseUrl}/storage/v1/object/public/ad-images/${cleanPath}`;
+        }
+    }
+
     // Safety check: Fallback if transformations are disabled or not a Supabase URL
     const isTransformEnabled = process.env.NEXT_PUBLIC_SUPABASE_TRANSFORMATIONS_ENABLED === 'true';
 
-    if (!url || !url.includes('/storage/v1/object/public/') || !isTransformEnabled) {
-        return url;
+    if (!absoluteUrl.includes('/storage/v1/object/public/') || !isTransformEnabled) {
+        return absoluteUrl;
     }
 
     const { width = 200, height = 200, quality = 50, resize = 'cover', format = 'webp' } = options;
 
     try {
-        const urlObj = new URL(url);
+        const urlObj = new URL(absoluteUrl);
         // Supabase Transformation URL replacement
         const path = urlObj.pathname.replace('/object/public/', '/render/image/public/');
         return `${urlObj.origin}${path}?width=${width}&height=${height}&quality=${quality}&resize=${resize}&format=${format}`;
     } catch (e) {
         console.warn("StorageUtils: Transformation failed, using original URL", e);
-        return url;
+        return absoluteUrl;
     }
 }
 
