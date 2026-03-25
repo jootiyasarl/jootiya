@@ -6,37 +6,66 @@ import { supabase } from "./supabaseClient";
  * NOTE: Requires Supabase Pro/Paid plan for image transformations.
  */
 export function getOptimizedImageUrl(url: string, options: { width?: number; height?: number; quality?: number; resize?: 'cover' | 'contain' | 'fill'; format?: 'webp' | 'origin' } = {}) {
-    if (!url) return '/placeholder-ad.jpg';
+    if (!url || url === '/placeholder-ad.jpg') return '/placeholder-ad.jpg';
 
-    // Handle relative paths from Supabase (e.g., "ad-images/photo.jpg")
-    let absoluteUrl = url;
-    if (!url.startsWith('http')) {
+    // 1. Fix URL encoding issues (handle spaces and special characters in paths)
+    let processedUrl = url.trim();
+    
+    // 2. Handle relative paths from Supabase
+    let absoluteUrl = processedUrl;
+    if (!processedUrl.startsWith('http')) {
         const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://mshnkdqclscfytvdbmre.supabase.co';
-        const cleanPath = url.startsWith('/') ? url.substring(1) : url;
+        const cleanPath = processedUrl.startsWith('/') ? processedUrl.substring(1) : processedUrl;
         
-        // Check if it's already a full storage path but missing the domain
         if (cleanPath.startsWith('storage/v1/object/public/')) {
             absoluteUrl = `${supabaseUrl}/${cleanPath}`;
+        } else if (cleanPath.includes('ad-images/')) {
+            // Path already contains bucket name
+            absoluteUrl = `${supabaseUrl}/storage/v1/object/public/${cleanPath}`;
         } else {
-            // Assume it's a path inside the ad-images bucket
+            // Assume it's a direct filename in ad-images
             absoluteUrl = `${supabaseUrl}/storage/v1/object/public/ad-images/${cleanPath}`;
         }
     }
 
-    // Safety check: Fallback if transformations are disabled or not a Supabase URL
+    // 3. Ensure the URL is properly encoded for characters like spaces
+    try {
+        const urlParts = absoluteUrl.split('?');
+        const baseUrl = urlParts[0];
+        const params = urlParts[1] ? `?${urlParts[1]}` : '';
+        
+        // Encode only the path part, not the protocol/domain
+        const urlObj = new URL(baseUrl);
+        absoluteUrl = urlObj.toString() + params;
+    } catch (e) {
+        // Fallback to basic replacement if URL parsing fails
+        absoluteUrl = absoluteUrl.replace(/ /g, '%20');
+    }
+
+    // 4. Check if transformations are enabled
     const isTransformEnabled = process.env.NEXT_PUBLIC_SUPABASE_TRANSFORMATIONS_ENABLED === 'true';
 
+    // If it's not a Supabase URL or transformations are off, return the absolute URL
     if (!absoluteUrl.includes('/storage/v1/object/public/') || !isTransformEnabled) {
         return absoluteUrl;
     }
 
-    const { width = 200, height = 200, quality = 50, resize = 'cover', format = 'webp' } = options;
+    const { width = 400, height = 400, quality = 70, resize = 'cover', format = 'webp' } = options;
 
     try {
         const urlObj = new URL(absoluteUrl);
         // Supabase Transformation URL replacement
         const path = urlObj.pathname.replace('/object/public/', '/render/image/public/');
-        return `${urlObj.origin}${path}?width=${width}&height=${height}&quality=${quality}&resize=${resize}&format=${format}`;
+        
+        // Add transformation parameters
+        const transformParams = new URLSearchParams();
+        transformParams.append('width', width.toString());
+        transformParams.append('height', height.toString());
+        transformParams.append('quality', quality.toString());
+        transformParams.append('resize', resize);
+        transformParams.append('format', format);
+
+        return `${urlObj.origin}${path}?${transformParams.toString()}`;
     } catch (e) {
         console.warn("StorageUtils: Transformation failed, using original URL", e);
         return absoluteUrl;
