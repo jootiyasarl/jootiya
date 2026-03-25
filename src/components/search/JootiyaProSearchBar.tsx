@@ -6,12 +6,18 @@ import { Search, MapPin, LayoutGrid, X, Check, ChevronDown, ChevronRight } from 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabaseClient";
+import { MOROCCAN_CITIES } from "@/lib/constants/cities";
 
 interface Category {
   id: string;
   name: string;
   slug: string;
 }
+
+const ALL_CITIES_STATIC = [
+  "Toutes les villes",
+  ...MOROCCAN_CITIES.flatMap((r) => r.cities).sort((a, b) => a.localeCompare(b)),
+];
 
 export function JootiyaProSearchBar() {
   const router = useRouter();
@@ -22,44 +28,27 @@ export function JootiyaProSearchBar() {
   const [city, setCity] = useState(searchParams.get("city") || "Toutes les villes");
   
   const [categories, setCategories] = useState<Category[]>([]);
-  const [cities, setCities] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const [activeField, setActiveField] = useState<null | "product" | "category" | "city">(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
-  // Fetch real data from Supabase
   useEffect(() => {
     async function fetchData() {
       try {
         setIsLoading(true);
-        
-        // Fetch Categories from Categories table
         const { data: catData } = await supabase
           .from("categories")
           .select("id, name, slug")
           .order("name");
-        
         if (catData) setCategories(catData);
-
-        // Fetch unique Cities from ads table
-        const { data: adsData } = await supabase
-          .from("ads")
-          .select("city")
-          .not("city", "is", null);
-        
-        if (adsData) {
-          const uniqueCities = Array.from(new Set(adsData.map(ad => ad.city))).sort();
-          setCities(uniqueCities);
-        }
       } catch (error) {
-        console.error("Error fetching search bar data:", error);
+        console.error("Error fetching categories:", error);
       } finally {
         setIsLoading(false);
       }
     }
-
     fetchData();
   }, []);
 
@@ -94,7 +83,6 @@ export function JootiyaProSearchBar() {
     <div className="w-full relative z-[200]" ref={rootRef}>
       {/* Desktop Version */}
       <div className="hidden lg:flex items-center gap-2 bg-white dark:bg-zinc-900 p-1 rounded-full border border-zinc-200 dark:border-zinc-800 shadow-[0_2px_10px_-3px_rgba(0,0,0,0.07)] hover:shadow-[0_5px_20px_rgb(0,0,0,0.1)] transition-all duration-300 max-w-2xl mx-auto group/bar">
-        {/* City Filter */}
         <div className="relative">
           <button
             type="button"
@@ -115,20 +103,8 @@ export function JootiyaProSearchBar() {
 
           {activeField === "city" && (
             <div className="absolute top-[calc(100%+8px)] left-0 w-72 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xl border border-zinc-200/50 dark:border-zinc-800/50 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] z-[9999] max-h-[400px] overflow-y-auto p-2 animate-in fade-in zoom-in-95 duration-200">
-              <div className="px-3 py-2 mb-1 text-[10px] font-black uppercase tracking-widest text-zinc-400">Villes disponibles</div>
-              <div
-                onClick={() => { setCity("Toutes les villes"); setActiveField(null); }}
-                className={cn(
-                  "flex items-center justify-between p-3 rounded-2xl cursor-pointer transition-all group/item",
-                  city === "Toutes les villes" 
-                    ? "bg-orange-50 dark:bg-orange-950/20 text-orange-600" 
-                    : "hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-300"
-                )}
-              >
-                <span className="text-sm font-bold">Toutes les villes</span>
-                {city === "Toutes les villes" && <Check className="w-4 h-4 text-orange-600" />}
-              </div>
-              {cities.map((c) => (
+              <div className="px-3 py-2 mb-1 text-[10px] font-black uppercase tracking-widest text-zinc-400">Sélectionner une ville</div>
+              {ALL_CITIES_STATIC.map((c) => (
                 <div
                   key={c}
                   onClick={() => { setCity(c); setActiveField(null); }}
@@ -149,7 +125,6 @@ export function JootiyaProSearchBar() {
 
         <div className="h-5 w-px bg-zinc-200 dark:bg-zinc-800 mx-0.5" />
 
-        {/* Search Main Bar */}
         <div className="flex-1 flex items-center h-9 relative">
           <form onSubmit={handleSearch} className="flex flex-1 items-center h-full">
             <button
@@ -301,13 +276,7 @@ export function JootiyaProSearchBar() {
 
                 {activeField === "city" && (
                   <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 max-h-48 overflow-y-auto p-2">
-                    <div
-                      onClick={() => { setCity("Toutes les villes"); setActiveField(null); }}
-                      className="p-3 hover:bg-zinc-50 dark:hover:bg-zinc-800 rounded-xl text-sm font-medium"
-                    >
-                      Toutes les villes
-                    </div>
-                    {cities.map((c) => (
+                    {ALL_CITIES_STATIC.map((c) => (
                       <div
                         key={c}
                         onClick={() => { setCity(c); setActiveField(null); }}
