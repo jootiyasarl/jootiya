@@ -236,15 +236,57 @@ export default async function AdPage({ params }: AdPageProps) {
                 )}
               </div>
 
-              <aside className="lg:col-span-4 space-y-4">
-                <div className="lg:sticky lg:top-[180px] space-y-4">
-                  <div className="bg-white dark:bg-zinc-900 p-6 rounded-2xl shadow-sm ring-1 ring-zinc-100 dark:ring-white/5">
-                    <p className="text-sm font-black text-zinc-400 uppercase tracking-widest mb-1">Prix</p>
-                    <p className="text-3xl font-black text-orange-600 mb-6">{formattedPrice}</p>
-                    <ContactActions adId={finalAd.id} sellerId={finalAd.seller_id} currentUser={user} sellerPhone={finalAd.phone} />
-                  </div>
-                </div>
-              </aside>
+      <aside className="lg:col-span-4 space-y-4">
+        <div className="lg:sticky lg:top-[180px] space-y-4">
+          <div className="bg-white dark:bg-zinc-900 p-6 rounded-2xl shadow-sm ring-1 ring-zinc-100 dark:ring-white/5">
+            <p className="text-sm font-black text-zinc-400 uppercase tracking-widest mb-1">Prix</p>
+            <p className="text-3xl font-black text-orange-600 mb-6">{formattedPrice}</p>
+            <ContactActions adId={finalAd.id} sellerId={finalAd.seller_id} currentUser={user} sellerPhone={finalAd.phone} />
+          </div>
+
+          {/* Seller Card in Fallback */}
+          <div className="bg-white dark:bg-zinc-900 p-6 rounded-2xl shadow-sm ring-1 ring-zinc-100 dark:ring-white/5">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="h-14 w-14 rounded-full bg-zinc-100 flex items-center justify-center text-xl font-black overflow-hidden ring-2 ring-orange-500/10 text-zinc-400">
+                {sellerName.charAt(0).toUpperCase()}
+              </div>
+              <div>
+                <h3 className="font-black text-lg flex items-center gap-2">
+                  {sellerName}
+                </h3>
+                <p className="text-xs text-zinc-500 font-medium">Membre depuis {memberSince}</p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-2 mb-6">
+              <div className="bg-zinc-50 dark:bg-zinc-800/50 p-3 rounded-xl text-center">
+                <p className="text-lg font-black">100%</p>
+                <p className="text-[10px] text-zinc-400 uppercase font-black tracking-widest">Réponse</p>
+              </div>
+              <div className="bg-zinc-50 dark:bg-zinc-800/50 p-3 rounded-xl text-center">
+                <p className="text-lg font-black flex items-center justify-center gap-1">
+                  - <Star className="w-3 h-3 fill-yellow-500 text-yellow-500" />
+                </p>
+                <p className="text-[10px] text-zinc-400 uppercase font-black tracking-widest">0 Avis</p>
+              </div>
+            </div>
+            <Link href={`/profile/${finalAd.seller_id}`} className="block text-center text-sm font-black text-orange-600 hover:underline">
+              Voir le profil complet
+            </Link>
+          </div>
+
+          <div className="bg-gradient-to-br from-emerald-500/10 to-teal-500/10 p-6 rounded-2xl ring-1 ring-emerald-500/20">
+            <div className="flex items-center gap-3 mb-3">
+              <ShieldCheck className="w-8 h-8 text-emerald-600" />
+              <h3 className="font-black text-emerald-900 dark:text-emerald-400">Protection Jootiya</h3>
+            </div>
+            <p className="text-sm text-emerald-800 dark:text-emerald-500/80 mb-4 font-medium">Achetez et vendez en toute sécurité.</p>
+            <ul className="space-y-2 text-xs font-bold text-emerald-700 dark:text-emerald-500">
+              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4" /> Identité vérifiée</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4" /> Support 24/7</li>
+            </ul>
+          </div>
+        </div>
+      </aside>
           </main>
           <QuickActionFooter phone={finalAd.phone} adTitle={finalAd.title} adPrice={formattedPrice} adId={finalAd.id} sellerId={finalAd.seller_id} currentUser={user} />
         </div>
