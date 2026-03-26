@@ -30,8 +30,8 @@ export default async function SearchResultsPage({ searchParams }: SearchPageProp
     const ITEMS_PER_PAGE = 20;
     
     const { ads, count } = await getAds(supabase, {
-        query: q,
-        category: category === 'all' ? undefined : category,
+        query: q || undefined,
+        category: (category === 'all' || !category) ? undefined : category,
         city: (city === 'Toutes les villes' || !city) ? undefined : city,
         minPrice: minPrice ? Number(minPrice) : undefined,
         maxPrice: maxPrice ? Number(maxPrice) : undefined,
