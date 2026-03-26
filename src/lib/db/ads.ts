@@ -54,8 +54,10 @@ export async function getAds(supabase: any, { query, category, sellerId, minPric
                 filteredData = filteredData.filter((ad: any) => ad.category === category);
             }
 
-            if (city) {
-                filteredData = filteredData.filter((ad: any) => ad.city === city);
+            if (city && city !== 'Toutes les villes') {
+                filteredData = filteredData.filter((ad: any) => 
+                    ad.city && ad.city.toLowerCase().includes(city.toLowerCase())
+                );
             }
 
             if (minPrice !== undefined) {
@@ -106,8 +108,8 @@ export async function getAds(supabase: any, { query, category, sellerId, minPric
         }
     }
 
-    if (city) {
-        dbQuery = dbQuery.eq('city', city);
+    if (city && city !== 'Toutes les villes') {
+        dbQuery = dbQuery.ilike('city', `%${city}%`);
     }
 
     if (minPrice !== undefined) dbQuery = dbQuery.gte('price', minPrice);
