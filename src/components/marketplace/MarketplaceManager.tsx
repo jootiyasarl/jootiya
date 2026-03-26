@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { MarketplaceSearchLayout } from "@/components/marketplace/search/MarketplaceSearchLayout";
 import { ListingCardProps } from "@/types/components/marketplace";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 // Transform Supabase Ad to ListingCardProps
 import { AdCard } from "@/components/AdCard";
@@ -44,39 +44,82 @@ function transformAdToCard(ad: any) {
     };
 }
 
-export default function MarketplaceManager({ ads }: { ads: any[] }) {
+export default function MarketplaceManager({ ads: initialAds }: { ads: any[] }) {
     const router = useRouter();
     const searchParams = useSearchParams();
 
-    const initialQuery = searchParams.get("q") || "";
+    const activeQuery = searchParams.get("q") || "";
     const activeCity = searchParams.get("city") || "";
     const activeCategory = searchParams.get("category") || "";
-    const [query, setQuery] = useState(initialQuery);
+    const activeSort = searchParams.get("sort") || "newest";
+
+    const [allAds] = useState(initialAds);
+    const [query, setQuery] = useState(activeQuery);
+
+    // Update internal query state when URL changes
+    useEffect(() => {
+        setQuery(activeQuery);
+    }, [activeQuery]);
+
+    // Client-side filtering and sorting
+    const filteredAds = useMemo(() => {
+        let results = [...allAds];
+
+        // 1. Filter by City (Case-insensitive)
+        if (activeCity && activeCity !== "Toutes les villes") {
+            results = results.filter(ad => 
+                ad.city && ad.city.toLowerCase().includes(activeCity.toLowerCase())
+            );
+        }
+
+        // 2. Filter by Category (UUID or Slug)
+        if (activeCategory && activeCategory !== "all" && activeCategory !== "Tout") {
+            results = results.filter(ad => 
+                ad.category_id === activeCategory || 
+                (ad.category && ad.category.toLowerCase() === activeCategory.toLowerCase())
+            );
+        }
+
+        // 3. Filter by Search Query (Title or Description)
+        if (activeQuery) {
+            const searchLower = activeQuery.toLowerCase();
+            results = results.filter(ad => 
+                (ad.title && ad.title.toLowerCase().includes(searchLower)) ||
+                (ad.description && ad.description.toLowerCase().includes(searchLower))
+            );
+        }
+
+        // 4. Sort Results
+        results.sort((a, b) => {
+            if (activeSort === "price_asc") return (a.price || 0) - (b.price || 0);
+            if (activeSort === "price_desc") return (b.price || 0) - (a.price || 0);
+            // Default to newest
+            return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        });
+
+        return results;
+    }, [allAds, activeCity, activeCategory, activeQuery, activeSort]);
 
     const handleSearch = () => {
-        if (query) {
-            shadowTracker.trackEvent({
-                type: 'search',
-                query: query
-            });
-        }
         const params = new URLSearchParams(searchParams.toString());
-        if (query) {
-            params.set("q", query);
+        if (query.trim()) {
+            params.set("q", query.trim());
         } else {
             params.delete("q");
         }
-        router.push(`/marketplace?${params.toString()}`);
+        // Use shallow: true if available in your Next.js version to avoid full reload
+        // router.push(`/marketplace/search?${params.toString()}`, { shallow: true });
+        router.push(`/marketplace/search?${params.toString()}`);
     };
 
     const handleCityChange = (city: string) => {
         const params = new URLSearchParams(searchParams.toString());
-        if (city) {
+        if (city && city !== "Toutes les villes") {
             params.set("city", city);
         } else {
             params.delete("city");
         }
-        router.push(`/marketplace?${params.toString()}`);
+        router.push(`/marketplace/search?${params.toString()}`);
     };
 
     return (
@@ -117,15 +160,15 @@ export default function MarketplaceManager({ ads }: { ads: any[] }) {
                     query={query}
                     onQueryChange={setQuery}
                     onSubmit={handleSearch}
-                    ads={ads as any}
+                    ads={allAds as any}
                     selectedCity={activeCity || undefined}
                     selectedCategory={activeCategory || undefined}
                 />
             </div>
 
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 pb-20">
-                {ads.length > 0 ? (
-                    ads.map((ad) => {
+                {filteredAds.length > 0 ? (
+                    filteredAds.map((ad) => {
                         const formattedAd = transformAdToCard(ad);
                         if (!formattedAd) return null;
                         return (
