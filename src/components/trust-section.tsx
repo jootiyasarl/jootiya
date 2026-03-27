@@ -1,5 +1,3 @@
-"use client";
-
 import { ShieldCheck, Shield, Eye, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 

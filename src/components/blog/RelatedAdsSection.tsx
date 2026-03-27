@@ -1,30 +1,23 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
+import Image from "next/image";
+import React from "react";
 import Link from "next/link";
 import { getRelatedAds } from "@/lib/db/ads";
-import { supabase } from "@/lib/supabaseClient";
+import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { ShoppingBag, ArrowRight } from "lucide-react";
 
 interface RelatedAdsSectionProps {
   category: string;
 }
 
-export function RelatedAdsSection({ category }: RelatedAdsSectionProps) {
-  const [ads, setAds] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+export async function RelatedAdsSection({ category }: RelatedAdsSectionProps) {
+  const supabase = createSupabaseServerClient();
+  let ads: any[] = [];
+  
+  if (category) {
+    ads = await getRelatedAds(supabase, category, 4);
+  }
 
-  useEffect(() => {
-    async function loadAds() {
-      if (!category) return;
-      const relatedAds = await getRelatedAds(supabase, category, 4);
-      setAds(relatedAds);
-      setLoading(false);
-    }
-    loadAds();
-  }, [category]);
-
-  if (loading || ads.length === 0) return null;
+  if (ads.length === 0) return null;
 
   return (
     <div className="mt-20 pt-12 border-t border-zinc-100">
@@ -50,11 +43,12 @@ export function RelatedAdsSection({ category }: RelatedAdsSectionProps) {
             className="group block space-y-3"
           >
             <div className="relative aspect-square rounded-2xl overflow-hidden bg-zinc-100 border border-zinc-100 shadow-sm transition-all group-hover:shadow-xl group-hover:-translate-y-1">
-              <img 
+              <Image 
                 src={ad.images?.[0] || "/placeholder-ad.jpg"} 
                 alt={ad.title}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                loading="lazy"
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-110"
+                sizes="(max-width: 768px) 50vw, 25vw"
               />
               <div className="absolute top-2 right-2 px-2 py-1 bg-white/90 backdrop-blur-md rounded-lg text-[10px] font-black text-orange-600 shadow-sm">
                 {ad.price} MAD

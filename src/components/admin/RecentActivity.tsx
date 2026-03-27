@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 
@@ -18,9 +19,15 @@ export function RecentActivity({ recentJoiners, recentAds }: RecentActivityProps
                     {recentAds?.map((ad) => (
                         <div key={ad.id} className="group flex items-center justify-between bg-zinc-950/30 border border-zinc-800/30 p-4 rounded-2xl hover:bg-zinc-800/40 transition-all duration-300">
                             <div className="flex items-center gap-4">
-                                <div className="h-12 w-12 rounded-xl bg-zinc-800/50 border border-zinc-700/50 flex items-center justify-center text-[10px] font-black text-zinc-500 overflow-hidden">
+                                <div className="relative h-12 w-12 rounded-xl bg-zinc-800/50 border border-zinc-700/50 flex items-center justify-center text-[10px] font-black text-zinc-500 overflow-hidden">
                                     {ad.images?.[0] ? (
-                                        <img src={ad.images[0]} alt="" className="h-full w-full object-cover" />
+                                        <Image 
+                                          src={ad.images[0]} 
+                                          alt={ad.title} 
+                                          fill
+                                          className="object-cover"
+                                          sizes="48px"
+                                        />
                                     ) : 'NO IMG'}
                                 </div>
                                 <div>
