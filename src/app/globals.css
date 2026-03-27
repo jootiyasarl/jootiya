@@ -99,6 +99,9 @@
 :root {
   --background: 0 0% 100%;
   --foreground: 222 47% 11%;
+  --app-background: #f8fafc; /* لون خلفية مريح للعين */
+  --primary-blue: #2563eb;
+  --primary-orange: #f97316;
   --card: 0 0% 100%;
   --card-foreground: 222 47% 11%;
   --popover: 0 0% 100%;
@@ -170,6 +173,13 @@
 }
 
 @layer base {
+  html {
+    /* منع الاهتزاز الأفقي المزعج في الموبايل */
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
   *,
   *::before,
   *::after {
@@ -179,11 +189,12 @@
 
   html,
   body {
-    @apply bg-background text-foreground;
+    @apply bg-[var(--app-background)] text-slate-900 antialiased;
     width: 100%;
     max-width: 100%;
     overflow-x: hidden;
     position: relative;
+    -webkit-tap-highlight-color: transparent;
     -webkit-overflow-scrolling: touch;
     padding-top: env(safe-area-inset-top);
     padding-bottom: env(safe-area-inset-bottom);
@@ -204,6 +215,24 @@
     max-width: 100% !important;
     height: auto !important;
     display: block;
+  }
+}
+
+@layer components {
+  /* كود سحري للحاوية الرئيسية (Main Container) */
+  .main-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full;
+  }
+
+  /* حل مشكلة الـ Padding في البطاقات (Cards) */
+  .jootiya-card {
+    @apply bg-white rounded-[2rem] p-4 sm:p-5 shadow-sm border border-slate-100 
+           transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/5;
+  }
+
+  /* تنسيق الصور لمنع تشوه الأبعاد */
+  .img-responsive {
+    @apply object-cover w-full h-full rounded-[1.5rem];
   }
 }
 
@@ -266,5 +295,13 @@
   }
   .prose blockquote {
     @apply border-l-4 border-orange-500 pl-6 italic text-zinc-300 my-8;
+  }
+}
+
+/* تحسين تجربة اللمس في الموبايل */
+@media (max-width: 640px) {
+  .mobile-safe-area {
+    padding-bottom: env(safe-area-inset-bottom); /* لدعم هواتف آيفون الحديثة */
+    padding-bottom: 80px; /* مسافة إضافية عشان الـ Bottom Navigation اللي صممناه */
   }
 }
