@@ -49,9 +49,9 @@ export function AdCard({ ad, variant = "default", footerSlot, href, onDelete, pr
   const linkHref = href || `/ads/${ad.id}/${adSlug}`;
 
   return (
-    <article className="group relative flex flex-col h-full bg-white dark:bg-zinc-900 rounded-[1.5rem] overflow-hidden shadow-sm border border-zinc-100 dark:border-zinc-800 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+    <article className="jootiya-card group relative flex flex-col h-full overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
       {/* Image Section */}
-      <div className="relative w-full aspect-[4/3] bg-zinc-100 dark:bg-zinc-800 overflow-hidden shrink-0">
+      <div className="relative w-full aspect-[4/3] bg-zinc-100 dark:bg-zinc-800 overflow-hidden shrink-0 rounded-[1.5rem]">
         {linkHref && (
           <Link href={linkHref} className="absolute inset-0 z-10" aria-label={ad.title}>
             <span className="sr-only">Voir l'annonce</span>

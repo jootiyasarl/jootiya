@@ -175,7 +175,7 @@ export default async function AdPage({ params }: AdPageProps) {
         <div dir="ltr" className="bg-[#F8FAFC] dark:bg-zinc-950 pb-8 font-sans">
           <ShadowViewTracker adId={finalAd.id} category={finalAd.category} />
           
-          <div className="mb-4 md:mb-6">
+          <div className="main-container mb-4 md:mb-6">
             <nav className="flex items-center gap-2 text-[10px] md:text-[11px] font-bold text-zinc-500 uppercase tracking-wider overflow-x-auto no-scrollbar whitespace-nowrap">
               <Link href="/" className="hover:text-orange-600 shrink-0">Accueil</Link>
               <ChevronRight className="h-3 w-3 text-zinc-300 shrink-0" />
@@ -185,7 +185,7 @@ export default async function AdPage({ params }: AdPageProps) {
             </nav>
           </div>
           
-          <main className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <main className="main-container grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
               <div className="lg:col-span-8 space-y-6">
                 <section className="rounded-2xl overflow-hidden bg-white dark:bg-zinc-900 shadow-sm ring-1 ring-zinc-100 dark:ring-white/5">
                   <AdImageGallery images={images} />
@@ -337,8 +337,7 @@ export default async function AdPage({ params }: AdPageProps) {
     <div dir="ltr" className="bg-[#F8FAFC] dark:bg-zinc-950 pb-8 font-sans">
       <ShadowViewTracker adId={ad.id} category={ad.category} />
       
-      {/* Breadcrumbs for Page context */}
-      <div className="mb-4 md:mb-6">
+      <div className="main-container mb-4 md:mb-6">
         <nav className="flex items-center gap-2 text-[10px] md:text-[11px] font-bold text-zinc-500 uppercase tracking-wider overflow-x-auto no-scrollbar whitespace-nowrap">
           <Link href="/" className="hover:text-orange-600 shrink-0">Accueil</Link>
           <ChevronRight className="h-3 w-3 text-zinc-300 shrink-0" />
@@ -348,7 +347,7 @@ export default async function AdPage({ params }: AdPageProps) {
         </nav>
       </div>
       
-      <main className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <main className="main-container grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Main Content Column */}
           <div className="lg:col-span-8 space-y-6">
             <section className="rounded-2xl overflow-hidden bg-white dark:bg-zinc-900 shadow-sm ring-1 ring-zinc-100 dark:ring-white/5">

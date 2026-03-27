@@ -88,7 +88,7 @@ export function JootiyaProSearchBar() {
             type="button"
             onClick={() => setActiveField(activeField === "city" ? null : "city")}
             className={cn(
-              "flex items-center gap-2 h-9 px-4 rounded-full transition-all duration-200 min-w-[120px]",
+              "flex items-center gap-2 h-9 px-4 rounded-full transition-all duration-200 min-w-0 sm:min-w-[120px]",
               activeField === "city" 
                 ? "bg-orange-50 dark:bg-orange-950/20 text-orange-600" 
                 : "hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-600 dark:text-zinc-400"
@@ -131,7 +131,7 @@ export function JootiyaProSearchBar() {
               type="button"
               onClick={() => setActiveField(activeField === "category" ? null : "category")}
               className={cn(
-                "flex items-center gap-2 px-4 h-full rounded-full transition-all duration-200 min-w-[130px]",
+                "flex items-center gap-2 px-4 h-full rounded-full transition-all duration-200 min-w-0 sm:min-w-[130px]",
                 activeField === "category" 
                   ? "bg-orange-50 dark:bg-orange-950/20 text-orange-600" 
                   : "hover:bg-zinc-50 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200"

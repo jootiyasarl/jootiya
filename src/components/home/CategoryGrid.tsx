@@ -50,7 +50,7 @@ export function CategoryGrid() {
                         <Link
                             key={category.id}
                             href={category.href}
-                            className="group flex flex-col items-center justify-center p-2.5 bg-zinc-50/50 border border-zinc-100 rounded-xl transition-all duration-300 hover:bg-white hover:shadow-md hover:-translate-y-1 hover:border-orange-100 min-w-[90px] sm:min-w-0 aspect-[4/5] sm:aspect-square"
+                            className="group flex flex-col items-center justify-center p-2.5 bg-zinc-50/50 border border-zinc-100 rounded-xl transition-all duration-300 hover:bg-white hover:shadow-md hover:-translate-y-1 hover:border-orange-100 sm:min-w-0 aspect-[4/5] sm:aspect-square"
                         >
                             <div className={`flex h-9 w-9 items-center justify-center rounded-full ${category.bg} mb-2 transition-transform group-hover:scale-110 shrink-0`}>
                                 <category.icon size={18} strokeWidth={2} className="shrink-0" />

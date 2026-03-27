@@ -28,7 +28,7 @@ export function AdCard({ ad, canBoost, onEdit, onDelete }: { ad: Ad; canBoost?: 
   return (
     <Link
       href={`/ads/${ad.id}`}
-      className="group relative block overflow-hidden transition-all duration-200 hover:-translate-y-1 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 shadow-sm"
+      className="jootiya-card group relative block overflow-hidden transition-all duration-200 hover:-translate-y-1 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 shadow-sm"
     >
       {/* Image Container - Full Grid */}
       <div className="relative aspect-square w-full overflow-hidden bg-zinc-100 dark:bg-zinc-800 shrink-0">

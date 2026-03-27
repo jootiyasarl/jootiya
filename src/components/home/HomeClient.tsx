@@ -300,7 +300,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
         </div>
       )}
       
-      <main className="main-content-wrapper container-standard py-4 sm:py-6 lg:py-8">
+      <main className="main-container py-4 sm:py-6 lg:py-8">
         {error && (
           <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-2xl text-red-600 text-sm font-bold flex flex-col items-center gap-3">
             <p>Impossible de charger les annonces : {error}</p>
@@ -339,7 +339,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
                       </div>
                       <div className="flex overflow-x-auto no-scrollbar gap-3 pb-2">
                         {[...Array(3)].map((_, i) => (
-                          <div key={i} className="flex-[0_0_75%] min-[400px]:flex-[0_0_60%] aspect-[3/4] bg-zinc-100 animate-pulse rounded-[1.5rem] shrink-0" />
+                          <div key={i} className="jootiya-card flex-[0_0_75%] min-[400px]:flex-[0_0_60%] aspect-[3/4] bg-zinc-100 animate-pulse rounded-[1.5rem] shrink-0" />
                         ))}
                       </div>
                     </div>
