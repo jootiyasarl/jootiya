@@ -36,7 +36,7 @@ export function RootNavbarShellClient({ children, navbar, footer }: RootNavbarSh
   return (
     <>
       {!isSpecialPath && (
-        <div>
+        <div className="contents">
           <Suspense fallback={<div className="h-16 w-full bg-white border-b border-zinc-200" />}>
             {navbar}
           </Suspense>
@@ -48,7 +48,7 @@ export function RootNavbarShellClient({ children, navbar, footer }: RootNavbarSh
         </div>
       )}
 
-      <main className={cn("min-h-screen", !isSpecialPath && "pt-[56px] md:pt-[64px]")}
+      <main className={cn("min-h-screen", !isSpecialPath && "pt-[56px] md:pt-[64px] pb-20 lg:pb-0")}
       >
         <div className={cn(!isSpecialPath && "main-content-wrapper")}
         >
