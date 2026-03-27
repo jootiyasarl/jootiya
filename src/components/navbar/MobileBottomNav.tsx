@@ -16,13 +16,13 @@ export function MobileBottomNav() {
     }
 
     return (
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-t border-zinc-100 px-2 shadow-[0_-10px_20px_rgba(0,0,0,0.02)] pb-[env(safe-area-inset-bottom)]">
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl border-t border-zinc-100 dark:border-zinc-800 px-2 shadow-[0_-10px_20px_rgba(0,0,0,0.02)] pb-[env(safe-area-inset-bottom)]">
             <div className="grid h-16 grid-cols-5 mx-auto max-w-md items-center px-1">
                 <Link
                     href="/"
                     className={cn(
-                        "inline-flex flex-col items-center justify-center min-h-[44px] min-w-[44px] px-2 hover:bg-gray-50 group gap-1",
-                        pathname === "/" ? "text-orange-600" : "text-zinc-400"
+                        "inline-flex flex-col items-center justify-center min-h-[44px] min-w-[44px] px-2 hover:bg-zinc-50 dark:hover:bg-zinc-900 group gap-1 transition-all",
+                        pathname === "/" ? "text-orange-600" : "text-zinc-400 dark:text-zinc-500"
                     )}
                     aria-label="Accueil"
                 >
@@ -35,8 +35,8 @@ export function MobileBottomNav() {
                 <Link
                     href="/dashboard/favorites"
                     className={cn(
-                        "inline-flex flex-col items-center justify-center min-h-[44px] min-w-[44px] px-2 hover:bg-gray-50 group gap-1",
-                        pathname === "/dashboard/favorites" ? "text-orange-600" : "text-zinc-400"
+                        "inline-flex flex-col items-center justify-center min-h-[44px] min-w-[44px] px-2 hover:bg-zinc-50 dark:hover:bg-zinc-900 group gap-1 transition-all",
+                        pathname === "/dashboard/favorites" ? "text-orange-600" : "text-zinc-400 dark:text-zinc-500"
                     )}
                     aria-label="Vos favoris"
                 >
@@ -60,8 +60,8 @@ export function MobileBottomNav() {
                 <Link
                     href="/dashboard/messages"
                     className={cn(
-                        "inline-flex flex-col items-center justify-center min-h-[44px] min-w-[44px] px-2 hover:bg-gray-50 group gap-1",
-                        pathname === "/dashboard/messages" ? "text-orange-600" : "text-zinc-400"
+                        "inline-flex flex-col items-center justify-center min-h-[44px] min-w-[44px] px-2 hover:bg-zinc-50 dark:hover:bg-zinc-900 group gap-1 transition-all",
+                        pathname === "/dashboard/messages" ? "text-orange-600" : "text-zinc-400 dark:text-zinc-500"
                     )}
                     aria-label="Vos messages"
                 >
@@ -74,8 +74,8 @@ export function MobileBottomNav() {
                 <Link
                     href="/dashboard"
                     className={cn(
-                        "inline-flex flex-col items-center justify-center min-h-[44px] min-w-[44px] px-2 hover:bg-gray-50 group gap-1",
-                        pathname === "/dashboard" ? "text-orange-600" : "text-zinc-400"
+                        "inline-flex flex-col items-center justify-center min-h-[44px] min-w-[44px] px-2 hover:bg-zinc-50 dark:hover:bg-zinc-900 group gap-1 transition-all",
+                        pathname === "/dashboard" ? "text-orange-600" : "text-zinc-400 dark:text-zinc-500"
                     )}
                     aria-label="Votre profil"
                 >
