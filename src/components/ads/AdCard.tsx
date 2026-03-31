@@ -28,64 +28,73 @@ export function AdCard({ ad, canBoost, onEdit, onDelete }: { ad: Ad; canBoost?: 
   return (
     <Link
       href={`/ads/${ad.id}`}
-      className="jootiya-card group relative block overflow-hidden transition-all duration-200 hover:-translate-y-1 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 shadow-sm"
+      className="jootiya-card group"
     >
-      {/* Image Container - Full Grid */}
-      <div className="relative aspect-square w-full overflow-hidden bg-zinc-100 dark:bg-zinc-800 shrink-0">
-        <div className="absolute inset-0 w-full h-full">
-          <Image
-            src={thumbnailUrl}
-            alt={ad.title}
-            fill
-            placeholder="blur"
-            blurDataURL={blurUrl}
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            loading="lazy"
-            unoptimized
-          />
-        </div>
+      {/* Image Container */}
+      <div className="jootiya-card-image-container">
+        <Image
+          src={thumbnailUrl}
+          alt={ad.title}
+          fill
+          placeholder="blur"
+          blurDataURL={blurUrl}
+          className="jootiya-card-image"
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          loading="lazy"
+          unoptimized
+        />
 
-        {/* Wishlist Heart - Top Right */}
-        <WishlistHeart adId={ad.id} />
-
-        {/* Sold Overlay */}
-        {ad.status === "sold" && (
-          <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
-            <div className="rotate-[-12deg] rounded-xl border-4 border-white px-4 py-2 text-2xl font-black tracking-tighter text-white shadow-floating">
-              VENDU
+        {/* Badges/Overlays */}
+        <div className="absolute inset-0 p-3 flex flex-col justify-between pointer-events-none">
+          <div className="flex justify-between items-start">
+            {ad.status === "boosted" && (
+              <div className="jootiya-card-badge text-orange-600 border-orange-100">
+                ⭐ Boosté
+              </div>
+            )}
+            <div className="ml-auto pointer-events-auto">
+              <WishlistHeart adId={ad.id} />
             </div>
           </div>
-        )}
+
+          {ad.status === "sold" && (
+            <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
+              <div className="rotate-[-12deg] rounded-xl border-4 border-white px-4 py-2 text-xl font-black tracking-tighter text-white shadow-2xl">
+                VENDU
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Content - Minimalist with generous spacing */}
-      <div className="p-2 sm:p-3 space-y-1 sm:space-y-2">
-        {/* Title - Clean and simple */}
-        <h3 className="line-clamp-2 text-[13px] sm:text-sm font-bold text-zinc-900 dark:text-zinc-100 leading-tight">
-          {ad.title}
-        </h3>
-
-        {/* Location - Subtle */}
-        <div className="flex items-center gap-1 text-[10px] sm:text-xs text-zinc-500 dark:text-zinc-400">
-          <MapPin className="h-2.5 w-2.5 sm:h-3 w-3" strokeWidth={1.5} />
-          <span className="truncate">{ad.location || 'Maroc'}</span>
+      {/* Content */}
+      <div className="p-3 sm:p-4 space-y-2.5">
+        <div className="space-y-1">
+          <h3 className="line-clamp-2 text-[13px] sm:text-sm font-bold text-zinc-900 dark:text-zinc-100 leading-snug group-hover:text-orange-600 transition-colors">
+            {ad.title}
+          </h3>
+          
+          <div className="flex items-center gap-1 text-[10px] sm:text-xs text-zinc-500 dark:text-zinc-400 font-medium">
+            <MapPin className="h-3 w-3 text-zinc-400" strokeWidth={2} />
+            <span className="truncate">{ad.location || 'Maroc'}</span>
+          </div>
         </div>
 
-        {/* Price - Bold Orange at Bottom */}
-        <div className="text-lg sm:text-xl font-black text-[#FF6B00] tracking-tight">
-          {priceDisplay} <span className="text-[10px] sm:text-xs font-bold">{currencyDisplay}</span>
+        <div className="flex items-end justify-between gap-2 pt-1">
+          <div className="jootiya-card-price-tag">
+            {priceDisplay} <span className="text-[10px] sm:text-xs font-bold opacity-80">{currencyDisplay}</span>
+          </div>
         </div>
 
         {/* Edit/Delete Actions (Dashboard only) */}
         {(onEdit || onDelete) && (
-          <div className="mt-3 flex items-center gap-2 pt-3 border-t border-zinc-100 dark:border-zinc-800">
+          <div className="mt-2 flex items-center gap-2 pt-3 border-t border-zinc-100 dark:border-zinc-800">
             {onEdit && (
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
-                className="flex-1 h-9 rounded-xl gap-2 text-xs font-bold"
+                className="flex-1 h-9 rounded-xl gap-2 text-xs font-bold border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
@@ -101,7 +110,7 @@ export function AdCard({ ad, canBoost, onEdit, onDelete }: { ad: Ad; canBoost?: 
                 type="button"
                 variant="outline"
                 size="sm"
-                className="h-9 w-9 p-0 rounded-xl border-red-200 text-red-600 hover:bg-red-50 dark:border-red-900 dark:hover:bg-red-950"
+                className="h-9 w-9 p-0 rounded-xl border-red-100 text-red-600 hover:bg-red-50 dark:border-red-900 dark:hover:bg-red-950"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();

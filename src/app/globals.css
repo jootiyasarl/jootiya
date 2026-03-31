@@ -224,10 +224,52 @@
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full;
   }
 
-  /* حل مشكلة الـ Padding في البطاقات (Cards) */
+  /* Professional Ad Card Redesign */
   .jootiya-card {
-    @apply bg-white rounded-[2rem] p-4 sm:p-5 shadow-sm border border-slate-100 
-           transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/5;
+    @apply relative bg-white dark:bg-zinc-900 rounded-[1.5rem] overflow-hidden 
+           border border-zinc-100 dark:border-zinc-800/50 
+           shadow-[0_2px_8px_rgba(0,0,0,0.04)]
+           transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)];
+  }
+
+  .jootiya-card:hover {
+    @apply -translate-y-1.5 
+           shadow-[0_20px_40px_rgba(0,0,0,0.08)]
+           border-orange-200 dark:border-orange-900/30;
+  }
+
+  .dark .jootiya-card:hover {
+    @apply shadow-[0_20px_40px_rgba(0,0,0,0.3)];
+  }
+
+  .jootiya-card-image-container {
+    @apply relative aspect-square overflow-hidden bg-zinc-50 dark:bg-zinc-950;
+  }
+
+  .jootiya-card-image {
+    @apply object-cover transition-transform duration-700 ease-out;
+  }
+
+  .jootiya-card:hover .jootiya-card-image {
+    @apply scale-110;
+  }
+
+  .jootiya-card-badge {
+    @apply absolute top-3 left-3 px-2.5 py-1 rounded-full 
+           bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md 
+           text-[10px] font-black uppercase tracking-wider 
+           shadow-sm z-10 border border-white/20;
+  }
+
+  .jootiya-card-price-tag {
+    @apply text-lg sm:text-xl font-black text-orange-600 dark:text-orange-500 
+           tracking-tight leading-none;
+  }
+
+  @media (max-width: 639px) {
+    .jootiya-card {
+      @apply rounded-[1.25rem] shadow-[0_2px_4px_rgba(0,0,0,0.02)];
+    }
   }
 
   /* تنسيق الصور لمنع تشوه الأبعاد */
