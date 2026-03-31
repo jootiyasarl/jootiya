@@ -224,52 +224,50 @@
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full;
   }
 
-  /* Professional Ad Card Redesign */
-  .jootiya-card {
-    @apply relative bg-white dark:bg-zinc-900 rounded-[1.5rem] overflow-hidden 
-           border border-zinc-100 dark:border-zinc-800/50 
-           shadow-[0_2px_8px_rgba(0,0,0,0.04)]
-           transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)];
+  /* Airbnb Style Ad Card - Inspired by Image */
+  .airbnb-card {
+    @apply group relative flex flex-col gap-2 transition-all duration-300;
   }
 
-  .jootiya-card:hover {
-    @apply -translate-y-1.5 
-           shadow-[0_20px_40px_rgba(0,0,0,0.08)]
-           border-orange-200 dark:border-orange-900/30;
+  .airbnb-card-image-wrapper {
+    @apply relative aspect-square w-full overflow-hidden rounded-[1.25rem] bg-zinc-100 dark:bg-zinc-800;
   }
 
-  .dark .jootiya-card:hover {
-    @apply shadow-[0_20px_40px_rgba(0,0,0,0.3)];
+  .airbnb-card-image {
+    @apply h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105;
   }
 
-  .jootiya-card-image-container {
-    @apply relative aspect-square overflow-hidden bg-zinc-50 dark:bg-zinc-950;
+  .airbnb-card-content {
+    @apply flex flex-col gap-0.5 px-0.5;
   }
 
-  .jootiya-card-image {
-    @apply object-cover transition-transform duration-700 ease-out;
+  .airbnb-card-title-row {
+    @apply flex items-baseline justify-between gap-2;
   }
 
-  .jootiya-card:hover .jootiya-card-image {
-    @apply scale-110;
+  .airbnb-card-title {
+    @apply line-clamp-1 text-[15px] font-bold text-zinc-900 dark:text-zinc-100;
   }
 
-  .jootiya-card-badge {
-    @apply absolute top-3 left-3 px-2.5 py-1 rounded-full 
-           bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md 
-           text-[10px] font-black uppercase tracking-wider 
-           shadow-sm z-10 border border-white/20;
+  .airbnb-card-location {
+    @apply text-[14px] text-zinc-500 dark:text-zinc-400 font-medium;
   }
 
-  .jootiya-card-price-tag {
-    @apply text-lg sm:text-xl font-black text-orange-600 dark:text-orange-500 
-           tracking-tight leading-none;
+  .airbnb-card-time {
+    @apply text-[14px] text-zinc-500 dark:text-zinc-400 font-medium;
   }
 
-  @media (max-width: 639px) {
-    .jootiya-card {
-      @apply rounded-[1.25rem] shadow-[0_2px_4px_rgba(0,0,0,0.02)];
-    }
+  .airbnb-card-price {
+    @apply mt-1 text-[15px] font-black text-zinc-900 dark:text-zinc-100;
+  }
+
+  .airbnb-card-price-unit {
+    @apply text-[14px] font-medium text-zinc-500 dark:text-zinc-400 ml-1;
+  }
+
+  /* Wishlist positioning specifically for Airbnb style */
+  .airbnb-wishlist-pos {
+    @apply absolute top-3 right-3 z-20;
   }
 
   /* تنسيق الصور لمنع تشوه الأبعاد */

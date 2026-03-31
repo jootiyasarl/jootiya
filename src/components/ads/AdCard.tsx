@@ -1,9 +1,11 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { MapPin, Pencil, Trash2 } from 'lucide-react';
+import { Pencil, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getOptimizedImageUrl } from '@/lib/storageUtils';
 import { WishlistHeart } from './WishlistHeart';
+import { formatDistanceToNow } from 'date-fns';
+import { fr } from 'date-fns/locale';
 
 export interface Ad {
   id: string;
@@ -17,91 +19,93 @@ export interface Ad {
 }
 
 export function AdCard({ ad, canBoost, onEdit, onDelete }: { ad: Ad; canBoost?: boolean; onEdit?: (ad: Ad) => void; onDelete?: (ad: Ad) => void }) {
-  // Minimalist: Use optimized thumbnails
   const mainImage = ad.images?.[0] || '/placeholder-ad.jpg';
-  const thumbnailUrl = getOptimizedImageUrl(mainImage, { width: 400, height: 400, quality: 60 });
+  const thumbnailUrl = getOptimizedImageUrl(mainImage, { width: 500, height: 500, quality: 75 });
   const blurUrl = getOptimizedImageUrl(mainImage, { width: 20, height: 20, quality: 10 });
 
   const priceDisplay = ad.price != null ? ad.price.toLocaleString() : 'N/A';
   const currencyDisplay = ad.currency || 'MAD';
+  
+  const timeAgo = formatDistanceToNow(new Date(ad.created_at), { addSuffix: false, locale: fr })
+    .replace('environ ', '')
+    .replace('il y a ', '');
 
   return (
     <Link
       href={`/ads/${ad.id}`}
-      className="jootiya-card group"
+      className="airbnb-card"
     >
       {/* Image Container */}
-      <div className="jootiya-card-image-container">
+      <div className="airbnb-card-image-wrapper">
         <Image
           src={thumbnailUrl}
           alt={ad.title}
           fill
           placeholder="blur"
           blurDataURL={blurUrl}
-          className="jootiya-card-image"
-          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          className="airbnb-card-image"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           loading="lazy"
           unoptimized
         />
 
-        {/* Badges/Overlays */}
-        <div className="absolute inset-0 p-3 flex flex-col justify-between pointer-events-none">
-          <div className="flex justify-between items-start">
-            {ad.status === "boosted" && (
-              <div className="jootiya-card-badge text-orange-600 border-orange-100">
-                ⭐ Boosté
-              </div>
-            )}
-            <div className="ml-auto pointer-events-auto">
-              <WishlistHeart adId={ad.id} />
+        {/* Wishlist Heart */}
+        <div className="airbnb-wishlist-pos">
+          <WishlistHeart adId={ad.id} />
+        </div>
+
+        {/* Sold Overlay */}
+        {ad.status === "sold" && (
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/30 backdrop-blur-[1px]">
+            <div className="rounded-lg bg-white/90 px-3 py-1 text-xs font-black tracking-tight text-black uppercase">
+              Vendu
             </div>
           </div>
-
-          {ad.status === "sold" && (
-            <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
-              <div className="rotate-[-12deg] rounded-xl border-4 border-white px-4 py-2 text-xl font-black tracking-tighter text-white shadow-2xl">
-                VENDU
-              </div>
-            </div>
-          )}
-        </div>
+        )}
       </div>
 
       {/* Content */}
-      <div className="p-3 sm:p-4 space-y-2.5">
-        <div className="space-y-1">
-          <h3 className="line-clamp-2 text-[13px] sm:text-sm font-bold text-zinc-900 dark:text-zinc-100 leading-snug group-hover:text-orange-600 transition-colors">
+      <div className="airbnb-card-content">
+        <div className="airbnb-card-title-row">
+          <h3 className="airbnb-card-title">
             {ad.title}
           </h3>
-          
-          <div className="flex items-center gap-1 text-[10px] sm:text-xs text-zinc-500 dark:text-zinc-400 font-medium">
-            <MapPin className="h-3 w-3 text-zinc-400" strokeWidth={2} />
-            <span className="truncate">{ad.location || 'Maroc'}</span>
+          {/* Optional: Rating like in image if you have it */}
+          <div className="flex items-center gap-1 text-[14px]">
+            <span className="text-zinc-900 font-medium">★</span>
+            <span className="text-zinc-900">5,0</span>
           </div>
         </div>
 
-        <div className="flex items-end justify-between gap-2 pt-1">
-          <div className="jootiya-card-price-tag">
-            {priceDisplay} <span className="text-[10px] sm:text-xs font-bold opacity-80">{currencyDisplay}</span>
-          </div>
+        <p className="airbnb-card-location">
+          {ad.location || 'Maroc'}
+        </p>
+
+        <p className="airbnb-card-time">
+          Il y a {timeAgo}
+        </p>
+
+        <div className="airbnb-card-price">
+          {currencyDisplay} {priceDisplay}
+          <span className="airbnb-card-price-unit">total</span>
         </div>
 
         {/* Edit/Delete Actions (Dashboard only) */}
         {(onEdit || onDelete) && (
-          <div className="mt-2 flex items-center gap-2 pt-3 border-t border-zinc-100 dark:border-zinc-800">
+          <div className="mt-2 flex items-center gap-2 pt-2">
             {onEdit && (
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
-                className="flex-1 h-9 rounded-xl gap-2 text-xs font-bold border-zinc-200 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800"
+                className="flex-1 h-8 rounded-lg text-[11px] font-bold border-zinc-200"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                   onEdit(ad);
                 }}
               >
-                <Pencil className="h-3.5 w-3.5" />
+                <Pencil className="h-3 w-3 mr-1" />
                 Modifier
               </Button>
             )}
@@ -110,14 +114,14 @@ export function AdCard({ ad, canBoost, onEdit, onDelete }: { ad: Ad; canBoost?: 
                 type="button"
                 variant="outline"
                 size="sm"
-                className="h-9 w-9 p-0 rounded-xl border-red-100 text-red-600 hover:bg-red-50 dark:border-red-900 dark:hover:bg-red-950"
+                className="h-8 w-8 p-0 rounded-lg border-red-100 text-red-600 hover:bg-red-50"
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                   onDelete(ad);
                 }}
               >
-                <Trash2 className="h-4 w-4" />
+                <Trash2 className="h-3.5 w-3.5" />
               </Button>
             )}
           </div>
