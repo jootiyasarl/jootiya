@@ -226,7 +226,7 @@
 
   /* Airbnb Style Ad Card - Inspired by Image */
   .airbnb-card {
-    @apply group relative flex flex-col gap-2 transition-all duration-300;
+    @apply relative flex flex-col gap-2 transition-all duration-300;
   }
 
   .airbnb-card-image-wrapper {
@@ -234,7 +234,11 @@
   }
 
   .airbnb-card-image {
-    @apply h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105;
+    @apply h-full w-full object-cover transition-transform duration-500 ease-out;
+  }
+
+  .airbnb-card:hover .airbnb-card-image {
+    @apply scale-105;
   }
 
   .airbnb-card-content {

@@ -33,7 +33,7 @@ export function AdCard({ ad, canBoost, onEdit, onDelete }: { ad: Ad; canBoost?: 
   return (
     <Link
       href={`/ads/${ad.id}`}
-      className="airbnb-card"
+      className="airbnb-card group"
     >
       {/* Image Container */}
       <div className="airbnb-card-image-wrapper">
