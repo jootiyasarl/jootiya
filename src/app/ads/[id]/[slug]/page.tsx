@@ -7,6 +7,7 @@ import { AdCard } from "@/components/ads/AdCard";
 import { FavoriteButton } from "@/components/ads/FavoriteButton";
 import { ViralShareButton } from "@/components/ads/ViralShareButton";
 import { ShadowViewTracker } from "@/components/ads/ShadowViewTracker";
+import { cn } from "@/lib/utils";
 import {
   MapPin,
   Calendar,
@@ -175,110 +176,112 @@ export default async function AdPage({ params }: AdPageProps) {
         <div dir="ltr" className="bg-[#F8FAFC] dark:bg-zinc-950 pb-16 font-sans">
           <ShadowViewTracker adId={finalAd.id} category={finalAd.category} />
           
-          <div className="main-container py-4">
-            <nav className="flex items-center gap-2 text-[11px] font-bold text-zinc-400 uppercase tracking-widest overflow-x-auto no-scrollbar whitespace-nowrap mb-6">
+          <div className="main-container py-6">
+            {/* Breadcrumbs */}
+            <nav className="flex items-center gap-2 text-[11px] font-bold text-zinc-400 uppercase tracking-[0.2em] mb-8 overflow-x-auto no-scrollbar whitespace-nowrap">
               <Link href="/" className="hover:text-orange-600 transition-colors">Accueil</Link>
-              <ChevronRight className="h-3 w-3 text-zinc-300" />
+              <ChevronRight className="h-3 w-3" />
               <Link href="/marketplace" className="hover:text-orange-600 transition-colors">Marché</Link>
-              <ChevronRight className="h-3 w-3 text-zinc-300" />
+              <ChevronRight className="h-3 w-3" />
               <span className="text-zinc-900 dark:text-white font-black">{finalAd.category || "Annonce"}</span>
             </nav>
 
-            <main className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-              {/* Left Column: Images & Content */}
-              <div className="lg:col-span-8 space-y-8">
-                <section className="bg-white dark:bg-zinc-900 rounded-[2.5rem] p-4 md:p-6 shadow-sm border border-zinc-100 dark:border-zinc-800">
+            <main className="ad-page-main-grid">
+              {/* Left Column: Media & Info */}
+              <div className="ad-page-content-column">
+                <section className="premium-gallery-container p-4 md:p-6">
                   <AdImageGallery images={images} />
                 </section>
 
-                <div className="bg-white dark:bg-zinc-900 rounded-[2.5rem] p-8 shadow-sm border border-zinc-100 dark:border-zinc-800 space-y-8">
-                  <div className="space-y-4">
-                    <div className="flex items-start justify-between gap-4">
-                      <h1 className="text-2xl md:text-4xl font-black tracking-tight text-zinc-900 dark:text-white leading-[1.1]">
+                <div className="ad-info-card space-y-10">
+                  <div className="space-y-6">
+                    <div className="flex items-start justify-between gap-6">
+                      <h1 className="text-3xl md:text-5xl font-black tracking-tight text-zinc-900 dark:text-white leading-[1.1]">
                         {finalAd.title}
                       </h1>
-                      <FavoriteButton adId={finalAd.id} className="shrink-0 h-12 w-12 rounded-2xl bg-zinc-50 dark:bg-zinc-800 hover:bg-red-50 dark:hover:bg-red-950/30 group transition-all" />
+                      <div className="premium-glass p-2 rounded-2xl">
+                        <FavoriteButton adId={finalAd.id} className="h-12 w-12 rounded-xl hover:bg-red-50 dark:hover:bg-red-950/30 transition-all" />
+                      </div>
                     </div>
                     
-                    <div className="flex flex-wrap items-center gap-4 text-sm font-bold">
-                      <div className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 dark:bg-orange-950/20 text-orange-600 rounded-full">
-                        <MapPin className="h-4 w-4" />
+                    <div className="flex flex-wrap items-center gap-3">
+                      <div className="premium-badge bg-orange-50 dark:bg-orange-950/30 text-orange-600">
+                        <MapPin className="h-3.5 w-3.5" />
                         {finalAd.city}
                       </div>
-                      <div className="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-50 dark:bg-zinc-800 text-zinc-500 rounded-full">
-                        <Calendar className="h-4 w-4" />
-                        {formattedDate}
+                      <div className="premium-badge bg-zinc-100 dark:bg-zinc-800 text-zinc-500">
+                        <Calendar className="h-3.5 w-3.5" />
+                        Publié le {formattedDate}
                       </div>
-                      <div className="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-50 dark:bg-zinc-800 text-zinc-500 rounded-full">
-                        <Eye className="h-4 w-4" />
+                      <div className="premium-badge bg-zinc-100 dark:bg-zinc-800 text-zinc-500">
+                        <Eye className="h-3.5 w-3.5" />
                         {finalAd.views_count || 1} vues
                       </div>
                     </div>
                   </div>
 
-                  <div className="pt-8 border-t border-zinc-100 dark:border-zinc-800">
-                    <h2 className="text-xl font-black mb-6 flex items-center gap-2">
-                      <div className="w-1.5 h-6 bg-orange-500 rounded-full" />
-                      Description
-                    </h2>
-                    <div className="prose prose-zinc dark:prose-invert max-w-none">
-                      <p className="whitespace-pre-wrap leading-relaxed text-zinc-600 dark:text-zinc-400 text-base md:text-lg font-medium">
+                  <div className="pt-10 border-t border-zinc-100 dark:border-zinc-800">
+                    <h2 className="premium-section-title">Description</h2>
+                    <div className="ad-description-prose">
+                      <p className="whitespace-pre-wrap leading-relaxed font-medium">
                         {finalAd.description || "Aucune description fournie."}
                       </p>
                     </div>
                   </div>
 
-                  <div className="pt-8 border-t border-zinc-100 dark:border-zinc-800 grid grid-cols-2 md:grid-cols-4 gap-6">
-                    <div className="space-y-1.5">
-                      <p className="text-[10px] uppercase font-black text-zinc-400 tracking-[0.2em]">Catégorie</p>
-                      <p className="font-bold text-zinc-900 dark:text-white">{finalAd.category || "Autre"}</p>
+                  <div className="ad-attribute-grid">
+                    <div className="ad-attribute-item">
+                      <p className="ad-attribute-label">Catégorie</p>
+                      <p className="ad-attribute-value">{finalAd.category || "Autre"}</p>
                     </div>
-                    <div className="space-y-1.5">
-                      <p className="text-[10px] uppercase font-black text-zinc-400 tracking-[0.2em]">État</p>
-                      <p className="font-bold text-zinc-900 dark:text-white">{finalAd.condition === 'new' ? "Neuf" : "Occasion"}</p>
+                    <div className="ad-attribute-item">
+                      <p className="ad-attribute-label">État</p>
+                      <div className="flex items-center gap-2">
+                        <div className={cn("w-2 h-2 rounded-full", finalAd.condition === 'new' ? "bg-emerald-500" : "bg-orange-500")} />
+                        <p className="ad-attribute-value">{finalAd.condition === 'new' ? "Neuf" : "Occasion"}</p>
+                      </div>
                     </div>
-                    <div className="space-y-1.5">
-                      <p className="text-[10px] uppercase font-black text-zinc-400 tracking-[0.2em]">Référence</p>
-                      <p className="font-bold text-zinc-900 dark:text-white">#{finalAd.id.slice(0, 8)}</p>
+                    <div className="ad-attribute-item">
+                      <p className="ad-attribute-label">Référence</p>
+                      <p className="ad-attribute-value text-zinc-400">#{finalAd.id.slice(0, 8)}</p>
                     </div>
                   </div>
                 </div>
 
                 {similarAds && similarAds.length > 0 && (
-                  <section className="space-y-6">
+                  <section className="space-y-8 pt-4">
                     <div className="flex items-center justify-between">
-                      <h2 className="text-2xl font-black tracking-tight">Annonces similaires</h2>
-                      <Link href="/marketplace" className="text-sm font-bold text-orange-600 hover:underline">Voir plus</Link>
+                      <h2 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-white">Annonces similaires</h2>
+                      <Link href="/marketplace" className="text-sm font-black text-orange-600 hover:text-orange-700 underline underline-offset-4">Voir tout</Link>
                     </div>
                     <SimilarAdsCarousel ads={similarAds as any[]} />
                   </section>
                 )}
               </div>
 
-              {/* Right Column: Pricing & Seller */}
-              <aside className="lg:col-span-4 space-y-6">
-                <div className="lg:sticky lg:top-[100px] space-y-6">
-                  {/* Pricing Card */}
-                  <div className="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] shadow-xl border border-zinc-100 dark:border-zinc-800 ring-4 ring-orange-500/5">
-                    <div className="space-y-1 mb-6">
-                      <p className="text-xs font-black text-zinc-400 uppercase tracking-widest">Prix de vente</p>
-                      <p className="text-4xl font-black text-orange-600 tracking-tighter">{formattedPrice}</p>
-                    </div>
-                    <ContactActions adId={finalAd.id} sellerId={finalAd.seller_id} currentUser={user} sellerPhone={sellerPhone} />
-                    <div className="mt-6 pt-6 border-t border-zinc-50 dark:border-zinc-800">
-                      <ViralShareButton 
-                        adId={finalAd.id} 
-                        adTitle={finalAd.title} 
-                        adPrice={formattedPrice} 
-                        sellerId={finalAd.seller_id} 
-                        showAsMainAction={false}
-                      />
+              {/* Right Column: Sticky Sidebar */}
+              <aside className="ad-page-sidebar-column">
+                <div className="premium-sidebar-card space-y-8">
+                  <div className="space-y-2">
+                    <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.3em]">Prix de vente</p>
+                    <div className="flex items-baseline gap-2">
+                      <p className="premium-price-hero text-orange-600">{formattedPrice}</p>
                     </div>
                   </div>
 
-                  {/* Seller Card */}
-                  <div className="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] shadow-sm border border-zinc-100 dark:border-zinc-800">
-                    <div className="flex items-center gap-4 mb-8">
+                  <div className="space-y-4">
+                    <ContactActions adId={finalAd.id} sellerId={finalAd.seller_id} currentUser={user} sellerPhone={sellerPhone} />
+                    <ViralShareButton 
+                      adId={finalAd.id} 
+                      adTitle={finalAd.title} 
+                      adPrice={formattedPrice} 
+                      sellerId={finalAd.seller_id} 
+                      showAsMainAction={false}
+                    />
+                  </div>
+
+                  <div className="pt-8 border-t border-zinc-100 dark:border-zinc-800 space-y-6">
+                    <div className="flex items-center gap-4">
                       <div className="h-16 w-16 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-2xl font-black overflow-hidden ring-4 ring-zinc-50 dark:ring-zinc-800/50">
                         {sellerAvatar ? (
                           <Image src={sellerAvatar} alt={sellerName} width={64} height={64} className="object-cover" />
@@ -287,51 +290,52 @@ export default async function AdPage({ params }: AdPageProps) {
                         )}
                       </div>
                       <div>
-                        <h3 className="font-black text-xl text-zinc-900 dark:text-white leading-tight">
+                        <h3 className="font-black text-xl text-zinc-900 dark:text-white leading-tight flex items-center gap-1.5">
                           {sellerName}
+                          {isTrusted && <Award className="w-5 h-5 text-blue-500 fill-blue-500/10" />}
                         </h3>
                         <p className="text-xs text-zinc-500 font-bold uppercase tracking-wider mt-1">Membre depuis {memberSince}</p>
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4 mb-8">
-                      <div className="bg-zinc-50 dark:bg-zinc-800/50 p-4 rounded-3xl text-center">
+                    <div className="premium-seller-stats">
+                      <div className="text-center space-y-1">
                         <p className="text-xl font-black text-zinc-900 dark:text-white">100%</p>
-                        <p className="text-[10px] text-zinc-400 uppercase font-black tracking-widest mt-1">Réponse</p>
+                        <p className="text-[9px] text-zinc-400 uppercase font-black tracking-widest">Réponse</p>
                       </div>
-                      <div className="bg-zinc-50 dark:bg-zinc-800/50 p-4 rounded-3xl text-center">
+                      <div className="text-center space-y-1 border-l border-zinc-200 dark:border-zinc-700">
                         <div className="flex items-center justify-center gap-1">
                           <p className="text-xl font-black text-zinc-900 dark:text-white">{avgRating || '5.0'}</p>
                           <Star className="w-4 h-4 fill-yellow-500 text-yellow-500" />
                         </div>
-                        <p className="text-[10px] text-zinc-400 uppercase font-black tracking-widest mt-1">{totalReviews || 0} Avis</p>
+                        <p className="text-[9px] text-zinc-400 uppercase font-black tracking-widest">{totalReviews || 0} Avis</p>
                       </div>
                     </div>
 
-                    <Link href={`/profile/${finalAd.seller_id}`} className="flex items-center justify-center w-full h-12 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 text-sm font-black text-zinc-900 dark:text-white hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all">
-                      Voir le profil
+                    <Link href={`/profile/${finalAd.seller_id}`} className="flex items-center justify-center w-full h-14 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 text-sm font-black text-zinc-900 dark:text-white hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all duration-300">
+                      Voir le profil complet
                     </Link>
                   </div>
 
-                  {/* Trust Badge */}
-                  <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-8 rounded-[2.5rem] text-white shadow-lg shadow-emerald-500/20">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center">
-                        <ShieldCheck className="w-7 h-7" />
+                  {/* Safety Trust Card */}
+                  <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-8 rounded-[2.5rem] text-white shadow-xl shadow-emerald-500/20 ring-1 ring-white/20">
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30">
+                        <ShieldCheck className="w-8 h-8" />
                       </div>
                       <div>
-                        <h3 className="font-black text-lg leading-tight">Protection Jootiya</h3>
-                        <p className="text-xs font-bold opacity-80 uppercase tracking-widest">Achetez en sécurité</p>
+                        <h3 className="font-black text-xl leading-tight text-white">Protection Jootiya</h3>
+                        <p className="text-[10px] font-black opacity-80 uppercase tracking-[0.2em] mt-1 text-emerald-50">Transaction sécurisée</p>
                       </div>
                     </div>
-                    <ul className="space-y-3 pt-2">
-                      <li className="flex items-center gap-3 text-sm font-bold bg-white/10 p-3 rounded-2xl backdrop-blur-sm">
-                        <CheckCircle2 className="w-5 h-5 text-emerald-200" /> 
-                        Identité vérifiée
+                    <ul className="space-y-3">
+                      <li className="flex items-center gap-3 text-sm font-bold bg-white/10 p-4 rounded-2xl backdrop-blur-sm border border-white/5">
+                        <CheckCircle2 className="w-5 h-5 text-emerald-200 flex-shrink-0" /> 
+                        Identité vérifiée à 100%
                       </li>
-                      <li className="flex items-center gap-3 text-sm font-bold bg-white/10 p-3 rounded-2xl backdrop-blur-sm">
-                        <CheckCircle2 className="w-5 h-5 text-emerald-200" /> 
-                        Support client 24/7
+                      <li className="flex items-center gap-3 text-sm font-bold bg-white/10 p-4 rounded-2xl backdrop-blur-sm border border-white/5">
+                        <CheckCircle2 className="w-5 h-5 text-emerald-200 flex-shrink-0" /> 
+                        Assistance client dédiée
                       </li>
                     </ul>
                   </div>
@@ -375,106 +379,112 @@ export default async function AdPage({ params }: AdPageProps) {
     <div dir="ltr" className="bg-[#F8FAFC] dark:bg-zinc-950 pb-16 font-sans">
       <ShadowViewTracker adId={ad.id} category={ad.category} />
       
-      <div className="main-container py-4">
-        <nav className="flex items-center gap-2 text-[11px] font-bold text-zinc-400 uppercase tracking-widest overflow-x-auto no-scrollbar whitespace-nowrap mb-6">
+      <div className="main-container py-6">
+        {/* Breadcrumbs */}
+        <nav className="flex items-center gap-2 text-[11px] font-bold text-zinc-400 uppercase tracking-[0.2em] mb-8 overflow-x-auto no-scrollbar whitespace-nowrap">
           <Link href="/" className="hover:text-orange-600 transition-colors">Accueil</Link>
-          <ChevronRight className="h-3 w-3 text-zinc-300" />
+          <ChevronRight className="h-3 w-3" />
           <Link href="/marketplace" className="hover:text-orange-600 transition-colors">Marché</Link>
-          <ChevronRight className="h-3 w-3 text-zinc-300" />
+          <ChevronRight className="h-3 w-3" />
           <span className="text-zinc-900 dark:text-white font-black">{ad.category || "Annonce"}</span>
         </nav>
 
-        <main className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          <div className="lg:col-span-8 space-y-8">
-            <section className="bg-white dark:bg-zinc-900 rounded-[2.5rem] p-4 md:p-6 shadow-sm border border-zinc-100 dark:border-zinc-800">
+        <main className="ad-page-main-grid">
+          {/* Left Column: Media & Info */}
+          <div className="ad-page-content-column">
+            <section className="premium-gallery-container p-4 md:p-6">
               <AdImageGallery images={images} />
             </section>
 
-            <div className="bg-white dark:bg-zinc-900 rounded-[2.5rem] p-8 shadow-sm border border-zinc-100 dark:border-zinc-800 space-y-8">
-              <div className="space-y-4">
-                <div className="flex items-start justify-between gap-4">
-                  <h1 className="text-2xl md:text-4xl font-black tracking-tight text-zinc-900 dark:text-white leading-[1.1]">
+            <div className="ad-info-card space-y-10">
+              <div className="space-y-6">
+                <div className="flex items-start justify-between gap-6">
+                  <h1 className="text-3xl md:text-5xl font-black tracking-tight text-zinc-900 dark:text-white leading-[1.1]">
                     {ad.title}
                   </h1>
-                  <FavoriteButton adId={ad.id} className="shrink-0 h-12 w-12 rounded-2xl bg-zinc-50 dark:bg-zinc-800 hover:bg-red-50 dark:hover:bg-red-950/30 group transition-all" />
+                  <div className="premium-glass p-2 rounded-2xl">
+                    <FavoriteButton adId={ad.id} className="h-12 w-12 rounded-xl hover:bg-red-50 dark:hover:bg-red-950/30 transition-all" />
+                  </div>
                 </div>
                 
-                <div className="flex flex-wrap items-center gap-4 text-sm font-bold">
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 dark:bg-orange-950/20 text-orange-600 rounded-full">
-                    <MapPin className="h-4 w-4" />
+                <div className="flex flex-wrap items-center gap-3">
+                  <div className="premium-badge bg-orange-50 dark:bg-orange-950/30 text-orange-600">
+                    <MapPin className="h-3.5 w-3.5" />
                     {ad.city}
                   </div>
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-50 dark:bg-zinc-800 text-zinc-500 rounded-full">
-                    <Calendar className="h-4 w-4" />
-                    {formattedDate}
+                  <div className="premium-badge bg-zinc-100 dark:bg-zinc-800 text-zinc-500">
+                    <Calendar className="h-3.5 w-3.5" />
+                    Publié le {formattedDate}
                   </div>
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-50 dark:bg-zinc-800 text-zinc-500 rounded-full">
-                    <Eye className="h-4 w-4" />
+                  <div className="premium-badge bg-zinc-100 dark:bg-zinc-800 text-zinc-500">
+                    <Eye className="h-3.5 w-3.5" />
                     {ad.views_count || 1} vues
                   </div>
                 </div>
               </div>
 
-              <div className="pt-8 border-t border-zinc-100 dark:border-zinc-800">
-                <h2 className="text-xl font-black mb-6 flex items-center gap-2">
-                  <div className="w-1.5 h-6 bg-orange-500 rounded-full" />
-                  Description
-                </h2>
-                <div className="prose prose-zinc dark:prose-invert max-w-none">
-                  <p className="whitespace-pre-wrap leading-relaxed text-zinc-600 dark:text-zinc-400 text-base md:text-lg font-medium">
+              <div className="pt-10 border-t border-zinc-100 dark:border-zinc-800">
+                <h2 className="premium-section-title">Description</h2>
+                <div className="ad-description-prose">
+                  <p className="whitespace-pre-wrap leading-relaxed font-medium">
                     {ad.description || "Aucune description fournie."}
                   </p>
                 </div>
               </div>
 
-              <div className="pt-8 border-t border-zinc-100 dark:border-zinc-800 grid grid-cols-2 md:grid-cols-4 gap-6">
-                <div className="space-y-1.5">
-                  <p className="text-[10px] uppercase font-black text-zinc-400 tracking-[0.2em]">Catégorie</p>
-                  <p className="font-bold text-zinc-900 dark:text-white">{ad.category || "Autre"}</p>
+              <div className="ad-attribute-grid">
+                <div className="ad-attribute-item">
+                  <p className="ad-attribute-label">Catégorie</p>
+                  <p className="ad-attribute-value">{ad.category || "Autre"}</p>
                 </div>
-                <div className="space-y-1.5">
-                  <p className="text-[10px] uppercase font-black text-zinc-400 tracking-[0.2em]">État</p>
-                  <p className="font-bold text-zinc-900 dark:text-white">{ad.condition === 'new' ? "Neuf" : "Occasion"}</p>
+                <div className="ad-attribute-item">
+                  <p className="ad-attribute-label">État</p>
+                  <div className="flex items-center gap-2">
+                    <div className={cn("w-2 h-2 rounded-full", ad.condition === 'new' ? "bg-emerald-500" : "bg-orange-500")} />
+                    <p className="ad-attribute-value">{ad.condition === 'new' ? "Neuf" : "Occasion"}</p>
+                  </div>
                 </div>
-                <div className="space-y-1.5">
-                  <p className="text-[10px] uppercase font-black text-zinc-400 tracking-[0.2em]">Référence</p>
-                  <p className="font-bold text-zinc-900 dark:text-white">#{ad.id.slice(0, 8)}</p>
+                <div className="ad-attribute-item">
+                  <p className="ad-attribute-label">Référence</p>
+                  <p className="ad-attribute-value text-zinc-400">#{ad.id.slice(0, 8)}</p>
                 </div>
               </div>
             </div>
 
             {similarAds && similarAds.length > 0 && (
-              <section className="space-y-6">
+              <section className="space-y-8 pt-4">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-black tracking-tight">Annonces similaires</h2>
-                  <Link href="/marketplace" className="text-sm font-bold text-orange-600 hover:underline">Voir plus</Link>
+                  <h2 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-white">Annonces similaires</h2>
+                  <Link href="/marketplace" className="text-sm font-black text-orange-600 hover:text-orange-700 underline underline-offset-4">Voir tout</Link>
                 </div>
                 <SimilarAdsCarousel ads={similarAds as any[]} />
               </section>
             )}
           </div>
 
-          <aside className="lg:col-span-4 space-y-6">
-            <div className="lg:sticky lg:top-[100px] space-y-6">
-              <div className="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] shadow-xl border border-zinc-100 dark:border-zinc-800 ring-4 ring-orange-500/5">
-                <div className="space-y-1 mb-6">
-                  <p className="text-xs font-black text-zinc-400 uppercase tracking-widest">Prix de vente</p>
-                  <p className="text-4xl font-black text-orange-600 tracking-tighter">{formattedPrice}</p>
-                </div>
-                <ContactActions adId={ad.id} sellerId={ad.seller_id} currentUser={user} sellerPhone={ad.phone || sellerProfile?.phone} />
-                <div className="mt-6 pt-6 border-t border-zinc-50 dark:border-zinc-800">
-                  <ViralShareButton 
-                    adId={ad.id} 
-                    adTitle={ad.title} 
-                    adPrice={formattedPrice} 
-                    sellerId={ad.seller_id} 
-                    showAsMainAction={false}
-                  />
+          {/* Right Column: Sticky Sidebar */}
+          <aside className="ad-page-sidebar-column">
+            <div className="premium-sidebar-card space-y-8">
+              <div className="space-y-2">
+                <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.3em]">Prix de vente</p>
+                <div className="flex items-baseline gap-2">
+                  <p className="premium-price-hero text-orange-600">{formattedPrice}</p>
                 </div>
               </div>
 
-              <div className="bg-white dark:bg-zinc-900 p-8 rounded-[2.5rem] shadow-sm border border-zinc-100 dark:border-zinc-800">
-                <div className="flex items-center gap-4 mb-8">
+              <div className="space-y-4">
+                <ContactActions adId={ad.id} sellerId={ad.seller_id} currentUser={user} sellerPhone={ad.phone || sellerProfile?.phone} />
+                <ViralShareButton 
+                  adId={ad.id} 
+                  adTitle={ad.title} 
+                  adPrice={formattedPrice} 
+                  sellerId={ad.seller_id} 
+                  showAsMainAction={false}
+                />
+              </div>
+
+              <div className="pt-8 border-t border-zinc-100 dark:border-zinc-800 space-y-6">
+                <div className="flex items-center gap-4">
                   <div className="h-16 w-16 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-2xl font-black overflow-hidden ring-4 ring-zinc-50 dark:ring-zinc-800/50">
                     {sellerProfile?.avatar_url ? (
                       <Image src={sellerProfile.avatar_url} alt={sellerName} width={64} height={64} className="object-cover" />
@@ -483,51 +493,52 @@ export default async function AdPage({ params }: AdPageProps) {
                     )}
                   </div>
                   <div>
-                    <h3 className="font-black text-xl text-zinc-900 dark:text-white leading-tight">
+                    <h3 className="font-black text-xl text-zinc-900 dark:text-white leading-tight flex items-center gap-1.5">
                       {sellerName}
-                      {isTrusted && <Award className="w-5 h-5 text-blue-500 inline-block ml-1" />}
+                      {isTrusted && <Award className="w-5 h-5 text-blue-500 fill-blue-500/10" />}
                     </h3>
                     <p className="text-xs text-zinc-500 font-bold uppercase tracking-wider mt-1">Membre depuis {memberSince}</p>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-8">
-                  <div className="bg-zinc-50 dark:bg-zinc-800/50 p-4 rounded-3xl text-center">
+                <div className="premium-seller-stats">
+                  <div className="text-center space-y-1">
                     <p className="text-xl font-black text-zinc-900 dark:text-white">100%</p>
-                    <p className="text-[10px] text-zinc-400 uppercase font-black tracking-widest mt-1">Réponse</p>
+                    <p className="text-[9px] text-zinc-400 uppercase font-black tracking-widest">Réponse</p>
                   </div>
-                  <div className="bg-zinc-50 dark:bg-zinc-800/50 p-4 rounded-3xl text-center">
+                  <div className="text-center space-y-1 border-l border-zinc-200 dark:border-zinc-700">
                     <div className="flex items-center justify-center gap-1">
                       <p className="text-xl font-black text-zinc-900 dark:text-white">{avgRating || '5.0'}</p>
                       <Star className="w-4 h-4 fill-yellow-500 text-yellow-500" />
                     </div>
-                    <p className="text-[10px] text-zinc-400 uppercase font-black tracking-widest mt-1">{totalReviews || 0} Avis</p>
+                    <p className="text-[9px] text-zinc-400 uppercase font-black tracking-widest">{totalReviews || 0} Avis</p>
                   </div>
                 </div>
 
-                <Link href={`/profile/${ad.seller_id}`} className="flex items-center justify-center w-full h-12 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 text-sm font-black text-zinc-900 dark:text-white hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all">
-                  Voir le profil
+                <Link href={`/profile/${ad.seller_id}`} className="flex items-center justify-center w-full h-14 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 text-sm font-black text-zinc-900 dark:text-white hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all duration-300">
+                  Voir le profil كامل
                 </Link>
               </div>
 
-              <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-8 rounded-[2.5rem] text-white shadow-lg shadow-emerald-500/20">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center">
-                    <ShieldCheck className="w-7 h-7" />
+              {/* Safety Trust Card */}
+              <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-8 rounded-[2.5rem] text-white shadow-xl shadow-emerald-500/20 ring-1 ring-white/20">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30">
+                    <ShieldCheck className="w-8 h-8" />
                   </div>
                   <div>
-                    <h3 className="font-black text-lg leading-tight">Protection Jootiya</h3>
-                    <p className="text-xs font-bold opacity-80 uppercase tracking-widest">Achetez en sécurité</p>
+                    <h3 className="font-black text-xl leading-tight text-white">Protection Jootiya</h3>
+                    <p className="text-[10px] font-black opacity-80 uppercase tracking-[0.2em] mt-1 text-emerald-50">Transaction sécurisée</p>
                   </div>
                 </div>
-                <ul className="space-y-3 pt-2">
-                  <li className="flex items-center gap-3 text-sm font-bold bg-white/10 p-3 rounded-2xl backdrop-blur-sm">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-200" /> 
-                    Identité vérifiée
+                <ul className="space-y-3">
+                  <li className="flex items-center gap-3 text-sm font-bold bg-white/10 p-4 rounded-2xl backdrop-blur-sm border border-white/5">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-200 flex-shrink-0" /> 
+                    Identité vérifiée à 100%
                   </li>
-                  <li className="flex items-center gap-3 text-sm font-bold bg-white/10 p-3 rounded-2xl backdrop-blur-sm">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-200" /> 
-                    Support client 24/7
+                  <li className="flex items-center gap-3 text-sm font-bold bg-white/10 p-4 rounded-2xl backdrop-blur-sm border border-white/5">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-200 flex-shrink-0" /> 
+                    Assistance client dédiée
                   </li>
                 </ul>
               </div>
