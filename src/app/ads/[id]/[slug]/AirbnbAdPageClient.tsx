@@ -78,10 +78,10 @@ export function AirbnbAdPageClient({
           {ad.title}
         </h1>
 
-        {/* Airbnb Style 5-Image Grid */}
-        <div className="airbnb-grid-container group relative">
-          {/* Mobile view: Simple gallery or single image */}
-          <div className="md:hidden w-full h-full relative" onClick={() => setIsLightboxOpen(true)}>
+        {/* Airbnb Style Image Section */}
+        <div className="md:px-0">
+          {/* Mobile view: Full width aspect-ratio image */}
+          <div className="md:hidden w-full aspect-[4/3] relative overflow-hidden bg-zinc-100 dark:bg-zinc-800" onClick={() => setIsLightboxOpen(true)}>
              <Image 
               src={images[0]} 
               alt={ad.title} 
@@ -89,37 +89,46 @@ export function AirbnbAdPageClient({
               className="object-cover"
               priority
             />
+            <button 
+              className="absolute bottom-4 right-4 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2 shadow-sm z-10"
+              onClick={(e) => { e.stopPropagation(); setIsLightboxOpen(true); }}
+            >
+              <ImageIcon className="h-3 w-3" />
+              <span>{images.length} photos</span>
+            </button>
           </div>
 
           {/* Desktop view: 5-image grid */}
-          <div className="hidden md:block airbnb-grid-item airbnb-grid-item-main overflow-hidden relative" onClick={() => setIsLightboxOpen(true)}>
-            <Image 
-              src={images[0]} 
-              alt={ad.title} 
-              fill 
-              className="object-cover hover:scale-105 transition-transform duration-500"
-              priority
-            />
+          <div className="hidden md:grid airbnb-grid-container group relative rounded-xl overflow-hidden">
+            <div className="airbnb-grid-item airbnb-grid-item-main overflow-hidden relative" onClick={() => setIsLightboxOpen(true)}>
+              <Image 
+                src={images[0]} 
+                alt={ad.title} 
+                fill 
+                className="object-cover hover:scale-105 transition-transform duration-500"
+                priority
+              />
+            </div>
+            <div className="grid grid-cols-2 grid-rows-2 gap-2 col-span-2 row-span-2">
+              {images.slice(1, 5).map((src: string, i: number) => (
+                <div key={i} className="airbnb-grid-item overflow-hidden relative" onClick={() => setIsLightboxOpen(true)}>
+                  <Image src={src} alt={`${ad.title} ${i + 2}`} fill className="object-cover hover:scale-105 transition-transform duration-500" />
+                </div>
+              ))}
+              {[...Array(Math.max(0, 4 - (images.length - 1)))].map((_, i: number) => (
+                <div key={`fill-${i}`} className="airbnb-grid-item bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400">
+                  <ImageIcon className="h-8 w-8 opacity-20" />
+                </div>
+              ))}
+            </div>
+            
+            <button 
+              onClick={() => setIsLightboxOpen(true)}
+              className="absolute bottom-6 right-6 bg-white dark:bg-zinc-900 border border-zinc-900 dark:border-zinc-100 px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 shadow-md hover:bg-zinc-50 transition-all z-10"
+            >
+              <ImageIcon className="h-4 w-4" /> Afficher toutes les photos
+            </button>
           </div>
-          <div className="hidden md:grid grid-cols-2 grid-rows-2 gap-2 col-span-2 row-span-2">
-            {images.slice(1, 5).map((src: string, i: number) => (
-              <div key={i} className="airbnb-grid-item overflow-hidden relative" onClick={() => setIsLightboxOpen(true)}>
-                <Image src={src} alt={`${ad.title} ${i + 2}`} fill className="object-cover hover:scale-105 transition-transform duration-500" />
-              </div>
-            ))}
-            {[...Array(Math.max(0, 4 - (images.length - 1)))].map((_, i: number) => (
-              <div key={`fill-${i}`} className="airbnb-grid-item bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400">
-                <ImageIcon className="h-8 w-8 opacity-20" />
-              </div>
-            ))}
-          </div>
-          
-          <button 
-            onClick={() => setIsLightboxOpen(true)}
-            className="absolute bottom-6 right-6 bg-white dark:bg-zinc-900 border border-zinc-900 dark:border-zinc-100 px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 shadow-md hover:bg-zinc-50 transition-all z-10"
-          >
-            <ImageIcon className="h-4 w-4" /> Afficher toutes les photos
-          </button>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-8">
