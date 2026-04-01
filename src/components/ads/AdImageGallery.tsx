@@ -12,11 +12,25 @@ import { getOptimizedImageUrl } from "@/lib/storageUtils";
 
 interface AdImageGalleryProps {
     images: string[];
+    hideMainGallery?: boolean;
+    isForcedOpen?: boolean;
+    onOpenChange?: (isOpen: boolean) => void;
 }
 
-export function AdImageGallery({ images }: AdImageGalleryProps) {
+export function AdImageGallery({ 
+    images, 
+    hideMainGallery = false, 
+    isForcedOpen = false, 
+    onOpenChange 
+}: AdImageGalleryProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+    const [internalIsLightboxOpen, setInternalIsLightboxOpen] = useState(false);
+    
+    const isLightboxOpen = isForcedOpen || internalIsLightboxOpen;
+    const setIsLightboxOpen = (open: boolean) => {
+        setInternalIsLightboxOpen(open);
+        onOpenChange?.(open);
+    };
     const [emblaRef, emblaApi] = useEmblaCarousel(
         { 
             loop: true, 
@@ -96,6 +110,73 @@ export function AdImageGallery({ images }: AdImageGalleryProps) {
     useEffect(() => {
         setIsMounted(true);
     }, []);
+
+    if (hideMainGallery) return (
+        <>
+            {isLightboxOpen && isMounted && createPortal(
+                <div className="fixed inset-0 z-[999999] flex flex-col bg-black/95 backdrop-blur-sm animate-in fade-in duration-300">
+                    <div className="flex items-center justify-between p-4 md:p-6 z-[1000001] bg-gradient-to-b from-black/80 to-transparent absolute top-0 left-0 right-0">
+                        <div className="flex flex-col">
+                            <span className="text-white text-xs font-black uppercase tracking-[0.3em]">Galerie Photos</span>
+                            <span className="text-zinc-400 text-[10px] font-bold mt-1">{currentIndex + 1} sur {images.length}</span>
+                        </div>
+                        <button
+                            onClick={() => setIsLightboxOpen(false)}
+                            className="rounded-full bg-white/10 p-3 text-white backdrop-blur-xl hover:bg-white/20 transition-all active:scale-90 border border-white/10"
+                        >
+                            <X className="h-6 w-6" />
+                        </button>
+                    </div>
+
+                    <div className="flex-1 relative flex items-center justify-center p-0 md:p-12 overflow-hidden touch-pan-y" ref={lightboxRef}>
+                        <div className="flex h-full w-full">
+                            {images.map((src, index) => (
+                                <div key={index} className="relative h-full w-full flex-[0_0_100%] min-w-0 flex items-center justify-center">
+                                    <img
+                                        src={getOptimizedImageUrl(src, { width: 1600, height: 1200, quality: 95 })}
+                                        alt={`Full screen view ${index + 1}`}
+                                        className="max-w-full max-h-screen md:max-h-[90vh] object-contain shadow-2xl pointer-events-auto"
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {images.length > 1 && (
+                        <>
+                            <button
+                                onClick={(e) => { e.stopPropagation(); scrollPrevLightbox(); }}
+                                className="absolute left-4 top-1/2 -translate-y-1/2 p-4 text-white/50 hover:text-white transition-colors z-[1000001] bg-black/40 hover:bg-black/60 rounded-full backdrop-blur-md border border-white/5"
+                            >
+                                <ChevronLeft className="h-10 w-10" />
+                            </button>
+                            <button
+                                onClick={(e) => { e.stopPropagation(); scrollNextLightbox(); }}
+                                className="absolute right-4 top-1/2 -translate-y-1/2 p-4 text-white/50 hover:text-white transition-colors z-[1000001] bg-black/40 hover:bg-black/60 rounded-full backdrop-blur-md border border-white/5"
+                            >
+                                <ChevronRight className="h-10 w-10" />
+                            </button>
+                        </>
+                    )}
+
+                    <div className="absolute bottom-10 left-0 right-0 flex justify-center gap-2 z-[1000001]">
+                        {images.map((_, i) => (
+                            <button
+                                key={i}
+                                onClick={() => lightboxApi?.scrollTo(i)}
+                                className={cn(
+                                    "h-1.5 rounded-full transition-all shadow-sm",
+                                    currentIndex === i ? "w-8 bg-orange-500" : "w-2 bg-white/30 hover:bg-white/50"
+                                )}
+                                aria-label={`Aller à l'image ${i + 1}`}
+                            />
+                        ))}
+                    </div>
+                </div>,
+                document.body
+            )}
+        </>
+    );
 
     return (
         <div className="flex flex-col gap-4">

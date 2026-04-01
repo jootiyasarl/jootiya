@@ -17,6 +17,9 @@ import {
   Eye,
   Award,
   Star,
+  Share,
+  Heart,
+  Flag,
   Image as ImageIcon
 } from "lucide-react";
 import { QuickActionFooter } from "@/components/ads/QuickActionFooter";
@@ -106,6 +109,11 @@ export default async function AdPage({ params }: AdPageProps) {
   const user = await getServerUser();
   const supabase = createSupabaseServerClient();
 
+  // State handles for Airbnb gallery
+  // These will be used in the return statements below
+  let isLightboxOpen = false; 
+  const setIsLightboxOpen = (val: boolean) => { isLightboxOpen = val; };
+
   console.log("DEBUG: Fetching ad with ID:", id, "and Slug:", slug);
 
   const { data: ad, error: adError } = await supabase
@@ -173,177 +181,177 @@ export default async function AdPage({ params }: AdPageProps) {
         .limit(4);
 
       return (
-        <div dir="ltr" className="bg-[#F8FAFC] dark:bg-zinc-950 pb-16 font-sans">
+        <div dir="ltr" className="bg-white dark:bg-zinc-950 pb-16 font-sans">
           <ShadowViewTracker adId={finalAd.id} category={finalAd.category} />
           
-          <div className="main-container py-6">
-            {/* Breadcrumbs */}
-            <nav className="flex items-center gap-2 text-[11px] font-bold text-zinc-400 uppercase tracking-[0.2em] mb-8 overflow-x-auto no-scrollbar whitespace-nowrap">
-              <Link href="/" className="hover:text-orange-600 transition-colors">Accueil</Link>
-              <ChevronRight className="h-3 w-3" />
-              <Link href="/marketplace" className="hover:text-orange-600 transition-colors">Marché</Link>
-              <ChevronRight className="h-3 w-3" />
-              <span className="text-zinc-900 dark:text-white font-black">{finalAd.category || "Annonce"}</span>
-            </nav>
+          {/* Airbnb Style Header Navigation */}
+          <div className="airbnb-nav-container">
+            <div className="main-container h-16 flex items-center justify-between">
+              <nav className="flex items-center gap-2 text-sm font-medium text-zinc-600 dark:text-zinc-400">
+                <Link href="/" className="hover:underline">Accueil</Link>
+                <ChevronRight className="h-4 w-4" />
+                <Link href="/marketplace" className="hover:underline">Marché</Link>
+                <ChevronRight className="h-4 w-4" />
+                <span className="text-zinc-900 dark:text-white font-semibold">{finalAd.category}</span>
+              </nav>
+              <div className="flex items-center gap-4">
+                <button className="flex items-center gap-2 text-sm font-semibold underline hover:bg-zinc-100 dark:hover:bg-zinc-800 p-2 rounded-lg transition-all">
+                  <Share className="h-4 w-4" /> Partager
+                </button>
+                <button className="flex items-center gap-2 text-sm font-semibold underline hover:bg-zinc-100 dark:hover:bg-zinc-800 p-2 rounded-lg transition-all">
+                  <Heart className="h-4 w-4" /> Enregistrer
+                </button>
+              </div>
+            </div>
+          </div>
 
-            <main className="ad-page-main-grid">
-              {/* Left Column: Media & Info */}
-              <div className="ad-page-content-column">
-                <section className="premium-gallery-container p-4 md:p-6">
-                  <AdImageGallery images={images} />
-                </section>
+          <div className="main-container pt-6">
+            <h1 className="text-2xl md:text-3xl font-semibold text-zinc-900 dark:text-white mb-6">
+              {finalAd.title}
+            </h1>
 
-                <div className="ad-info-card space-y-10">
-                  <div className="space-y-6">
-                    <div className="flex items-start justify-between gap-6">
-                      <h1 className="text-3xl md:text-5xl font-black tracking-tight text-zinc-900 dark:text-white leading-[1.1]">
-                        {finalAd.title}
-                      </h1>
-                      <div className="premium-glass p-2 rounded-2xl">
-                        <FavoriteButton adId={finalAd.id} className="h-12 w-12 rounded-xl hover:bg-red-50 dark:hover:bg-red-950/30 transition-all" />
+            {/* Airbnb Style 5-Image Grid */}
+            <div className="airbnb-grid-container group">
+              {/* Main Large Image */}
+              <div className="airbnb-grid-item airbnb-grid-item-main" onClick={() => setIsLightboxOpen(true)}>
+                <Image 
+                  src={images[0]} 
+                  alt={finalAd.title} 
+                  fill 
+                  className="object-cover"
+                  priority
+                />
+              </div>
+              {/* 4 Smaller Images */}
+              {images.slice(1, 5).map((src, i) => (
+                <div key={i} className="airbnb-grid-item" onClick={() => setIsLightboxOpen(true)}>
+                  <Image src={src} alt={`${finalAd.title} ${i + 2}`} fill className="object-cover" />
+                </div>
+              ))}
+              {/* Placeholder for missing images to maintain grid */}
+              {[...Array(Math.max(0, 4 - (images.length - 1)))].map((_, i) => (
+                <div key={`fill-${i}`} className="airbnb-grid-item bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400">
+                  <ImageIcon className="h-8 w-8 opacity-20" />
+                </div>
+              ))}
+              
+              <button 
+                onClick={() => setIsLightboxOpen(true)}
+                className="absolute bottom-6 right-6 bg-white dark:bg-zinc-900 border border-zinc-900 dark:border-zinc-100 px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 shadow-md hover:bg-zinc-50 transition-all z-10"
+              >
+                <ImageIcon className="h-4 w-4" /> Afficher toutes les photos
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-8">
+              {/* Left Column: Content */}
+              <div className="lg:col-span-8">
+                <div className="flex items-center justify-between pb-8 border-b border-zinc-200 dark:border-zinc-800">
+                  <div>
+                    <h2 className="text-xl font-semibold text-zinc-900 dark:text-white">
+                      Vendu par {sellerName}
+                    </h2>
+                    <p className="text-zinc-500 dark:text-zinc-400 mt-1">
+                      {finalAd.city} • Membre depuis {memberSince}
+                    </p>
+                  </div>
+                  <div className="h-14 w-14 rounded-full bg-zinc-100 dark:bg-zinc-800 overflow-hidden relative border border-zinc-200 dark:border-zinc-800">
+                    {sellerAvatar ? (
+                      <Image src={sellerAvatar} alt={sellerName} fill className="object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-xl font-bold text-zinc-400">
+                        {sellerName.charAt(0).toUpperCase()}
                       </div>
-                    </div>
-                    
-                    <div className="flex flex-wrap items-center gap-3">
-                      <div className="premium-badge bg-orange-50 dark:bg-orange-950/30 text-orange-600">
-                        <MapPin className="h-3.5 w-3.5" />
-                        {finalAd.city}
-                      </div>
-                      <div className="premium-badge bg-zinc-100 dark:bg-zinc-800 text-zinc-500">
-                        <Calendar className="h-3.5 w-3.5" />
-                        Publié le {formattedDate}
-                      </div>
-                      <div className="premium-badge bg-zinc-100 dark:bg-zinc-800 text-zinc-500">
-                        <Eye className="h-3.5 w-3.5" />
-                        {finalAd.views_count || 1} vues
-                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Seller Highlights */}
+                <div className="py-8 space-y-6">
+                  <div className="flex gap-4">
+                    <Award className="h-8 w-8 text-zinc-900 dark:text-white mt-1 shrink-0" />
+                    <div>
+                      <h3 className="font-semibold text-zinc-900 dark:text-white">Vendeur {isTrusted ? 'Vérifié' : 'Recommandé'}</h3>
+                      <p className="text-zinc-500 dark:text-zinc-400 text-sm">Ce vendeur a d'excellents avis et une identité vérifiée.</p>
                     </div>
                   </div>
-
-                  <div className="pt-10 border-t border-zinc-100 dark:border-zinc-800">
-                    <h2 className="premium-section-title">Description</h2>
-                    <div className="ad-description-prose">
-                      <p className="whitespace-pre-wrap leading-relaxed font-medium">
-                        {finalAd.description || "Aucune description fournie."}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="ad-attribute-grid">
-                    <div className="ad-attribute-item">
-                      <p className="ad-attribute-label">Catégorie</p>
-                      <p className="ad-attribute-value">{finalAd.category || "Autre"}</p>
-                    </div>
-                    <div className="ad-attribute-item">
-                      <p className="ad-attribute-label">État</p>
-                      <div className="flex items-center gap-2">
-                        <div className={cn("w-2 h-2 rounded-full", finalAd.condition === 'new' ? "bg-emerald-500" : "bg-orange-500")} />
-                        <p className="ad-attribute-value">{finalAd.condition === 'new' ? "Neuf" : "Occasion"}</p>
-                      </div>
-                    </div>
-                    <div className="ad-attribute-item">
-                      <p className="ad-attribute-label">Référence</p>
-                      <p className="ad-attribute-value text-zinc-400">#{finalAd.id.slice(0, 8)}</p>
+                  <div className="flex gap-4">
+                    <MapPin className="h-8 w-8 text-zinc-900 dark:text-white mt-1 shrink-0" />
+                    <div>
+                      <h3 className="font-semibold text-zinc-900 dark:text-white">Emplacement idéal</h3>
+                      <p className="text-zinc-500 dark:text-zinc-400 text-sm">L'objet se trouve à {finalAd.city}, facile d'accès pour remise en main propre.</p>
                     </div>
                   </div>
                 </div>
 
-                {similarAds && similarAds.length > 0 && (
-                  <section className="space-y-8 pt-4">
-                    <div className="flex items-center justify-between">
-                      <h2 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-white">Annonces similaires</h2>
-                      <Link href="/marketplace" className="text-sm font-black text-orange-600 hover:text-orange-700 underline underline-offset-4">Voir tout</Link>
+                {/* Description Section */}
+                <div className="airbnb-section-border">
+                  <h3 className="text-xl font-semibold mb-6">À propos de cet objet</h3>
+                  <div className="text-zinc-600 dark:text-zinc-400 leading-relaxed whitespace-pre-wrap">
+                    {finalAd.description}
+                  </div>
+                </div>
+
+                {/* Characteristics Section */}
+                <div className="airbnb-section-border">
+                  <h3 className="text-xl font-semibold mb-6">Caractéristiques</h3>
+                  <div className="grid grid-cols-2 gap-y-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-6 h-6 rounded-md bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+                        <div className={cn("w-2 h-2 rounded-full", finalAd.condition === 'new' ? "bg-emerald-500" : "bg-orange-500")} />
+                      </div>
+                      <span className="text-zinc-600 dark:text-zinc-400 font-medium">État: {finalAd.condition === 'new' ? "Neuf" : "Occasion"}</span>
                     </div>
-                    <SimilarAdsCarousel ads={similarAds as any[]} />
-                  </section>
-                )}
+                    <div className="flex items-center gap-3">
+                      <ImageIcon className="h-5 w-5 text-zinc-500" />
+                      <span className="text-zinc-600 dark:text-zinc-400 font-medium">Catégorie: {finalAd.category}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              {/* Right Column: Sticky Sidebar */}
-              <aside className="ad-page-sidebar-column">
-                <div className="premium-sidebar-card space-y-8">
-                  <div className="space-y-2">
-                    <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.3em]">Prix de vente</p>
-                    <div className="flex items-baseline gap-2">
-                      <p className="premium-price-hero text-orange-600">{formattedPrice}</p>
+              {/* Right Column: Floating Sidebar */}
+              <div className="lg:col-span-4 relative">
+                <div className="airbnb-sidebar-card">
+                  <div className="flex items-baseline justify-between mb-6">
+                    <div>
+                      <span className="text-2xl font-bold text-zinc-900 dark:text-white">{formattedPrice}</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-sm font-semibold">
+                      <Star className="h-3 w-3 fill-zinc-900 dark:fill-white" />
+                      <span>{avgRating || '5.0'}</span>
+                      <span className="text-zinc-400 font-normal underline">({totalReviews} avis)</span>
                     </div>
                   </div>
 
                   <div className="space-y-4">
                     <ContactActions adId={finalAd.id} sellerId={finalAd.seller_id} currentUser={user} sellerPhone={sellerPhone} />
-                    <ViralShareButton 
-                      adId={finalAd.id} 
-                      adTitle={finalAd.title} 
-                      adPrice={formattedPrice} 
-                      sellerId={finalAd.seller_id} 
-                      showAsMainAction={false}
-                    />
+                    <p className="text-center text-xs text-zinc-500 mt-4">
+                      Aucun frais ne vous sera prélevé maintenant
+                    </p>
                   </div>
 
-                  <div className="pt-8 border-t border-zinc-100 dark:border-zinc-800 space-y-6">
-                    <div className="flex items-center gap-4">
-                      <div className="h-16 w-16 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-2xl font-black overflow-hidden ring-4 ring-zinc-50 dark:ring-zinc-800/50">
-                        {sellerAvatar ? (
-                          <Image src={sellerAvatar} alt={sellerName} width={64} height={64} className="object-cover" />
-                        ) : (
-                          <span className="text-zinc-400">{sellerName.charAt(0).toUpperCase()}</span>
-                        )}
-                      </div>
-                      <div>
-                        <h3 className="font-black text-xl text-zinc-900 dark:text-white leading-tight flex items-center gap-1.5">
-                          {sellerName}
-                          {isTrusted && <Award className="w-5 h-5 text-blue-500 fill-blue-500/10" />}
-                        </h3>
-                        <p className="text-xs text-zinc-500 font-bold uppercase tracking-wider mt-1">Membre depuis {memberSince}</p>
-                      </div>
+                  <div className="mt-6 pt-6 border-t border-zinc-100 dark:border-zinc-800 space-y-4">
+                    <div className="flex justify-between font-semibold text-lg">
+                      <span>Total</span>
+                      <span>{formattedPrice}</span>
                     </div>
-
-                    <div className="premium-seller-stats">
-                      <div className="text-center space-y-1">
-                        <p className="text-xl font-black text-zinc-900 dark:text-white">100%</p>
-                        <p className="text-[9px] text-zinc-400 uppercase font-black tracking-widest">Réponse</p>
-                      </div>
-                      <div className="text-center space-y-1 border-l border-zinc-200 dark:border-zinc-700">
-                        <div className="flex items-center justify-center gap-1">
-                          <p className="text-xl font-black text-zinc-900 dark:text-white">{avgRating || '5.0'}</p>
-                          <Star className="w-4 h-4 fill-yellow-500 text-yellow-500" />
-                        </div>
-                        <p className="text-[9px] text-zinc-400 uppercase font-black tracking-widest">{totalReviews || 0} Avis</p>
-                      </div>
-                    </div>
-
-                    <Link href={`/profile/${finalAd.seller_id}`} className="flex items-center justify-center w-full h-14 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 text-sm font-black text-zinc-900 dark:text-white hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all duration-300">
-                      Voir le profil complet
-                    </Link>
-                  </div>
-
-                  {/* Safety Trust Card */}
-                  <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-8 rounded-[2.5rem] text-white shadow-xl shadow-emerald-500/20 ring-1 ring-white/20">
-                    <div className="flex items-center gap-4 mb-6">
-                      <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30">
-                        <ShieldCheck className="w-8 h-8" />
-                      </div>
-                      <div>
-                        <h3 className="font-black text-xl leading-tight text-white">Protection Jootiya</h3>
-                        <p className="text-[10px] font-black opacity-80 uppercase tracking-[0.2em] mt-1 text-emerald-50">Transaction sécurisée</p>
-                      </div>
-                    </div>
-                    <ul className="space-y-3">
-                      <li className="flex items-center gap-3 text-sm font-bold bg-white/10 p-4 rounded-2xl backdrop-blur-sm border border-white/5">
-                        <CheckCircle2 className="w-5 h-5 text-emerald-200 flex-shrink-0" /> 
-                        Identité vérifiée à 100%
-                      </li>
-                      <li className="flex items-center gap-3 text-sm font-bold bg-white/10 p-4 rounded-2xl backdrop-blur-sm border border-white/5">
-                        <CheckCircle2 className="w-5 h-5 text-emerald-200 flex-shrink-0" /> 
-                        Assistance client dédiée
-                      </li>
-                    </ul>
                   </div>
                 </div>
-              </aside>
-            </main>
+                
+                <div className="mt-8 flex justify-center">
+                  <button className="flex items-center gap-2 text-zinc-500 hover:text-zinc-900 text-sm font-semibold underline decoration-zinc-300">
+                    <Flag className="h-4 w-4" /> Signaler cette annonce
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
+
           <QuickActionFooter phone={sellerPhone} adTitle={finalAd.title} adPrice={formattedPrice} adId={finalAd.id} sellerId={finalAd.seller_id} currentUser={user} />
+          
+          {/* Reuse existing lightbox from AdImageGallery but triggered here */}
+          <AdImageGallery images={images} hideMainGallery={true} isForcedOpen={isLightboxOpen} onOpenChange={setIsLightboxOpen} />
         </div>
       );
     } else {
@@ -376,177 +384,188 @@ export default async function AdPage({ params }: AdPageProps) {
     .limit(4);
 
   return (
-    <div dir="ltr" className="bg-[#F8FAFC] dark:bg-zinc-950 pb-16 font-sans">
+    <div dir="ltr" className="bg-white dark:bg-zinc-950 pb-16 font-sans">
       <ShadowViewTracker adId={ad.id} category={ad.category} />
       
-      <div className="main-container py-6">
-        {/* Breadcrumbs */}
-        <nav className="flex items-center gap-2 text-[11px] font-bold text-zinc-400 uppercase tracking-[0.2em] mb-8 overflow-x-auto no-scrollbar whitespace-nowrap">
-          <Link href="/" className="hover:text-orange-600 transition-colors">Accueil</Link>
-          <ChevronRight className="h-3 w-3" />
-          <Link href="/marketplace" className="hover:text-orange-600 transition-colors">Marché</Link>
-          <ChevronRight className="h-3 w-3" />
-          <span className="text-zinc-900 dark:text-white font-black">{ad.category || "Annonce"}</span>
-        </nav>
+      {/* Airbnb Style Header Navigation */}
+      <div className="airbnb-nav-container">
+        <div className="main-container h-16 flex items-center justify-between">
+          <nav className="flex items-center gap-2 text-sm font-medium text-zinc-600 dark:text-zinc-400">
+            <Link href="/" className="hover:underline">Accueil</Link>
+            <ChevronRight className="h-4 w-4" />
+            <Link href="/marketplace" className="hover:underline">Marché</Link>
+            <ChevronRight className="h-4 w-4" />
+            <span className="text-zinc-900 dark:text-white font-semibold">{ad.category}</span>
+          </nav>
+          <div className="flex items-center gap-4">
+            <button className="flex items-center gap-2 text-sm font-semibold underline hover:bg-zinc-100 dark:hover:bg-zinc-800 p-2 rounded-lg transition-all">
+              <Share className="h-4 w-4" /> Partager
+            </button>
+            <button className="flex items-center gap-2 text-sm font-semibold underline hover:bg-zinc-100 dark:hover:bg-zinc-800 p-2 rounded-lg transition-all">
+              <Heart className="h-4 w-4" /> Enregistrer
+            </button>
+          </div>
+        </div>
+      </div>
 
-        <main className="ad-page-main-grid">
-          {/* Left Column: Media & Info */}
-          <div className="ad-page-content-column">
-            <section className="premium-gallery-container p-4 md:p-6">
-              <AdImageGallery images={images} />
-            </section>
+      <div className="main-container pt-6">
+        <h1 className="text-2xl md:text-3xl font-semibold text-zinc-900 dark:text-white mb-6">
+          {ad.title}
+        </h1>
 
-            <div className="ad-info-card space-y-10">
-              <div className="space-y-6">
-                <div className="flex items-start justify-between gap-6">
-                  <h1 className="text-3xl md:text-5xl font-black tracking-tight text-zinc-900 dark:text-white leading-[1.1]">
-                    {ad.title}
-                  </h1>
-                  <div className="premium-glass p-2 rounded-2xl">
-                    <FavoriteButton adId={ad.id} className="h-12 w-12 rounded-xl hover:bg-red-50 dark:hover:bg-red-950/30 transition-all" />
+        {/* Airbnb Style 5-Image Grid */}
+        <div className="airbnb-grid-container group relative">
+          {/* Main Large Image */}
+          <div className="airbnb-grid-item airbnb-grid-item-main overflow-hidden relative">
+            <Image 
+              src={images[0]} 
+              alt={ad.title} 
+              fill 
+              className="object-cover hover:scale-105 transition-transform duration-500"
+              priority
+            />
+          </div>
+          {/* 4 Smaller Images */}
+          <div className="hidden md:grid grid-cols-2 grid-rows-2 gap-2 col-span-2 row-span-2">
+            {images.slice(1, 5).map((src: string, i: number) => (
+              <div key={i} className="airbnb-grid-item overflow-hidden relative">
+                <Image src={src} alt={`${ad.title} ${i + 2}`} fill className="object-cover hover:scale-105 transition-transform duration-500" />
+              </div>
+            ))}
+            {/* Placeholder for missing images to maintain grid */}
+            {[...Array(Math.max(0, 4 - (images.length - 1)))].map((_, i) => (
+              <div key={`fill-${i}`} className="airbnb-grid-item bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400">
+                <ImageIcon className="h-8 w-8 opacity-20" />
+              </div>
+            ))}
+          </div>
+          
+          <button 
+            className="absolute bottom-6 right-6 bg-white dark:bg-zinc-900 border border-zinc-900 dark:border-zinc-100 px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 shadow-md hover:bg-zinc-50 transition-all z-10"
+          >
+            <ImageIcon className="h-4 w-4" /> Afficher toutes les photos
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-8">
+          {/* Left Column: Content */}
+          <div className="lg:col-span-8">
+            <div className="flex items-center justify-between pb-8 border-b border-zinc-200 dark:border-zinc-800">
+              <div>
+                <h2 className="text-xl font-semibold text-zinc-900 dark:text-white">
+                  Vendu par {sellerName}
+                </h2>
+                <p className="text-zinc-500 dark:text-zinc-400 mt-1">
+                  {ad.city} • Membre depuis {memberSince}
+                </p>
+              </div>
+              <div className="h-14 w-14 rounded-full bg-zinc-100 dark:bg-zinc-800 overflow-hidden relative border border-zinc-200 dark:border-zinc-800">
+                {sellerAvatar ? (
+                  <Image src={sellerAvatar} alt={sellerName} fill className="object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-xl font-bold text-zinc-400">
+                    {sellerName.charAt(0).toUpperCase()}
                   </div>
-                </div>
-                
-                <div className="flex flex-wrap items-center gap-3">
-                  <div className="premium-badge bg-orange-50 dark:bg-orange-950/30 text-orange-600">
-                    <MapPin className="h-3.5 w-3.5" />
-                    {ad.city}
-                  </div>
-                  <div className="premium-badge bg-zinc-100 dark:bg-zinc-800 text-zinc-500">
-                    <Calendar className="h-3.5 w-3.5" />
-                    Publié le {formattedDate}
-                  </div>
-                  <div className="premium-badge bg-zinc-100 dark:bg-zinc-800 text-zinc-500">
-                    <Eye className="h-3.5 w-3.5" />
-                    {ad.views_count || 1} vues
-                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Seller Highlights */}
+            <div className="py-8 space-y-6">
+              <div className="flex gap-4">
+                <Award className="h-8 w-8 text-zinc-900 dark:text-white mt-1 shrink-0" />
+                <div>
+                  <h3 className="font-semibold text-zinc-900 dark:text-white">Vendeur {isTrusted ? 'Vérifié' : 'Recommandé'}</h3>
+                  <p className="text-zinc-500 dark:text-zinc-400 text-sm">Ce vendeur a d'excellents avis et une identité vérifiée.</p>
                 </div>
               </div>
-
-              <div className="pt-10 border-t border-zinc-100 dark:border-zinc-800">
-                <h2 className="premium-section-title">Description</h2>
-                <div className="ad-description-prose">
-                  <p className="whitespace-pre-wrap leading-relaxed font-medium">
-                    {ad.description || "Aucune description fournie."}
-                  </p>
-                </div>
-              </div>
-
-              <div className="ad-attribute-grid">
-                <div className="ad-attribute-item">
-                  <p className="ad-attribute-label">Catégorie</p>
-                  <p className="ad-attribute-value">{ad.category || "Autre"}</p>
-                </div>
-                <div className="ad-attribute-item">
-                  <p className="ad-attribute-label">État</p>
-                  <div className="flex items-center gap-2">
-                    <div className={cn("w-2 h-2 rounded-full", ad.condition === 'new' ? "bg-emerald-500" : "bg-orange-500")} />
-                    <p className="ad-attribute-value">{ad.condition === 'new' ? "Neuf" : "Occasion"}</p>
-                  </div>
-                </div>
-                <div className="ad-attribute-item">
-                  <p className="ad-attribute-label">Référence</p>
-                  <p className="ad-attribute-value text-zinc-400">#{ad.id.slice(0, 8)}</p>
+              <div className="flex gap-4">
+                <MapPin className="h-8 w-8 text-zinc-900 dark:text-white mt-1 shrink-0" />
+                <div>
+                  <h3 className="font-semibold text-zinc-900 dark:text-white">Emplacement idéal</h3>
+                  <p className="text-zinc-500 dark:text-zinc-400 text-sm">L'objet se trouve à {ad.city}, facile d'accès pour remise en main propre.</p>
                 </div>
               </div>
             </div>
 
-            {similarAds && similarAds.length > 0 && (
-              <section className="space-y-8 pt-4">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-white">Annonces similaires</h2>
-                  <Link href="/marketplace" className="text-sm font-black text-orange-600 hover:text-orange-700 underline underline-offset-4">Voir tout</Link>
+            {/* Description Section */}
+            <div className="airbnb-section-border">
+              <h3 className="text-xl font-semibold mb-6 text-zinc-900 dark:text-white">À propos de cet objet</h3>
+              <div className="text-zinc-600 dark:text-zinc-400 leading-relaxed whitespace-pre-wrap text-lg">
+                {ad.description}
+              </div>
+            </div>
+
+            {/* Characteristics Section */}
+            <div className="airbnb-section-border">
+              <h3 className="text-xl font-semibold mb-6 text-zinc-900 dark:text-white">Caractéristiques</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+                    <ShieldCheck className="h-5 w-5 text-zinc-600 dark:text-zinc-400" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-zinc-400 uppercase font-black tracking-widest">État</p>
+                    <p className="font-semibold text-zinc-900 dark:text-white">{ad.condition === 'new' ? "Neuf" : "Occasion"}</p>
+                  </div>
                 </div>
-                <SimilarAdsCarousel ads={similarAds as any[]} />
-              </section>
-            )}
+                <div className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+                    <ImageIcon className="h-5 w-5 text-zinc-600 dark:text-zinc-400" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-zinc-400 uppercase font-black tracking-widest">Catégorie</p>
+                    <p className="font-semibold text-zinc-900 dark:text-white">{ad.category}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Right Column: Sticky Sidebar */}
-          <aside className="ad-page-sidebar-column">
-            <div className="premium-sidebar-card space-y-8">
-              <div className="space-y-2">
-                <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.3em]">Prix de vente</p>
-                <div className="flex items-baseline gap-2">
-                  <p className="premium-price-hero text-orange-600">{formattedPrice}</p>
+          {/* Right Column: Floating Sidebar */}
+          <div className="lg:col-span-4 relative">
+            <div className="airbnb-sidebar-card">
+              <div className="flex items-baseline justify-between mb-6">
+                <div>
+                  <span className="text-2xl font-bold text-zinc-900 dark:text-white">{formattedPrice}</span>
+                </div>
+                <div className="flex items-center gap-1 text-sm font-semibold">
+                  <Star className="h-3 w-3 fill-zinc-900 dark:fill-white" />
+                  <span>{avgRating || '5.0'}</span>
+                  <span className="text-zinc-400 font-normal underline">({totalReviews} avis)</span>
                 </div>
               </div>
 
               <div className="space-y-4">
                 <ContactActions adId={ad.id} sellerId={ad.seller_id} currentUser={user} sellerPhone={ad.phone || sellerProfile?.phone} />
-                <ViralShareButton 
-                  adId={ad.id} 
-                  adTitle={ad.title} 
-                  adPrice={formattedPrice} 
-                  sellerId={ad.seller_id} 
-                  showAsMainAction={false}
-                />
+                <p className="text-center text-xs text-zinc-500 mt-4">
+                  Aucun frais ne vous sera prélevé maintenant
+                </p>
               </div>
 
-              <div className="pt-8 border-t border-zinc-100 dark:border-zinc-800 space-y-6">
-                <div className="flex items-center gap-4">
-                  <div className="h-16 w-16 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-2xl font-black overflow-hidden ring-4 ring-zinc-50 dark:ring-zinc-800/50">
-                    {sellerProfile?.avatar_url ? (
-                      <Image src={sellerProfile.avatar_url} alt={sellerName} width={64} height={64} className="object-cover" />
-                    ) : (
-                      <span className="text-zinc-400">{sellerName.charAt(0).toUpperCase()}</span>
-                    )}
-                  </div>
-                  <div>
-                    <h3 className="font-black text-xl text-zinc-900 dark:text-white leading-tight flex items-center gap-1.5">
-                      {sellerName}
-                      {isTrusted && <Award className="w-5 h-5 text-blue-500 fill-blue-500/10" />}
-                    </h3>
-                    <p className="text-xs text-zinc-500 font-bold uppercase tracking-wider mt-1">Membre depuis {memberSince}</p>
-                  </div>
+              <div className="mt-6 pt-6 border-t border-zinc-100 dark:border-zinc-800 space-y-4">
+                <div className="flex justify-between font-semibold text-lg">
+                  <span>Total</span>
+                  <span>{formattedPrice}</span>
                 </div>
-
-                <div className="premium-seller-stats">
-                  <div className="text-center space-y-1">
-                    <p className="text-xl font-black text-zinc-900 dark:text-white">100%</p>
-                    <p className="text-[9px] text-zinc-400 uppercase font-black tracking-widest">Réponse</p>
-                  </div>
-                  <div className="text-center space-y-1 border-l border-zinc-200 dark:border-zinc-700">
-                    <div className="flex items-center justify-center gap-1">
-                      <p className="text-xl font-black text-zinc-900 dark:text-white">{avgRating || '5.0'}</p>
-                      <Star className="w-4 h-4 fill-yellow-500 text-yellow-500" />
-                    </div>
-                    <p className="text-[9px] text-zinc-400 uppercase font-black tracking-widest">{totalReviews || 0} Avis</p>
-                  </div>
-                </div>
-
-                <Link href={`/profile/${ad.seller_id}`} className="flex items-center justify-center w-full h-14 rounded-2xl border-2 border-zinc-100 dark:border-zinc-800 text-sm font-black text-zinc-900 dark:text-white hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all duration-300">
-                  Voir le profil كامل
-                </Link>
-              </div>
-
-              {/* Safety Trust Card */}
-              <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-8 rounded-[2.5rem] text-white shadow-xl shadow-emerald-500/20 ring-1 ring-white/20">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30">
-                    <ShieldCheck className="w-8 h-8" />
-                  </div>
-                  <div>
-                    <h3 className="font-black text-xl leading-tight text-white">Protection Jootiya</h3>
-                    <p className="text-[10px] font-black opacity-80 uppercase tracking-[0.2em] mt-1 text-emerald-50">Transaction sécurisée</p>
-                  </div>
-                </div>
-                <ul className="space-y-3">
-                  <li className="flex items-center gap-3 text-sm font-bold bg-white/10 p-4 rounded-2xl backdrop-blur-sm border border-white/5">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-200 flex-shrink-0" /> 
-                    Identité vérifiée à 100%
-                  </li>
-                  <li className="flex items-center gap-3 text-sm font-bold bg-white/10 p-4 rounded-2xl backdrop-blur-sm border border-white/5">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-200 flex-shrink-0" /> 
-                    Assistance client dédiée
-                  </li>
-                </ul>
               </div>
             </div>
-          </aside>
-        </main>
+            
+            <div className="mt-8 flex justify-center">
+              <button className="flex items-center gap-2 text-zinc-500 hover:text-zinc-900 text-sm font-semibold underline decoration-zinc-300">
+                <Flag className="h-4 w-4" /> Signaler cette annonce
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
+
       <QuickActionFooter phone={ad.phone || sellerProfile?.phone} adTitle={ad.title} adPrice={formattedPrice} adId={ad.id} sellerId={ad.seller_id} currentUser={user} />
+      
+      {/* Existing gallery functionality remains available */}
+      <div className="hidden">
+        <AdImageGallery images={images} />
+      </div>
     </div>
   );
 }
