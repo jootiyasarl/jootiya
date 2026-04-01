@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Pencil, Trash2 } from 'lucide-react';
@@ -23,6 +24,8 @@ export function AdCard({ ad, canBoost, onEdit, onDelete }: { ad: Ad; canBoost?: 
   const thumbnailUrl = getOptimizedImageUrl(mainImage, { width: 500, height: 500, quality: 75 });
   const blurUrl = getOptimizedImageUrl(mainImage, { width: 20, height: 20, quality: 10 });
 
+  const [imgSrc, setImgSrc] = useState(thumbnailUrl);
+
   const priceDisplay = ad.price != null ? ad.price.toLocaleString() : 'N/A';
   const currencyDisplay = ad.currency || 'MAD';
   
@@ -38,7 +41,7 @@ export function AdCard({ ad, canBoost, onEdit, onDelete }: { ad: Ad; canBoost?: 
       {/* Image Container */}
       <div className="airbnb-card-image-wrapper">
         <Image
-          src={thumbnailUrl}
+          src={imgSrc}
           alt={ad.title}
           fill
           placeholder="blur"
@@ -46,6 +49,13 @@ export function AdCard({ ad, canBoost, onEdit, onDelete }: { ad: Ad; canBoost?: 
           className="airbnb-card-image"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           loading="lazy"
+          onError={() => {
+            if (imgSrc !== mainImage && mainImage.startsWith('http')) {
+              setImgSrc(mainImage);
+            } else if (imgSrc !== '/placeholder-ad.jpg') {
+              setImgSrc('/placeholder-ad.jpg');
+            }
+          }}
         />
 
         {/* Wishlist Heart */}

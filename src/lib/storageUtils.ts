@@ -9,21 +9,25 @@ export function getOptimizedImageUrl(url: string, options: { width?: number; hei
     if (!url || url === '/placeholder-ad.jpg') return '/placeholder-ad.jpg';
 
     // 1. Fix URL encoding issues (handle spaces and special characters in paths)
+    if (!url) return '/placeholder-ad.jpg';
     let processedUrl = url.trim();
+    if (processedUrl === '/placeholder-ad.jpg') return '/placeholder-ad.jpg';
+    
+    // Check if it's already a full Supabase public URL
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://mshnkdqclscfytvdbmre.supabase.co';
     
     // 2. Handle relative paths from Supabase
     let absoluteUrl = processedUrl;
     if (!processedUrl.startsWith('http')) {
-        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://mshnkdqclscfytvdbmre.supabase.co';
         const cleanPath = processedUrl.startsWith('/') ? processedUrl.substring(1) : processedUrl;
         
         if (cleanPath.startsWith('storage/v1/object/public/')) {
             absoluteUrl = `${supabaseUrl}/${cleanPath}`;
         } else if (cleanPath.startsWith('ad-images/')) {
-            // Already starts with bucket name
+            // Correctly prepend the base Supabase Storage URL
             absoluteUrl = `${supabaseUrl}/storage/v1/object/public/${cleanPath}`;
         } else {
-            // Assume it's a direct filename or relative path in ad-images
+            // Fallback for direct filenames
             absoluteUrl = `${supabaseUrl}/storage/v1/object/public/ad-images/${cleanPath}`;
         }
     }
@@ -45,8 +49,13 @@ export function getOptimizedImageUrl(url: string, options: { width?: number; hei
     // 4. Check if transformations are enabled
     const isTransformEnabled = process.env.NEXT_PUBLIC_SUPABASE_TRANSFORMATIONS_ENABLED === 'true';
 
-    // If it's not a Supabase URL or transformations are off, return the absolute URL
-    if (!absoluteUrl.includes('/storage/v1/object/public/') || !isTransformEnabled) {
+    // If it's not a Supabase URL, return the absolute URL
+    if (!absoluteUrl.includes('/storage/v1/object/public/')) {
+        return absoluteUrl;
+    }
+
+    // If transformations are off, return the absolute URL as is
+    if (!isTransformEnabled) {
         return absoluteUrl;
     }
 
