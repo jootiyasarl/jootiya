@@ -51,7 +51,7 @@ export function AirbnbAdPageClient({
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
   return (
-    <div dir="ltr" className="bg-white dark:bg-zinc-950 pb-16 font-sans">
+    <div dir="ltr" className="bg-white dark:bg-zinc-950 pb-24 md:pb-16 font-sans overflow-x-hidden">
       {/* Airbnb Style Header Navigation */}
       <div className="airbnb-nav-container">
         <div className="main-container h-16 flex items-center justify-between">
@@ -73,13 +73,14 @@ export function AirbnbAdPageClient({
         </div>
       </div>
 
-      <div className="main-container pt-6">
-        <h1 className="text-2xl md:text-3xl font-semibold text-zinc-900 dark:text-white mb-6">
+      <div className="w-full pt-0 md:pt-6">
+        {/* Title - Different padding/size for mobile */}
+        <h1 className="text-xl md:text-3xl font-semibold text-zinc-900 dark:text-white mb-4 md:mb-6 px-4 md:px-0 pt-4 md:pt-0 break-words">
           {ad.title}
         </h1>
 
         {/* Airbnb Style Image Section */}
-        <div className="md:px-0">
+        <div className="w-full md:px-0 overflow-hidden">
           {/* Mobile view: Full width aspect-ratio image */}
           <div className="md:hidden w-full aspect-[4/3] relative overflow-hidden bg-zinc-100 dark:bg-zinc-800" onClick={() => setIsLightboxOpen(true)}>
              <Image 
@@ -131,8 +132,8 @@ export function AirbnbAdPageClient({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-8">
-          <div className="lg:col-span-8">
+        <div className="main-container grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-12 mt-8">
+          <div className="lg:col-span-8 px-4 md:px-0">
             <div className="flex items-center justify-between pb-8 border-b border-zinc-200 dark:border-zinc-800">
               <div>
                 <h2 className="text-xl font-semibold text-zinc-900 dark:text-white">
@@ -202,7 +203,7 @@ export function AirbnbAdPageClient({
             </div>
           </div>
 
-          <div className="lg:col-span-4 relative">
+          <div className="lg:col-span-4 px-4 md:px-0">
             <div className="airbnb-sidebar-card">
               <div className="flex items-baseline justify-between mb-6">
                 <div>
