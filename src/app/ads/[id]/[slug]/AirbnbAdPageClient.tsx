@@ -51,9 +51,9 @@ export function AirbnbAdPageClient({
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
   return (
-    <div dir="ltr" className="bg-white dark:bg-zinc-950 pb-24 md:pb-16 font-sans">
-      {/* Airbnb Style Header Navigation - Hidden on very small mobile, visible on md+ */}
-      <div className="airbnb-nav-container hidden md:block">
+    <div dir="ltr" className="bg-white dark:bg-zinc-950 pb-16 font-sans">
+      {/* Airbnb Style Header Navigation */}
+      <div className="airbnb-nav-container">
         <div className="main-container h-16 flex items-center justify-between">
           <nav className="flex items-center gap-2 text-sm font-medium text-zinc-600 dark:text-zinc-400">
             <Link href="/" className="hover:underline">Accueil</Link>
@@ -73,16 +73,15 @@ export function AirbnbAdPageClient({
         </div>
       </div>
 
-      <div className="main-container pt-0 md:pt-6">
-        {/* Title - Different padding/size for mobile */}
-        <h1 className="text-xl md:text-3xl font-semibold text-zinc-900 dark:text-white mb-4 md:mb-6 px-4 md:px-0 pt-4 md:pt-0">
+      <div className="main-container pt-6">
+        <h1 className="text-2xl md:text-3xl font-semibold text-zinc-900 dark:text-white mb-6">
           {ad.title}
         </h1>
 
-        {/* Airbnb Style 5-Image Grid - Full width on mobile */}
-        <div className="airbnb-grid-container group relative md:rounded-xl overflow-hidden">
+        {/* Airbnb Style 5-Image Grid */}
+        <div className="airbnb-grid-container group relative">
           {/* Mobile view: Simple gallery or single image */}
-          <div className="md:hidden w-full aspect-[4/3] relative" onClick={() => setIsLightboxOpen(true)}>
+          <div className="md:hidden w-full h-full relative" onClick={() => setIsLightboxOpen(true)}>
              <Image 
               src={images[0]} 
               alt={ad.title} 
@@ -117,15 +116,14 @@ export function AirbnbAdPageClient({
           
           <button 
             onClick={() => setIsLightboxOpen(true)}
-            className="absolute bottom-4 right-4 md:bottom-6 md:right-6 bg-white dark:bg-zinc-900 border border-zinc-900 dark:border-zinc-100 px-3 py-1.5 md:px-4 md:py-2 rounded-lg text-xs md:text-sm font-semibold flex items-center gap-2 shadow-md hover:bg-zinc-50 transition-all z-10"
+            className="absolute bottom-6 right-6 bg-white dark:bg-zinc-900 border border-zinc-900 dark:border-zinc-100 px-4 py-2 rounded-lg text-sm font-semibold flex items-center gap-2 shadow-md hover:bg-zinc-50 transition-all z-10"
           >
-            <ImageIcon className="h-3 w-3 md:h-4 md:w-4" /> 
-            <span className="md:inline">{images.length} photos</span>
+            <ImageIcon className="h-4 w-4" /> Afficher toutes les photos
           </button>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 mt-6 md:mt-8 px-4 md:px-0">
-          <div className="lg:col-span-8 order-2 lg:order-1">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-8">
+          <div className="lg:col-span-8">
             <div className="flex items-center justify-between pb-8 border-b border-zinc-200 dark:border-zinc-800">
               <div>
                 <h2 className="text-xl font-semibold text-zinc-900 dark:text-white">
@@ -195,9 +193,8 @@ export function AirbnbAdPageClient({
             </div>
           </div>
 
-          {/* Right Column: Floating Sidebar - Desktop Only Sticky, Mobile Stacks */}
-          <div className="lg:col-span-4 order-1 lg:order-2">
-            <div className="airbnb-sidebar-card lg:sticky lg:top-24">
+          <div className="lg:col-span-4 relative">
+            <div className="airbnb-sidebar-card">
               <div className="flex items-baseline justify-between mb-6">
                 <div>
                   <span className="text-2xl font-bold text-zinc-900 dark:text-white">{formattedPrice}</span>
