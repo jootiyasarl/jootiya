@@ -132,8 +132,8 @@ export function AirbnbAdPageClient({
           </div>
         </div>
 
-        <div className="main-container grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-12 mt-8">
-          <div className="lg:col-span-8 px-4 md:px-0">
+        <div className="main-container flex flex-col lg:grid lg:grid-cols-12 gap-6 md:gap-12 mt-8">
+          <div className="lg:col-span-8 order-2 lg:order-1 px-4 md:px-0">
             <div className="flex items-center justify-between pb-8 border-b border-zinc-200 dark:border-zinc-800">
               <div>
                 <h2 className="text-xl font-semibold text-zinc-900 dark:text-white">
@@ -203,7 +203,7 @@ export function AirbnbAdPageClient({
             </div>
           </div>
 
-          <div className="lg:col-span-4 px-4 md:px-0">
+          <div className="lg:col-span-4 order-1 lg:order-2 px-4 md:px-0">
             <div className="airbnb-sidebar-card">
               <div className="flex items-baseline justify-between mb-6">
                 <div>
