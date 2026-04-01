@@ -99,29 +99,52 @@ export function AirbnbAdPageClient({
             </button>
           </div>
 
-          {/* Desktop view: 5-image grid */}
-          <div className="hidden md:grid airbnb-grid-container group relative rounded-xl overflow-hidden">
-            <div className="airbnb-grid-item airbnb-grid-item-main overflow-hidden relative" onClick={() => setIsLightboxOpen(true)}>
-              <Image 
-                src={images[0]} 
-                alt={ad.title} 
-                fill 
-                className="object-cover hover:scale-105 transition-transform duration-500"
-                priority
-              />
-            </div>
-            <div className="grid grid-cols-2 grid-rows-2 gap-2 col-span-2 row-span-2">
-              {images.slice(1, 5).map((src: string, i: number) => (
-                <div key={i} className="airbnb-grid-item overflow-hidden relative" onClick={() => setIsLightboxOpen(true)}>
-                  <Image src={src} alt={`${ad.title} ${i + 2}`} fill className="object-cover hover:scale-105 transition-transform duration-500" />
+          {/* Desktop view: Dynamic grid based on image count */}
+          <div className={cn(
+            "hidden md:grid gap-2 rounded-xl overflow-hidden relative h-[400px]",
+            images.length === 1 ? "grid-cols-1" : 
+            images.length === 2 ? "grid-cols-2" : 
+            "airbnb-grid-container"
+          )}>
+            {images.length === 1 ? (
+              <div className="relative w-full h-full cursor-pointer" onClick={() => setIsLightboxOpen(true)}>
+                <Image src={images[0]} alt={ad.title} fill className="object-cover hover:scale-105 transition-all duration-500" priority />
+              </div>
+            ) : images.length === 2 ? (
+              <>
+                <div className="relative w-full h-full cursor-pointer" onClick={() => setIsLightboxOpen(true)}>
+                  <Image src={images[0]} alt={ad.title} fill className="object-cover hover:scale-105 transition-all duration-500" priority />
                 </div>
-              ))}
-              {[...Array(Math.max(0, 4 - (images.length - 1)))].map((_, i: number) => (
-                <div key={`fill-${i}`} className="airbnb-grid-item bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400">
-                  <ImageIcon className="h-8 w-8 opacity-20" />
+                <div className="relative w-full h-full cursor-pointer" onClick={() => setIsLightboxOpen(true)}>
+                  <Image src={images[1]} alt={ad.title} fill className="object-cover hover:scale-105 transition-all duration-500" />
                 </div>
-              ))}
-            </div>
+              </>
+            ) : (
+              <>
+                <div className="airbnb-grid-item airbnb-grid-item-main overflow-hidden relative" onClick={() => setIsLightboxOpen(true)}>
+                  <Image 
+                    src={images[0]} 
+                    alt={ad.title} 
+                    fill 
+                    className="object-cover hover:scale-105 transition-transform duration-500"
+                    priority
+                  />
+                </div>
+                <div className="grid grid-cols-2 grid-rows-2 gap-2 col-span-2 row-span-2">
+                  {images.slice(1, 5).map((src: string, i: number) => (
+                    <div key={i} className="airbnb-grid-item overflow-hidden relative" onClick={() => setIsLightboxOpen(true)}>
+                      <Image src={src} alt={`${ad.title} ${i + 2}`} fill className="object-cover hover:scale-105 transition-transform duration-500" />
+                    </div>
+                  ))}
+                  {/* Only show placeholders if we have 3 or 4 images to maintain grid integrity */}
+                  {images.length < 5 && [...Array(4 - (images.length - 1))].map((_, i: number) => (
+                    <div key={`fill-${i}`} className="airbnb-grid-item bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400">
+                      <ImageIcon className="h-8 w-8 opacity-20" />
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
             
             <button 
               onClick={() => setIsLightboxOpen(true)}
