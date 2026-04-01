@@ -156,13 +156,22 @@ export default async function AdPage({ params }: AdPageProps) {
     );
   }
 
-  const sellerProfile = ad.profiles || (ad as any).seller_profile;
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://jootiya.com';
-  const formattedPrice = ad.price ? `${Number(ad.price).toLocaleString()} ${ad.currency || 'MAD'}` : "Sur demande";
-  const formattedDate = new Date(ad.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
-  const sellerName = sellerProfile?.full_name || "Utilisateur Jootiya";
-  const sellerAvatar = sellerProfile?.avatar_url || null;
-  const memberSince = sellerProfile?.created_at ? new Date(sellerProfile.created_at).getFullYear() : "2024";
+    const { data: profileData } = await supabase
+      .from("profiles")
+      .select("full_name, avatar_url, created_at, phone")
+      .eq("id", ad.seller_id)
+      .maybeSingle();
+
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://jootiya.com';
+    const formattedPrice = ad.price ? `${Number(ad.price).toLocaleString()} ${ad.currency || 'MAD'}` : "Sur demande";
+    const formattedDate = new Date(ad.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+
+    const sellerName = profileData?.full_name || ad.profiles?.full_name || "Utilisateur Jootiya";
+    const sellerAvatar = profileData?.avatar_url || ad.profiles?.avatar_url || null;
+    const memberSince = (profileData?.created_at || ad.profiles?.created_at) 
+      ? new Date(profileData?.created_at || ad.profiles?.created_at).getFullYear() 
+      : "2024";
+    const sellerPhone = ad.phone || profileData?.phone || ad.profiles?.phone;
 
   const images = (ad.image_urls || []).map((img: string) => 
     img.startsWith('http') ? img : `${baseUrl}/${img.startsWith('/') ? img.substring(1) : img}`
@@ -182,7 +191,7 @@ export default async function AdPage({ params }: AdPageProps) {
         sellerName={sellerName}
         sellerAvatar={sellerAvatar}
         memberSince={memberSince}
-        sellerPhone={ad.phone || sellerProfile?.phone}
+        sellerPhone={sellerPhone}
         formattedPrice={formattedPrice}
         formattedDate={formattedDate}
         avgRating={avgRating}
