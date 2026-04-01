@@ -223,13 +223,13 @@ export default async function AdPage({ params }: AdPageProps) {
                 />
               </div>
               {/* 4 Smaller Images */}
-              {images.slice(1, 5).map((src, i) => (
+              {images.slice(1, 5).map((src: string, i: number) => (
                 <div key={i} className="airbnb-grid-item" onClick={() => setIsLightboxOpen(true)}>
                   <Image src={src} alt={`${finalAd.title} ${i + 2}`} fill className="object-cover" />
                 </div>
               ))}
               {/* Placeholder for missing images to maintain grid */}
-              {[...Array(Math.max(0, 4 - (images.length - 1)))].map((_, i) => (
+              {[...Array(Math.max(0, 4 - (images.length - 1)))].map((_, i: number) => (
                 <div key={`fill-${i}`} className="airbnb-grid-item bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400">
                   <ImageIcon className="h-8 w-8 opacity-20" />
                 </div>
