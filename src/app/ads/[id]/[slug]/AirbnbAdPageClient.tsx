@@ -80,7 +80,19 @@ export function AirbnbAdPageClient({
 
         {/* Airbnb Style 5-Image Grid */}
         <div className="airbnb-grid-container group relative">
-          <div className="airbnb-grid-item airbnb-grid-item-main overflow-hidden relative" onClick={() => setIsLightboxOpen(true)}>
+          {/* Mobile view: Simple gallery or single image */}
+          <div className="md:hidden w-full h-full relative" onClick={() => setIsLightboxOpen(true)}>
+             <Image 
+              src={images[0]} 
+              alt={ad.title} 
+              fill 
+              className="object-cover"
+              priority
+            />
+          </div>
+
+          {/* Desktop view: 5-image grid */}
+          <div className="hidden md:block airbnb-grid-item airbnb-grid-item-main overflow-hidden relative" onClick={() => setIsLightboxOpen(true)}>
             <Image 
               src={images[0]} 
               alt={ad.title} 
