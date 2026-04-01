@@ -23,7 +23,21 @@ export default function AdminAdsPage() {
   const fetchAds = async () => {
     setLoading(true);
     try {
-      console.log("Fetching ads for admin...");
+      console.log("DEBUG: AdminAdsPage - Starting fetchAds...");
+      
+      const { data: { session } } = await supabase.auth.getSession();
+      console.log("DEBUG: AdminAdsPage - User Session:", session?.user?.id || "No session");
+      
+      if (session?.user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", session.user.id)
+          .single();
+        console.log("DEBUG: AdminAdsPage - User Role:", profile?.role || "No role found");
+      }
+
+      console.log("DEBUG: AdminAdsPage - Fetching ads for admin...");
       
       // Use the service role client or ensure the session has admin privileges
       // For now, let's just make sure the basic fetch is working
@@ -45,12 +59,14 @@ export default function AdminAdsPage() {
         .order("created_at", { ascending: false });
 
       if (error) {
-        console.error("Supabase Error fetching ads:", error);
+        console.error("DEBUG: AdminAdsPage - Supabase Error:", error);
         throw error;
       }
 
+      console.log("DEBUG: AdminAdsPage - Data received:", data?.length || 0, "rows");
+
       if (!data || data.length === 0) {
-        console.warn("No ads found in the database or restricted by RLS.");
+        console.warn("DEBUG: AdminAdsPage - No ads found. Check RLS policies.");
       }
 
       // Fetch profiles separately to avoid join issues
