@@ -204,18 +204,20 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
     if (isSuccess) {
         return (
             <div className="max-w-2xl mx-auto text-center py-20 px-4 animate-in fade-in zoom-in duration-500">
-                <div className="w-24 h-24 bg-orange-600 rounded-full flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-orange-200">
+                <div className="w-24 h-24 bg-emerald-500 rounded-full flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-emerald-100 ring-8 ring-emerald-50 dark:ring-emerald-950/30">
                     <CheckCircle2 className="w-12 h-12 text-white" />
                 </div>
-                <h2 className="text-4xl font-black text-zinc-900 mb-4 tracking-tight uppercase">Annonce publiée !</h2>
-                <p className="text-zinc-500 text-lg mb-10 max-w-md mx-auto leading-relaxed">
-                    تم نشر إعلانك بنجاح. سيتم مراجعته من قبل فريقنا قريباً.
+                <h2 className="text-4xl font-black text-zinc-900 dark:text-white mb-4 tracking-tight uppercase">
+                    Annonce publiée <span className="text-emerald-500">avec succès !</span>
+                </h2>
+                <p className="text-zinc-500 dark:text-zinc-400 text-lg mb-10 max-w-md mx-auto leading-relaxed font-medium">
+                    تم نشر إعلانك بنجاح. سيتم مراجعته من قبل فريقنا قريباً لضمان جودة المحتوى.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <Button onClick={() => window.location.href = '/dashboard/ads'} variant="outline" className="h-14 px-8 rounded-2xl font-bold border-zinc-200 hover:bg-zinc-50 transition-all">
+                    <Button onClick={() => window.location.href = '/dashboard/ads'} variant="outline" className="h-14 px-8 rounded-2xl font-bold border-zinc-200 dark:border-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all">
                         Voir mes annonces
                     </Button>
-                    <Button onClick={() => { setIsSuccess(false); setImages([]); setPreviews([]); }} className="h-14 px-8 rounded-2xl font-bold bg-orange-600 hover:bg-orange-700 shadow-xl shadow-orange-200 transition-all text-white">
+                    <Button onClick={() => { setIsSuccess(false); setImages([]); setPreviews([]); }} className="h-14 px-8 rounded-2xl font-bold bg-emerald-500 hover:bg-emerald-600 shadow-xl shadow-emerald-200 dark:shadow-none transition-all text-white border-none">
                         Publier une autre
                     </Button>
                 </div>
