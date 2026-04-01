@@ -19,11 +19,11 @@ export function getOptimizedImageUrl(url: string, options: { width?: number; hei
         
         if (cleanPath.startsWith('storage/v1/object/public/')) {
             absoluteUrl = `${supabaseUrl}/${cleanPath}`;
-        } else if (cleanPath.includes('ad-images/')) {
-            // Path already contains bucket name
+        } else if (cleanPath.startsWith('ad-images/')) {
+            // Already starts with bucket name
             absoluteUrl = `${supabaseUrl}/storage/v1/object/public/${cleanPath}`;
         } else {
-            // Assume it's a direct filename in ad-images
+            // Assume it's a direct filename or relative path in ad-images
             absoluteUrl = `${supabaseUrl}/storage/v1/object/public/ad-images/${cleanPath}`;
         }
     }

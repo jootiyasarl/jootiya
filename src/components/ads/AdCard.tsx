@@ -46,7 +46,6 @@ export function AdCard({ ad, canBoost, onEdit, onDelete }: { ad: Ad; canBoost?: 
           className="airbnb-card-image"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           loading="lazy"
-          unoptimized
         />
 
         {/* Wishlist Heart */}
