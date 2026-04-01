@@ -3,7 +3,8 @@
 import { useEffect, useState, useMemo } from "react";
 import { AdsTable } from "@/components/ads/AdsTable";
 import type { AdminAd, AdsTableFilters } from "@/components/ads/AdsTable";
-import { supabase } from "@/lib/supabaseClient";
+import { getAdminAds, updateAdStatus, deleteAdAdmin } from "./admin-actions";
+import { toast } from "sonner";
 
 export default function AdminAdsPage() {
   const [ads, setAds] = useState<AdminAd[]>([]);
@@ -23,87 +24,13 @@ export default function AdminAdsPage() {
   const fetchAds = async () => {
     setLoading(true);
     try {
-      console.log("DEBUG: AdminAdsPage - Starting fetchAds...");
-      
-      const { data: { session } } = await supabase.auth.getSession();
-      console.log("DEBUG: AdminAdsPage - User Session:", session?.user?.id || "No session");
-      
-      if (session?.user) {
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("role")
-          .eq("id", session.user.id)
-          .single();
-        console.log("DEBUG: AdminAdsPage - User Role:", profile?.role || "No role found");
+      const result = await getAdminAds();
+      if (result.success && result.data) {
+        setAds(result.data);
+      } else {
+        console.error("Error fetching ads:", result.error);
+        toast.error("Erreur lors du chargement des annonces");
       }
-
-      console.log("DEBUG: AdminAdsPage - Fetching ads for admin...");
-      
-      // Use the service role client or ensure the session has admin privileges
-      // For now, let's just make sure the basic fetch is working
-      const { data, error } = await supabase
-        .from("ads")
-        .select(`
-          id, 
-          title, 
-          city, 
-          neighborhood, 
-          category, 
-          status, 
-          price, 
-          currency, 
-          created_at,
-          image_urls,
-          seller_id
-        `)
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        console.error("DEBUG: AdminAdsPage - Supabase Error:", error);
-        throw error;
-      }
-
-      console.log("DEBUG: AdminAdsPage - Data received:", data?.length || 0, "rows");
-
-      if (!data || data.length === 0) {
-        console.warn("DEBUG: AdminAdsPage - No ads found. Check RLS policies.");
-      }
-
-      // Fetch profiles separately to avoid join issues
-      const sellerIds = Array.from(new Set((data || []).map(ad => ad.seller_id)));
-      const { data: profiles } = await supabase
-        .from("profiles")
-        .select("id, full_name, avatar_url")
-        .in("id", sellerIds);
-
-      const profileMap = new Map((profiles || []).map(p => [p.id, p]));
-      
-      console.log(`Fetched ${data?.length || 0} ads data.`);
-
-      // Map DB ads to AdminAd type
-      const mappedAds: AdminAd[] = (data || []).map((ad: any) => {
-        const profile = profileMap.get(ad.seller_id);
-        
-        return {
-          id: ad.id,
-          title: ad.title,
-          location: ad.neighborhood ? `${ad.neighborhood}, ${ad.city}` : ad.city || "Maroc",
-          category: ad.category,
-          status: ad.status,
-          price: ad.price,
-          currency: ad.currency,
-          is_featured: false,
-          created_at: ad.created_at,
-          image_url: ad.image_urls?.[0] || null,
-          seller_id: ad.seller_id,
-          seller: profile ? {
-            full_name: profile.full_name,
-            avatar_url: profile.avatar_url
-          } : undefined,
-        };
-      });
-
-      setAds(mappedAds);
     } catch (err) {
       console.error("Error fetching ads:", err);
     } finally {
@@ -149,43 +76,27 @@ export default function AdminAdsPage() {
   const handleAction = async (id: string, action: 'approve' | 'reject' | 'delete', newStatus?: string) => {
     setModeratingId(id);
     try {
+      let result;
       if (action === 'delete') {
-        await supabase.from('ads').delete().eq('id', id);
-        setAds(prev => prev.filter(a => a.id !== id));
-      } else {
-        const { error: updateError } = await supabase.from('ads').update({ status: newStatus }).eq('id', id);
-        if (updateError) throw updateError;
-
-        // If rejected, create a notification for the user
-        if (action === 'reject') {
-          const ad = ads.find(a => a.id === id);
-          if (ad && ad.seller_id) {
-            await supabase.from('notifications').insert({
-              user_id: ad.seller_id,
-              title: "Annonce refusée",
-              content: `Votre annonce "${ad.title}" a été refusée par la modération.`,
-              type: "ad_rejected",
-              data: { ad_id: id }
-            });
-          }
-        } else if (action === 'approve') {
-          const ad = ads.find(a => a.id === id);
-          if (ad && ad.seller_id) {
-            await supabase.from('notifications').insert({
-              user_id: ad.seller_id,
-              title: "Annonce approuvée",
-              content: `Félicitations ! Votre annonce "${ad.title}" est maintenant en ligne.`,
-              type: "ad_approved",
-              data: { ad_id: id }
-            });
-          }
+        result = await deleteAdAdmin(id);
+        if (result.success) {
+          setAds(prev => prev.filter(a => a.id !== id));
+          toast.success("Annonce supprimée");
         }
-
-        setAds(prev => prev.map(a => a.id === id ? { ...a, status: newStatus || a.status } : a));
+      } else if (newStatus) {
+        result = await updateAdStatus(id, newStatus);
+        if (result.success) {
+          setAds(prev => prev.map(a => a.id === id ? { ...a, status: newStatus } : a));
+          toast.success(action === 'approve' ? "Annonce approuvée" : "Annonce refusée");
+        }
       }
-    } catch (err) {
+      
+      if (result && !result.success) {
+        throw new Error(result.error);
+      }
+    } catch (err: any) {
       console.error(`Failed to ${action} ad`, err);
-      alert(`Failed to ${action} ad`);
+      toast.error(`Erreur: ${err.message}`);
     } finally {
       setModeratingId(null);
     }
