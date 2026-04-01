@@ -156,7 +156,7 @@ export default async function AdPage({ params }: AdPageProps) {
     );
   }
 
-  const sellerProfile = ad.profiles;
+  const sellerProfile = ad.profiles || (ad as any).seller_profile;
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://jootiya.com';
   const formattedPrice = ad.price ? `${Number(ad.price).toLocaleString()} ${ad.currency || 'MAD'}` : "Sur demande";
   const formattedDate = new Date(ad.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
