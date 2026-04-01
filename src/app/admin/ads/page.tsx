@@ -24,6 +24,9 @@ export default function AdminAdsPage() {
     setLoading(true);
     try {
       console.log("Fetching ads for admin...");
+      
+      // Use the service role client or ensure the session has admin privileges
+      // For now, let's just make sure the basic fetch is working
       const { data, error } = await supabase
         .from("ads")
         .select(`
@@ -44,6 +47,10 @@ export default function AdminAdsPage() {
       if (error) {
         console.error("Supabase Error fetching ads:", error);
         throw error;
+      }
+
+      if (!data || data.length === 0) {
+        console.warn("No ads found in the database or restricted by RLS.");
       }
 
       // Fetch profiles separately to avoid join issues
