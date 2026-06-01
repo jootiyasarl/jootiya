@@ -90,7 +90,12 @@ export async function generateMetadata({ params }: AdPageProps) {
 
 export default async function AdPage({ params }: AdPageProps) {
   const { id } = await params;
-  const user = await getServerUser();
+  let user = null;
+  try {
+    user = await getServerUser();
+  } catch (e) {
+    console.error("getServerUser error:", e);
+  }
   const supabase = createSupabaseServerClient();
 
   // 1. Fetch the ad (no FK join — relationship not defined in schema)
