@@ -89,89 +89,104 @@ export async function generateMetadata({ params }: AdPageProps) {
 }
 
 export default async function AdPage({ params }: AdPageProps) {
-  const { id } = await params;
-  let user = null;
   try {
-    user = await getServerUser();
-  } catch (e) {
-    console.error("getServerUser error:", e);
-  }
-  const supabase = createSupabaseServerClient();
+    const { id } = await params;
+    let user = null;
+    try {
+      user = await getServerUser();
+    } catch (e) {
+      console.error("getServerUser error:", e);
+    }
+    const supabase = createSupabaseServerClient();
 
-  // 1. Fetch the ad (no FK join — relationship not defined in schema)
-  const { data: ad, error: adError } = await supabase
-    .from("ads")
-    .select("*")
-    .or(`id.eq.${id},slug.eq.${id}`)
-    .maybeSingle();
+    // 1. Fetch the ad
+    const { data: ad, error: adError } = await supabase
+      .from("ads")
+      .select("*")
+      .or(`id.eq.${id},slug.eq.${id}`)
+      .maybeSingle();
 
-  if (adError || !ad) {
-    console.error("DEBUG: Ad Fetch Error or Not Found:", adError, id);
+    if (adError || !ad) {
+      console.error("DEBUG: Ad Fetch Error:", adError, id);
+      notFound();
+    }
+
+    // 2. Fetch seller profile (only if seller_id exists)
+    let profileData = null;
+    if (ad.seller_id) {
+      const { data: pd, error: profileError } = await supabase
+        .from("profiles")
+        .select("full_name, avatar_url, created_at, phone")
+        .eq("id", ad.seller_id)
+        .maybeSingle();
+      if (profileError) {
+        console.error("DEBUG: Profile Fetch Error:", profileError, ad.seller_id);
+      } else {
+        profileData = pd;
+      }
+    }
+
+    const sellerName = profileData?.full_name || "Vendeur anonyme";
+    const sellerAvatar = profileData?.avatar_url || null;
+    const memberSince = profileData?.created_at
+      ? new Date(profileData.created_at).getFullYear()
+      : "2024";
+    const sellerPhone = ad.phone || profileData?.phone;
+
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://jootiya.com';
+    const formattedPrice = ad.price != null
+      ? `${Number(ad.price).toLocaleString()} ${ad.currency || 'MAD'}`
+      : "Sur demande";
+    const formattedDate = ad.created_at
+      ? new Date(ad.created_at).toLocaleDateString("fr-FR", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })
+      : "";
+
+    const images = Array.isArray(ad.image_urls)
+      ? ad.image_urls.map((img: string) =>
+          img?.startsWith("http") ? img : `${baseUrl}/${img?.startsWith("/") ? img.substring(1) : img}`
+        )
+      : [];
+
+    let avgRating = 5.0;
+    let totalReviews = 0;
+    if (ad.seller_id) {
+      try {
+        const { data: stats } = await supabase.rpc("get_seller_stats", {
+          target_seller_id: ad.seller_id,
+        });
+        avgRating = stats?.[0]?.avg_rating || 5.0;
+        totalReviews = stats?.[0]?.total_reviews || 0;
+      } catch (e) {
+        console.error("get_seller_stats RPC error:", e);
+      }
+    }
+    const isTrusted = totalReviews > 10 && avgRating >= 4.5;
+
+    return (
+      <>
+        <ShadowViewTracker adId={ad.id} category={ad.category} />
+        <AirbnbAdPageClient
+          ad={ad}
+          images={images}
+          sellerName={sellerName}
+          sellerAvatar={sellerAvatar}
+          memberSince={memberSince}
+          sellerPhone={sellerPhone}
+          formattedPrice={formattedPrice}
+          formattedDate={formattedDate}
+          avgRating={avgRating}
+          totalReviews={totalReviews}
+          isTrusted={isTrusted}
+          user={user}
+        />
+      </>
+    );
+  } catch (err: any) {
+    console.error("FATAL: AdPage crash:", err);
     notFound();
   }
-
-  // 2. Fetch seller profile separately
-  const { data: profileData, error: profileError } = await supabase
-    .from("profiles")
-    .select("full_name, avatar_url, created_at, phone")
-    .eq("id", ad.seller_id)
-    .maybeSingle();
-
-  if (profileError) {
-    console.error("DEBUG: Profile Fetch Error:", profileError, ad.seller_id);
-  }
-
-  const sellerName = profileData?.full_name || "Vendeur anonyme";
-  const sellerAvatar = profileData?.avatar_url || null;
-  const memberSince = profileData?.created_at
-    ? new Date(profileData.created_at).getFullYear()
-    : "2024";
-  const sellerPhone = ad.phone || profileData?.phone;
-
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://jootiya.com';
-  const formattedPrice = ad.price
-    ? `${Number(ad.price).toLocaleString()} ${ad.currency || 'MAD'}`
-    : "Sur demande";
-  const formattedDate = new Date(ad.created_at).toLocaleDateString("fr-FR", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-
-  const images = (ad.image_urls || []).map((img: string) =>
-    img.startsWith("http") ? img : `${baseUrl}/${img.startsWith("/") ? img.substring(1) : img}`
-  );
-
-  let avgRating = 5.0;
-  let totalReviews = 0;
-  try {
-    const { data: stats } = await supabase.rpc("get_seller_stats", {
-      target_seller_id: ad.seller_id,
-    });
-    avgRating = stats?.[0]?.avg_rating || 5.0;
-    totalReviews = stats?.[0]?.total_reviews || 0;
-  } catch (e) {
-    console.error("get_seller_stats RPC error:", e);
-  }
-  const isTrusted = totalReviews > 10 && avgRating >= 4.5;
-
-  return (
-    <>
-      <ShadowViewTracker adId={ad.id} category={ad.category} />
-      <AirbnbAdPageClient
-        ad={ad}
-        images={images}
-        sellerName={sellerName}
-        sellerAvatar={sellerAvatar}
-        memberSince={memberSince}
-        sellerPhone={sellerPhone}
-        formattedPrice={formattedPrice}
-        formattedDate={formattedDate}
-        avgRating={avgRating}
-        totalReviews={totalReviews}
-        isTrusted={isTrusted}
-        user={user}
-      />
-    </>
-  );
 }
