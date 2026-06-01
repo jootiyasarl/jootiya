@@ -39,7 +39,9 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
-  turbopack: {},
+  turbopack: {
+    root: __dirname,
+  },
   experimental: {
     optimizeCss: true,
   },

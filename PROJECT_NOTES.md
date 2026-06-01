@@ -8,10 +8,12 @@
 
 ## متغيرات البيئة (Supabase)
 
-- `NEXT_PUBLIC_SUPABASE_URL`:
-  `https://ssfcfvuosxxmvsdoktws.supabase.co`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`:
-  `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNzZmNmdnVvc3h4bXZzZG9rdHdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYxMzQ0NTAsImV4cCI6MjA4MTcxMDQ1MH0.yapozcOEBlZ6kLtNs5nwt-CusuDQfojYq1nUZtH2AoE`
+> القيم الحقيقية موجودة في ملف `.env.local` (غير مرفوع للـ git). لا تضع المفاتيح هنا.
+
+- `NEXT_PUBLIC_SUPABASE_URL` → انظر `.env.local`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` → انظر `.env.local`
+- `OPENAI_API_KEY` → انظر `.env.local`
+- `VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` → انظر `.env.local`
 
 - **الصفحات الموجودة (Routes)**
   - `/` → الصفحة الرئيسية (`src/app/page.tsx`).

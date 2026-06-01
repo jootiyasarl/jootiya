@@ -9,7 +9,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
   );
 }
 
-export type UserRole = "seller" | "admin" | "super_admin";
+export type UserRole = "seller" | "admin" | "super_admin" | "moderator" | "buyer";
 
 // Browser client for client components
 export function createSupabaseBrowserClient() {

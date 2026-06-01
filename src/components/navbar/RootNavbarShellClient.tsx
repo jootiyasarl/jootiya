@@ -48,12 +48,12 @@ export function RootNavbarShellClient({ children, navbar, footer }: RootNavbarSh
         </div>
       )}
 
-      <main className={cn("min-h-screen", !isSpecialPath && "pt-[56px] md:pt-[64px] pb-20 lg:pb-0")}
+      <main className={cn("min-h-screen", !isSpecialPath && "pt-[56px] md:pt-[112px] pb-20 lg:pb-0")}
       >
         <div className={cn(!isSpecialPath && "main-content-wrapper")}
         >
           {!isSpecialPath ? (
-            <div className="max-w-[1440px] mx-auto px-4 md:px-8 relative">
+            <div className="max-w-[1440px] mx-auto px-2 min-[360px]:px-3 sm:px-4 md:px-8 relative">
               <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start relative">
                 <aside className="hidden xl:block w-40 sticky top-24 shrink-0">
                   <SidebarAd />
@@ -67,7 +67,7 @@ export function RootNavbarShellClient({ children, navbar, footer }: RootNavbarSh
               </div>
             </div>
           ) : (
-            <div className="max-w-[1440px] mx-auto px-4 md:px-8">
+            <div className="max-w-[1440px] mx-auto px-2 min-[360px]:px-3 sm:px-4 md:px-8">
               {children}
             </div>
           )}

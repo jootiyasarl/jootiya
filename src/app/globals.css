@@ -208,6 +208,25 @@
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full;
   }
 
+  /* Core listing card surface (used by AdCard and skeletons) */
+  .jootiya-card {
+    @apply bg-white dark:bg-zinc-900 rounded-[1.5rem] border border-zinc-100 dark:border-zinc-800 shadow-[0_2px_12px_rgba(0,0,0,0.04)] dark:shadow-none;
+  }
+  .jootiya-card:hover {
+    @apply shadow-[0_12px_32px_rgba(0,0,0,0.10)] border-zinc-200 dark:border-zinc-700;
+  }
+
+  /* Reusable section heading for the marketplace homepage */
+  .home-section-eyebrow {
+    @apply inline-flex items-center gap-1.5 text-[11px] font-black uppercase tracking-[0.18em] text-orange-500;
+  }
+  .home-section-title {
+    @apply text-xl sm:text-2xl md:text-3xl font-black tracking-tight text-zinc-900 dark:text-white;
+  }
+  .home-see-all {
+    @apply inline-flex items-center gap-2 text-[13px] font-bold text-zinc-500 hover:text-orange-600 dark:text-zinc-400 dark:hover:text-orange-500 transition-colors;
+  }
+
   /* Airbnb Style Layout */
   .airbnb-grid-container {
     @apply grid grid-cols-4 grid-rows-2 gap-2 rounded-2xl overflow-hidden aspect-[2/1] relative mb-8;

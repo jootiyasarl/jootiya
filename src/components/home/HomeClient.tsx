@@ -1,16 +1,29 @@
 "use client";
 
-import React, { useEffect, useState, Suspense, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { SellBanner } from "@/components/home/SellBanner";
-import { BlogSection } from "@/components/home/BlogSection";
+import { TrustSection } from "@/components/home/TrustSection";
 import { AdCard } from "@/components/AdCard";
-import { Package, ArrowRight, WifiOff } from "lucide-react";
+import { Package, ArrowRight, WifiOff, ChevronLeft, ChevronRight, PlusCircle } from "lucide-react";
 import { getCachedAds, saveAds } from "@/lib/pwa/jootiya-db";
 import { supabase } from "@/lib/supabaseClient";
 import { LocationPrompt } from "@/components/LocationPrompt";
 import { fetchNearbyAds } from "@/lib/nearbyAds";
 import useEmblaCarousel from "embla-carousel-react";
+
+const CATEGORY_LABELS: { [key: string]: string } = {
+  "electronics": "Électronique",
+  "home-furniture": "Maison & Ameublement",
+  "vehicles": "Véhicules & Transport",
+  "fashion": "Mode & Chaussures",
+  "tools-equipment": "Outils & Équipement",
+  "hobbies": "Loisirs & Divertissement",
+  "animals": "Animaux",
+  "books": "Livres & Études",
+  "used-clearance": "Occasions",
+  "other": "Autres",
+};
 
 type HomepageAd = {
   id: string;
@@ -256,13 +269,13 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
     const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
 
     return (
-      <div className="relative">
+      <div className="relative group/carousel">
         <div className="overflow-hidden" ref={emblaRef}>
-          <div className="flex gap-3 pb-4">
+          <div className="flex gap-3 sm:gap-4 pb-2">
             {slides.map((ad) => (
               <div
                 key={ad.id}
-                className="flex-[0_0_72%] sm:flex-[0_0_45%] md:flex-[0_0_32%] lg:flex-[0_0_24%] min-w-0"
+                className="flex-[0_0_44%] min-[420px]:flex-[0_0_40%] sm:flex-[0_0_30%] md:flex-[0_0_23%] lg:flex-[0_0_19%] min-w-0"
               >
                 <AdCard ad={toAdCard(ad) as any} href={`/ads/${ad.id}`} />
               </div>
@@ -273,18 +286,18 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
         <button
           type="button"
           onClick={scrollPrev}
-          className="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm border border-zinc-200 shadow-sm items-center justify-center text-zinc-800 hover:text-orange-600 transition-colors"
+          className="hidden md:flex absolute -left-3 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-white border border-zinc-200 shadow-lg items-center justify-center text-zinc-700 hover:text-orange-600 hover:border-orange-200 hover:scale-105 transition-all opacity-0 group-hover/carousel:opacity-100 active:scale-95"
           aria-label="Précédent"
         >
-          <span className="text-lg font-black">‹</span>
+          <ChevronLeft className="w-5 h-5" strokeWidth={2.5} />
         </button>
         <button
           type="button"
           onClick={scrollNext}
-          className="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm border border-zinc-200 shadow-sm items-center justify-center text-zinc-800 hover:text-orange-600 transition-colors"
+          className="hidden md:flex absolute -right-3 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-white border border-zinc-200 shadow-lg items-center justify-center text-zinc-700 hover:text-orange-600 hover:border-orange-200 hover:scale-105 transition-all opacity-0 group-hover/carousel:opacity-100 active:scale-95"
           aria-label="Suivant"
         >
-          <span className="text-lg font-black">›</span>
+          <ChevronRight className="w-5 h-5" strokeWidth={2.5} />
         </button>
       </div>
     );
@@ -300,7 +313,12 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
         </div>
       )}
       
-      <main className="main-container py-4 sm:py-6 lg:py-8">
+      {/* Sell banner — light, compact CTA strip */}
+      <section className="main-container">
+        <SellBanner />
+      </section>
+
+      <main className="main-container pb-4 pt-6 sm:pt-8">
         {error && (
           <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-2xl text-red-600 text-sm font-bold flex flex-col items-center gap-3">
             <p>Impossible de charger les annonces : {error}</p>
@@ -312,34 +330,36 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
             </button>
           </div>
         )}
-        <div className="block mb-6 md:mb-10">
-          <SellBanner />
-        </div>
-        
-        <div className="space-y-12 sm:space-y-16 min-w-0">
+        <div className="space-y-10 sm:space-y-14 min-w-0 pt-2">
           {ads.length === 0 && !loading ? (
             <div className="flex flex-col items-center justify-center py-24 text-center border border-dashed border-zinc-200 rounded-[2.5rem] bg-zinc-50/40 px-4">
               <div className="bg-white p-6 rounded-2xl mb-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-zinc-100">
                 <Package className="w-10 h-10 text-zinc-400" />
               </div>
               <h3 className="text-xl font-bold text-zinc-900">Aucune annonce trouvée</h3>
-              <Link href="/marketplace/post" className="mt-8 inline-flex items-center justify-center px-8 h-12 bg-orange-500 text-white rounded-2xl font-black hover:bg-orange-600 transition-all shadow-[0_12px_30px_rgba(255,102,0,0.18)] hover:shadow-[0_18px_40px_rgba(255,102,0,0.22)] active:scale-[0.98]">
+              <p className="mt-2 text-sm text-zinc-500 font-medium max-w-xs">Soyez le premier à publier une annonce dans votre région.</p>
+              <Link href="/marketplace/post" className="mt-8 inline-flex items-center justify-center gap-2 px-8 h-12 bg-orange-500 text-white rounded-2xl font-black hover:bg-orange-600 transition-all shadow-[0_12px_30px_rgba(255,102,0,0.18)] hover:shadow-[0_18px_40px_rgba(255,102,0,0.22)] active:scale-[0.98]">
+                <PlusCircle className="w-5 h-5" />
                 Déposer une annonce
               </Link>
             </div>
           ) : (
             <>
               {loading ? (
-                <div className="space-y-8 py-4 px-2">
+                <div className="space-y-10">
                   {[...Array(2)].map((_, sectionIndex) => (
                     <div key={sectionIndex} className="space-y-4">
-                      <div className="flex flex-col gap-1 px-1">
-                        <div className="h-3 w-16 bg-zinc-100 animate-pulse rounded-full" />
-                        <div className="h-6 w-32 bg-zinc-100 animate-pulse rounded-lg mt-1" />
+                      <div className="flex flex-col gap-2">
+                        <div className="h-3 w-20 bg-zinc-100 animate-pulse rounded-full" />
+                        <div className="h-7 w-44 bg-zinc-100 animate-pulse rounded-lg" />
                       </div>
-                      <div className="flex overflow-x-auto no-scrollbar gap-3 pb-2">
-                        {[...Array(3)].map((_, i) => (
-                          <div key={i} className="jootiya-card flex-[0_0_75%] min-[400px]:flex-[0_0_60%] aspect-[3/4] bg-zinc-100 animate-pulse rounded-[1.5rem] shrink-0" />
+                      <div className="flex gap-3 sm:gap-4 pb-2">
+                        {[...Array(5)].map((_, i) => (
+                          <div key={i} className="flex-[0_0_44%] min-[420px]:flex-[0_0_40%] sm:flex-[0_0_30%] md:flex-[0_0_23%] lg:flex-[0_0_19%] shrink-0">
+                            <div className="aspect-[4/3] bg-zinc-100 animate-pulse rounded-[1.5rem]" />
+                            <div className="h-4 w-3/4 bg-zinc-100 animate-pulse rounded mt-3" />
+                            <div className="h-4 w-1/3 bg-zinc-100 animate-pulse rounded mt-2" />
+                          </div>
                         ))}
                       </div>
                     </div>
@@ -351,21 +371,23 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
                     const categoryAds = groupedAds[category];
                     if (categoryAds.length === 0) return null;
 
+                    const categoryLabel = CATEGORY_LABELS[category] || category;
+
                     return (
-                      <section key={category} className="space-y-6">
-                        <div className="flex items-center justify-between">
-                          <div className="flex flex-col gap-1">
-                            <span className="text-[10px] font-black uppercase text-orange-500 tracking-[0.2em]">{category}</span>
-                            <h2 className="text-2xl md:text-3xl font-black text-zinc-900 dark:text-white tracking-tighter">
-                              {category}
+                      <section key={category} className="space-y-5">
+                        <div className="flex items-end justify-between gap-4">
+                          <div className="flex flex-col gap-1.5">
+                            <span className="home-section-eyebrow">{categoryLabel}</span>
+                            <h2 className="home-section-title">
+                              {categoryLabel}
                             </h2>
                           </div>
                           <Link 
                             href={`/categories/${getCategorySlug(category)}`}
-                            className="group flex items-center gap-2 text-sm font-bold text-zinc-500 hover:text-orange-600 transition-all duration-300"
+                            className="home-see-all group shrink-0"
                           >
-                            Voir tout
-                            <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center group-hover:bg-orange-500 group-hover:text-white transition-all">
+                            <span className="hidden sm:inline">Voir tout</span>
+                            <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center group-hover:bg-orange-500 group-hover:text-white transition-all">
                               <ArrowRight className="w-4 h-4" />
                             </div>
                           </Link>
@@ -381,6 +403,9 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
           )}
         </div>
       </main>
+
+      {/* Trust / value proposition */}
+      <TrustSection />
     </div>
   );
 }

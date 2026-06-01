@@ -204,29 +204,30 @@ export function JootiyaProSearchBar() {
       <div className="lg:hidden">
         <button
           onClick={() => setMobileOpen(true)}
-          className="w-10 h-10 flex items-center justify-center bg-orange-500 rounded-xl text-white shadow-lg"
+          className="w-9 h-9 min-[360px]:w-10 min-[360px]:h-10 flex items-center justify-center bg-orange-500 rounded-xl text-white shadow-lg shrink-0"
+          aria-label="Rechercher"
         >
-          <Search className="w-5 h-5" />
+          <Search className="w-4 h-4 min-[360px]:w-5 min-[360px]:h-5" />
         </button>
 
         {mobileOpen && (
-          <div className="fixed inset-0 z-[9999] bg-white dark:bg-zinc-950 p-4 flex flex-col">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-black">Recherche</h2>
+          <div className="fixed inset-0 z-[9999] bg-white dark:bg-zinc-950 p-3 min-[360px]:p-4 pt-[calc(0.75rem+env(safe-area-inset-top))] pb-[calc(0.75rem+env(safe-area-inset-bottom))] flex flex-col overflow-hidden">
+            <div className="flex items-center justify-between mb-4 min-[360px]:mb-6 shrink-0">
+              <h2 className="text-lg min-[360px]:text-xl font-black">Recherche</h2>
               <button onClick={() => setMobileOpen(false)} className="p-2 bg-zinc-100 dark:bg-zinc-800 rounded-full">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSearch} className="flex flex-col gap-4">
-              <div className="flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 p-3 rounded-2xl border border-zinc-100 dark:border-zinc-800">
-                <Search className="w-5 h-5 text-orange-500" />
+            <form onSubmit={handleSearch} className="flex flex-col gap-3 min-[360px]:gap-4 min-h-0 overflow-y-auto">
+              <div className="flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 p-3 rounded-2xl border border-zinc-100 dark:border-zinc-800 shrink-0">
+                <Search className="w-4 h-4 min-[360px]:w-5 min-[360px]:h-5 text-orange-500 shrink-0" />
                 <input
                   type="text"
                   placeholder="شنو كتقلب؟"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  className="w-full bg-transparent outline-none font-bold"
+                  className="w-full min-w-0 bg-transparent outline-none font-bold text-sm min-[360px]:text-base"
                   autoFocus
                 />
               </div>
@@ -289,7 +290,7 @@ export function JootiyaProSearchBar() {
                 )}
               </div>
 
-              <Button type="submit" className="w-full h-14 bg-orange-600 hover:bg-orange-700 text-white rounded-2xl font-black text-lg shadow-xl shadow-orange-600/20 mt-4">
+              <Button type="submit" className="w-full h-12 min-[360px]:h-14 bg-orange-600 hover:bg-orange-700 text-white rounded-2xl font-black text-base min-[360px]:text-lg shadow-xl shadow-orange-600/20 mt-2 min-[360px]:mt-4 shrink-0">
                 بحث الآن
               </Button>
             </form>

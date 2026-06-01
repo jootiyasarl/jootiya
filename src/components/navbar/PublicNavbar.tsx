@@ -14,9 +14,9 @@ export default async function PublicNavbar() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-[100] w-full bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl border-b border-zinc-100 dark:border-zinc-800 flex flex-col justify-center min-h-[56px] md:min-h-[64px] pt-[env(safe-area-inset-top)] overflow-visible">
-      <div className="w-full px-2 sm:px-4 md:px-8 max-w-[1440px] mx-auto overflow-visible">
+      <div className="w-full px-1 min-[360px]:px-2 sm:px-4 md:px-8 max-w-[1440px] mx-auto overflow-visible">
         {/* Main Nav Row (TOP) */}
-        <div className="flex h-12 md:h-14 items-center justify-between gap-1 sm:gap-4 relative z-[110] py-2 min-w-0 overflow-visible">
+        <div className="flex h-12 md:h-14 items-center justify-between gap-0.5 min-[360px]:gap-1 sm:gap-4 relative z-[110] py-2 min-w-0 overflow-visible">
           {/* Left: Logo - Hidden on very small screens to give space to search */}
           <div className="flex items-center shrink-0 min-w-0">
             <div className="hidden min-[350px]:block">
@@ -29,7 +29,7 @@ export default async function PublicNavbar() {
           </div>
 
           {/* Center: Search Bar - Takes priority */}
-          <div className="flex-1 flex justify-center px-1 sm:px-6 relative z-[120] min-w-0 overflow-visible">
+          <div className="flex-1 flex justify-center px-0.5 min-[360px]:px-1 sm:px-6 relative z-[120] min-w-0 overflow-visible">
             <div className="w-full max-w-2xl flex justify-center min-w-0 overflow-visible">
               <JootiyaProSearchBar />
             </div>

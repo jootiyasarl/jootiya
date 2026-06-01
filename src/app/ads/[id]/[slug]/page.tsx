@@ -40,11 +40,12 @@ export async function generateMetadata({ params }: AdPageProps) {
         ogImage = firstImage;
       } else {
         const cleanPath = firstImage.startsWith('/') ? firstImage.substring(1) : firstImage;
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
         // Check if it's a Supabase path that needs the public URL prefix
         if (!cleanPath.startsWith('storage/v1/object/public/')) {
-          ogImage = `https://mshnkdqclscfytvdbmre.supabase.co/storage/v1/object/public/ad-images/${cleanPath}`;
+          ogImage = `${supabaseUrl}/storage/v1/object/public/ad-images/${cleanPath}`;
         } else {
-          ogImage = `${baseUrl}/${cleanPath}`;
+          ogImage = `${supabaseUrl}/${cleanPath}`;
         }
       }
     }

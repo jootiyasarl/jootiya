@@ -134,11 +134,7 @@ export default function RootLayout({
               "@type": "Organization",
               "name": "Jootiya Marketplace Maroc",
               "url": "https://jootiya.com",
-              "sameAs": [
-                "https://www.hespress.com/economie",
-                "https://edition.cnn.com/business"
-              ],
-              "description": "Plateforme leader d'infrastructure e-commerce au Maroc."
+              "description": "Plateforme de petites annonces au Maroc pour acheter et vendre en toute sécurité."
             }),
           }}
         />
@@ -195,7 +191,7 @@ export default function RootLayout({
             style={{ display: 'none', visibility: 'hidden' }}
           ></iframe>
         </noscript>
-        <h1 className="sr-only">Jootiya: Analyse du Marché Marocain, Infrastructure Logistique et Opportunités d'Investissement</h1>
+        <h1 className="sr-only">Jootiya : Petites annonces au Maroc - Achat et vente en toute sécurité</h1>
 
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <Suspense fallback={null}>

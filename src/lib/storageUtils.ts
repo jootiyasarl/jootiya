@@ -14,7 +14,7 @@ export function getOptimizedImageUrl(url: string, options: { width?: number; hei
     if (processedUrl === '/placeholder-ad.jpg') return '/placeholder-ad.jpg';
     
     // Check if it's already a full Supabase public URL
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://mshnkdqclscfytvdbmre.supabase.co';
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     
     // 2. Handle relative paths from Supabase
     let absoluteUrl = processedUrl;
