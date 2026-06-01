@@ -28,7 +28,10 @@ export async function generateMetadata({ params }: AdPageProps) {
     if (error || !ad) return { title: "Petites Annonces au Maroc | Jootiya" };
 
     const formattedPrice = ad.price ? `${Number(ad.price).toLocaleString()} ${ad.currency || 'MAD'}` : "Prix sur demande";
-    const metaTitle = `${ad.title} - ${formattedPrice} | Jootiya`;
+    const metaTitle = `${ad.title} - ${formattedPrice} | Jootiya Maroc`;
+    const metaDescription = ad.description
+      ? `${ad.description.slice(0, 120)}... à ${ad.city || 'Maroc'} sur Jootiya — le meilleur marché d'occasion au Maroc.`
+      : `${ad.title} à ${ad.city || 'Maroc'} — ${formattedPrice}. Achetez et vendez en toute sécurité sur Jootiya.`;
     const adSlug = ad.slug || urlSlug || generateSlug(ad.title);
     const canonicalUrl = `${baseUrl}/ads/${ad.id}/${adSlug}`;
     
@@ -41,7 +44,6 @@ export async function generateMetadata({ params }: AdPageProps) {
       } else {
         const cleanPath = firstImage.startsWith('/') ? firstImage.substring(1) : firstImage;
         const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-        // Check if it's a Supabase path that needs the public URL prefix
         if (!cleanPath.startsWith('storage/v1/object/public/')) {
           ogImage = `${supabaseUrl}/storage/v1/object/public/ad-images/${cleanPath}`;
         } else {
@@ -52,11 +54,11 @@ export async function generateMetadata({ params }: AdPageProps) {
     
     return {
       title: metaTitle,
-      description: ad.description?.slice(0, 160),
+      description: metaDescription,
       alternates: { canonical: canonicalUrl },
       openGraph: {
         title: metaTitle,
-        description: ad.description?.slice(0, 160),
+        description: metaDescription,
         url: canonicalUrl,
         siteName: 'Jootiya',
         images: [
@@ -68,13 +70,17 @@ export async function generateMetadata({ params }: AdPageProps) {
           },
         ],
         locale: 'fr_FR',
-        type: 'website',
+        type: 'product',
       },
       twitter: {
         card: 'summary_large_image',
         title: metaTitle,
-        description: ad.description?.slice(0, 160),
+        description: metaDescription,
         images: [ogImage],
+      },
+      robots: {
+        index: true,
+        follow: true,
       },
     };
   } catch (err) {
