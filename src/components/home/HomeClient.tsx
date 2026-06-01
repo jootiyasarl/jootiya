@@ -4,8 +4,8 @@ import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { SellBanner } from "@/components/home/SellBanner";
 import { TrustSection } from "@/components/home/TrustSection";
-import { AdCard } from "@/components/AdCard";
-import { Package, ArrowRight, WifiOff, ChevronLeft, ChevronRight, PlusCircle } from "lucide-react";
+import { AdCard, type PublicAdCardAd } from "@/components/AdCard";
+import { Package, ArrowRight, WifiOff, ChevronLeft, ChevronRight, PlusCircle, Clock3, MapPin, Sparkles } from "lucide-react";
 import { getCachedAds, saveAds } from "@/lib/pwa/jootiya-db";
 import { supabase } from "@/lib/supabaseClient";
 import { LocationPrompt } from "@/components/LocationPrompt";
@@ -42,7 +42,43 @@ type HomepageAd = {
   sellerAvatar?: string;
 };
 
-export default function HomeClient({ initialParams }: { initialParams: any }) {
+type HomeInitialParams = {
+  lat?: string;
+  lng?: string;
+  radius?: string;
+};
+
+type HomepageAdRow = {
+  id: string;
+  title: string;
+  price: number | string | null;
+  currency?: string | null;
+  city?: string | null;
+  neighborhood?: string | null;
+  created_at?: string | null;
+  is_featured?: boolean | null;
+  images?: string[] | null;
+  image_urls?: string[] | null;
+  category?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  distanceKm?: number;
+  profiles?: {
+    full_name?: string | null;
+    username?: string | null;
+    avatar_url?: string | null;
+  } | Array<{
+    full_name?: string | null;
+    username?: string | null;
+    avatar_url?: string | null;
+  }>;
+  sellerName?: string;
+  seller_name?: string;
+  sellerAvatar?: string;
+  seller_avatar?: string;
+};
+
+export default function HomeClient({ initialParams }: { initialParams: HomeInitialParams }) {
   const [ads, setAds] = useState<HomepageAd[]>([]);
   const [isOfflineData, setIsOfflineData] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -74,7 +110,6 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
       }
 
       try {
-        let data: any[] | null = [];
         let storedLocation = null;
         
         if (typeof window !== "undefined") {
@@ -89,7 +124,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
         const lat = latParam || storedLocation?.lat;
         const lon = lngParam || storedLocation?.lon;
 
-        let resultData: any[] | null = null;
+        let resultData: HomepageAdRow[] | null = null;
         if (lat && lon) {
           console.log("Fetching nearby ads...");
           resultData = await fetchNearbyAds({
@@ -128,7 +163,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
 
         if (resultData && isMounted) {
           console.log("Data fetched successfully:", resultData.length);
-          const formattedAds = resultData.map((row: any): HomepageAd => {
+          const formattedAds = resultData.map((row): HomepageAd => {
             const locationParts: string[] = [];
             if (row.neighborhood) locationParts.push(row.neighborhood);
             if (row.city) locationParts.push(row.city);
@@ -148,19 +183,19 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
             const priceLabel = row.price != null ? `${row.price} ${currency || "MAD"}` : "—";
 
             // Get seller name/avatar (safely)
-            const profile = (row as any)?.profiles;
+            const profile = row.profiles;
             const profileObj = Array.isArray(profile) ? profile[0] : profile;
 
             const sellerName =
-              (typeof (row as any)?.sellerName === 'string' ? (row as any).sellerName : undefined) ||
-              (typeof (row as any)?.seller_name === 'string' ? (row as any).seller_name : undefined) ||
+              (typeof row.sellerName === 'string' ? row.sellerName : undefined) ||
+              (typeof row.seller_name === 'string' ? row.seller_name : undefined) ||
               profileObj?.full_name ||
               profileObj?.username ||
               "Utilisateur";
 
             const sellerAvatar =
-              (typeof (row as any)?.sellerAvatar === 'string' ? (row as any).sellerAvatar : undefined) ||
-              (typeof (row as any)?.seller_avatar === 'string' ? (row as any).seller_avatar : undefined) ||
+              (typeof row.sellerAvatar === 'string' ? row.sellerAvatar : undefined) ||
+              (typeof row.seller_avatar === 'string' ? row.seller_avatar : undefined) ||
               profileObj?.avatar_url;
 
             return {
@@ -172,12 +207,12 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
               sellerBadge: row.is_featured ? "À la une" : undefined,
               isFeatured: Boolean(row.is_featured),
               imageUrl: primaryImageUrl,
-              categorySlug: row.category,
+              categorySlug: row.category || undefined,
               latitude: row.latitude || 0,
               longitude: row.longitude || 0,
               distanceKm: row.distanceKm,
               sellerName: sellerName,
-              sellerAvatar: sellerAvatar,
+              sellerAvatar: sellerAvatar || undefined,
             };
           });
 
@@ -189,9 +224,9 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
             saveAds(formattedAds);
           }
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Fetch error:", err);
-        setError(err.message || "Erreur de chargement");
+        setError(err instanceof Error ? err.message : "Erreur de chargement");
         setLoading(false);
       }
     }
@@ -199,8 +234,6 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
     initData();
     return () => { isMounted = false; };
   }, [latParam, lngParam, radiusParam]);
-
-  const mapAds = ads.filter(a => a.latitude && a.longitude).slice(0, 10);
 
   const categoryMapping: { [key: string]: string } = {
     "electronics": "electronics",
@@ -229,7 +262,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
     return categoryMapping[categoryName] || "other";
   };
 
-  const groupedAds = ads.reduce((acc: any, ad) => {
+  const groupedAds = ads.reduce<Record<string, HomepageAd[]>>((acc, ad) => {
     const category = ad.categorySlug || "Autre";
     if (!acc[category]) acc[category] = [];
     acc[category].push(ad);
@@ -246,7 +279,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
     return a.localeCompare(b, "fr", { sensitivity: "base" });
   });
 
-  const toAdCard = (ad: HomepageAd) => ({
+  const toAdCard = (ad: HomepageAd): PublicAdCardAd => ({
     id: ad.id,
     title: ad.title,
     price: ad.price,
@@ -256,6 +289,49 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
     isFeatured: ad.isFeatured,
     imageUrl: ad.imageUrl,
   });
+
+  const latestAds = ads.slice(0, 12);
+  const nearbyAds = ads
+    .filter((ad) => typeof ad.distanceKm === "number" && Number.isFinite(ad.distanceKm))
+    .sort((a, b) => (a.distanceKm ?? Number.MAX_SAFE_INTEGER) - (b.distanceKm ?? Number.MAX_SAFE_INTEGER))
+    .slice(0, 12);
+
+  function SectionHeader({
+    eyebrow,
+    title,
+    href,
+    icon: Icon,
+  }: {
+    eyebrow: string;
+    title: string;
+    href?: string;
+    icon?: React.ElementType;
+  }) {
+    return (
+      <div className="flex items-end justify-between gap-3">
+        <div className="flex min-w-0 flex-col gap-1.5">
+          <span className="home-section-eyebrow inline-flex items-center gap-1.5">
+            {Icon && <Icon className="h-3.5 w-3.5" />}
+            {eyebrow}
+          </span>
+          <h2 className="home-section-title truncate">
+            {title}
+          </h2>
+        </div>
+        {href && (
+          <Link 
+            href={href}
+            className="home-see-all group shrink-0"
+          >
+            <span className="hidden sm:inline">Voir tout</span>
+            <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center group-hover:bg-orange-500 group-hover:text-white transition-all">
+              <ArrowRight className="w-4 h-4" />
+            </div>
+          </Link>
+        )}
+      </div>
+    );
+  }
 
   function CategoryCarousel({ items }: { items: HomepageAd[] }) {
     const slides = items.slice(0, 10);
@@ -275,9 +351,9 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
             {slides.map((ad) => (
               <div
                 key={ad.id}
-                className="flex-[0_0_44%] min-[420px]:flex-[0_0_40%] sm:flex-[0_0_30%] md:flex-[0_0_23%] lg:flex-[0_0_19%] min-w-0"
+                className="flex-[0_0_72%] min-[360px]:flex-[0_0_62%] min-[420px]:flex-[0_0_46%] sm:flex-[0_0_31%] md:flex-[0_0_24%] xl:flex-[0_0_19%] min-w-0"
               >
-                <AdCard ad={toAdCard(ad) as any} href={`/ads/${ad.id}`} />
+                <AdCard ad={toAdCard(ad)} href={`/ads/${ad.id}`} />
               </div>
             ))}
           </div>
@@ -330,7 +406,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
             </button>
           </div>
         )}
-        <div className="space-y-10 sm:space-y-14 min-w-0 pt-2">
+        <div className="space-y-8 sm:space-y-12 min-w-0 pt-2">
           {ads.length === 0 && !loading ? (
             <div className="flex flex-col items-center justify-center py-24 text-center border border-dashed border-zinc-200 rounded-[2.5rem] bg-zinc-50/40 px-4">
               <div className="bg-white p-6 rounded-2xl mb-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-zinc-100">
@@ -355,7 +431,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
                       </div>
                       <div className="flex gap-3 sm:gap-4 pb-2">
                         {[...Array(5)].map((_, i) => (
-                          <div key={i} className="flex-[0_0_44%] min-[420px]:flex-[0_0_40%] sm:flex-[0_0_30%] md:flex-[0_0_23%] lg:flex-[0_0_19%] shrink-0">
+                          <div key={i} className="flex-[0_0_72%] min-[360px]:flex-[0_0_62%] min-[420px]:flex-[0_0_46%] sm:flex-[0_0_31%] md:flex-[0_0_24%] xl:flex-[0_0_19%] shrink-0">
                             <div className="aspect-[4/3] bg-zinc-100 animate-pulse rounded-[1.5rem]" />
                             <div className="h-4 w-3/4 bg-zinc-100 animate-pulse rounded mt-3" />
                             <div className="h-4 w-1/3 bg-zinc-100 animate-pulse rounded mt-2" />
@@ -367,6 +443,20 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
                 </div>
               ) : (
                 <>
+                  {latestAds.length > 0 && (
+                    <section className="space-y-4 sm:space-y-5 rounded-[1.75rem] border border-orange-100 bg-orange-50/40 p-3 sm:p-5">
+                      <SectionHeader eyebrow="Nouveautés" title="Arrivés récemment" href="/marketplace" icon={Clock3} />
+                      <CategoryCarousel items={latestAds} />
+                    </section>
+                  )}
+
+                  {nearbyAds.length > 0 && (
+                    <section className="space-y-4 sm:space-y-5">
+                      <SectionHeader eyebrow="Autour de vous" title="Annonces proches" href="/marketplace" icon={MapPin} />
+                      <CategoryCarousel items={nearbyAds} />
+                    </section>
+                  )}
+
                   {orderedCategories.map((category) => {
                     const categoryAds = groupedAds[category];
                     if (categoryAds.length === 0) return null;
@@ -374,25 +464,8 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
                     const categoryLabel = CATEGORY_LABELS[category] || category;
 
                     return (
-                      <section key={category} className="space-y-5">
-                        <div className="flex items-end justify-between gap-4">
-                          <div className="flex flex-col gap-1.5">
-                            <span className="home-section-eyebrow">{categoryLabel}</span>
-                            <h2 className="home-section-title">
-                              {categoryLabel}
-                            </h2>
-                          </div>
-                          <Link 
-                            href={`/categories/${getCategorySlug(category)}`}
-                            className="home-see-all group shrink-0"
-                          >
-                            <span className="hidden sm:inline">Voir tout</span>
-                            <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center group-hover:bg-orange-500 group-hover:text-white transition-all">
-                              <ArrowRight className="w-4 h-4" />
-                            </div>
-                          </Link>
-                        </div>
-
+                      <section key={category} className="space-y-4 sm:space-y-5">
+                        <SectionHeader eyebrow="Catégorie" title={categoryLabel} href={`/categories/${getCategorySlug(category)}`} icon={Sparkles} />
                         <CategoryCarousel items={categoryAds} />
                       </section>
                     );
