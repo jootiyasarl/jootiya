@@ -99,35 +99,24 @@ export function AirbnbAdPageClient({
 
         {/* Desktop & Mobile: Single Main Image with Lightbox Trigger */}
         <div className="main-container px-0 md:px-8 overflow-hidden">
-          <div className="w-full aspect-[4/3] md:aspect-[16/9] lg:aspect-[21/9] relative overflow-hidden bg-zinc-100 dark:bg-zinc-800 rounded-none md:rounded-[2rem] cursor-pointer group shadow-sm" onClick={() => images.length > 0 && setIsLightboxOpen(true)}>
-            {images.length > 0 ? (
-              <Image
-                src={images[0]}
-                alt={ad.title}
-                fill
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
-                priority
-              />
-            ) : (
-              <div className="w-full h-full flex flex-col items-center justify-center text-zinc-400">
-                <ImageIcon className="h-16 w-16 mb-2 opacity-30" />
-                <span className="text-sm font-medium">Aucune image</span>
-              </div>
-            )}
+          <div className="w-full aspect-[4/3] md:aspect-[16/9] lg:aspect-[21/9] relative overflow-hidden bg-zinc-100 dark:bg-zinc-800 rounded-none md:rounded-[2rem] cursor-pointer group shadow-sm" onClick={() => setIsLightboxOpen(true)}>
+             <Image 
+              src={images[0]} 
+              alt={ad.title} 
+              fill 
+              className="object-cover transition-transform duration-700 group-hover:scale-105"
+              priority
+            />
             {/* Overlay Gradient for better button visibility */}
-            {images.length > 0 && (
-              <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/0 to-transparent opacity-80 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/0 to-transparent opacity-80 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             
-            {images.length > 0 && (
-              <button
-                className="absolute bottom-4 right-4 md:bottom-8 md:right-8 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 px-4 py-2 rounded-xl text-xs md:text-sm font-black flex items-center gap-2 shadow-lg z-10 hover:bg-white dark:hover:bg-zinc-900 transition-all md:scale-95 md:group-hover:scale-100"
-                onClick={(e) => { e.stopPropagation(); setIsLightboxOpen(true); }}
-              >
-                <ImageIcon className="h-4 w-4" />
-                <span>{images.length} {images.length > 1 ? 'photos' : 'photo'}</span>
-              </button>
-            )}
+            <button 
+              className="absolute bottom-4 right-4 md:bottom-8 md:right-8 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 px-4 py-2 rounded-xl text-xs md:text-sm font-black flex items-center gap-2 shadow-lg z-10 hover:bg-white dark:hover:bg-zinc-900 transition-all md:scale-95 md:group-hover:scale-100"
+              onClick={(e) => { e.stopPropagation(); setIsLightboxOpen(true); }}
+            >
+              <ImageIcon className="h-4 w-4" />
+              <span>{images.length} {images.length > 1 ? 'photos' : 'photo'}</span>
+            </button>
           </div>
         </div>
 

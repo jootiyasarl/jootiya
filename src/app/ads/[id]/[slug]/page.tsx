@@ -28,10 +28,7 @@ export async function generateMetadata({ params }: AdPageProps) {
     if (error || !ad) return { title: "Petites Annonces au Maroc | Jootiya" };
 
     const formattedPrice = ad.price ? `${Number(ad.price).toLocaleString()} ${ad.currency || 'MAD'}` : "Prix sur demande";
-    const metaTitle = `${ad.title} - ${formattedPrice} | Jootiya Maroc`;
-    const metaDescription = ad.description
-      ? `${ad.description.slice(0, 120)}... à ${ad.city || 'Maroc'} sur Jootiya — le meilleur marché d'occasion au Maroc.`
-      : `${ad.title} à ${ad.city || 'Maroc'} — ${formattedPrice}. Achetez et vendez en toute sécurité sur Jootiya.`;
+    const metaTitle = `${ad.title} - ${formattedPrice} | Jootiya`;
     const adSlug = ad.slug || urlSlug || generateSlug(ad.title);
     const canonicalUrl = `${baseUrl}/ads/${ad.id}/${adSlug}`;
     
@@ -44,6 +41,7 @@ export async function generateMetadata({ params }: AdPageProps) {
       } else {
         const cleanPath = firstImage.startsWith('/') ? firstImage.substring(1) : firstImage;
         const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        // Check if it's a Supabase path that needs the public URL prefix
         if (!cleanPath.startsWith('storage/v1/object/public/')) {
           ogImage = `${supabaseUrl}/storage/v1/object/public/ad-images/${cleanPath}`;
         } else {
@@ -54,11 +52,11 @@ export async function generateMetadata({ params }: AdPageProps) {
     
     return {
       title: metaTitle,
-      description: metaDescription,
+      description: ad.description?.slice(0, 160),
       alternates: { canonical: canonicalUrl },
       openGraph: {
         title: metaTitle,
-        description: metaDescription,
+        description: ad.description?.slice(0, 160),
         url: canonicalUrl,
         siteName: 'Jootiya',
         images: [
@@ -75,12 +73,8 @@ export async function generateMetadata({ params }: AdPageProps) {
       twitter: {
         card: 'summary_large_image',
         title: metaTitle,
-        description: metaDescription,
+        description: ad.description?.slice(0, 160),
         images: [ogImage],
-      },
-      robots: {
-        index: true,
-        follow: true,
       },
     };
   } catch (err) {
@@ -89,88 +83,64 @@ export async function generateMetadata({ params }: AdPageProps) {
 }
 
 export default async function AdPage({ params }: AdPageProps) {
-  try {
-    const { id } = await params;
-    let user = null;
-    try {
-      user = await getServerUser();
-    } catch (e) {
-      console.error("getServerUser error:", e);
-    }
-    const supabase = createSupabaseServerClient();
+  const { id } = await params;
+  const user = await getServerUser();
+  const supabase = createSupabaseServerClient();
 
-    // 1. Fetch the ad
-    const { data: ad, error: adError } = await supabase
+  console.log("DEBUG: Fetching ad with ID:", id);
+
+  const { data: ad, error: adError } = await supabase
+    .from("ads")
+    .select(`
+      *,
+      profiles:seller_id(phone, full_name, avatar_url, created_at)
+    `)
+    .or(`id.eq.${id},slug.eq.${id}`)
+    .maybeSingle();
+
+  if (adError || !ad) {
+    console.error("DEBUG: Ad Fetch Error or Not Found:", adError, id);
+    // Try a simpler query if the first one fails
+    const { data: retryAd, error: retryError } = await supabase
       .from("ads")
       .select("*")
       .or(`id.eq.${id},slug.eq.${id}`)
       .maybeSingle();
-
-    if (adError || !ad) {
-      console.error("DEBUG: Ad Fetch Error:", adError, id);
+    
+    if (retryError || !retryAd) {
+      console.error("DEBUG: Retry Error or Not Found:", retryError, id);
       notFound();
     }
 
-    // 2. Fetch seller profile (only if seller_id exists)
-    let profileData = null;
-    if (ad.seller_id) {
-      const { data: pd, error: profileError } = await supabase
-        .from("profiles")
-        .select("full_name, avatar_url, created_at, phone")
-        .eq("id", ad.seller_id)
-        .maybeSingle();
-      if (profileError) {
-        console.error("DEBUG: Profile Fetch Error:", profileError, ad.seller_id);
-      } else {
-        profileData = pd;
-      }
-    }
+    const { data: profileData } = await supabase
+      .from("profiles")
+      .select("full_name, avatar_url, created_at, phone")
+      .eq("id", retryAd.seller_id)
+      .maybeSingle();
 
-    const sellerName = profileData?.full_name || "Vendeur anonyme";
+    const sellerName = profileData?.full_name || "Utilisateur Jootiya";
     const sellerAvatar = profileData?.avatar_url || null;
-    const memberSince = profileData?.created_at
-      ? new Date(profileData.created_at).getFullYear()
-      : "2024";
-    const sellerPhone = ad.phone || profileData?.phone;
-
+    const memberSince = profileData?.created_at ? new Date(profileData.created_at).getFullYear() : "2024";
+    const sellerPhone = retryAd.phone || profileData?.phone;
+    
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://jootiya.com';
-    const formattedPrice = ad.price != null
-      ? `${Number(ad.price).toLocaleString()} ${ad.currency || 'MAD'}`
-      : "Sur demande";
-    const formattedDate = ad.created_at
-      ? new Date(ad.created_at).toLocaleDateString("fr-FR", {
-          day: "numeric",
-          month: "long",
-          year: "numeric",
-        })
-      : "";
+    const formattedPrice = retryAd.price ? `${Number(retryAd.price).toLocaleString()} ${retryAd.currency || 'MAD'}` : "Sur demande";
+    const formattedDate = new Date(retryAd.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
 
-    const images = Array.isArray(ad.image_urls)
-      ? ad.image_urls.map((img: string) =>
-          img?.startsWith("http") ? img : `${baseUrl}/${img?.startsWith("/") ? img.substring(1) : img}`
-        )
-      : [];
+    const images = (retryAd.image_urls || []).map((img: string) => 
+      img.startsWith('http') ? img : `${baseUrl}/${img.startsWith('/') ? img.substring(1) : img}`
+    );
 
-    let avgRating = 5.0;
-    let totalReviews = 0;
-    if (ad.seller_id) {
-      try {
-        const { data: stats } = await supabase.rpc("get_seller_stats", {
-          target_seller_id: ad.seller_id,
-        });
-        avgRating = stats?.[0]?.avg_rating || 5.0;
-        totalReviews = stats?.[0]?.total_reviews || 0;
-      } catch (e) {
-        console.error("get_seller_stats RPC error:", e);
-      }
-    }
+    const { data: stats } = await supabase.rpc('get_seller_stats', { target_seller_id: retryAd.seller_id });
+    const avgRating = stats?.[0]?.avg_rating || 5.0;
+    const totalReviews = stats?.[0]?.total_reviews || 0;
     const isTrusted = totalReviews > 10 && avgRating >= 4.5;
 
     return (
       <>
-        <ShadowViewTracker adId={ad.id} category={ad.category} />
-        <AirbnbAdPageClient
-          ad={ad}
+        <ShadowViewTracker adId={retryAd.id} category={retryAd.category} />
+        <AirbnbAdPageClient 
+          ad={retryAd}
           images={images}
           sellerName={sellerName}
           sellerAvatar={sellerAvatar}
@@ -185,8 +155,51 @@ export default async function AdPage({ params }: AdPageProps) {
         />
       </>
     );
-  } catch (err: any) {
-    console.error("FATAL: AdPage crash:", err);
-    notFound();
   }
+
+    const { data: profileData } = await supabase
+      .from("profiles")
+      .select("full_name, avatar_url, created_at, phone")
+      .eq("id", ad.seller_id)
+      .maybeSingle();
+
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://jootiya.com';
+    const formattedPrice = ad.price ? `${Number(ad.price).toLocaleString()} ${ad.currency || 'MAD'}` : "Sur demande";
+    const formattedDate = new Date(ad.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+
+    const sellerName = profileData?.full_name || ad.profiles?.full_name || "Utilisateur Jootiya";
+    const sellerAvatar = profileData?.avatar_url || ad.profiles?.avatar_url || null;
+    const memberSince = (profileData?.created_at || ad.profiles?.created_at) 
+      ? new Date(profileData?.created_at || ad.profiles?.created_at).getFullYear() 
+      : "2024";
+    const sellerPhone = ad.phone || profileData?.phone || ad.profiles?.phone;
+
+  const images = (ad.image_urls || []).map((img: string) => 
+    img.startsWith('http') ? img : `${baseUrl}/${img.startsWith('/') ? img.substring(1) : img}`
+  );
+
+  const { data: stats } = await supabase.rpc('get_seller_stats', { target_seller_id: ad.seller_id });
+  const avgRating = stats?.[0]?.avg_rating || 5.0;
+  const totalReviews = stats?.[0]?.total_reviews || 0;
+  const isTrusted = totalReviews > 10 && avgRating >= 4.5;
+
+  return (
+    <>
+      <ShadowViewTracker adId={ad.id} category={ad.category} />
+      <AirbnbAdPageClient 
+        ad={ad}
+        images={images}
+        sellerName={sellerName}
+        sellerAvatar={sellerAvatar}
+        memberSince={memberSince}
+        sellerPhone={sellerPhone}
+        formattedPrice={formattedPrice}
+        formattedDate={formattedDate}
+        avgRating={avgRating}
+        totalReviews={totalReviews}
+        isTrusted={isTrusted}
+        user={user}
+      />
+    </>
+  );
 }
