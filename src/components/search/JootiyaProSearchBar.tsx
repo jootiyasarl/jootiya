@@ -43,7 +43,26 @@ export function JootiyaProSearchBar() {
           .select("id, name, slug")
           .order("name");
         if (catData && catData.length > 0) {
-          setCategories(catData);
+          // Filter out categories with Arabic names — keep French/Latin only
+          const frenchCategories = catData.filter(
+            (c: Category) => !/[\u0600-\u06FF]/.test(c.name)
+          );
+          if (frenchCategories.length > 0) {
+            setCategories(frenchCategories);
+          } else {
+            // Fallback if all categories are Arabic
+            setCategories([
+              { id: "electronics", name: "Électronique", slug: "electronics" },
+              { id: "vehicles", name: "Véhicules", slug: "vehicles" },
+              { id: "fashion", name: "Mode & Chaussures", slug: "fashion" },
+              { id: "home-furniture", name: "Maison & Ameublement", slug: "home-furniture" },
+              { id: "tools-equipment", name: "Outils & Équipement", slug: "tools-equipment" },
+              { id: "hobbies", name: "Loisirs", slug: "hobbies" },
+              { id: "animals", name: "Animaux", slug: "animals" },
+              { id: "books", name: "Livres & Études", slug: "books" },
+              { id: "used-clearance", name: "Occasions", slug: "used-clearance" },
+            ]);
+          }
         } else {
           // Fallback static categories if Supabase returns empty
           setCategories([
