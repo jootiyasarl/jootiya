@@ -42,7 +42,22 @@ export function JootiyaProSearchBar() {
           .from("categories")
           .select("id, name, slug")
           .order("name");
-        if (catData) setCategories(catData);
+        if (catData && catData.length > 0) {
+          setCategories(catData);
+        } else {
+          // Fallback static categories if Supabase returns empty
+          setCategories([
+            { id: "electronics", name: "Électronique", slug: "electronics" },
+            { id: "vehicles", name: "Véhicules", slug: "vehicles" },
+            { id: "fashion", name: "Mode & Chaussures", slug: "fashion" },
+            { id: "home-furniture", name: "Maison & Ameublement", slug: "home-furniture" },
+            { id: "tools-equipment", name: "Outils & Équipement", slug: "tools-equipment" },
+            { id: "hobbies", name: "Loisirs", slug: "hobbies" },
+            { id: "animals", name: "Animaux", slug: "animals" },
+            { id: "books", name: "Livres & Études", slug: "books" },
+            { id: "used-clearance", name: "Occasions", slug: "used-clearance" },
+          ]);
+        }
       } catch (error) {
         console.error("Error fetching categories:", error);
       } finally {
