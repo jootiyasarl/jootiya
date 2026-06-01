@@ -380,12 +380,6 @@ export default function HomeClient({ initialParams }: { initialParams: HomeIniti
 
   return (
     <div dir="ltr" className="min-h-screen bg-white font-sans text-zinc-900 pb-12">
-      {isOfflineData && (
-        <div className="bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest py-1 text-center flex items-center justify-center gap-2">
-          <WifiOff className="w-3 h-3" />
-          Mode hors-ligne : Affichage des données en cache
-        </div>
-      )}
       
       {/* Sell banner — light, compact CTA strip */}
       <section className="main-container">
