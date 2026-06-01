@@ -147,7 +147,7 @@ export function JootiyaProSearchBar() {
             <div className="flex-1 flex items-center px-3 h-full">
               <input
                 type="text"
-                placeholder="Search any item..."
+                placeholder="Rechercher un article..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onFocus={() => setActiveField("product")}
@@ -224,7 +224,7 @@ export function JootiyaProSearchBar() {
                 <Search className="w-4 h-4 min-[360px]:w-5 min-[360px]:h-5 text-orange-500 shrink-0" />
                 <input
                   type="text"
-                  placeholder="شنو كتقلب؟"
+                  placeholder="Que recherchez-vous ?"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   className="w-full min-w-0 bg-transparent outline-none font-bold text-sm min-[360px]:text-base"
