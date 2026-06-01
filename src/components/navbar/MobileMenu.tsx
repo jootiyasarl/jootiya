@@ -85,7 +85,6 @@ export function MobileMenu({ initialUserEmail = null }: MobileMenuProps) {
         { name: "Accueil", href: "/", icon: Home, color: "text-orange-600", bg: "bg-orange-50" },
         { name: "Électronique", href: "/categories/electronics", icon: Smartphone, color: "text-blue-600", bg: "bg-blue-50" },
         { name: "Véhicules", href: "/categories/vehicles", icon: Car, color: "text-orange-600", bg: "bg-orange-50" },
-        { name: "Immobilier", href: "/categories/real-estate", icon: Home, color: "text-emerald-600", bg: "bg-emerald-50" },
         { name: "Mode & Chaussures", href: "/categories/fashion", icon: Shirt, color: "text-pink-600", bg: "bg-pink-50" },
         { name: "Maison & Ameublement", href: "/categories/home-furniture", icon: Package, color: "text-green-600", bg: "bg-green-50" },
         { name: "Outils & Équipement", href: "/categories/tools-equipment", icon: Hammer, color: "text-zinc-600", bg: "bg-zinc-50" },

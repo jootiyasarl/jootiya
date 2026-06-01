@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     return {
         title: `Achat et vente à ${cityData.name} | Horaires de prière et météo - Jootiya`,
-        description: `Découvrez les meilleures offres à ${cityData.name}. Marché ouvert pour l'achat et la vente de voitures, téléphones et immobilier. Suivez également les horaires de prière et la météo à ${cityData.name}.`,
+        description: `Découvrez les meilleures offres à ${cityData.name}. Marché ouvert pour l'achat et la vente de voitures, téléphones et articles d'occasion. Suivez également les horaires de prière et la météo à ${cityData.name}.`,
     };
 }
 
@@ -95,7 +95,7 @@ export default async function CityLandingPage({ params }: Props) {
                         Marché <span className="text-orange-600">{cityData.name}</span>
                     </h1>
                     <p className="text-sm text-zinc-500 font-medium leading-relaxed">
-                        Découvrez les dernières annonces de vente et d'achat à {cityData.name}. Bonnes affaires exclusives, voitures, téléphones et immobilier.
+                        Découvrez les dernières annonces de vente et d'achat à {cityData.name}. Bonnes affaires exclusives, voitures, téléphones et articles d'occasion.
                     </p>
                 </div>
 
