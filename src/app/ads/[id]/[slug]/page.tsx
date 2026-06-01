@@ -142,11 +142,17 @@ export default async function AdPage({ params }: AdPageProps) {
     img.startsWith("http") ? img : `${baseUrl}/${img.startsWith("/") ? img.substring(1) : img}`
   );
 
-  const { data: stats } = await supabase.rpc("get_seller_stats", {
-    target_seller_id: ad.seller_id,
-  });
-  const avgRating = stats?.[0]?.avg_rating || 5.0;
-  const totalReviews = stats?.[0]?.total_reviews || 0;
+  let avgRating = 5.0;
+  let totalReviews = 0;
+  try {
+    const { data: stats } = await supabase.rpc("get_seller_stats", {
+      target_seller_id: ad.seller_id,
+    });
+    avgRating = stats?.[0]?.avg_rating || 5.0;
+    totalReviews = stats?.[0]?.total_reviews || 0;
+  } catch (e) {
+    console.error("get_seller_stats RPC error:", e);
+  }
   const isTrusted = totalReviews > 10 && avgRating >= 4.5;
 
   return (
