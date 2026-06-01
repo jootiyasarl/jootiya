@@ -339,7 +339,7 @@ export function AdsTable({
                             </div>
                             <div className="flex items-center gap-1.5">
                               <span className="text-[11px] font-semibold text-orange-500/90">
-                                {ad.seller?.full_name || "Utilisateur Jootiya"}
+                                {ad.seller?.full_name || "Vendeur anonyme"}
                               </span>
                               <span className="text-[10px] text-zinc-600">•</span>
                               <span className="text-[11px] text-zinc-500">

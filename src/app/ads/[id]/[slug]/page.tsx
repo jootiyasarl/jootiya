@@ -110,7 +110,7 @@ export default async function AdPage({ params }: AdPageProps) {
     console.error("DEBUG: Profile Fetch Error:", profileError, ad.seller_id);
   }
 
-  const sellerName = profileData?.full_name || "Utilisateur Jootiya";
+  const sellerName = profileData?.full_name || "Vendeur anonyme";
   const sellerAvatar = profileData?.avatar_url || null;
   const memberSince = profileData?.created_at
     ? new Date(profileData.created_at).getFullYear()

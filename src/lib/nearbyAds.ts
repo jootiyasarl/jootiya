@@ -87,7 +87,7 @@ export async function fetchNearbyAds(
     // Process profile data which might be inside a JSONB object from RPC
     const profile = row.profiles;
     // Handle both cases: profiles as an object (from RPC jsonb_build_object) or direct fields
-    const sellerName = (typeof profile === 'object' ? profile?.full_name || profile?.username : null) || row.seller_name || "Utilisateur Jootiya";
+    const sellerName = (typeof profile === 'object' ? profile?.full_name || profile?.username : null) || row.seller_name || "Vendeur anonyme";
     const sellerAvatar = (typeof profile === 'object' ? profile?.avatar_url : null) || row.seller_avatar;
 
     return {

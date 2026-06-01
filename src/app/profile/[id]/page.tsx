@@ -62,7 +62,7 @@ export default async function PublicProfilePage({ params }: ProfilePageProps) {
     const totalReviews = stats?.[0]?.total_reviews || 0;
     const isTrusted = totalReviews > 10 && avgRating >= 4.5;
 
-    const sellerName = profile.full_name || "Utilisateur Jootiya";
+    const sellerName = profile.full_name || "Vendeur anonyme";
     const memberSince = new Date(profile.created_at).getFullYear();
 
     return (
