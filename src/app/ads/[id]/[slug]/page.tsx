@@ -70,7 +70,7 @@ export async function generateMetadata({ params }: AdPageProps) {
           },
         ],
         locale: 'fr_FR',
-        type: 'product',
+        type: 'website',
       },
       twitter: {
         card: 'summary_large_image',
