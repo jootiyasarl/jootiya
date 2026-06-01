@@ -8,7 +8,6 @@ import { AdCard, type PublicAdCardAd } from "@/components/AdCard";
 import { Package, ArrowRight, WifiOff, ChevronLeft, ChevronRight, PlusCircle, Clock3, MapPin, Sparkles } from "lucide-react";
 import { getCachedAds, saveAds } from "@/lib/pwa/jootiya-db";
 import { supabase } from "@/lib/supabaseClient";
-import { LocationPrompt } from "@/components/LocationPrompt";
 import { fetchNearbyAds } from "@/lib/nearbyAds";
 import useEmblaCarousel from "embla-carousel-react";
 
@@ -381,7 +380,6 @@ export default function HomeClient({ initialParams }: { initialParams: HomeIniti
 
   return (
     <div dir="ltr" className="min-h-screen bg-white font-sans text-zinc-900 pb-12">
-      <LocationPrompt />
       {isOfflineData && (
         <div className="bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest py-1 text-center flex items-center justify-center gap-2">
           <WifiOff className="w-3 h-3" />
