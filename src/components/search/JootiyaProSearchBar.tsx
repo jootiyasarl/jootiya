@@ -255,13 +255,19 @@ export function JootiyaProSearchBar() {
       </div>
 
       {/* Mobile Version */}
-      <div className="lg:hidden">
+      <div className="lg:hidden w-full">
         <button
           onClick={() => setMobileOpen(true)}
-          className="w-9 h-9 min-[360px]:w-10 min-[360px]:h-10 flex items-center justify-center bg-orange-500 rounded-xl text-white shadow-lg shrink-0"
+          className="w-full flex items-center gap-2 h-9 min-[360px]:h-10 pl-3 pr-1 bg-zinc-100 dark:bg-zinc-800 rounded-full border border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 shadow-sm transition-all active:scale-[0.99]"
           aria-label="Rechercher"
         >
-          <Search className="w-4 h-4 min-[360px]:w-5 min-[360px]:h-5" />
+          <Search className="w-4 h-4 shrink-0 text-zinc-400" />
+          <span className="flex-1 text-left text-xs min-[360px]:text-sm font-medium truncate">
+            Rechercher un article...
+          </span>
+          <span className="flex items-center justify-center w-7 h-7 min-[360px]:w-8 min-[360px]:h-8 rounded-full bg-orange-500 text-white shrink-0">
+            <Search className="w-3.5 h-3.5 min-[360px]:w-4 min-[360px]:h-4" />
+          </span>
         </button>
 
         {mobileOpen && (

@@ -22,15 +22,15 @@ export default async function PublicNavbar() {
             <NavbarLogo />
           </div>
 
-          {/* Center: Search Bar - desktop only */}
-          <div className="hidden lg:flex flex-1 justify-center px-6 relative z-[120] min-w-0 overflow-visible">
+          {/* Center: Search Bar */}
+          <div className="flex flex-1 justify-center px-0.5 min-[360px]:px-1 sm:px-6 relative z-[120] min-w-0 overflow-visible">
             <div className="w-full max-w-2xl flex justify-center min-w-0 overflow-visible">
               <JootiyaProSearchBar />
             </div>
           </div>
 
           {/* Right: User Actions / Info */}
-          <div className="flex items-center gap-1 md:gap-3 shrink-0 relative z-[130] ml-auto">
+          <div className="flex items-center gap-1 md:gap-3 shrink-0 relative z-[130]">
             <Link
               href="/marketplace/post"
               className="hidden xl:block shrink-0"
