@@ -261,7 +261,8 @@ export function JootiyaProSearchBar() {
                   placeholder="Que recherchez-vous ?"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  className="w-full min-w-0 bg-transparent outline-none font-bold text-sm min-[360px]:text-base"
+                  className="w-full min-w-0 bg-transparent outline-none font-bold text-base"
+                  style={{ fontSize: "16px" }}
                   autoFocus
                 />
               </div>
