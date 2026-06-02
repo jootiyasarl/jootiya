@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Search, MapPin, LayoutGrid, X, Check, ChevronDown, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -32,7 +33,12 @@ export function JootiyaProSearchBar() {
 
   const [activeField, setActiveField] = useState<null | "product" | "category" | "city">(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     async function fetchData() {
@@ -270,8 +276,8 @@ export function JootiyaProSearchBar() {
           </span>
         </button>
 
-        {mobileOpen && (
-          <div className="fixed inset-0 z-[9999] bg-white dark:bg-zinc-950 p-3 min-[360px]:p-4 pt-[calc(0.75rem+env(safe-area-inset-top))] pb-[calc(0.75rem+env(safe-area-inset-bottom))] flex flex-col overflow-hidden">
+        {mounted && mobileOpen && createPortal(
+          <div className="fixed inset-0 z-[99999] bg-white dark:bg-zinc-950 p-3 min-[360px]:p-4 pt-[calc(0.75rem+env(safe-area-inset-top))] pb-[calc(0.75rem+env(safe-area-inset-bottom))] flex flex-col overflow-hidden">
             <div className="flex items-center justify-between mb-4 min-[360px]:mb-6 shrink-0">
               <h2 className="text-lg min-[360px]:text-xl font-black">Recherche</h2>
               <button onClick={() => setMobileOpen(false)} className="p-2 bg-zinc-100 dark:bg-zinc-800 rounded-full">
@@ -355,7 +361,8 @@ export function JootiyaProSearchBar() {
                 بحث الآن
               </Button>
             </form>
-          </div>
+          </div>,
+          document.body
         )}
       </div>
     </div>
