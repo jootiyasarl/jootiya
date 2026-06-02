@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { PlusCircle } from "lucide-react";
 import { JootiyaProSearchBar } from "@/components/search/JootiyaProSearchBar";
@@ -25,7 +26,9 @@ export default async function PublicNavbar() {
           {/* Center: Search Bar */}
           <div className="flex flex-1 justify-center px-0.5 min-[360px]:px-1 sm:px-6 relative z-[120] min-w-0 overflow-visible">
             <div className="w-full max-w-2xl flex justify-center min-w-0 overflow-visible">
-              <JootiyaProSearchBar />
+              <Suspense fallback={<div className="w-full h-9 min-[360px]:h-10 bg-zinc-100 dark:bg-zinc-800 rounded-full border border-zinc-200 dark:border-zinc-700 animate-pulse" />}>
+                <JootiyaProSearchBar />
+              </Suspense>
             </div>
           </div>
 
