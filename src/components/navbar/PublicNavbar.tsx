@@ -17,26 +17,20 @@ export default async function PublicNavbar() {
       <div className="w-full px-1 min-[360px]:px-2 sm:px-4 md:px-8 max-w-[1440px] mx-auto overflow-visible">
         {/* Main Nav Row (TOP) */}
         <div className="flex h-12 md:h-14 items-center justify-between gap-0.5 min-[360px]:gap-1 sm:gap-4 relative z-[110] py-2 min-w-0 overflow-visible">
-          {/* Left: Logo - Hidden on very small screens to give space to search */}
-          <div className="flex items-center shrink-0 min-w-0">
-            <div className="hidden min-[350px]:block">
-              <NavbarLogo />
-            </div>
-            <div className="min-[350px]:hidden">
-               {/* Tiny logo or icon for <350px if needed, otherwise just hide text logo */}
-               <Link href="/" className="text-orange-600 font-black text-xl tracking-tighter shrink-0">J.</Link>
-            </div>
+          {/* Left/Center: Logo - centered on mobile, left-aligned on desktop */}
+          <div className="flex items-center shrink-0 min-w-0 absolute left-1/2 -translate-x-1/2 lg:static lg:left-auto lg:translate-x-0">
+            <NavbarLogo />
           </div>
 
-          {/* Center: Search Bar - Takes priority */}
-          <div className="flex-1 flex justify-center px-0.5 min-[360px]:px-1 sm:px-6 relative z-[120] min-w-0 overflow-visible">
+          {/* Center: Search Bar - desktop only */}
+          <div className="hidden lg:flex flex-1 justify-center px-6 relative z-[120] min-w-0 overflow-visible">
             <div className="w-full max-w-2xl flex justify-center min-w-0 overflow-visible">
               <JootiyaProSearchBar />
             </div>
           </div>
 
           {/* Right: User Actions / Info */}
-          <div className="flex items-center gap-1 md:gap-3 shrink-0 relative z-[130]">
+          <div className="flex items-center gap-1 md:gap-3 shrink-0 relative z-[130] ml-auto">
             <Link
               href="/marketplace/post"
               className="hidden xl:block shrink-0"
