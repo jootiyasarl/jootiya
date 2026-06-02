@@ -17,8 +17,8 @@ export default async function PublicNavbar() {
       <div className="w-full px-1 min-[360px]:px-2 sm:px-4 md:px-8 max-w-[1440px] mx-auto overflow-visible">
         {/* Main Nav Row (TOP) */}
         <div className="flex h-12 md:h-14 items-center justify-between gap-0.5 min-[360px]:gap-1 sm:gap-4 relative z-[110] py-2 min-w-0 overflow-visible">
-          {/* Left/Center: Logo - centered on mobile, left-aligned on desktop */}
-          <div className="flex items-center shrink-0 min-w-0 absolute left-1/2 -translate-x-1/2 lg:static lg:left-auto lg:translate-x-0">
+          {/* Left: Logo */}
+          <div className="flex items-center shrink-0 min-w-0">
             <NavbarLogo />
           </div>
 
