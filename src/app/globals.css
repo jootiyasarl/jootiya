@@ -449,6 +449,25 @@
   }
 }
 
+/* FlyonUI btn-primary override — force Jootiya orange */
+@layer base {
+  :root {
+    --p: 25 95% 50%;
+    --pc: 0 0% 100%;
+  }
+  .btn-primary {
+    --tw-bg-opacity: 1;
+    --tw-border-opacity: 1;
+    background-color: oklch(0.64 0.2 38.5) !important;
+    border-color: oklch(0.64 0.2 38.5) !important;
+    color: white !important;
+  }
+  .btn-primary:hover {
+    background-color: oklch(0.58 0.2 38.5) !important;
+    border-color: oklch(0.58 0.2 38.5) !important;
+  }
+}
+
 @media (max-width: 640px) {
   .mobile-safe-area {
     padding-bottom: env(safe-area-inset-bottom);
