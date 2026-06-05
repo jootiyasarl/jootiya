@@ -16,6 +16,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { PageViewTracker } from "@/components/analytics/PageViewTracker";
 import { GoogleAnalytics } from '@next/third-parties/google'
 import InstallPWA from "@/components/pwa/InstallPWA";
+import { FlyonUIInit } from "@/components/layout/FlyonUIInit";
 
 const tajawal = Tajawal({
   variable: "--font-tajawal",
@@ -210,9 +211,8 @@ export default function RootLayout({
           <PushPermissionPrompt />
           <Toaster position="top-center" richColors />
           <InstallPWA />
+          <FlyonUIInit />
         </ThemeProvider>
-
-        <Script id="flyonui" src="../node_modules/flyonui/flyonui.js" strategy="lazyOnload" />
 
         <Script
           id="adsense-init"
