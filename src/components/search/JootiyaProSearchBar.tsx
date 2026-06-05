@@ -142,7 +142,7 @@ export function JootiyaProSearchBar() {
   return (
     <div className="w-full relative z-[200]" ref={rootRef}>
       {/* Desktop Version */}
-      <div className="hidden lg:flex items-center gap-2 bg-white dark:bg-zinc-900 p-1 rounded-full border border-zinc-200 dark:border-zinc-800 shadow-[0_2px_10px_-3px_rgba(0,0,0,0.07)] hover:shadow-[0_5px_20px_rgb(0,0,0,0.1)] transition-all duration-300 max-w-2xl mx-auto group/bar">
+      <div className="hidden lg:flex items-center gap-1 bg-base-100 p-1 rounded-full border border-base-300 shadow-sm hover:shadow-md transition-all duration-300 max-w-2xl mx-auto group/bar">
         <div className="relative">
           <button
             type="button"
@@ -216,12 +216,12 @@ export function JootiyaProSearchBar() {
             </div>
 
             <div className="pr-1">
-              <Button 
+              <button 
                 type="submit" 
-                className="bg-orange-500 hover:bg-orange-600 rounded-full h-8 w-8 p-0 flex items-center justify-center shrink-0 transition-all duration-300 active:scale-90 shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 group/btn"
+                className="btn btn-primary btn-circle btn-sm shrink-0"
               >
-                <Search className="w-4 h-4 text-white group-hover/btn:scale-110 transition-transform" />
-              </Button>
+                <Search className="w-4 h-4" />
+              </button>
             </div>
           </form>
 
@@ -264,15 +264,15 @@ export function JootiyaProSearchBar() {
       <div className="lg:hidden w-full">
         <button
           onClick={() => setMobileOpen(true)}
-          className="w-full flex items-center gap-2 h-9 min-[360px]:h-10 pl-3 pr-1 bg-zinc-100 dark:bg-zinc-800 rounded-full border border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 shadow-sm transition-all active:scale-[0.99]"
+          className="w-full flex items-center gap-2 h-9 min-[360px]:h-10 pl-3 pr-1 input input-sm input-bordered rounded-full"
           aria-label="Rechercher"
         >
-          <Search className="w-4 h-4 shrink-0 text-zinc-400" />
-          <span className="flex-1 text-left text-xs min-[360px]:text-sm font-medium truncate">
+          <Search className="w-4 h-4 shrink-0 text-base-content/50" />
+          <span className="flex-1 text-left text-xs min-[360px]:text-sm font-medium truncate text-base-content/50">
             Rechercher un article...
           </span>
-          <span className="flex items-center justify-center w-7 h-7 min-[360px]:w-8 min-[360px]:h-8 rounded-full bg-orange-500 text-white shrink-0">
-            <Search className="w-3.5 h-3.5 min-[360px]:w-4 min-[360px]:h-4" />
+          <span className="btn btn-primary btn-circle btn-xs shrink-0">
+            <Search className="w-3.5 h-3.5" />
           </span>
         </button>
 
@@ -280,36 +280,38 @@ export function JootiyaProSearchBar() {
           <div className="fixed inset-0 z-[99999] bg-white dark:bg-zinc-950 p-3 min-[360px]:p-4 pt-[calc(0.75rem+env(safe-area-inset-top))] pb-[calc(0.75rem+env(safe-area-inset-bottom))] flex flex-col overflow-hidden">
             <div className="flex items-center justify-between mb-4 min-[360px]:mb-6 shrink-0">
               <h2 className="text-lg min-[360px]:text-xl font-black">Recherche</h2>
-              <button onClick={() => setMobileOpen(false)} className="p-2 bg-zinc-100 dark:bg-zinc-800 rounded-full">
+              <button onClick={() => setMobileOpen(false)} className="btn btn-ghost btn-circle btn-sm">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <form onSubmit={handleSearch} className="flex flex-col gap-3 min-[360px]:gap-4 min-h-0 overflow-y-auto">
-              <div className="flex items-center gap-2 bg-zinc-50 dark:bg-zinc-900 p-3 rounded-2xl border border-zinc-100 dark:border-zinc-800 shrink-0">
-                <Search className="w-4 h-4 min-[360px]:w-5 min-[360px]:h-5 text-orange-500 shrink-0" />
+              <div className="join w-full shrink-0">
+                <span className="join-item btn btn-ghost btn-sm pointer-events-none">
+                  <Search className="w-4 h-4 min-[360px]:w-5 min-[360px]:h-5 text-primary shrink-0" />
+                </span>
                 <input
                   type="text"
                   placeholder="Que recherchez-vous ?"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  className="w-full min-w-0 bg-transparent outline-none font-bold text-base"
+                  className="join-item input input-bordered w-full font-bold text-base"
                   style={{ fontSize: "16px" }}
                   autoFocus
                 />
               </div>
 
               <div className="grid grid-cols-1 gap-2">
-                <div 
+                <button 
                   onClick={() => setActiveField(activeField === "category" ? null : "category")}
-                  className="flex items-center justify-between p-4 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800"
+                  className="btn btn-ghost justify-start h-auto py-3 px-4"
                 >
-                  <div className="flex items-center gap-3">
-                    <LayoutGrid className="w-5 h-5 text-zinc-400" />
+                  <div className="flex items-center gap-3 flex-1">
+                    <LayoutGrid className="w-5 h-5 text-base-content/50" />
                     <span className="text-sm font-bold">{selectedCategoryLabel}</span>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-zinc-300" />
-                </div>
+                  <ChevronRight className="w-4 h-4 text-base-content/30" />
+                </button>
 
                 {activeField === "category" && (
                   <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 max-h-48 overflow-y-auto p-2">
@@ -331,16 +333,16 @@ export function JootiyaProSearchBar() {
                   </div>
                 )}
 
-                <div 
+                <button 
                   onClick={() => setActiveField(activeField === "city" ? null : "city")}
-                  className="flex items-center justify-between p-4 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800"
+                  className="btn btn-ghost justify-start h-auto py-3 px-4"
                 >
-                  <div className="flex items-center gap-3">
-                    <MapPin className="w-5 h-5 text-zinc-400" />
+                  <div className="flex items-center gap-3 flex-1">
+                    <MapPin className="w-5 h-5 text-base-content/50" />
                     <span className="text-sm font-bold">{city}</span>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-zinc-300" />
-                </div>
+                  <ChevronRight className="w-4 h-4 text-base-content/30" />
+                </button>
 
                 {activeField === "city" && (
                   <div className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-100 dark:border-zinc-800 max-h-48 overflow-y-auto p-2">
@@ -357,9 +359,10 @@ export function JootiyaProSearchBar() {
                 )}
               </div>
 
-              <Button type="submit" className="w-full h-12 min-[360px]:h-14 bg-orange-600 hover:bg-orange-700 text-white rounded-2xl font-black text-base min-[360px]:text-lg shadow-xl shadow-orange-600/20 mt-2 min-[360px]:mt-4 shrink-0">
+              <button type="submit" className="btn btn-primary w-full h-12 min-[360px]:h-14 text-base min-[360px]:text-lg mt-2 min-[360px]:mt-4 shrink-0">
+                <Search className="w-5 h-5" />
                 بحث الآن
-              </Button>
+              </button>
             </form>
           </div>,
           document.body
