@@ -161,11 +161,9 @@ export function MobileMenu({ initialUserEmail = null }: MobileMenuProps) {
                                         <div className="card-body p-3 gap-2">
                                             <Link href="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center justify-between group" rel="nofollow">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="avatar placeholder">
-                                                        <div className="bg-orange-100 dark:bg-orange-900/20 text-orange-600 dark:text-orange-500 w-10 rounded-full">
-                                                            <User className="w-5 h-5" />
-                                                        </div>
-                                                    </div>
+                                                    <span className="flex h-10 w-10 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900/20 text-orange-600 dark:text-orange-500">
+                                                        <User className="w-5 h-5" />
+                                                    </span>
                                                     <div className="flex flex-col">
                                                         <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100">Mon profil</span>
                                                         <span className="text-[11px] text-zinc-500 truncate max-w-[140px] leading-tight">{userEmail}</span>

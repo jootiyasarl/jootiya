@@ -33,11 +33,9 @@ export function TrustSection() {
                         {FEATURES.map((feature) => (
                             <div key={feature.title} className="card bg-base-100 border border-zinc-200 dark:border-zinc-700 shadow-sm text-center">
                                 <div className="card-body items-center">
-                                    <div className="avatar placeholder mb-4">
-                                        <div className="bg-orange-100 text-orange-600 w-16 rounded-2xl">
-                                            <feature.icon className="h-8 w-8" aria-hidden="true" />
-                                        </div>
-                                    </div>
+                                    <span className="flex h-16 w-16 mb-4 items-center justify-center rounded-2xl bg-orange-100 text-orange-600 dark:bg-orange-950/30">
+                                        <feature.icon className="h-8 w-8" aria-hidden="true" />
+                                    </span>
                                     <h3 className="card-title text-zinc-900 dark:text-zinc-100">
                                         {feature.title}
                                     </h3>

@@ -151,22 +151,18 @@ export function AirbnbAdPageClient({
             <div className="card bg-base-100 border border-zinc-200 dark:border-zinc-700 shadow-sm">
               <div className="card-body p-5 sm:p-6 space-y-4">
                 <div className="flex gap-4">
-                  <div className="avatar placeholder shrink-0">
-                    <div className="bg-orange-100 text-orange-600 w-11 rounded-2xl">
-                      <Award className="h-5 w-5" />
-                    </div>
-                  </div>
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-orange-100 text-orange-600 dark:bg-orange-950/30">
+                    <Award className="h-5 w-5" />
+                  </span>
                   <div>
                     <h3 className="font-black text-zinc-900 dark:text-white">Vendeur {isTrusted ? 'Vérifié' : 'Recommandé'}</h3>
                     <p className="text-zinc-500 dark:text-zinc-400 text-sm">Ce vendeur a d'excellents avis et une identité vérifiée.</p>
                   </div>
                 </div>
                 <div className="flex gap-4">
-                  <div className="avatar placeholder shrink-0">
-                    <div className="bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 w-11 rounded-2xl">
-                      <MapPin className="h-5 w-5" />
-                    </div>
-                  </div>
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
+                    <MapPin className="h-5 w-5" />
+                  </span>
                   <div>
                     <h3 className="font-black text-zinc-900 dark:text-white">Emplacement idéal</h3>
                     <p className="text-zinc-500 dark:text-zinc-400 text-sm">L'objet se trouve à {ad.city}, facile d'accès pour remise en main propre.</p>
@@ -189,22 +185,18 @@ export function AirbnbAdPageClient({
                 <h3 className="card-title text-xl font-black mb-5 text-zinc-900 dark:text-white">Détails de l'annonce</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="flex items-center gap-4 p-4 bg-zinc-50 dark:bg-zinc-800/60 rounded-2xl">
-                    <div className="avatar placeholder">
-                      <div className="bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 w-10 rounded-xl">
-                        <ShieldCheck className="h-5 w-5" />
-                      </div>
-                    </div>
+                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
+                      <ShieldCheck className="h-5 w-5" />
+                    </span>
                     <div>
                       <p className="text-xs text-zinc-400 uppercase font-black tracking-widest">État</p>
                       <p className="font-semibold text-zinc-900 dark:text-white">{ad.condition === 'new' ? "Neuf" : "Occasion"}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-4 p-4 bg-zinc-50 dark:bg-zinc-800/60 rounded-2xl">
-                    <div className="avatar placeholder">
-                      <div className="bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 w-10 rounded-xl">
-                        <ImageIcon className="h-5 w-5" />
-                      </div>
-                    </div>
+                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
+                      <ImageIcon className="h-5 w-5" />
+                    </span>
                     <div>
                       <p className="text-xs text-zinc-400 uppercase font-black tracking-widest">Catégorie</p>
                       <p className="font-semibold text-zinc-900 dark:text-white">{ad.category}</p>
