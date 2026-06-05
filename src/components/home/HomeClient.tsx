@@ -388,28 +388,31 @@ export default function HomeClient({ initialParams }: { initialParams: HomeIniti
 
       <main className="main-container pb-4 pt-6 sm:pt-8">
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-2xl text-red-600 text-sm font-bold flex flex-col items-center gap-3">
-            <p>Impossible de charger les annonces : {error}</p>
-            <button 
-              onClick={() => window.location.reload()} 
-              className="px-4 py-2 bg-red-600 text-white rounded-xl text-xs"
-            >
-              Réessayer
-            </button>
+          <div className="alert alert-error mb-6 shadow-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current shrink-0 w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <div>
+              <h3 className="font-bold">Erreur de chargement</h3>
+              <div className="text-xs">{error}</div>
+            </div>
+            <button onClick={() => window.location.reload()} className="btn btn-sm btn-ghost">Réessayer</button>
           </div>
         )}
         <div className="space-y-8 sm:space-y-12 min-w-0 pt-2">
           {ads.length === 0 && !loading ? (
-            <div className="flex flex-col items-center justify-center py-24 text-center border border-dashed border-zinc-200 rounded-[2.5rem] bg-zinc-50/40 px-4">
-              <div className="bg-white p-6 rounded-2xl mb-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-zinc-100">
-                <Package className="w-10 h-10 text-zinc-400" />
+            <div className="card bg-base-100 shadow-xl border border-zinc-200 px-6 py-16 text-center">
+              <div className="card-body items-center">
+                <div className="bg-zinc-50 p-6 rounded-2xl mb-4">
+                  <Package className="w-10 h-10 text-zinc-400" />
+                </div>
+                <h3 className="card-title text-zinc-900">Aucune annonce trouvée</h3>
+                <p className="text-zinc-500 max-w-xs mx-auto">Soyez le premier à publier une annonce dans votre région.</p>
+                <div className="card-actions mt-6">
+                  <Link href="/marketplace/post" className="btn btn-primary gap-2">
+                    <PlusCircle className="w-5 h-5" />
+                    Déposer une annonce
+                  </Link>
+                </div>
               </div>
-              <h3 className="text-xl font-bold text-zinc-900">Aucune annonce trouvée</h3>
-              <p className="mt-2 text-sm text-zinc-500 font-medium max-w-xs">Soyez le premier à publier une annonce dans votre région.</p>
-              <Link href="/marketplace/post" className="mt-8 inline-flex items-center justify-center gap-2 px-8 h-12 bg-orange-500 text-white rounded-2xl font-black hover:bg-orange-600 transition-all shadow-[0_12px_30px_rgba(255,102,0,0.18)] hover:shadow-[0_18px_40px_rgba(255,102,0,0.22)] active:scale-[0.98]">
-                <PlusCircle className="w-5 h-5" />
-                Déposer une annonce
-              </Link>
             </div>
           ) : (
             <>
@@ -418,15 +421,15 @@ export default function HomeClient({ initialParams }: { initialParams: HomeIniti
                   {[...Array(2)].map((_, sectionIndex) => (
                     <div key={sectionIndex} className="space-y-4">
                       <div className="flex flex-col gap-2">
-                        <div className="h-3 w-20 bg-zinc-100 animate-pulse rounded-full" />
-                        <div className="h-7 w-44 bg-zinc-100 animate-pulse rounded-lg" />
+                        <div className="skeleton h-3 w-20 rounded-full" />
+                        <div className="skeleton h-7 w-44 rounded-lg" />
                       </div>
                       <div className="flex gap-3 sm:gap-4 pb-2">
                         {[...Array(5)].map((_, i) => (
                           <div key={i} className="flex-[0_0_72%] min-[360px]:flex-[0_0_62%] min-[420px]:flex-[0_0_46%] sm:flex-[0_0_31%] md:flex-[0_0_24%] xl:flex-[0_0_19%] shrink-0">
-                            <div className="aspect-[4/3] bg-zinc-100 animate-pulse rounded-[1.5rem]" />
-                            <div className="h-4 w-3/4 bg-zinc-100 animate-pulse rounded mt-3" />
-                            <div className="h-4 w-1/3 bg-zinc-100 animate-pulse rounded mt-2" />
+                            <div className="skeleton aspect-[4/3] rounded-[1.5rem]" />
+                            <div className="skeleton h-4 w-3/4 rounded mt-3" />
+                            <div className="skeleton h-4 w-1/3 rounded mt-2" />
                           </div>
                         ))}
                       </div>
@@ -436,14 +439,14 @@ export default function HomeClient({ initialParams }: { initialParams: HomeIniti
               ) : (
                 <>
                   {latestAds.length > 0 && (
-                    <section className="space-y-4 sm:space-y-5 rounded-[1.75rem] border border-orange-100 bg-orange-50/40 p-3 sm:p-5">
+                    <section className="card bg-base-100 shadow-sm border border-orange-100 p-4 sm:p-6 space-y-4 sm:space-y-5">
                       <SectionHeader eyebrow="Nouveautés" title="Arrivés récemment" href="/marketplace" icon={Clock3} />
                       <CategoryCarousel items={latestAds} />
                     </section>
                   )}
 
                   {nearbyAds.length > 0 && (
-                    <section className="space-y-4 sm:space-y-5">
+                    <section className="card bg-base-100 shadow-sm border border-zinc-200 p-4 sm:p-6 space-y-4 sm:space-y-5">
                       <SectionHeader eyebrow="Autour de vous" title="Annonces proches" href="/marketplace" icon={MapPin} />
                       <CategoryCarousel items={nearbyAds} />
                     </section>
@@ -456,7 +459,7 @@ export default function HomeClient({ initialParams }: { initialParams: HomeIniti
                     const categoryLabel = CATEGORY_LABELS[category] || category;
 
                     return (
-                      <section key={category} className="space-y-4 sm:space-y-5">
+                      <section key={category} className="card bg-base-100 shadow-sm border border-zinc-200 p-4 sm:p-6 space-y-4 sm:space-y-5">
                         <SectionHeader eyebrow="Catégorie" title={categoryLabel} href={`/categories/${getCategorySlug(category)}`} icon={Sparkles} />
                         <CategoryCarousel items={categoryAds} />
                       </section>
@@ -471,40 +474,6 @@ export default function HomeClient({ initialParams }: { initialParams: HomeIniti
 
       {/* Trust / value proposition */}
       <TrustSection />
-
-      {/* FlyonUI Test Section */}
-      <section className="main-container py-12">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl font-black text-zinc-900 mb-2">FlyonUI Test</h2>
-          <p className="text-zinc-500">Test des composants FlyonUI</p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Card 1 */}
-          <div className="card bg-base-100 shadow-xl border border-zinc-200">
-            <div className="card-body">
-              <h3 className="card-title text-zinc-900">Carte FlyonUI</h3>
-              <p className="text-zinc-600">Ceci est un test de composant FlyonUI avec les classes sémantiques.</p>
-              <div className="card-actions justify-end mt-4">
-                <button className="btn btn-primary">Action</button>
-              </div>
-            </div>
-          </div>
-
-          {/* Alert */}
-          <div className="alert alert-info shadow-lg">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current shrink-0 w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            <span>Info alerte FlyonUI — fonctionne parfaitement!</span>
-          </div>
-
-          {/* Button group */}
-          <div className="flex flex-col gap-3 items-center justify-center p-6 bg-zinc-50 rounded-2xl border border-zinc-200">
-            <button className="btn btn-primary w-full">Bouton Primary</button>
-            <button className="btn btn-secondary w-full">Bouton Secondary</button>
-            <button className="btn btn-outline w-full">Bouton Outline</button>
-            <button className="btn btn-ghost w-full">Bouton Ghost</button>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }
