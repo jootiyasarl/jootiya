@@ -1,9 +1,6 @@
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { SubmitButton } from "@/components/submit-button";
 import { createSupabaseServerClient, setAuthSession } from "@/lib/supabase-server";
 import { ShieldCheck, Lock, ChevronLeft, Mail } from "lucide-react";
@@ -89,11 +86,11 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           </div>
 
           <div className="grid grid-cols-2 gap-4 pt-8">
-            <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-sm">
+            <div className="card bg-base-100 border border-zinc-200 shadow-sm p-4">
               <p className="text-2xl font-black text-zinc-900">10k+</p>
               <p className="text-sm text-zinc-500 font-bold uppercase">Annonces</p>
             </div>
-            <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-sm">
+            <div className="card bg-base-100 border border-zinc-200 shadow-sm p-4">
               <p className="text-2xl font-black text-zinc-900">24/7</p>
               <p className="text-sm text-zinc-500 font-bold uppercase">Support</p>
             </div>
@@ -114,9 +111,9 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           </div>
 
           {error && (
-            <div className="rounded-2xl bg-red-500/5 p-4 border border-red-500/10 flex gap-3 items-center animate-in shake duration-500">
-              <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
-              <p className="text-sm font-bold text-red-600">{error}</p>
+            <div className="alert alert-error">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current shrink-0 w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              <span className="text-sm font-bold">{error}</span>
             </div>
           )}
 
@@ -125,62 +122,59 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             
             <div className="space-y-4">
               <div className="space-y-2 group">
-                <Label htmlFor="identifier" className="text-xs font-black uppercase tracking-widest text-zinc-500 ml-1 group-focus-within:text-orange-500 transition-colors">
+                <label htmlFor="identifier" className="label text-xs font-black uppercase tracking-widest text-zinc-500 ml-1">
                   Email ou Téléphone
-                </Label>
+                </label>
                 <div className="relative">
-                  <Input
+                  <input
                     id="identifier"
                     name="identifier"
                     type="text"
                     placeholder="nom@exemple.com"
                     required
-                    className="h-14 px-5 rounded-2xl bg-zinc-50 border-zinc-200 text-zinc-900 placeholder:text-zinc-400 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all text-base font-bold"
+                    className="input input-bordered w-full h-14 px-5 text-base font-bold"
                   />
-                  <Mail className="absolute right-5 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-400 group-focus-within:text-orange-500 transition-colors" />
+                  <Mail className="absolute right-5 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-400" />
                 </div>
               </div>
 
               <div className="space-y-2 group">
                 <div className="flex justify-between items-end px-1">
-                  <Label htmlFor="password" className="text-xs font-black uppercase tracking-widest text-zinc-500 group-focus-within:text-orange-500 transition-colors">
+                  <label htmlFor="password" className="label text-xs font-black uppercase tracking-widest text-zinc-500">
                     Mot de passe
-                  </Label>
+                  </label>
                   <Link href="/forgot-password" title="Réinitialiser" className="text-[11px] font-black text-orange-500 hover:text-orange-600 transition-colors uppercase tracking-tight">
                     Oublié ?
                   </Link>
                 </div>
                 <div className="relative">
-                  <Input
+                  <input
                     id="password"
                     name="password"
                     type="password"
                     placeholder="••••••••"
                     required
-                    className="h-14 px-5 rounded-2xl bg-zinc-50 border-zinc-200 text-zinc-900 placeholder:text-zinc-400 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all text-base font-bold"
+                    className="input input-bordered w-full h-14 px-5 text-base font-bold"
                   />
-                  <Lock className="absolute right-5 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-400 group-focus-within:text-orange-500 transition-colors" />
+                  <Lock className="absolute right-5 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-400" />
                 </div>
               </div>
             </div>
 
             <div className="flex items-center gap-3 px-1">
-              <div className="relative flex items-center">
-                <input 
-                  type="checkbox" 
-                  id="remember" 
-                  className="peer appearance-none w-5 h-5 rounded-lg border-2 border-zinc-200 bg-zinc-50 checked:bg-orange-500 checked:border-orange-500 transition-all cursor-pointer" 
-                />
-                <ShieldCheck className="absolute left-1 h-3 w-3 text-white opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" />
-              </div>
-              <Label htmlFor="remember" className="text-sm text-zinc-500 font-bold cursor-pointer hover:text-zinc-700 transition-colors select-none">Rester connecté</Label>
+              <input 
+                type="checkbox" 
+                id="remember"
+                className="checkbox checkbox-primary checkbox-sm" 
+              />
+              <label htmlFor="remember" className="text-sm text-zinc-500 font-bold cursor-pointer hover:text-zinc-700 transition-colors select-none">Rester connecté</label>
             </div>
 
             <div className="pt-2">
               <SubmitButton
                 label="Connexion instantanée"
                 loadingLabel="Vérification..."
-                className="w-full h-14 text-base font-black rounded-2xl bg-orange-500 hover:bg-orange-600 text-white shadow-xl shadow-orange-500/20 transition-all active:scale-[0.98]"
+                className="btn btn-primary w-full h-14 text-base font-black"
               />
             </div>
           </form>
