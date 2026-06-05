@@ -62,10 +62,10 @@ export function AirbnbAdPageClient({
             <span className="truncate text-zinc-900 dark:text-white font-black">{ad.category}</span>
           </nav>
           <div className="hidden sm:flex items-center gap-2">
-            <button className="flex items-center gap-2 text-sm font-bold hover:bg-zinc-100 dark:hover:bg-zinc-800 px-3 py-2 rounded-xl transition-all">
+            <button className="btn btn-ghost btn-sm gap-2">
               <Share className="h-4 w-4" /> Partager
             </button>
-            <button className="flex items-center gap-2 text-sm font-bold hover:bg-zinc-100 dark:hover:bg-zinc-800 px-3 py-2 rounded-xl transition-all">
+            <button className="btn btn-ghost btn-sm gap-2">
               <Heart className="h-4 w-4" /> Enregistrer
             </button>
           </div>
@@ -76,9 +76,9 @@ export function AirbnbAdPageClient({
         {/* Title - Different padding/size for mobile */}
         <div className="main-container px-4 md:px-8">
           <div className="mb-4 md:mb-6 pt-4 md:pt-0">
-            <div className="mb-2 flex flex-wrap items-center gap-2 text-[11px] font-black uppercase tracking-[0.16em] text-orange-600">
-              {ad.is_featured && <span className="rounded-full bg-orange-50 px-3 py-1">À la une</span>}
-              <span>{formattedDate}</span>
+            <div className="mb-2 flex flex-wrap items-center gap-2 text-[11px] font-black uppercase tracking-[0.16em]">
+              {ad.is_featured && <span className="badge badge-primary">À la une</span>}
+              <span className="text-zinc-500">{formattedDate}</span>
             </div>
             <h1 className="max-w-4xl text-2xl md:text-4xl font-black tracking-tight text-zinc-950 dark:text-white break-words">
               {ad.title}
@@ -111,7 +111,7 @@ export function AirbnbAdPageClient({
             <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/0 to-transparent opacity-80 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             
             <button 
-              className="absolute bottom-4 right-4 md:bottom-8 md:right-8 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border border-zinc-200 dark:border-zinc-800 px-4 py-2 rounded-xl text-xs md:text-sm font-black flex items-center gap-2 shadow-lg z-10 hover:bg-white dark:hover:bg-zinc-900 transition-all md:scale-95 md:group-hover:scale-100"
+              className="btn btn-ghost btn-sm absolute bottom-4 right-4 md:bottom-8 md:right-8 z-10"
               onClick={(e) => { e.stopPropagation(); setIsLightboxOpen(true); }}
             >
               <ImageIcon className="h-4 w-4" />
@@ -122,130 +122,151 @@ export function AirbnbAdPageClient({
 
         <div className="main-container flex flex-col lg:grid lg:grid-cols-12 gap-6 md:gap-10 mt-6 md:mt-8 px-4 md:px-8">
           <div className="lg:col-span-8 order-2 lg:order-1 space-y-5 md:space-y-6">
-            <div className="rounded-[1.75rem] border border-zinc-100 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 sm:p-6">
-              <div className="flex items-center justify-between gap-4">
+            <div className="card bg-base-100 border border-zinc-200 dark:border-zinc-700 shadow-sm">
+              <div className="card-body p-5 sm:p-6">
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <h2 className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white">
+                      Vendu par {sellerName}
+                    </h2>
+                    <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mt-1">
+                      {ad.city} • Membre منذ {memberSince}
+                    </p>
+                  </div>
+                  <div className="avatar">
+                    <div className="w-14 rounded-2xl">
+                      {sellerAvatar ? (
+                        <Image src={sellerAvatar} alt={sellerName} fill className="object-cover" />
+                      ) : (
+                        <div className="bg-zinc-100 dark:bg-zinc-800 w-full h-full flex items-center justify-center text-xl font-bold text-zinc-400">
+                          {sellerName.charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="card bg-base-100 border border-zinc-200 dark:border-zinc-700 shadow-sm">
+              <div className="card-body p-5 sm:p-6 space-y-4">
+                <div className="flex gap-4">
+                  <div className="avatar placeholder shrink-0">
+                    <div className="bg-orange-100 text-orange-600 w-11 rounded-2xl">
+                      <Award className="h-5 w-5" />
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="font-black text-zinc-900 dark:text-white">Vendeur {isTrusted ? 'Vérifié' : 'Recommandé'}</h3>
+                    <p className="text-zinc-500 dark:text-zinc-400 text-sm">Ce vendeur a d'excellents avis et une identité vérifiée.</p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <div className="avatar placeholder shrink-0">
+                    <div className="bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 w-11 rounded-2xl">
+                      <MapPin className="h-5 w-5" />
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="font-black text-zinc-900 dark:text-white">Emplacement idéal</h3>
+                    <p className="text-zinc-500 dark:text-zinc-400 text-sm">L'objet se trouve à {ad.city}, facile d'accès pour remise en main propre.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="card bg-base-100 border border-zinc-200 dark:border-zinc-700 shadow-sm">
+              <div className="card-body p-5 sm:p-6">
+                <h3 className="card-title text-xl font-black mb-4 text-zinc-900 dark:text-white">Description</h3>
+                <div className="text-zinc-600 dark:text-zinc-400 leading-relaxed whitespace-pre-wrap text-base sm:text-lg">
+                  {ad.description}
+                </div>
+              </div>
+            </div>
+
+            <div className="card bg-base-100 border border-zinc-200 dark:border-zinc-700 shadow-sm">
+              <div className="card-body p-5 sm:p-6">
+                <h3 className="card-title text-xl font-black mb-5 text-zinc-900 dark:text-white">Détails de l'annonce</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="flex items-center gap-4 p-4 bg-zinc-50 dark:bg-zinc-800/60 rounded-2xl">
+                    <div className="avatar placeholder">
+                      <div className="bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 w-10 rounded-xl">
+                        <ShieldCheck className="h-5 w-5" />
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-xs text-zinc-400 uppercase font-black tracking-widest">État</p>
+                      <p className="font-semibold text-zinc-900 dark:text-white">{ad.condition === 'new' ? "Neuf" : "Occasion"}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4 p-4 bg-zinc-50 dark:bg-zinc-800/60 rounded-2xl">
+                    <div className="avatar placeholder">
+                      <div className="bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 w-10 rounded-xl">
+                        <ImageIcon className="h-5 w-5" />
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-xs text-zinc-400 uppercase font-black tracking-widest">Catégorie</p>
+                      <p className="font-semibold text-zinc-900 dark:text-white">{ad.category}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="alert alert-warning">
+              <ShieldCheck className="h-5 w-5" />
               <div>
-                <h2 className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white">
-                  Vendu par {sellerName}
-                </h2>
-                <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mt-1">
-                  {ad.city} • Membre منذ {memberSince}
-                </p>
+                <h3 className="font-bold text-lg">Conseils de sécurité</h3>
+                <ul className="text-sm font-medium leading-relaxed mt-1 space-y-1">
+                  <li>Rencontrez le vendeur dans un lieu public.</li>
+                  <li>Vérifiez l'article avant de payer.</li>
+                  <li>Ne partagez jamais vos informations sensibles.</li>
+                </ul>
               </div>
-              <div className="h-14 w-14 rounded-2xl bg-zinc-100 dark:bg-zinc-800 overflow-hidden relative border border-zinc-200 dark:border-zinc-800 shrink-0">
-                {sellerAvatar ? (
-                  <Image src={sellerAvatar} alt={sellerName} fill className="object-cover" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-xl font-bold text-zinc-400">
-                    {sellerName.charAt(0).toUpperCase()}
-                  </div>
-                )}
-              </div>
-              </div>
-            </div>
-
-            <div className="rounded-[1.75rem] border border-zinc-100 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 sm:p-6 space-y-5">
-              <div className="flex gap-4">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-orange-50 text-orange-600 dark:bg-orange-950/30">
-                  <Award className="h-5 w-5" />
-                </span>
-                <div>
-                  <h3 className="font-black text-zinc-900 dark:text-white">Vendeur {isTrusted ? 'Vérifié' : 'Recommandé'}</h3>
-                  <p className="text-zinc-500 dark:text-zinc-400 text-sm">Ce vendeur a d'excellents avis et une identité vérifiée.</p>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-200">
-                  <MapPin className="h-5 w-5" />
-                </span>
-                <div>
-                  <h3 className="font-black text-zinc-900 dark:text-white">Emplacement idéal</h3>
-                  <p className="text-zinc-500 dark:text-zinc-400 text-sm">L'objet se trouve à {ad.city}, facile d'accès pour remise en main propre.</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="rounded-[1.75rem] border border-zinc-100 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 sm:p-6">
-              <h3 className="text-xl font-black mb-4 text-zinc-900 dark:text-white">Description</h3>
-              <div className="text-zinc-600 dark:text-zinc-400 leading-relaxed whitespace-pre-wrap text-base sm:text-lg">
-                {ad.description}
-              </div>
-            </div>
-
-            <div className="rounded-[1.75rem] border border-zinc-100 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 sm:p-6">
-              <h3 className="text-xl font-black mb-5 text-zinc-900 dark:text-white">Détails de l'annonce</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="flex items-center gap-4 rounded-2xl bg-zinc-50 p-4 dark:bg-zinc-800/60">
-                  <div className="w-10 h-10 rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
-                    <ShieldCheck className="h-5 w-5 text-zinc-600 dark:text-zinc-400" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-zinc-400 uppercase font-black tracking-widest">État</p>
-                    <p className="font-semibold text-zinc-900 dark:text-white">{ad.condition === 'new' ? "Neuf" : "Occasion"}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4 rounded-2xl bg-zinc-50 p-4 dark:bg-zinc-800/60">
-                  <div className="w-10 h-10 rounded-xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
-                    <ImageIcon className="h-5 w-5 text-zinc-600 dark:text-zinc-400" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-zinc-400 uppercase font-black tracking-widest">Catégorie</p>
-                    <p className="font-semibold text-zinc-900 dark:text-white">{ad.category}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="rounded-[1.75rem] border border-orange-100 bg-orange-50/60 p-5 dark:border-orange-900/40 dark:bg-orange-950/20 sm:p-6">
-              <h3 className="mb-3 flex items-center gap-2 text-lg font-black text-zinc-900 dark:text-white">
-                <ShieldCheck className="h-5 w-5 text-orange-600" />
-                Conseils de sécurité
-              </h3>
-              <ul className="space-y-2 text-sm font-medium leading-relaxed text-zinc-600 dark:text-zinc-300">
-                <li>Rencontrez le vendeur dans un lieu public.</li>
-                <li>Vérifiez l'article avant de payer.</li>
-                <li>Ne partagez jamais vos informations sensibles.</li>
-              </ul>
             </div>
           </div>
 
           <div className="lg:col-span-4 order-1 lg:order-2">
-            <div className="sticky top-28 rounded-[2rem] border border-zinc-100 bg-white p-5 shadow-[0_20px_60px_rgba(15,23,42,0.08)] dark:border-zinc-800 dark:bg-zinc-900 sm:p-6">
-              <div className="mb-5 flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-[11px] font-black uppercase tracking-[0.18em] text-zinc-400">Prix</p>
-                  <span className="mt-1 block text-3xl font-black tracking-tight text-orange-600 dark:text-orange-500">{formattedPrice}</span>
+            <div className="sticky top-28 card bg-base-100 border border-zinc-200 dark:border-zinc-700 shadow-lg">
+              <div className="card-body p-5 sm:p-6">
+                <div className="mb-5 flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-[11px] font-black uppercase tracking-[0.18em] text-zinc-400">Prix</p>
+                    <span className="mt-1 block text-3xl font-black tracking-tight text-orange-600 dark:text-orange-500">{formattedPrice}</span>
+                  </div>
+                  <div className="badge badge-ghost gap-1">
+                    <Star className="h-3.5 w-3.5 fill-orange-500 text-orange-500" />
+                    <span>{avgRating || '5.0'}</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-1 rounded-full bg-zinc-50 px-2.5 py-1 text-sm font-bold dark:bg-zinc-800">
-                  <Star className="h-3.5 w-3.5 fill-orange-500 text-orange-500" />
-                  <span>{avgRating || '5.0'}</span>
-                </div>
-              </div>
 
-              <div className="mb-5 flex items-center gap-3 rounded-2xl bg-zinc-50 p-3 dark:bg-zinc-800/60">
-                <div className="relative h-11 w-11 overflow-hidden rounded-2xl bg-white dark:bg-zinc-900">
-                  {sellerAvatar ? (
-                    <Image src={sellerAvatar} alt={sellerName} fill className="object-cover" />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center text-base font-black text-zinc-400">
-                      {sellerName.charAt(0).toUpperCase()}
+                <div className="mb-5 flex items-center gap-3 rounded-2xl bg-zinc-50 p-3 dark:bg-zinc-800/60">
+                  <div className="avatar">
+                    <div className="w-11 rounded-2xl">
+                      {sellerAvatar ? (
+                        <Image src={sellerAvatar} alt={sellerName} fill className="object-cover" />
+                      ) : (
+                        <div className="bg-white dark:bg-zinc-900 flex h-full w-full items-center justify-center text-base font-black text-zinc-400">
+                          {sellerName.charAt(0).toUpperCase()}
+                        </div>
+                      )}
                     </div>
-                  )}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-black text-zinc-900 dark:text-white">{sellerName}</p>
+                    <p className="text-xs font-medium text-zinc-500">Membre depuis {memberSince}</p>
+                  </div>
                 </div>
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-black text-zinc-900 dark:text-white">{sellerName}</p>
-                  <p className="text-xs font-medium text-zinc-500">Membre depuis {memberSince}</p>
+
+                <div className="space-y-4">
+                  <ContactActions adId={ad.id} sellerId={ad.seller_id} currentUser={user} sellerPhone={sellerPhone} />
+                  <p className="text-center text-xs text-zinc-500 mt-4">
+                    Aucun frais ne vous sera prélevé maintenant
+                  </p>
                 </div>
-              </div>
 
-              <div className="space-y-4">
-                <ContactActions adId={ad.id} sellerId={ad.seller_id} currentUser={user} sellerPhone={sellerPhone} />
-                <p className="text-center text-xs text-zinc-500 mt-4">
-                  Aucun frais ne vous sera prélevé maintenant
-                </p>
-              </div>
-
-              <div className="mt-6 pt-6 border-t border-zinc-100 dark:border-zinc-800 space-y-3">
+                <div className="divider my-0" />
                 <div className="flex justify-between text-sm font-bold text-zinc-600 dark:text-zinc-300">
                   <span>Prix demandé</span>
                   <span>{formattedPrice}</span>
@@ -254,7 +275,7 @@ export function AirbnbAdPageClient({
             </div>
             
             <div className="mt-8 flex justify-center">
-              <button className="flex items-center gap-2 text-zinc-500 hover:text-zinc-900 text-sm font-semibold underline decoration-zinc-300">
+              <button className="btn btn-ghost btn-sm gap-2">
                 <Flag className="h-4 w-4" /> Signaler cette annonce
               </button>
             </div>
