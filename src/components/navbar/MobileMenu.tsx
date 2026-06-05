@@ -195,18 +195,17 @@ export function MobileMenu({ initialUserEmail = null }: MobileMenuProps) {
                                             key={link.name} 
                                             href={link.href} 
                                             onClick={() => setIsMobileMenuOpen(false)} 
-                                            className="btn btn-ghost justify-start h-auto py-3 px-3 gap-0 group text-zinc-900 dark:text-white"
+                                            className="flex items-center justify-between py-3 px-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white transition-all active:scale-[0.98] group shadow-sm"
                                         >
                                             <div className="flex items-center gap-4 flex-1">
                                                 <div className={cn(
-                                                    "w-10 h-10 rounded-xl flex items-center justify-center transition-colors shadow-sm",
-                                                    link.bg
+                                                    "w-10 h-10 rounded-xl flex items-center justify-center shadow-sm bg-white/20"
                                                 )}>
-                                                    <link.icon className={cn("w-5 h-5", link.color)} />
+                                                    <link.icon className="w-5 h-5 text-white" />
                                                 </div>
                                                 <span className="text-sm font-bold">{link.name}</span>
                                             </div>
-                                            <ChevronRight className="w-4 h-4 text-zinc-400 group-hover:text-orange-500 group-hover:translate-x-0.5 transition-all" />
+                                            <ChevronRight className="w-4 h-4 text-white/70 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
                                         </Link>
                                     ))}
                                 </div>
