@@ -212,6 +212,8 @@ export default function RootLayout({
           <InstallPWA />
         </ThemeProvider>
 
+        <Script id="flyonui" src="../node_modules/flyonui/flyonui.js" strategy="lazyOnload" />
+
         <Script
           id="adsense-init"
           strategy="lazyOnload"

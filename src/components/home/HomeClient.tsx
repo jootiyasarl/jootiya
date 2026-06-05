@@ -471,6 +471,40 @@ export default function HomeClient({ initialParams }: { initialParams: HomeIniti
 
       {/* Trust / value proposition */}
       <TrustSection />
+
+      {/* FlyonUI Test Section */}
+      <section className="main-container py-12">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl font-black text-zinc-900 mb-2">FlyonUI Test</h2>
+          <p className="text-zinc-500">Test des composants FlyonUI</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Card 1 */}
+          <div className="card bg-base-100 shadow-xl border border-zinc-200">
+            <div className="card-body">
+              <h3 className="card-title text-zinc-900">Carte FlyonUI</h3>
+              <p className="text-zinc-600">Ceci est un test de composant FlyonUI avec les classes sémantiques.</p>
+              <div className="card-actions justify-end mt-4">
+                <button className="btn btn-primary">Action</button>
+              </div>
+            </div>
+          </div>
+
+          {/* Alert */}
+          <div className="alert alert-info shadow-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current shrink-0 w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span>Info alerte FlyonUI — fonctionne parfaitement!</span>
+          </div>
+
+          {/* Button group */}
+          <div className="flex flex-col gap-3 items-center justify-center p-6 bg-zinc-50 rounded-2xl border border-zinc-200">
+            <button className="btn btn-primary w-full">Bouton Primary</button>
+            <button className="btn btn-secondary w-full">Bouton Secondary</button>
+            <button className="btn btn-outline w-full">Bouton Outline</button>
+            <button className="btn btn-ghost w-full">Bouton Ghost</button>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
