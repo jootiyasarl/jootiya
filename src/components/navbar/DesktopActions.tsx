@@ -145,7 +145,7 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                     <NotificationBell />
                     <Link
                         href="/dashboard/favorites"
-                        className="p-2 rounded-xl text-zinc-500 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all relative"
+                        className="btn btn-ghost btn-circle btn-sm"
                         aria-label="Voir vos annonces favorites"
                         title="Favoris"
                         rel="nofollow"
@@ -155,14 +155,14 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
 
                     <Link
                         href="/dashboard/messages"
-                        className="p-2.5 rounded-xl text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all relative"
+                        className="btn btn-ghost btn-circle btn-sm relative"
                         aria-label="Voir vos messages"
                         title="Messages"
                         rel="nofollow"
                     >
                         <MessageCircle className="w-5 h-5" />
                         {hasUnreadMessages && (
-                            <span className="absolute top-2.5 right-2.5 w-2.5 h-2.5 bg-orange-500 rounded-full border-2 border-white dark:border-zinc-900" />
+                            <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-orange-500 rounded-full border-2 border-white dark:border-zinc-900" />
                         )}
                     </Link>
 
@@ -170,7 +170,7 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                         {isAdmin ? (
                             <Link
                                 href="/admin"
-                                className="p-2.5 rounded-xl text-orange-600 bg-orange-50 border border-orange-200 dark:text-orange-500 dark:bg-orange-950/20 dark:border-orange-900/30 transition-all shadow-sm shadow-orange-500/10 hover:scale-105"
+                                className="btn btn-warning btn-circle btn-sm"
                                 title="Admin Panel"
                                 rel="nofollow"
                             >
@@ -179,7 +179,7 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                         ) : (
                             <Link
                                 href="/dashboard"
-                                className="p-2.5 rounded-xl text-zinc-600 dark:text-zinc-400 hover:text-orange-600 dark:hover:text-orange-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all"
+                                className="btn btn-ghost btn-circle btn-sm"
                                 title="Mon Compte"
                                 rel="nofollow"
                             >
@@ -188,7 +188,7 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                         )}
                         <button
                             onClick={handleLogout}
-                            className="p-2.5 text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 rounded-xl transition-all"
+                            className="btn btn-ghost btn-circle btn-sm text-zinc-400 hover:text-red-500"
                             title="Déconnexion"
                         >
                             <LogOut className="w-5 h-5" />
@@ -199,11 +199,11 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                 <div className="ml-1 pl-1 border-l border-zinc-200 dark:border-zinc-800 flex items-center gap-1">
                     <Link
                         href="/login"
-                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-sm font-bold shadow-sm transition-all active:scale-[0.98]"
+                        className="btn btn-primary btn-sm gap-2"
                         rel="nofollow"
                     >
                         <User className="w-4 h-4" />
-                        <span>Connexion</span>
+                        Connexion
                     </Link>
                 </div>
             )}
