@@ -195,19 +195,18 @@ export function MobileMenu({ initialUserEmail = null }: MobileMenuProps) {
                                             key={link.name} 
                                             href={link.href} 
                                             onClick={() => setIsMobileMenuOpen(false)} 
-                                            className="btn btn-ghost justify-start h-auto py-3 px-3 gap-0 group"
+                                            className="btn btn-ghost justify-start h-auto py-3 px-3 gap-0 group text-zinc-900 dark:text-white"
                                         >
                                             <div className="flex items-center gap-4 flex-1">
                                                 <div className={cn(
                                                     "w-10 h-10 rounded-xl flex items-center justify-center transition-colors shadow-sm",
-                                                    link.bg,
-                                                    "dark:bg-zinc-800"
+                                                    link.bg
                                                 )}>
                                                     <link.icon className={cn("w-5 h-5", link.color)} />
                                                 </div>
-                                                <span className="text-sm font-bold text-zinc-700 dark:text-zinc-300 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">{link.name}</span>
+                                                <span className="text-sm font-bold">{link.name}</span>
                                             </div>
-                                            <ChevronRight className="w-4 h-4 text-zinc-300 group-hover:text-orange-500 group-hover:translate-x-0.5 transition-all" />
+                                            <ChevronRight className="w-4 h-4 text-zinc-400 group-hover:text-orange-500 group-hover:translate-x-0.5 transition-all" />
                                         </Link>
                                     ))}
                                 </div>
