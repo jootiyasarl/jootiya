@@ -320,12 +320,11 @@ export default function HomeClient({ initialParams }: { initialParams: HomeIniti
         {href && (
           <Link 
             href={href}
-            className="home-see-all group shrink-0"
+            className="btn btn-ghost btn-circle btn-sm shrink-0"
+            aria-label="Voir tout"
+            title="Voir tout"
           >
-            <span className="hidden sm:inline">Voir tout</span>
-            <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center group-hover:bg-orange-500 group-hover:text-white transition-all">
-              <ArrowRight className="w-4 h-4" />
-            </div>
+            <ArrowRight className="w-4 h-4" />
           </Link>
         )}
       </div>
