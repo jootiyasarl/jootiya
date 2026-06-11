@@ -36,7 +36,7 @@ export interface AdCardProps {
 
 export function AdCard({ ad, variant = "default", footerSlot, href, priority = false }: AdCardProps) {
   const isFeatured = variant === "featured" || ad.isFeatured;
-  const [imageFailed, setImageFailed] = useState(false);
+  const [failedImageUrl, setFailedImageUrl] = useState<string | null>(null);
   
   // SEO: Generate slug if not provided, then construct the new URL structure /ads/[id]/[slug]
   const adSlug = ad.slug || generateSlug(ad.title);
@@ -52,17 +52,20 @@ export function AdCard({ ad, variant = "default", footerSlot, href, priority = f
           </Link>
         )}
         
-        {ad.imageUrl && !imageFailed ? (
+        {ad.imageUrl && failedImageUrl !== ad.imageUrl ? (
           <Image
-            src={getOptimizedImageUrl(ad.imageUrl, { width: 400, height: 300, quality: 80, format: 'webp' })}
+            src={getOptimizedImageUrl(ad.imageUrl, { format: 'origin' })}
             alt={ad.title}
             fill
             priority={priority}
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             sizes="(max-width: 420px) 72vw, (max-width: 640px) 46vw, (max-width: 1024px) 24vw, 19vw"
             loading={priority ? "eager" : "lazy"}
-            unoptimized={false}
-            onError={() => setImageFailed(true)}
+            unoptimized={true}
+            onError={() => {
+              console.error('AdCard image failed:', ad.imageUrl);
+              setFailedImageUrl(ad.imageUrl ?? null);
+            }}
           />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-zinc-100 to-zinc-200 text-zinc-400 dark:from-zinc-800 dark:to-zinc-900">
