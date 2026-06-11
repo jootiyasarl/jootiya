@@ -17,6 +17,8 @@ import {
 import { AdImageGallery } from "@/components/ads/AdImageGallery";
 import { ContactActions } from "@/components/ads/ContactActions";
 import { QuickActionFooter } from "@/components/ads/QuickActionFooter";
+import { FavoriteButton } from "@/components/ads/FavoriteButton";
+import { toast } from "sonner";
 
 interface AirbnbAdPageClientProps {
   ad: any;
@@ -62,12 +64,20 @@ export function AirbnbAdPageClient({
             <span className="truncate text-zinc-900 dark:text-white font-black">{ad.category}</span>
           </nav>
           <div className="hidden sm:flex items-center gap-2">
-            <button className="btn btn-ghost btn-sm gap-2">
+            <button className="btn btn-ghost btn-sm gap-2" onClick={async () => {
+              const url = window.location.href;
+              if (navigator.share) {
+                try {
+                  await navigator.share({ title: ad.title, url });
+                } catch { /* user cancelled */ }
+              } else {
+                await navigator.clipboard.writeText(url);
+                toast.success('Lien copié !');
+              }
+            }}>
               <Share className="h-4 w-4" /> Partager
             </button>
-            <button className="btn btn-ghost btn-sm gap-2">
-              <Heart className="h-4 w-4" /> Enregistrer
-            </button>
+            <FavoriteButton adId={ad.id} className="btn btn-ghost btn-sm gap-2 !min-h-0 !min-w-0 !bg-transparent !backdrop-blur-none !rounded-lg !p-0 !text-current hover:!bg-transparent" />
           </div>
         </div>
       </div>
