@@ -106,6 +106,7 @@ export function AirbnbAdPageClient({
               fill 
               className="object-cover transition-transform duration-700 group-hover:scale-105"
               priority
+              unoptimized
             />
             {/* Overlay Gradient for better button visibility */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/0 to-transparent opacity-80 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -136,7 +137,7 @@ export function AirbnbAdPageClient({
                   <div className="avatar">
                     <div className="w-14 rounded-2xl">
                       {sellerAvatar ? (
-                        <Image src={sellerAvatar} alt={sellerName} fill className="object-cover" />
+                        <Image src={sellerAvatar} alt={sellerName} fill className="object-cover" unoptimized />
                       ) : (
                         <div className="bg-zinc-100 dark:bg-zinc-800 w-full h-full flex items-center justify-center text-xl font-bold text-zinc-400">
                           {sellerName.charAt(0).toUpperCase()}
@@ -237,7 +238,7 @@ export function AirbnbAdPageClient({
                   <div className="avatar">
                     <div className="w-11 rounded-2xl">
                       {sellerAvatar ? (
-                        <Image src={sellerAvatar} alt={sellerName} fill className="object-cover" />
+                        <Image src={sellerAvatar} alt={sellerName} fill className="object-cover" unoptimized />
                       ) : (
                         <div className="bg-white dark:bg-zinc-900 flex h-full w-full items-center justify-center text-base font-black text-zinc-400">
                           {sellerName.charAt(0).toUpperCase()}
