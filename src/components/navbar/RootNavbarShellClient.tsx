@@ -55,7 +55,7 @@ export function RootNavbarShellClient({ children, navbar, footer }: RootNavbarSh
           {!isSpecialPath ? (
             <div className="max-w-[1440px] mx-auto px-2 min-[360px]:px-3 sm:px-4 md:px-8 relative">
               <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start relative">
-                <aside className="hidden xl:block w-40 shrink-0 self-start">
+                <aside className="hidden xl:block w-40 shrink-0 self-stretch">
                   <div className="sticky top-28">
                     <SidebarAd />
                   </div>
@@ -63,7 +63,7 @@ export function RootNavbarShellClient({ children, navbar, footer }: RootNavbarSh
 
                 <div className="flex-1 min-w-0 w-full">{children}</div>
 
-                <aside className="hidden xl:block w-40 shrink-0 self-start">
+                <aside className="hidden xl:block w-40 shrink-0 self-stretch">
                   <div className="sticky top-28">
                     <SidebarAd />
                   </div>

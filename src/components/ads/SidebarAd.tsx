@@ -15,12 +15,9 @@ export const SidebarAd = () => {
           </div>
         </div>
 
-        <div className="space-y-2">
-          <span className="badge badge-ghost badge-sm text-[10px] uppercase tracking-widest border-white/20 text-white/90">Jootiya Market</span>
-          <h3 className="card-title text-xl font-black leading-tight uppercase text-white">
-            Vendez et achetez sur Jootiya
-          </h3>
-        </div>
+        <h3 className="card-title text-xl font-black leading-tight uppercase text-white">
+          Vendez et achetez sur Jootiya
+        </h3>
 
         <p className="text-xs font-bold text-white/80 leading-relaxed">
           La meilleure plateforme pour vos petites annonces au Maroc.
