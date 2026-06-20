@@ -3,11 +3,13 @@
 import type { MarketplaceSearchLayoutProps } from "@/types/components/marketplace";
 import { MarketplaceFilterSidebar } from "../filters/MarketplaceFilterSidebar";
 import { SortDropdown } from "../filters/SortDropdown";
+import { ListingGrid } from "../listing/ListingGrid";
 import { MobileFilterTrigger } from "../filters/MobileFilterTrigger";
 
 export function MarketplaceSearchLayout({
   filterSidebarProps,
   sortDropdownProps,
+  listingGridProps,
 }: MarketplaceSearchLayoutProps) {
   return (
     <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 pb-12">
@@ -20,6 +22,9 @@ export function MarketplaceSearchLayout({
 
       <div className="flex gap-6">
         <MarketplaceFilterSidebar {...filterSidebarProps} />
+        <div className="flex-1">
+          <ListingGrid {...listingGridProps} />
+        </div>
       </div>
     </div>
   );
