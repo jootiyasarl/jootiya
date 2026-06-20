@@ -37,6 +37,9 @@ export interface AdCardProps {
 export function AdCard({ ad, variant = "default", footerSlot, href, priority = false }: AdCardProps) {
   const isFeatured = variant === "featured" || ad.isFeatured;
   const [failedImageUrl, setFailedImageUrl] = useState<string | null>(null);
+  // When the Next.js optimizer fails for a specific image, fall back to the
+  // original (unoptimized) URL before giving up and showing "No Image".
+  const [useOriginal, setUseOriginal] = useState(false);
   
   // SEO: Generate slug if not provided, then construct the new URL structure /ads/[id]/[slug]
   const adSlug = ad.slug || generateSlug(ad.title);
@@ -54,6 +57,7 @@ export function AdCard({ ad, variant = "default", footerSlot, href, priority = f
         
         {ad.imageUrl && failedImageUrl !== ad.imageUrl ? (
           <Image
+            key={useOriginal ? 'original' : 'optimized'}
             src={getOptimizedImageUrl(ad.imageUrl, { format: 'origin' })}
             alt={ad.title}
             fill
@@ -61,9 +65,15 @@ export function AdCard({ ad, variant = "default", footerSlot, href, priority = f
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             sizes="(max-width: 420px) 72vw, (max-width: 640px) 46vw, (max-width: 1024px) 24vw, 19vw"
             loading={priority ? "eager" : "lazy"}
+            unoptimized={useOriginal}
             onError={() => {
-              console.error('AdCard image failed:', ad.imageUrl);
-              setFailedImageUrl(ad.imageUrl ?? null);
+              if (!useOriginal) {
+                // Optimizer failed for this image: retry with the original URL.
+                setUseOriginal(true);
+              } else {
+                console.error('AdCard image failed:', ad.imageUrl);
+                setFailedImageUrl(ad.imageUrl ?? null);
+              }
             }}
           />
         ) : (

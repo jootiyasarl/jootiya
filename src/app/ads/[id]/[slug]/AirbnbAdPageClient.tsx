@@ -116,7 +116,7 @@ export function AirbnbAdPageClient({
               fill 
               className="object-cover transition-transform duration-700 group-hover:scale-105"
               priority
-              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 100vw, 1280px"
+              unoptimized
             />
             {/* Overlay Gradient for better button visibility */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/0 to-transparent opacity-80 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
