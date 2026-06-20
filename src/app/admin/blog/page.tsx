@@ -124,7 +124,7 @@ export default function BlogAdminPage() {
       toast.error("Erreur lors de la suppression");
     } else {
       toast.success("Article supprimé");
-      fetchPosts();
+      setPosts(prev => prev.filter(p => p.id !== id));
     }
   };
 
@@ -190,13 +190,23 @@ export default function BlogAdminPage() {
 
       console.log("Save operation successful, received data:", data);
       toast.success("Article enregistré avec succès !");
-      await fetchPosts();
-      console.log("Posts refetched, switching to list view");
-      
-      // Reset loading explicitly before view change
+
+      // Update local posts immediately without re-fetching
+      if (data && data[0]) {
+        setPosts(prev => {
+          const existingIndex = prev.findIndex(p => p.id === data[0].id);
+          if (existingIndex >= 0) {
+            const updated = [...prev];
+            updated[existingIndex] = data[0];
+            return updated;
+          }
+          return [data[0], ...prev];
+        });
+      }
+
       setLoading(false);
       setView("list");
-      return; // Early return to prevent falling through
+      return;
     } catch (error: any) {
       console.error("Caught error in handleSave:", error);
       toast.error(error.message || "Erreur lors de l'enregistrement");
