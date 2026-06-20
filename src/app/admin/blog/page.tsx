@@ -26,6 +26,7 @@ export default function BlogAdminPage() {
   const [loading, setLoading] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [checkingAuth, setCheckingAuth] = useState(true);
+  const [authError, setAuthError] = useState<string | null>(null);
   const [keyword, setKeyword] = useState("");
   const [view, setView] = useState<"list" | "editor">("list");
   const [posts, setPosts] = useState<any[]>([]);
@@ -45,29 +46,44 @@ export default function BlogAdminPage() {
 
   useEffect(() => {
     async function checkAdmin() {
+      setCheckingAuth(true);
+      setAuthError(null);
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError) {
+          console.error("Session error:", sessionError);
+          setAuthError("Erreur de session: " + sessionError.message);
+          return;
+        }
         if (!session) {
+          setAuthError("Vous devez être connecté pour accéder à cette page.");
           router.push("/login?redirectTo=/admin/blog");
           return;
         }
 
-        const { data: profile } = await supabase
+        const { data: profile, error: profileError } = await supabase
           .from("profiles")
           .select("role")
           .eq("id", session.user.id)
           .maybeSingle();
 
+        if (profileError) {
+          console.error("Profile fetch error:", profileError);
+          setAuthError("Erreur lors de la vérification du profil.");
+          return;
+        }
+
         const role = profile?.role?.toLowerCase();
-        if (role === "admin" || role === "super_admin" || !profile) {
+        if (role === "admin" || role === "super_admin") {
           setIsAdmin(true);
           fetchPosts();
         } else {
+          setAuthError("Accès refusé: rôle insuffisant.");
           router.push("/");
         }
-      } catch (err) {
+      } catch (err: any) {
         console.error(err);
-        router.push("/");
+        setAuthError(err?.message || "Une erreur inattendue s'est produite.");
       } finally {
         setCheckingAuth(false);
       }
@@ -203,6 +219,32 @@ export default function BlogAdminPage() {
       setLoading(false); // Reset loading on error
     }
   };
+
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen bg-zinc-950 text-zinc-100 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <Loader2 className="h-10 w-10 animate-spin text-orange-500 mx-auto" />
+          <p className="text-zinc-500 font-medium">Vérification des accès...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (authError) {
+    return (
+      <div className="min-h-screen bg-zinc-950 text-zinc-100 flex items-center justify-center px-4">
+        <div className="text-center space-y-4 max-w-md">
+          <AlertCircle className="h-12 w-12 text-red-500 mx-auto" />
+          <h2 className="text-xl font-bold text-white">Accès impossible</h2>
+          <p className="text-zinc-400">{authError}</p>
+          <Button onClick={() => router.push("/login?redirectTo=/admin/blog")} className="bg-orange-600 hover:bg-orange-700 rounded-xl mt-4">
+            Se connecter
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   if (!isAdmin) return null;
 
