@@ -196,8 +196,6 @@ export function AdImageGallery({
                                     sizes="(max-width: 768px) 100vw, 70vw"
                                     onClick={() => setIsLightboxOpen(true)}
                                     loading={index === 0 ? "eager" : "lazy"}
-                                    unoptimized
-                                    crossOrigin="anonymous"
                                 />
                             </div>
                         ))}
@@ -255,8 +253,7 @@ export function AdImageGallery({
                                 alt={`Thumbnail ${index + 1}`}
                                 fill
                                 className="object-contain"
-                                unoptimized
-                                crossOrigin="anonymous"
+                                sizes="96px"
                             />
                         </button>
                     ))}

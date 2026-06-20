@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { createClient } from "@supabase/supabase-js";
 import { Input } from "@/components/ui/input";
 import { SubmitButton } from "@/components/submit-button";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
@@ -13,15 +14,65 @@ export const metadata: Metadata = {
 async function forgotPasswordAction(formData: FormData) {
   "use server";
 
-  const email = formData.get("email")?.toString();
+  const rawEmail = formData.get("email")?.toString();
 
-  if (!email) {
+  if (!rawEmail) {
     redirect("/forgot-password?error=Veuillez entrer votre email");
   }
 
+  const email = rawEmail.trim().toLowerCase();
+
+  // For security, we always show the same success message, whether or not
+  // the email exists, to avoid leaking which accounts are registered.
+  const successRedirect =
+    "/forgot-password?success=" +
+    encodeURIComponent(
+      `Si un compte est associé à ${email}, un e-mail de réinitialisation a été envoyé. Veuillez vérifier votre boîte de réception (et vos spams).`,
+    );
+
   try {
     const supabase = createSupabaseServerClient();
-    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+
+    // 1. Look up the user by their REAL email stored in profiles.
+    // Accounts are registered in Supabase Auth with a virtual email
+    // ({phone}@jootiya.com), while the real email lives in profiles.email.
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("id, email")
+      .ilike("email", email)
+      .maybeSingle();
+
+    if (!profile) {
+      // No account with this real email: pretend success (no leak).
+      redirect(successRedirect);
+    }
+
+    // 2. Sync the Supabase Auth email to the real email so the built-in
+    // mailer delivers the reset link to an inbox the user can actually read.
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (serviceRoleKey) {
+      const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey, {
+        auth: { persistSession: false },
+      });
+
+      const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(
+        profile!.id,
+        { email, email_confirm: true },
+      );
+
+      if (updateError) {
+        console.error("Forgot Password - updateUserById error:", updateError);
+      }
+    } else {
+      console.error(
+        "Forgot Password - SUPABASE_SERVICE_ROLE_KEY is missing; cannot sync auth email.",
+      );
+    }
+
+    // 3. Send the reset email to the real email address.
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `https://jootiya.com/auth/reset-password`,
     });
 
@@ -30,10 +81,9 @@ async function forgotPasswordAction(formData: FormData) {
       redirect(`/forgot-password?error=${encodeURIComponent(error.message)}`);
     }
 
-    // Explicitly return success for UI feedback
-    redirect("/forgot-password?success=Un e-mail de réinitialisation a été envoyé à " + encodeURIComponent(email) + ". Veuillez vérifier votre boîte de réception (et vos spams).");
+    redirect(successRedirect);
   } catch (err) {
-    if (err instanceof Error && err.message.includes('NEXT_REDIRECT')) throw err;
+    if (err instanceof Error && err.message.includes("NEXT_REDIRECT")) throw err;
     console.error("Forgot Password Action Error:", err);
     redirect("/forgot-password?error=Une erreur inattendue est survenue.");
   }

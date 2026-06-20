@@ -61,7 +61,6 @@ export function AdCard({ ad, variant = "default", footerSlot, href, priority = f
             className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             sizes="(max-width: 420px) 72vw, (max-width: 640px) 46vw, (max-width: 1024px) 24vw, 19vw"
             loading={priority ? "eager" : "lazy"}
-            unoptimized={true}
             onError={() => {
               console.error('AdCard image failed:', ad.imageUrl);
               setFailedImageUrl(ad.imageUrl ?? null);
