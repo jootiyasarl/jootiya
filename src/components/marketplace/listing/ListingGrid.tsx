@@ -33,7 +33,7 @@ export function ListingGrid({ items, isLoading, skeletonCount = 8, searchQuery, 
             price: item.price,
             location: item.subtitle || "Maroc",
             sellerBadge: item.badgeLabel,
-            isFeatured: !!item.badgeLabel,
+            isFeatured: item.badgeLabel === "Featured",
             imageUrl: item.imageUrl,
           } as any}
           href={item.href}

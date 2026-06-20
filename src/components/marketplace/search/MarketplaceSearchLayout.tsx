@@ -7,6 +7,7 @@ import { ListingGrid } from "../listing/ListingGrid";
 import { MobileFilterTrigger } from "../filters/MobileFilterTrigger";
 
 export function MarketplaceSearchLayout({
+  searchBarProps,
   filterSidebarProps,
   sortDropdownProps,
   listingGridProps,

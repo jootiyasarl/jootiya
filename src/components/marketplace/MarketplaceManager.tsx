@@ -2,8 +2,47 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { MarketplaceSearchLayout } from "@/components/marketplace/search/MarketplaceSearchLayout";
-import { useEffect, useMemo, useState } from "react";
+import { ListingCardProps } from "@/types/components/marketplace";
+import { useCallback, useEffect, useMemo, useState } from "react";
+
+// Transform Supabase Ad to ListingCardProps
+import { AdCard } from "@/components/AdCard";
+import { Package } from "lucide-react";
+import { format } from "date-fns";
+import { fr } from "date-fns/locale";
+import { shadowTracker } from "@/lib/shadow-tracker";
 import { MarketplaceSearchBar } from "@/components/marketplace/search/MarketplaceSearchBar";
+
+// Transform Supabase Ad to AdCard expected format
+function transformAdToCard(ad: any) {
+    if (!ad) return null;
+
+    const profile = Array.isArray(ad.profiles) ? ad.profiles[0] : ad.profiles;
+    
+    let createdAtLabel: string | undefined;
+    if (ad.created_at) {
+        const d = new Date(ad.created_at);
+        if (!Number.isNaN(d.getTime())) {
+            const dateStr = d.toLocaleDateString("fr-FR", { month: 'short', day: 'numeric' });
+            const timeStr = d.toLocaleTimeString("fr-FR", { hour: '2-digit', minute: '2-digit' });
+            createdAtLabel = `${dateStr} à ${timeStr}`;
+        }
+    }
+
+    const currency = typeof ad.currency === 'string' ? ad.currency.trim() : "MAD";
+    const priceLabel = ad.price != null ? `${ad.price} ${currency}` : "—";
+
+    return {
+        id: ad.id,
+        title: ad.title || 'Sans titre',
+        price: priceLabel,
+        location: `${ad.neighborhood ? ad.neighborhood + ', ' : ''}${ad.city || 'Maroc'}`,
+        createdAt: createdAtLabel,
+        imageUrl: ad.image_urls?.[0] || ad.images?.[0],
+        isFeatured: Boolean(ad.is_featured),
+        status: ad.status
+    };
+}
 
 export default function MarketplaceManager({ ads: initialAds }: { ads: any[] }) {
     const router = useRouter();
@@ -61,23 +100,6 @@ export default function MarketplaceManager({ ads: initialAds }: { ads: any[] }) 
         return results;
     }, [allAds, activeCity, activeCategory, activeQuery, activeSort]);
 
-    // Map raw ads to ListingCardProps for ListingGrid
-    const listingItems = useMemo(() => {
-        return filteredAds.map(ad => {
-            const currency = typeof ad.currency === 'string' ? ad.currency.trim() : "MAD";
-            const priceLabel = ad.price != null ? `${ad.price} ${currency}` : undefined;
-            return {
-                id: ad.id,
-                title: ad.title || 'Sans titre',
-                subtitle: `${ad.neighborhood ? ad.neighborhood + ', ' : ''}${ad.city || 'Maroc'}`,
-                price: priceLabel,
-                imageUrl: ad.image_urls?.[0] || ad.images?.[0],
-                badgeLabel: ad.is_featured ? 'À la une' : undefined,
-                href: `/ads/${ad.id}`,
-            };
-        });
-    }, [filteredAds]);
-
     const handleSearch = () => {
         const params = new URLSearchParams(searchParams.toString());
         if (query.trim()) {
@@ -129,11 +151,8 @@ export default function MarketplaceManager({ ads: initialAds }: { ads: any[] }) 
                         ]
                     }}
                     listingGridProps={{
-                        items: listingItems,
+                        items: [], // Passing empty since we will render grid here for better control
                         isLoading: false,
-                        searchQuery: activeQuery,
-                        category: activeCategory,
-                        city: activeCity,
                     }}
                 />
 
@@ -147,6 +166,31 @@ export default function MarketplaceManager({ ads: initialAds }: { ads: any[] }) 
                 />
             </div>
 
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 pb-20">
+                {filteredAds.length > 0 ? (
+                    filteredAds.map((ad) => {
+                        const formattedAd = transformAdToCard(ad);
+                        if (!formattedAd) return null;
+                        return (
+                            <AdCard 
+                                key={ad.id} 
+                                ad={formattedAd as any} 
+                                href={`/ads/${ad.id}`}
+                            />
+                        );
+                    })
+                ) : (
+                    <div className="col-span-full py-20 flex flex-col items-center justify-center text-center">
+                        <div className="w-20 h-20 bg-zinc-50 rounded-full flex items-center justify-center mb-4">
+                            <Package className="w-10 h-10 text-zinc-300" />
+                        </div>
+                        <h3 className="text-xl font-bold text-zinc-900 mb-2">Aucune annonce trouvée</h3>
+                        <p className="text-zinc-500 max-w-sm">
+                            Il n'y a pas d'annonces correspondant à vos critères pour le moment. Essayez de modifier vos filtres et votre recherche.
+                        </p>
+                    </div>
+                )}
+            </div>
         </div>
     );
 }
