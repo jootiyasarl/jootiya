@@ -65,6 +65,24 @@ export async function submitReportAction(formData: {
   const adminClient = getAdminClient();
   const supabase = adminClient ?? await getAuthenticatedServerClient();
 
+  let reporterName: string | null = null;
+  let reporterEmail: string | null = null;
+
+  // Fetch reporter profile data if logged in
+  if (user?.id) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("full_name, email, phone")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    reporterName = profile?.full_name ?? null;
+    reporterEmail = profile?.email ?? null;
+    if (profile?.phone) {
+      reporterName = reporterName ? `${reporterName} (${profile.phone})` : profile.phone;
+    }
+  }
+
   const { error } = await supabase
     .from("reports")
     .insert({
@@ -72,6 +90,8 @@ export async function submitReportAction(formData: {
       ad_id: formData.targetType === "ad" ? formData.targetId : null,
       reported_user_id: formData.targetType === "user" ? formData.targetId : null,
       reporter_id: user?.id || null,
+      reporter_name: reporterName,
+      reporter_email: reporterEmail,
       reason: formData.reason + (formData.details ? ` — ${formData.details}` : "")
     });
 
