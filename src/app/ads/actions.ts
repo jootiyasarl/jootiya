@@ -1,7 +1,18 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getAuthenticatedServerClient, getServerUser } from "@/lib/supabase-server";
+import { createClient } from "@supabase/supabase-js";
+import { getAuthenticatedServerClient, getServerUser, createSupabaseServerClient } from "@/lib/supabase-server";
+
+// Helper to bypass RLS for anonymous actions (safe in server actions only)
+function getAdminClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (serviceRoleKey) {
+    return createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } });
+  }
+  return null;
+}
 
 export async function toggleFavoriteAction(adId: string) {
   const user = await getServerUser();
@@ -49,9 +60,10 @@ export async function submitReportAction(formData: {
   details?: string;
 }) {
   const user = await getServerUser();
-  // Reporting can be anonymous or authenticated, but we prefer authenticated
-  
-  const supabase = await getAuthenticatedServerClient();
+
+  // Use admin client to bypass RLS (safe in server actions)
+  const adminClient = getAdminClient();
+  const supabase = adminClient ?? await getAuthenticatedServerClient();
 
   const { error } = await supabase
     .from("reports")
