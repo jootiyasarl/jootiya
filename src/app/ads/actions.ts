@@ -64,9 +64,12 @@ export async function submitReportAction(formData: {
 }) {
   const user = await getServerUser();
 
-  // Use admin client to bypass RLS (safe in server actions)
+  // MUST use admin client to bypass RLS on reports table
   const adminClient = getAdminClient();
-  const supabase = adminClient ?? await getAuthenticatedServerClient();
+  if (!adminClient) {
+    return { error: "Service de signalement temporairement indisponible. Veuillez réessayer plus tard." };
+  }
+  const supabase = adminClient;
 
   let reporterName: string | null = formData.reporterName ?? null;
   let reporterEmail: string | null = formData.reporterEmail ?? null;
