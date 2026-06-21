@@ -63,7 +63,7 @@ async function forgotPasswordAction(formData: FormData) {
     const successRedirect =
       "/forgot-password?success=" +
       encodeURIComponent(
-        `Si un compte est associé, un e-mail de réinitialisation a été envoyé. Veuillez vérifier votre boîte de réception (et vos spams).`,
+        `Si un compte est associé, un e-mail de réinitialisation a été envoyé à ${targetEmail}. Vérifiez votre boîte de réception ET le dossier SPAM/Junk.`,
       );
 
     if (!targetEmail) {
@@ -74,22 +74,34 @@ async function forgotPasswordAction(formData: FormData) {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-    if (serviceRoleKey) {
-      const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey, {
-        auth: { persistSession: false },
+    if (!serviceRoleKey) {
+      console.error("Forgot Password - SUPABASE_SERVICE_ROLE_KEY is missing.");
+      redirect(
+        "/forgot-password?error=" +
+          encodeURIComponent(
+            "Le service de réinitialisation est temporairement indisponible. Veuillez contacter le support au jootiyasarl@gmail.com.",
+          ),
+      );
+    }
+
+    const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey, {
+      auth: { persistSession: false },
+    });
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("id")
+      .ilike("email", targetEmail)
+      .maybeSingle();
+
+    if (profile) {
+      const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(profile.id, {
+        email: targetEmail,
+        email_confirm: true,
       });
 
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("id")
-        .ilike("email", targetEmail)
-        .maybeSingle();
-
-      if (profile) {
-        await supabaseAdmin.auth.admin.updateUserById(profile.id, {
-          email: targetEmail,
-          email_confirm: true,
-        });
+      if (updateError) {
+        console.error("Forgot Password - updateUserById error:", updateError);
       }
     }
 
