@@ -8,6 +8,8 @@ import type {
   UsersTableFilters,
 } from "@/components/users/UsersTable";
 
+const PAGE_SIZE = 20;
+
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
@@ -16,6 +18,7 @@ export default function AdminUsersPage() {
     role: "all",
     query: "",
   });
+  const [page, setPage] = useState(1);
   const [mutatingId, setMutatingId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -83,6 +86,17 @@ export default function AdminUsersPage() {
       return true;
     });
   }, [users, filters]);
+
+  // Reset to first page when filters change
+  useEffect(() => {
+    setPage(1);
+  }, [filters.query, filters.role]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredUsers.length / PAGE_SIZE));
+  const paginatedUsers = useMemo(() => {
+    const start = (page - 1) * PAGE_SIZE;
+    return filteredUsers.slice(start, start + PAGE_SIZE);
+  }, [filteredUsers, page]);
 
   function handleFiltersChange(next: UsersTableFilters) {
     setFilters(next);
@@ -194,16 +208,44 @@ export default function AdminUsersPage() {
           <div className="h-40 animate-pulse rounded-2xl bg-zinc-900/60" />
         </div>
       ) : (
-        <UsersTable
-          users={filteredUsers}
-          allUsers={users}
-          filters={filters}
-          onFiltersChange={handleFiltersChange}
-          onToggleVerify={handleToggleVerify}
-          onChangeRole={handleChangeRole}
-          onToggleBan={handleToggleBan}
-          isMutatingId={mutatingId}
-        />
+        <>
+          <UsersTable
+            users={paginatedUsers}
+            allUsers={users}
+            filters={filters}
+            onFiltersChange={handleFiltersChange}
+            onToggleVerify={handleToggleVerify}
+            onChangeRole={handleChangeRole}
+            onToggleBan={handleToggleBan}
+            isMutatingId={mutatingId}
+          />
+
+          {filteredUsers.length > PAGE_SIZE && (
+            <div className="flex items-center justify-between pt-2">
+              <span className="text-xs text-zinc-500">
+                {filteredUsers.length} utilisateur(s) — Page {page} / {totalPages}
+              </span>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                  className="h-8 px-3 rounded-lg border border-zinc-800 bg-zinc-900 text-xs font-bold text-zinc-300 hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                >
+                  Précédent
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                  disabled={page === totalPages}
+                  className="h-8 px-3 rounded-lg border border-zinc-800 bg-zinc-900 text-xs font-bold text-zinc-300 hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                >
+                  Suivant
+                </button>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
