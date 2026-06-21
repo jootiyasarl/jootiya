@@ -167,6 +167,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           email: user.email || ''
         });
       }
+      // If no user client-side, leave as null — we are still logged in via httpOnly cookie.
     }
     getAdminData();
 
@@ -320,7 +321,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                       {adminData?.name?.charAt(0).toUpperCase() || "A"}
                     </div>
                     <div className="hidden flex-col text-xs text-zinc-100 sm:flex">
-                      <span className="font-medium">{adminData?.name || "Chargement..."}</span>
+                      <span className="font-medium">{adminData?.name || "Admin"}</span>
                       <span className="text-[11px] text-zinc-400">
                         {adminData?.email || ""}
                       </span>
