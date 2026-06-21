@@ -8,9 +8,11 @@ import { getAuthenticatedServerClient, getServerUser, createSupabaseServerClient
 function getAdminClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  console.log("[DEBUG] SUPABASE_SERVICE_ROLE_KEY present?", !!serviceRoleKey);
   if (serviceRoleKey) {
     return createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } });
   }
+  console.error("[DEBUG] SUPABASE_SERVICE_ROLE_KEY is missing in environment");
   return null;
 }
 
