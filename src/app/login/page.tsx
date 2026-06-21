@@ -42,7 +42,17 @@ async function loginAction(formData: FormData) {
     // Phone number → virtual email
     authEmail = `${trimmedIdentifier}@jootiya.com`;
   } else if (!trimmedIdentifier.endsWith("@jootiya.com")) {
-    // Real email (e.g. Gmail) → lookup phone in profiles to get virtual email
+    // Real email → only Gmail/Yahoo allowed
+    const lowerEmail = trimmedIdentifier.toLowerCase();
+    const allowedDomains = ["@gmail.com", "@yahoo.com", "@yahoo.fr"];
+    const isAllowed = allowedDomains.some(d => lowerEmail.endsWith(d));
+    if (!isAllowed) {
+      const params = new URLSearchParams();
+      params.set("error", "Seules les adresses Gmail ou Yahoo sont acceptées.");
+      redirect(`/login?${params.toString()}`);
+    }
+
+    // Lookup phone in profiles to get virtual email
     const { data: profile } = await supabase
       .from("profiles")
       .select("phone")
@@ -154,7 +164,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
                     id="identifier"
                     name="identifier"
                     type="text"
-                    placeholder="nom@exemple.com"
+                    placeholder="nom@exemple.com ou 06XXXXXXXX"
                     required
                     className="input input-bordered w-full h-14 px-5 text-base font-bold"
                   />

@@ -46,6 +46,18 @@ async function registerAction(formData: FormData) {
     redirect(`/register?${params.toString()}`);
   }
 
+  // Only Gmail or Yahoo emails allowed
+  if (trimmedEmail) {
+    const lowerEmail = trimmedEmail.toLowerCase();
+    const allowedDomains = ["@gmail.com", "@yahoo.com", "@yahoo.fr"];
+    const isAllowed = allowedDomains.some(d => lowerEmail.endsWith(d));
+    if (!isAllowed) {
+      const params = new URLSearchParams();
+      params.set("error", "Seules les adresses Gmail ou Yahoo sont acceptées. Vous n'êtes pas le bienvenu ici.");
+      redirect(`/register?${params.toString()}`);
+    }
+  }
+
   const supabase = createSupabaseServerClient();
 
   // Check if email already exists in profiles
@@ -199,7 +211,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="nom@exemple.com"
+                  placeholder="exemple@gmail.com"
                   className="input input-bordered w-full h-14 px-6 text-base font-bold"
                 />
               </div>
