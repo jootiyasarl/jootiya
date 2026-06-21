@@ -54,10 +54,21 @@ async function loginAction(formData: FormData) {
     }
   }
 
-  const { data, error } = await supabase.auth.signInWithPassword({
+  let { data, error } = await supabase.auth.signInWithPassword({
     email: authEmail,
     password: trimmedPassword,
   });
+
+  // Fallback for old users registered with @jootiya.local
+  if ((error || !data.session) && authEmail.endsWith("@jootiya.com")) {
+    const oldEmail = authEmail.replace("@jootiya.com", "@jootiya.local");
+    const oldResult = await supabase.auth.signInWithPassword({
+      email: oldEmail,
+      password: trimmedPassword,
+    });
+    data = oldResult.data;
+    error = oldResult.error;
+  }
 
   if (error || !data.session) {
     const params = new URLSearchParams();
