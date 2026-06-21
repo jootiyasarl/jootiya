@@ -38,7 +38,7 @@ async function loginAction(formData: FormData) {
   // Determine if identifier is phone or email
   let authEmail = trimmedIdentifier;
   if (/^(06|07)\d{8}$/.test(trimmedIdentifier)) {
-    authEmail = `${trimmedIdentifier}@jootiya.local`;
+    authEmail = `${trimmedIdentifier}@jootiya.com`;
   }
 
   const { data, error } = await supabase.auth.signInWithPassword({
