@@ -9,7 +9,7 @@ interface AdminStatsProps {
         totalAds: number;
         activeAds: number;
         totalRevenue: number;
-        growth: { users: number; ads: number };
+        growth: { users: number; ads: number; revenue: number };
     };
 }
 
@@ -27,7 +27,7 @@ export function AdminStats({ stats }: AdminStatsProps) {
                     <div className="text-3xl font-black tracking-tight">${stats.totalRevenue.toLocaleString()}</div>
                     <p className="text-xs text-emerald-500 font-bold flex items-center mt-2 bg-emerald-500/5 py-1 px-2 rounded-lg w-fit">
                         <TrendingUp className="h-3 w-3 mr-1.5" />
-                        +15.2%
+                        +{stats.growth.revenue}%
                     </p>
                 </CardContent>
             </Card>

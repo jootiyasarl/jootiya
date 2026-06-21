@@ -6,8 +6,8 @@ export async function getPageViewsStats() {
 
   const { data, error } = await supabase
     .from("page_views")
-    .select("viewed_at")
-    .gte("viewed_at", thirtyDaysAgo.toISOString());
+    .select("created_at")
+    .gte("created_at", thirtyDaysAgo.toISOString());
 
   if (error) {
     console.error("Error fetching page views:", error);
@@ -26,7 +26,7 @@ export async function getPageViewsStats() {
   }
 
   data.forEach(view => {
-    const dateStr = new Date(view.viewed_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+    const dateStr = new Date(view.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
     if (counts[dateStr] !== undefined) {
       counts[dateStr]++;
     }
@@ -38,7 +38,7 @@ export async function getPageViewsStats() {
 export async function getTopPagesStats(limit: number = 5) {
   const { data, error } = await supabase
     .from("page_views")
-    .select("page_path");
+    .select("path");
 
   if (error) {
     console.error("Error fetching top pages:", error);
@@ -47,7 +47,7 @@ export async function getTopPagesStats(limit: number = 5) {
 
   const pathCounts: { [key: string]: number } = {};
   data.forEach((view) => {
-    pathCounts[view.page_path] = (pathCounts[view.page_path] || 0) + 1;
+    pathCounts[view.path] = (pathCounts[view.path] || 0) + 1;
   });
 
   return Object.entries(pathCounts)

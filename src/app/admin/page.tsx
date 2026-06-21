@@ -72,10 +72,11 @@ export default async function AdminPage() {
               <div className="p-5 bg-zinc-950/50 rounded-3xl border border-zinc-800/50 flex justify-between items-center group/item hover:border-emerald-500/30 transition-all duration-500">
                 <div className="space-y-1">
                   <span className="text-[10px] font-black uppercase text-zinc-500 tracking-widest">Base de données</span>
-                  <p className="text-sm font-bold text-zinc-200">PostgreSQL Clusters</p>
+                  <p className="text-sm font-bold text-zinc-200">PostgreSQL</p>
                 </div>
-                <div className="flex flex-col items-end">
-                  <span className="text-emerald-500 font-black text-xs bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">99.9%</span>
+                <div className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-emerald-500 font-black text-xs bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">Opérationnel</span>
                 </div>
               </div>
 
@@ -84,7 +85,10 @@ export default async function AdminPage() {
                   <span className="text-[10px] font-black uppercase text-zinc-500 tracking-widest">Stockage Cloud</span>
                   <p className="text-sm font-bold text-zinc-200">Supabase Storage</p>
                 </div>
-                <span className="text-zinc-200 font-black text-xs bg-zinc-800/50 px-3 py-1 rounded-full border border-zinc-700/50">4.5% utilisé</span>
+                <div className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="text-emerald-500 font-black text-xs bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">Actif</span>
+                </div>
               </div>
 
               {/* Moderation Queue Alert */}
