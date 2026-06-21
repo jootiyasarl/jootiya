@@ -34,11 +34,20 @@ const REPORT_REASONS = [
 export function ReportModal({ isOpen, onClose, targetId, targetType, reporterId }: ReportModalProps) {
     const [selectedReason, setSelectedReason] = useState<string | null>(null);
     const [details, setDetails] = useState("");
+    const [name, setName] = useState("");
+    const [phone, setPhone] = useState("");
+    const [email, setEmail] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleSubmit = async () => {
         if (!selectedReason) {
             toast.error("Veuillez sélectionner un motif de signalement");
+            return;
+        }
+
+        // Require contact info for unauthenticated users
+        if (!reporterId && (!email.trim() || !name.trim() || !phone.trim())) {
+            toast.error("Veuillez remplir votre nom, téléphone et email.");
             return;
         }
 
@@ -48,7 +57,10 @@ export function ReportModal({ isOpen, onClose, targetId, targetType, reporterId 
                 targetId,
                 targetType,
                 reason: REPORT_REASONS.find(r => r.id === selectedReason)?.label || selectedReason,
-                details
+                details,
+                reporterName: name.trim() || undefined,
+                reporterPhone: phone.trim() || undefined,
+                reporterEmail: email.trim() || undefined
             });
 
             if (result.error) throw new Error(result.error);
@@ -111,6 +123,37 @@ export function ReportModal({ isOpen, onClose, targetId, targetType, reporterId 
                             );
                         })}
                     </div>
+
+                    {!reporterId && (
+                        <div className="space-y-3 text-left border border-zinc-200 rounded-2xl p-4 bg-zinc-50/30">
+                            <p className="text-xs font-black uppercase tracking-widest text-zinc-500">Vos coordonnées (obligatoire)</p>
+                            <input
+                                type="text"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                required={!reporterId}
+                                className="w-full p-4 rounded-2xl border-2 border-zinc-100 focus:border-red-600 focus:ring-0 transition-all bg-white text-sm font-bold"
+                                placeholder="Votre nom complet"
+                            />
+                            <input
+                                type="tel"
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
+                                required={!reporterId}
+                                className="w-full p-4 rounded-2xl border-2 border-zinc-100 focus:border-red-600 focus:ring-0 transition-all bg-white text-sm font-bold"
+                                placeholder="06XXXXXXXX"
+                            />
+                            <input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required={!reporterId}
+                                className="w-full p-4 rounded-2xl border-2 border-zinc-100 focus:border-red-600 focus:ring-0 transition-all bg-white text-sm font-bold"
+                                placeholder="exemple@gmail.com"
+                            />
+                            <p className="text-[11px] text-zinc-400 px-1">Nous avons besoin de vos coordonnées pour vous contacter si nécessaire.</p>
+                        </div>
+                    )}
 
                     <div className="space-y-2 text-left">
                         <label className="text-sm font-black uppercase tracking-widest text-zinc-400 px-1">Détails</label>

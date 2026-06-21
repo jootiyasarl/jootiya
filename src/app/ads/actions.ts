@@ -58,6 +58,9 @@ export async function submitReportAction(formData: {
   targetType: "ad" | "user";
   reason: string;
   details?: string;
+  reporterName?: string;
+  reporterPhone?: string;
+  reporterEmail?: string;
 }) {
   const user = await getServerUser();
 
@@ -65,10 +68,10 @@ export async function submitReportAction(formData: {
   const adminClient = getAdminClient();
   const supabase = adminClient ?? await getAuthenticatedServerClient();
 
-  let reporterName: string | null = null;
-  let reporterEmail: string | null = null;
+  let reporterName: string | null = formData.reporterName ?? null;
+  let reporterEmail: string | null = formData.reporterEmail ?? null;
 
-  // Fetch reporter profile data if logged in
+  // Fetch reporter profile data if logged in (overrides guest input with verified data)
   if (user?.id) {
     const { data: profile } = await supabase
       .from("profiles")
@@ -76,11 +79,14 @@ export async function submitReportAction(formData: {
       .eq("id", user.id)
       .maybeSingle();
 
-    reporterName = profile?.full_name ?? null;
-    reporterEmail = profile?.email ?? null;
+    reporterName = profile?.full_name ?? reporterName;
+    reporterEmail = profile?.email ?? reporterEmail;
     if (profile?.phone) {
       reporterName = reporterName ? `${reporterName} (${profile.phone})` : profile.phone;
     }
+  } else if (formData.reporterPhone) {
+    // For guests, append phone to name
+    reporterName = reporterName ? `${reporterName} (${formData.reporterPhone})` : formData.reporterPhone;
   }
 
   const { error } = await supabase
