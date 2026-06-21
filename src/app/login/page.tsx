@@ -37,8 +37,21 @@ async function loginAction(formData: FormData) {
 
   // Determine if identifier is phone or email
   let authEmail = trimmedIdentifier;
+
   if (/^(06|07)\d{8}$/.test(trimmedIdentifier)) {
+    // Phone number → virtual email
     authEmail = `${trimmedIdentifier}@jootiya.com`;
+  } else if (!trimmedIdentifier.endsWith("@jootiya.com")) {
+    // Real email (e.g. Gmail) → lookup phone in profiles to get virtual email
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("phone")
+      .eq("email", trimmedIdentifier)
+      .maybeSingle();
+
+    if (profile?.phone) {
+      authEmail = `${profile.phone}@jootiya.com`;
+    }
   }
 
   const { data, error } = await supabase.auth.signInWithPassword({
