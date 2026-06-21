@@ -40,12 +40,19 @@ export function MobileMenu({ initialUserEmail = null }: MobileMenuProps) {
     useEffect(() => {
         const checkSession = async () => {
             const { data: { session } } = await supabase.auth.getSession();
-            setUserEmail(session?.user?.email ?? null);
+            if (session?.user) {
+                setUserEmail(session.user.email ?? null);
+            }
+            // Don't clear if no session: server already provided email via httpOnly cookie
         };
         checkSession();
 
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-            setUserEmail(session?.user?.email ?? null);
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            if (session?.user) {
+                setUserEmail(session.user.email ?? null);
+            } else if (event === 'SIGNED_OUT') {
+                setUserEmail(null);
+            }
         });
 
         return () => subscription.unsubscribe();

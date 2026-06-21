@@ -65,17 +65,14 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                     .neq('sender_id', user.id);
 
                 setHasUnreadMessages(count !== null && count > 0);
-            } else {
-                setUserEmail(null);
-                setIsAdmin(false);
-                setHasUnreadMessages(false);
             }
+            // CRITICAL: Don't override server-provided email if client has no session.
+            // Server uses httpOnly cookies which JS cannot see.
         };
 
         checkSession();
 
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-            // Use session from auth state change event
             const user = session?.user;
             
             if (user) {
@@ -102,7 +99,8 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                     .neq('sender_id', user.id);
 
                 setHasUnreadMessages(count !== null && count > 0);
-            } else {
+            } else if (event === 'SIGNED_OUT') {
+                // Only clear on explicit sign-out
                 setUserEmail(null);
                 setIsAdmin(false);
                 setHasUnreadMessages(false);
@@ -179,11 +177,13 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                         ) : (
                             <Link
                                 href="/dashboard"
-                                className="btn btn-ghost btn-circle btn-sm"
+                                className="btn btn-ghost btn-circle btn-sm relative"
                                 title="Mon Compte"
                                 rel="nofollow"
                             >
-                                <User className="w-5 h-5" />
+                                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-orange-500 text-white text-xs font-black">
+                                    {userEmail.charAt(0).toUpperCase()}
+                                </div>
                             </Link>
                         )}
                         <button
