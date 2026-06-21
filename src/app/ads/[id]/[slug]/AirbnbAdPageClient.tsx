@@ -10,14 +10,14 @@ import {
   ImageIcon, 
   Award, 
   MapPin, 
-  Star, 
-  Flag,
+  Star,
   ShieldCheck 
 } from "lucide-react";
 import { AdImageGallery } from "@/components/ads/AdImageGallery";
 import { ContactActions } from "@/components/ads/ContactActions";
 import { QuickActionFooter } from "@/components/ads/QuickActionFooter";
 import { FavoriteButton } from "@/components/ads/FavoriteButton";
+import { ReportButton } from "@/components/ads/ReportButton";
 import { toast } from "sonner";
 
 interface AirbnbAdPageClientProps {
@@ -278,9 +278,11 @@ export function AirbnbAdPageClient({
             </div>
             
             <div className="mt-8 flex justify-center">
-              <button className="btn btn-ghost btn-sm gap-2">
-                <Flag className="h-4 w-4" /> Signaler cette annonce
-              </button>
+              <ReportButton
+                targetId={ad.id}
+                targetType="ad"
+                reporterId={user?.id}
+              />
             </div>
           </div>
         </div>
