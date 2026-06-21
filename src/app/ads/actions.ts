@@ -7,12 +7,17 @@ import { getAuthenticatedServerClient, getServerUser, createSupabaseServerClient
 // Helper to bypass RLS for anonymous actions (safe in server actions only)
 function getAdminClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  console.log("[DEBUG] SUPABASE_SERVICE_ROLE_KEY present?", !!serviceRoleKey);
+  // Try multiple common env var names
+  const serviceRoleKey =
+    process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    process.env.SUPABASE_SERVICE_ROLE ||
+    process.env.SERVICE_ROLE_KEY ||
+    process.env.SUPABASE_ADMIN_KEY;
+  console.log("[DEBUG] service role key found?", !!serviceRoleKey, "tried: SUPABASE_SERVICE_ROLE_KEY, SUPABASE_SERVICE_ROLE, SERVICE_ROLE_KEY, SUPABASE_ADMIN_KEY");
   if (serviceRoleKey) {
     return createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } });
   }
-  console.error("[DEBUG] SUPABASE_SERVICE_ROLE_KEY is missing in environment");
+  console.error("[DEBUG] No service role key found in environment variables");
   return null;
 }
 
