@@ -14,41 +14,63 @@ export const metadata: Metadata = {
 async function forgotPasswordAction(formData: FormData) {
   "use server";
 
-  const rawEmail = formData.get("email")?.toString();
+  const rawIdentifier = formData.get("identifier")?.toString();
 
-  if (!rawEmail) {
-    redirect("/forgot-password?error=Veuillez entrer votre email");
+  if (!rawIdentifier) {
+    redirect("/forgot-password?error=Veuillez entrer votre email ou numéro de téléphone");
   }
 
-  const email = rawEmail.trim().toLowerCase();
-
-  // For security, we always show the same success message, whether or not
-  // the email exists, to avoid leaking which accounts are registered.
-  const successRedirect =
-    "/forgot-password?success=" +
-    encodeURIComponent(
-      `Si un compte est associé à ${email}, un e-mail de réinitialisation a été envoyé. Veuillez vérifier votre boîte de réception (et vos spams).`,
-    );
+  const identifier = rawIdentifier.trim().toLowerCase();
 
   try {
     const supabase = createSupabaseServerClient();
 
-    // 1. Look up the user by their REAL email stored in profiles.
-    // Accounts are registered in Supabase Auth with a virtual email
-    // ({phone}@jootiya.com), while the real email lives in profiles.email.
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("id, email")
-      .ilike("email", email)
-      .maybeSingle();
+    let targetEmail: string | null = null;
 
-    if (!profile) {
-      // No account with this real email: pretend success (no leak).
+    if (/^(06|07)\d{8}$/.test(identifier)) {
+      // User entered phone number — look up email in profiles
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("id, email")
+        .eq("phone", identifier)
+        .maybeSingle();
+
+      if (profile?.email) {
+        targetEmail = profile.email;
+      } else {
+        // No email linked to this phone — show support message
+        redirect(
+          "/forgot-password?success=" +
+            encodeURIComponent(
+              `Aucun email n'est associé à ce numéro. Veuillez contacter le support au jootiyasarl@gmail.com pour réinitialiser votre mot de passe.`,
+            ),
+        );
+      }
+    } else {
+      // User entered email directly
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("id, email")
+        .ilike("email", identifier)
+        .maybeSingle();
+
+      if (profile?.email) {
+        targetEmail = profile.email;
+      }
+    }
+
+    // For security, show same message if email not found (no leak)
+    const successRedirect =
+      "/forgot-password?success=" +
+      encodeURIComponent(
+        `Si un compte est associé, un e-mail de réinitialisation a été envoyé. Veuillez vérifier votre boîte de réception (et vos spams).`,
+      );
+
+    if (!targetEmail) {
       redirect(successRedirect);
     }
 
-    // 2. Sync the Supabase Auth email to the real email so the built-in
-    // mailer delivers the reset link to an inbox the user can actually read.
+    // Sync the Supabase Auth email to the real email
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -57,22 +79,22 @@ async function forgotPasswordAction(formData: FormData) {
         auth: { persistSession: false },
       });
 
-      const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(
-        profile!.id,
-        { email, email_confirm: true },
-      );
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("id")
+        .ilike("email", targetEmail)
+        .maybeSingle();
 
-      if (updateError) {
-        console.error("Forgot Password - updateUserById error:", updateError);
+      if (profile) {
+        await supabaseAdmin.auth.admin.updateUserById(profile.id, {
+          email: targetEmail,
+          email_confirm: true,
+        });
       }
-    } else {
-      console.error(
-        "Forgot Password - SUPABASE_SERVICE_ROLE_KEY is missing; cannot sync auth email.",
-      );
     }
 
-    // 3. Send the reset email to the real email address.
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    // Send reset email
+    const { error } = await supabase.auth.resetPasswordForEmail(targetEmail, {
       redirectTo: `https://jootiya.com/auth/reset-password`,
     });
 
@@ -114,7 +136,7 @@ export default async function ForgotPasswordPage({
         <div className="w-full max-w-md space-y-8 text-left flex flex-col justify-center h-full" dir="ltr">
           <div className="space-y-2">
             <h1 className="text-4xl font-black text-zinc-900 tracking-tighter">Réinitialisation</h1>
-            <p className="text-zinc-500 font-medium">Entrez votre email pour recevoir un lien</p>
+            <p className="text-zinc-500 font-medium">Entrez votre email ou numéro de téléphone</p>
           </div>
 
           <div className="flex-grow flex flex-col justify-center space-y-8">
@@ -139,11 +161,12 @@ export default async function ForgotPasswordPage({
 
             <form action={forgotPasswordAction} className="space-y-5">
               <div className="space-y-1">
+                <label className="text-xs font-bold uppercase tracking-widest text-zinc-500">Email ou Téléphone</label>
                 <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="Votre adresse e-mail"
+                  id="identifier"
+                  name="identifier"
+                  type="text"
+                  placeholder="exemple@gmail.com ou 06XXXXXXXX"
                   required
                   className="h-14 px-6 rounded-xl bg-zinc-50 border-zinc-200 text-zinc-900 placeholder:text-zinc-400 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all text-base font-bold"
                 />
