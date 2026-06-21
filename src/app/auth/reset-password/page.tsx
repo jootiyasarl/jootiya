@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SubmitButton } from "@/components/submit-button";
-import { createSupabaseServerClient } from "@/lib/supabase-server";
+import { createSupabaseServerClient, getAuthenticatedServerClient } from "@/lib/supabase-server";
 import { ShieldCheck, Lock, ChevronLeft } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -29,7 +29,8 @@ async function resetPasswordAction(formData: FormData) {
     redirect("/auth/reset-password?error=Le mot de passe doit faire au moins 8 caractères");
   }
 
-  const supabase = createSupabaseServerClient();
+  // Must use authenticated client — updateUser needs a valid session
+  const supabase = await getAuthenticatedServerClient();
   const { error } = await supabase.auth.updateUser({
     password: password,
   });
