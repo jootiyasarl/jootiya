@@ -60,8 +60,7 @@ export async function submitReportAction(formData: {
       ad_id: formData.targetType === "ad" ? formData.targetId : null,
       reported_user_id: formData.targetType === "user" ? formData.targetId : null,
       reporter_id: user?.id || null,
-      reason: formData.reason,
-      details: { comment: formData.details }
+      reason: formData.reason + (formData.details ? ` — ${formData.details}` : "")
     });
 
   if (error) {
