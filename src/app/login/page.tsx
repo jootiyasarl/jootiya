@@ -1,83 +1,12 @@
-"use server";
-
-import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SubmitButton } from "@/components/submit-button";
-import { createSupabaseServerClient } from "@/lib/supabase-server";
+import { sendOtpAction } from "./actions";
 import { ChevronLeft, Mail } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Connexion | Jootiya",
 };
-
-// Simple in-memory rate limiter (per server instance)
-// In production with multiple instances, use Redis or a DB table
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-const RATE_LIMIT_MAX = 5;        // 5 attempts per window
-const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour
-
-function isRateLimited(key: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(key);
-  if (!entry) {
-    rateLimitMap.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-    return false;
-  }
-  if (now > entry.resetAt) {
-    rateLimitMap.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-    return false;
-  }
-  entry.count++;
-  if (entry.count > RATE_LIMIT_MAX) {
-    return true;
-  }
-  return false;
-}
-
-async function sendOtpAction(formData: FormData) {
-  const emailRaw = formData.get("email");
-  const redirectTo = formData.get("redirectTo")?.toString() || "/dashboard/ads/create";
-
-  if (typeof emailRaw !== "string" || !emailRaw.trim()) {
-    redirect("/login?error=" + encodeURIComponent("Veuillez entrer votre adresse e-mail."));
-  }
-
-  const email = emailRaw.trim().toLowerCase();
-
-  // Basic email validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    redirect("/login?error=" + encodeURIComponent("Veuillez entrer un e-mail valide."));
-  }
-
-  // Rate limiting by email + IP simplified (using email hash)
-  if (isRateLimited(email)) {
-    redirect("/login?error=" + encodeURIComponent("Trop de tentatives. Veuillez réessayer dans une heure."));
-  }
-
-  const supabase = createSupabaseServerClient();
-
-  // Send OTP — creates user automatically if doesn't exist
-  const { error } = await supabase.auth.signInWithOtp({
-    email,
-    options: {
-      shouldCreateUser: true,
-      // Optional: set email redirect for confirmation link (not used for OTP)
-    },
-  });
-
-  if (error) {
-    console.error("OTP send error:", error);
-    const msg = error.message?.includes("rate limit")
-      ? "Trop de demandes. Veuillez patienter une minute."
-      : "Impossible d'envoyer le code. Veuillez réessayer.";
-    redirect("/login?error=" + encodeURIComponent(msg));
-  }
-
-  // Success → redirect to verify page with email
-  redirect("/verify?email=" + encodeURIComponent(email) + "&redirectTo=" + encodeURIComponent(redirectTo));
-}
 
 interface LoginPageProps {
   searchParams: Promise<{
