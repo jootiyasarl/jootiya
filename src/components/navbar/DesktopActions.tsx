@@ -123,10 +123,18 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                 return;
             }
 
+            const maxAge = 60 * 60 * 24 * 365 * 20;
+            document.cookie = `sb-access-token=${session.access_token}; path=/; SameSite=Lax; max-age=${maxAge}`;
+            if (session.refresh_token) {
+                document.cookie = `sb-refresh-token=${session.refresh_token}; path=/; SameSite=Lax; max-age=${maxAge}`;
+            }
+
             await fetch("/api/auth/set-session", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ session }),
+                credentials: "include",
+                cache: "no-store",
             });
 
             window.location.assign(href);
