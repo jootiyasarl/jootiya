@@ -133,7 +133,7 @@ export const DropdownMenuItem = React.forwardRef<
     return null;
   }
 
-  const handleClick: React.MouseEventHandler<HTMLDivElement | HTMLAnchorElement> = (event) => {
+  const handleClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
     onClick?.(event);
     setOpen(false);
   };
@@ -150,7 +150,6 @@ export const DropdownMenuItem = React.forwardRef<
         href={href}
         role="menuitem"
         className={cn(baseClassName, "no-underline")}
-        onClick={handleClick}
         {...props as React.AnchorHTMLAttributes<HTMLAnchorElement>}
       >
         {children}
