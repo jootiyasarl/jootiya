@@ -19,7 +19,7 @@ export function GoogleLoginButton() {
 
       const redirectTo = redirect
         ? `${origin}/auth/callback?redirect=${encodeURIComponent(redirect)}`
-        : `${origin}/auth/callback`;
+        : `${origin}/auth/callback?redirect=${encodeURIComponent('/marketplace/post')}`;
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
