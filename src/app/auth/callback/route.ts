@@ -23,13 +23,16 @@ export async function GET(request: Request) {
       const cookieStore = await cookies();
       const secure = process.env.NODE_ENV === "production";
       
+      // Keep users permanently logged in (365 days)
+      const ONE_YEAR = 60 * 60 * 24 * 365;
+
       // Set access token
       cookieStore.set("sb-access-token", data.session.access_token, {
         httpOnly: true,
         sameSite: "lax",
         secure,
         path: "/",
-        maxAge: data.session.expires_in ?? 3600,
+        maxAge: ONE_YEAR,
       });
 
       // Set refresh token
@@ -39,7 +42,7 @@ export async function GET(request: Request) {
           sameSite: "lax",
           secure,
           path: "/",
-          maxAge: 60 * 60 * 24 * 30, // 30 days
+          maxAge: ONE_YEAR,
         });
       }
 
