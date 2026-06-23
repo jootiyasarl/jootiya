@@ -174,13 +174,13 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
             if (session.refresh_token) {
                 document.cookie = `sb-refresh-token=${session.refresh_token}; path=/; SameSite=Lax; max-age=${maxAge}`;
             }
-            fetch("/api/auth/set-session", {
+            await fetch("/api/auth/set-session", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ session }),
                 credentials: "include",
                 cache: "no-store",
-            }).catch(() => {});
+            });
         } catch (error) {
             console.error("Failed to sync session to cookies", error);
         }
@@ -220,7 +220,7 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                     <button
                         type="button"
                         onMouseEnter={() => syncSessionToCookies()}
-                        onClick={() => { window.location.href = "/dashboard/favorites"; }}
+                        onClick={async () => { await syncSessionToCookies(); window.location.href = "/dashboard/favorites"; }}
                         className="btn btn-ghost btn-circle btn-sm"
                         aria-label="Voir vos annonces favorites"
                         title="Favoris"
@@ -231,7 +231,7 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                     <button
                         type="button"
                         onMouseEnter={() => syncSessionToCookies()}
-                        onClick={() => { window.location.href = "/dashboard/messages"; }}
+                        onClick={async () => { await syncSessionToCookies(); window.location.href = "/dashboard/messages"; }}
                         className="btn btn-ghost btn-circle btn-sm relative"
                         aria-label="Voir vos messages"
                         title="Messages"
@@ -291,22 +291,22 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
 
                                 <DropdownMenuSeparator />
 
-                                <DropdownMenuItem onClick={() => { window.location.href = "/dashboard"; }}>
+                                <DropdownMenuItem onClick={async () => { await syncSessionToCookies(); window.location.href = "/dashboard"; }}>
                                     <LayoutDashboard className="mr-2 h-4 w-4" />
                                     Tableau de bord
                                 </DropdownMenuItem>
 
-                                <DropdownMenuItem onClick={() => { window.location.href = "/dashboard/ads"; }}>
+                                <DropdownMenuItem onClick={async () => { await syncSessionToCookies(); window.location.href = "/dashboard/ads"; }}>
                                     <Package className="mr-2 h-4 w-4" />
                                     Mes annonces
                                 </DropdownMenuItem>
 
-                                <DropdownMenuItem onClick={() => { window.location.href = "/dashboard/profile"; }}>
+                                <DropdownMenuItem onClick={async () => { await syncSessionToCookies(); window.location.href = "/dashboard/profile"; }}>
                                     <User className="mr-2 h-4 w-4" />
                                     Mon profil
                                 </DropdownMenuItem>
 
-                                <DropdownMenuItem onClick={() => { window.location.href = "/dashboard/settings"; }}>
+                                <DropdownMenuItem onClick={async () => { await syncSessionToCookies(); window.location.href = "/dashboard/settings"; }}>
                                     <Settings className="mr-2 h-4 w-4" />
                                     Paramètres
                                 </DropdownMenuItem>
