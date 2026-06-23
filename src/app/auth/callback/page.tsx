@@ -1,91 +1,86 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import { Loader2 } from "lucide-react";
 
 export default function AuthCallbackPage() {
-  const router = useRouter();
   const [message, setMessage] = useState("Connexion en cours...");
 
   useEffect(() => {
     const handleAuth = async () => {
       try {
-        // 1. Check for hash fragment (implicit flow from Google)
-        const hash = window.location.hash;
-        const hashParams = new URLSearchParams(hash.substring(1));
+        const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+        const queryParams = new URLSearchParams(window.location.search);
         const accessToken = hashParams.get("access_token");
         const refreshToken = hashParams.get("refresh_token");
-
-        // 2. Check for PKCE code in query string
-        const queryParams = new URLSearchParams(window.location.search);
         const code = queryParams.get("code");
 
+        let session = null;
+
         if (accessToken) {
-          // Implicit flow: set session client-side first
-          const { data: sessionData, error: sessionError } = await supabase.auth.setSession({
+          const { data, error } = await supabase.auth.setSession({
             access_token: accessToken,
             refresh_token: refreshToken || "",
           });
 
-          if (sessionError || !sessionData.session) {
-            setMessage("Erreur de session. Redirection...");
-            router.push("/login?error=session_failed");
-            return;
+          if (error) {
+            console.error("Set session error:", error.message);
           }
 
-          // Send session to server to create cookies
+          session = data.session;
+        }
+
+        if (!session && code) {
+          const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+
+          if (error) {
+            console.error("Exchange code error:", error.message);
+          }
+
+          session = data.session;
+        }
+
+        if (!session) {
+          const { data } = await supabase.auth.getSession();
+          session = data.session;
+        }
+
+        if (!session) {
+          setMessage("Session introuvable. Redirection...");
+          window.location.replace("/login?error=session_missing");
+          return;
+        }
+
+        const controller = new AbortController();
+        const timeout = window.setTimeout(() => controller.abort(), 8000);
+
+        try {
           const res = await fetch("/api/auth/set-session", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ session: sessionData.session }),
+            body: JSON.stringify({ session }),
+            signal: controller.signal,
           });
 
           if (!res.ok) {
-            setMessage("Erreur serveur. Redirection...");
-            router.push("/login?error=server_error");
-            return;
+            console.error("Set session API error:", await res.text());
           }
-
-          // Success - redirect to ad posting page
-          router.push("/marketplace/post");
-          return;
+        } catch (error) {
+          console.error("Set session API failed:", error);
+        } finally {
+          window.clearTimeout(timeout);
         }
 
-        if (code) {
-          // PKCE flow: the code should be handled server-side
-          // But since we're here, try exchanging it client-side
-          const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-
-          if (error || !data.session) {
-            setMessage("Erreur d'authentification. Redirection...");
-            router.push("/login?error=" + encodeURIComponent(error?.message || "auth_failed"));
-            return;
-          }
-
-          await fetch("/api/auth/set-session", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ session: data.session }),
-          });
-
-          router.push("/marketplace/post");
-          return;
-        }
-
-        // No auth data found
-        setMessage("Aucune donnée d'authentification trouvée.");
-        setTimeout(() => router.push("/login?error=no_auth_data"), 2000);
+        window.location.replace("/marketplace/post");
       } catch (err) {
         console.error("Callback error:", err);
-        setMessage("Erreur inattendue. Redirection...");
-        router.push("/login?error=unexpected");
+        window.location.replace("/marketplace/post");
       }
     };
 
     handleAuth();
-  }, [router]);
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#fafafa] flex flex-col items-center justify-center gap-4">
