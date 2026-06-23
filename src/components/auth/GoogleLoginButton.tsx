@@ -1,12 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import { Loader2 } from "lucide-react";
 
 export function GoogleLoginButton() {
-  const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleGoogleLogin = async () => {
@@ -14,17 +12,13 @@ export function GoogleLoginButton() {
     setIsLoading(true);
 
     try {
-      const redirect = searchParams.get("redirect") ?? searchParams.get("redirectTo");
       const origin = window.location.origin;
 
-      const redirectTo = redirect
-        ? `${origin}/auth/callback?redirect=${encodeURIComponent(redirect)}`
-        : `${origin}/auth/callback?redirect=${encodeURIComponent('/marketplace/post')}`;
-
+      // Simple URL without query params — must match exactly in Supabase Redirect URLs
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo,
+          redirectTo: `${origin}/auth/callback`,
           scopes: 'email profile'
         },
       });

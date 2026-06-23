@@ -18,7 +18,12 @@ export async function GET(request: Request) {
 
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
 
-    if (!error && data.session) {
+    if (error) {
+      console.error("OAuth callback error:", error.message);
+      return NextResponse.redirect(`${requestUrl.origin}/login?error=${encodeURIComponent("Erreur Google: " + error.message)}`);
+    }
+
+    if (data.session) {
       const user = data.session.user;
       const cookieStore = await cookies();
       const secure = process.env.NODE_ENV === "production";
@@ -68,14 +73,12 @@ export async function GET(request: Request) {
         console.error('Profile Upsert Error:', upsertError);
       }
 
-      // Handle redirect destination
-      const redirectTarget = requestUrl.searchParams.get("redirect") || "/marketplace";
-
       if (isAdmin) {
         return NextResponse.redirect(`${requestUrl.origin}/admin`);
       }
 
-      return NextResponse.redirect(`${requestUrl.origin}${redirectTarget}`);
+      // All Google sign-ins go directly to ad posting page
+      return NextResponse.redirect(`${requestUrl.origin}/marketplace/post`);
     }
   }
 
