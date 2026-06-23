@@ -169,11 +169,6 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
         try {
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) return;
-            const maxAge = 60 * 60 * 24 * 365 * 20;
-            document.cookie = `sb-access-token=${session.access_token}; path=/; SameSite=Lax; max-age=${maxAge}`;
-            if (session.refresh_token) {
-                document.cookie = `sb-refresh-token=${session.refresh_token}; path=/; SameSite=Lax; max-age=${maxAge}`;
-            }
             await fetch("/api/auth/set-session", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
