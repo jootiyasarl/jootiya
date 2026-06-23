@@ -114,6 +114,28 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
         };
     }, []);
 
+    const syncSessionAndGo = async (href: string) => {
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+
+            if (!session) {
+                window.location.assign(`/login?redirectTo=${encodeURIComponent(href)}`);
+                return;
+            }
+
+            await fetch("/api/auth/set-session", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ session }),
+            });
+
+            window.location.assign(href);
+        } catch (error) {
+            console.error("Failed to sync session before navigation", error);
+            window.location.assign(href);
+        }
+    };
+
     const handleLogout = async () => {
         try {
             setUserEmail(null);
@@ -143,28 +165,28 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
             {userEmail ? (
                 <>
                     <NotificationBell />
-                    <Link
-                        href="/dashboard/favorites"
+                    <button
+                        type="button"
+                        onClick={() => syncSessionAndGo("/dashboard/favorites")}
                         className="btn btn-ghost btn-circle btn-sm"
                         aria-label="Voir vos annonces favorites"
                         title="Favoris"
-                        rel="nofollow"
                     >
                         <Heart className="w-5 h-5" />
-                    </Link>
+                    </button>
 
-                    <Link
-                        href="/dashboard/messages"
+                    <button
+                        type="button"
+                        onClick={() => syncSessionAndGo("/dashboard/messages")}
                         className="btn btn-ghost btn-circle btn-sm relative"
                         aria-label="Voir vos messages"
                         title="Messages"
-                        rel="nofollow"
                     >
                         <MessageCircle className="w-5 h-5" />
                         {hasUnreadMessages && (
                             <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-orange-500 rounded-full border-2 border-white dark:border-zinc-900" />
                         )}
-                    </Link>
+                    </button>
 
                     <div className="ml-1 pl-1 border-l border-zinc-200 dark:border-zinc-800 flex items-center gap-1">
                         {isAdmin ? (
@@ -177,14 +199,14 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                                 <ShieldAlert className="w-5 h-5" />
                             </Link>
                         ) : (
-                            <Link
-                                href="/dashboard"
+                            <button
+                                type="button"
+                                onClick={() => syncSessionAndGo("/dashboard/profile")}
                                 className="btn btn-ghost btn-circle btn-sm"
-                                title="Mon Compte"
-                                rel="nofollow"
+                                title="Mon profil"
                             >
                                 <User className="w-5 h-5" />
-                            </Link>
+                            </button>
                         )}
                         <button
                             onClick={handleLogout}
