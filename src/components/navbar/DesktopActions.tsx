@@ -38,6 +38,7 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
     const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
     const [fullName, setFullName] = useState<string | null>(null);
     const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+    const [menuOpen, setMenuOpen] = useState(false);
     const router = useRouter();
 
     const isAdminEmail = (email: string) => email === "jootiyasarl@gmail.com";
@@ -145,35 +146,24 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
         };
     }, []);
 
-    const syncSessionAndGo = async (href: string) => {
-        try {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (!session) {
-                window.location.assign(`/login?redirectTo=${encodeURIComponent(href)}`);
-                return;
-            }
-
+    useEffect(() => {
+        if (!menuOpen) return;
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (!session) return;
             const maxAge = 60 * 60 * 24 * 365 * 20;
             document.cookie = `sb-access-token=${session.access_token}; path=/; SameSite=Lax; max-age=${maxAge}`;
             if (session.refresh_token) {
                 document.cookie = `sb-refresh-token=${session.refresh_token}; path=/; SameSite=Lax; max-age=${maxAge}`;
             }
-
             fetch("/api/auth/set-session", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ session }),
                 credentials: "include",
                 cache: "no-store",
-            }).catch((error) => {
-                console.error("Failed to sync session", error);
-            });
-        } catch (error) {
-            console.error("Failed to sync session before navigation", error);
-        } finally {
-            window.location.href = href;
-        }
-    };
+            }).catch(() => {});
+        });
+    }, [menuOpen]);
 
     const handleLogout = async () => {
         try {
@@ -208,7 +198,7 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                     <NotificationBell />
                     <button
                         type="button"
-                        onClick={() => syncSessionAndGo("/dashboard/favorites")}
+                        onClick={() => { window.location.href = "/dashboard/favorites"; }}
                         className="btn btn-ghost btn-circle btn-sm"
                         aria-label="Voir vos annonces favorites"
                         title="Favoris"
@@ -218,7 +208,7 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
 
                     <button
                         type="button"
-                        onClick={() => syncSessionAndGo("/dashboard/messages")}
+                        onClick={() => { window.location.href = "/dashboard/messages"; }}
                         className="btn btn-ghost btn-circle btn-sm relative"
                         aria-label="Voir vos messages"
                         title="Messages"
@@ -241,7 +231,7 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                             </Link>
                         )}
 
-                        <DropdownMenu>
+                        <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
                             <DropdownMenuTrigger
                                 className="flex items-center gap-1.5 rounded-full p-0.5 pr-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
                                 aria-label="Menu du compte"
@@ -278,22 +268,22 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
 
                                 <DropdownMenuSeparator />
 
-                                <DropdownMenuItem onClick={() => syncSessionAndGo("/dashboard")}>
+                                <DropdownMenuItem onClick={() => { window.location.href = "/dashboard"; }}>
                                     <LayoutDashboard className="mr-2 h-4 w-4" />
                                     Tableau de bord
                                 </DropdownMenuItem>
 
-                                <DropdownMenuItem onClick={() => syncSessionAndGo("/dashboard/ads")}>
+                                <DropdownMenuItem onClick={() => { window.location.href = "/dashboard/ads"; }}>
                                     <Package className="mr-2 h-4 w-4" />
                                     Mes annonces
                                 </DropdownMenuItem>
 
-                                <DropdownMenuItem onClick={() => syncSessionAndGo("/dashboard/profile")}>
+                                <DropdownMenuItem onClick={() => { window.location.href = "/dashboard/profile"; }}>
                                     <User className="mr-2 h-4 w-4" />
                                     Mon profil
                                 </DropdownMenuItem>
 
-                                <DropdownMenuItem onClick={() => syncSessionAndGo("/dashboard/settings")}>
+                                <DropdownMenuItem onClick={() => { window.location.href = "/dashboard/settings"; }}>
                                     <Settings className="mr-2 h-4 w-4" />
                                     Paramètres
                                 </DropdownMenuItem>
