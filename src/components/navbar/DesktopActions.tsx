@@ -165,6 +165,27 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
         });
     }, [menuOpen]);
 
+    const syncSessionToCookies = async () => {
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) return;
+            const maxAge = 60 * 60 * 24 * 365 * 20;
+            document.cookie = `sb-access-token=${session.access_token}; path=/; SameSite=Lax; max-age=${maxAge}`;
+            if (session.refresh_token) {
+                document.cookie = `sb-refresh-token=${session.refresh_token}; path=/; SameSite=Lax; max-age=${maxAge}`;
+            }
+            fetch("/api/auth/set-session", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ session }),
+                credentials: "include",
+                cache: "no-store",
+            }).catch(() => {});
+        } catch (error) {
+            console.error("Failed to sync session to cookies", error);
+        }
+    };
+
     const handleLogout = async () => {
         try {
             setUserEmail(null);
@@ -198,6 +219,7 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                     <NotificationBell />
                     <button
                         type="button"
+                        onMouseEnter={() => syncSessionToCookies()}
                         onClick={() => { window.location.href = "/dashboard/favorites"; }}
                         className="btn btn-ghost btn-circle btn-sm"
                         aria-label="Voir vos annonces favorites"
@@ -208,6 +230,7 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
 
                     <button
                         type="button"
+                        onMouseEnter={() => syncSessionToCookies()}
                         onClick={() => { window.location.href = "/dashboard/messages"; }}
                         className="btn btn-ghost btn-circle btn-sm relative"
                         aria-label="Voir vos messages"
