@@ -4,6 +4,7 @@ import Link from "next/link";
 import { SubmitButton } from "@/components/submit-button";
 import { createSupabaseServerClient, setAuthSession } from "@/lib/supabase-server";
 import { ShieldCheck, Lock, ChevronLeft, Mail } from "lucide-react";
+import { GoogleLoginButton } from "@/components/auth/GoogleLoginButton";
 
 export const metadata: Metadata = {
   title: "Connexion | Jootiya",
@@ -177,9 +178,17 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
                 className="btn btn-primary w-full h-14 text-base font-black"
               />
             </div>
+
+            <div className="relative flex items-center gap-4 py-2">
+              <div className="flex-1 h-px bg-zinc-100" />
+              <span className="text-[11px] font-black uppercase tracking-widest text-zinc-400">ou</span>
+              <div className="flex-1 h-px bg-zinc-100" />
+            </div>
+
+            <GoogleLoginButton />
           </form>
 
-          <div className="pt-8 text-center">
+          <div className="pt-6 text-center">
             <p className="text-zinc-500 text-sm font-medium">
               Nouveau ici ?{' '}
               <Link href="/register" className="text-zinc-900 hover:text-orange-500 font-black transition-colors underline decoration-orange-500/30 underline-offset-4">
