@@ -18,8 +18,8 @@ export function GoogleLoginButton() {
       const origin = window.location.origin;
 
       const redirectTo = redirect
-        ? `${origin}/login?redirect=${encodeURIComponent(redirect)}`
-        : `${origin}/login`;
+        ? `${origin}/auth/callback?redirect=${encodeURIComponent(redirect)}`
+        : `${origin}/auth/callback`;
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",

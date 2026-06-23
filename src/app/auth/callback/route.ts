@@ -46,32 +46,36 @@ export async function GET(request: Request) {
         });
       }
 
-      // Check if user is admin and handle redirection/profile creation
-      if (user.email === 'jootiyasarl@gmail.com') {
-        const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-        const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey, {
-          auth: {
-            persistSession: false,
-          },
-        });
-        
-        const { error: upsertError } = await supabaseAdmin.from('profiles').upsert({
-          id: user.id,
-          email: user.email,
-          full_name: user.user_metadata?.full_name || 'Admin',
-          role: 'super_admin',
-          updated_at: new Date().toISOString()
-        }, { onConflict: 'id' });
+      // Create or update profile for ALL users
+      const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+      const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey, {
+        auth: { persistSession: false },
+      });
 
-        if (upsertError) {
-          console.error('Admin Upsert Error:', upsertError);
-        }
+      const isAdmin = user.email === 'jootiyasarl@gmail.com';
+      const role = isAdmin ? 'super_admin' : 'seller';
 
+      const { error: upsertError } = await supabaseAdmin.from('profiles').upsert({
+        id: user.id,
+        email: user.email,
+        full_name: user.user_metadata?.full_name || user.user_metadata?.name || '',
+        avatar_url: user.user_metadata?.avatar_url || user.user_metadata?.picture || null,
+        role,
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'id' });
+
+      if (upsertError) {
+        console.error('Profile Upsert Error:', upsertError);
+      }
+
+      // Handle redirect destination
+      const redirectTarget = requestUrl.searchParams.get("redirect") || "/marketplace";
+
+      if (isAdmin) {
         return NextResponse.redirect(`${requestUrl.origin}/admin`);
       }
 
-      // Default redirect for other users (if Google is enabled later)
-      return NextResponse.redirect(`${requestUrl.origin}/marketplace`);
+      return NextResponse.redirect(`${requestUrl.origin}${redirectTarget}`);
     }
   }
 
