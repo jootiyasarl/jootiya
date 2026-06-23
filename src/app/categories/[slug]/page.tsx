@@ -17,8 +17,12 @@ interface CategoryPageProps {
 
 const ITEMS_PER_PAGE = 20;
 
+// Slugs of categories that should be hidden/removed from the site
+const HIDDEN_CATEGORIES = ["real-estate", "real_estate", "immobilier", "immobilier-luxe"];
+
 export async function generateMetadata({ params }: CategoryPageProps) {
     const { slug } = await params;
+    if (HIDDEN_CATEGORIES.includes(slug.toLowerCase())) return { title: "Catégorie introuvable | Jootiya" };
     const supabase = createSupabaseServerClient();
 
     const { data: category } = await supabase
@@ -39,6 +43,7 @@ export async function generateMetadata({ params }: CategoryPageProps) {
 
 export default async function CategoryPage({ params, searchParams }: CategoryPageProps) {
     const { slug } = await params;
+    if (HIDDEN_CATEGORIES.includes(slug.toLowerCase())) notFound();
     const { page } = await searchParams;
     const currentPage = parseInt(page || "1");
     const from = (currentPage - 1) * ITEMS_PER_PAGE;

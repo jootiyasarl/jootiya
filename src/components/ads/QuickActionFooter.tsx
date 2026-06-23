@@ -82,7 +82,7 @@ export function QuickActionFooter({ phone, adTitle, adPrice, adId, sellerId, cur
                 {/* Main Contact Buttons */}
                 <a
                     href={`tel:${phone}`}
-                    className="flex-1 h-12 bg-orange-600 hover:bg-orange-700 text-white font-black rounded-xl flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-md shadow-orange-200 dark:shadow-none text-[13px] uppercase tracking-tight"
+                    className="btn btn-primary flex-1 h-12 gap-2"
                 >
                     <Phone className="w-4 h-4" />
                     Appeler
@@ -92,25 +92,23 @@ export function QuickActionFooter({ phone, adTitle, adPrice, adId, sellerId, cur
                     href={whatsappUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 h-12 bg-[#25D366] hover:bg-[#22c35e] text-white font-black rounded-xl flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-md shadow-green-100 dark:shadow-none text-[13px] uppercase tracking-tight"
+                    className="btn btn-success flex-1 h-12 gap-2"
                 >
                     <MessageCircle className="w-4 h-4 fill-current" />
                     WhatsApp
                 </a>
 
                 {/* Favorite Action */}
-                <Button
-                    variant="ghost"
-                    size="icon"
+                <button
                     onClick={handleFavoriteClick}
                     disabled={isLoadingFav}
                     className={cn(
-                        "h-12 w-12 rounded-xl shrink-0 transition-all active:scale-90",
-                        isFavorite ? "text-red-500 bg-red-50 dark:bg-red-900/20" : "text-zinc-500 bg-zinc-50 dark:bg-zinc-800"
+                        "btn btn-circle h-12 w-12 shrink-0",
+                        isFavorite ? "btn-error text-white" : "btn-ghost text-zinc-500"
                     )}
                 >
                     <Heart className={cn("h-5 w-5", isFavorite && "fill-current")} />
-                </Button>
+                </button>
             </div>
         </div>
     );

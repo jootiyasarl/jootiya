@@ -1,5 +1,4 @@
 import type React from "react";
-import Image from "next/image";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -208,11 +207,9 @@ export function UsersTable({
                         {/* Avatar */}
                         <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-full border border-zinc-800 bg-zinc-900">
                           {user.avatar_url ? (
-                            <Image
+                            <img
                               src={user.avatar_url}
                               alt={user.full_name || "User"}
-                              width={40}
-                              height={40}
                               className="h-full w-full object-cover"
                             />
                           ) : (

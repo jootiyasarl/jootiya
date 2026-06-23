@@ -10,11 +10,11 @@ export function getOptimizedImageUrl(url: string, options: { width?: number; hei
 
     // 1. Fix URL encoding issues (handle spaces and special characters in paths)
     if (!url) return '/placeholder-ad.jpg';
-    let processedUrl = url.trim();
+    const processedUrl = url.trim();
     if (processedUrl === '/placeholder-ad.jpg') return '/placeholder-ad.jpg';
     
     // Check if it's already a full Supabase public URL
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://mshnkdqclscfytvdbmre.supabase.co';
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     
     // 2. Handle relative paths from Supabase
     let absoluteUrl = processedUrl;
@@ -41,7 +41,7 @@ export function getOptimizedImageUrl(url: string, options: { width?: number; hei
         // Encode only the path part, not the protocol/domain
         const urlObj = new URL(baseUrl);
         absoluteUrl = urlObj.toString() + params;
-    } catch (e) {
+    } catch {
         // Fallback to basic replacement if URL parsing fails
         absoluteUrl = absoluteUrl.replace(/ /g, '%20');
     }
@@ -61,6 +61,10 @@ export function getOptimizedImageUrl(url: string, options: { width?: number; hei
 
     const { width = 400, height = 400, quality = 70, resize = 'cover', format = 'webp' } = options;
 
+    if (format === 'origin') {
+        return absoluteUrl;
+    }
+
     try {
         const urlObj = new URL(absoluteUrl);
         // Supabase Transformation URL replacement
@@ -75,8 +79,8 @@ export function getOptimizedImageUrl(url: string, options: { width?: number; hei
         transformParams.append('format', format);
 
         return `${urlObj.origin}${path}?${transformParams.toString()}`;
-    } catch (e) {
-        console.warn("StorageUtils: Transformation failed, using original URL", e);
+    } catch {
+        console.warn("StorageUtils: Transformation failed, using original URL");
         return absoluteUrl;
     }
 }

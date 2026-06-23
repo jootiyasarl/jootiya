@@ -8,10 +8,12 @@
 
 ## متغيرات البيئة (Supabase)
 
-- `NEXT_PUBLIC_SUPABASE_URL`:
-  `https://ssfcfvuosxxmvsdoktws.supabase.co`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`:
-  `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNzZmNmdnVvc3h4bXZzZG9rdHdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYxMzQ0NTAsImV4cCI6MjA4MTcxMDQ1MH0.yapozcOEBlZ6kLtNs5nwt-CusuDQfojYq1nUZtH2AoE`
+> القيم الحقيقية موجودة في ملف `.env.local` (غير مرفوع للـ git). لا تضع المفاتيح هنا.
+
+- `NEXT_PUBLIC_SUPABASE_URL` → انظر `.env.local`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` → انظر `.env.local`
+- `OPENAI_API_KEY` → انظر `.env.local`
+- `VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` → انظر `.env.local`
 
 - **الصفحات الموجودة (Routes)**
   - `/` → الصفحة الرئيسية (`src/app/page.tsx`).
@@ -64,6 +66,26 @@
     - Legal pages (روابط الشروط وسياسة الخصوصية).
     - Contact information (الإيميل، الهاتف، العنوان).
   - تخزين الإعدادات في جدول `site_settings` في Supabase عبر صف واحد بالمعرّف `id = "site"`.
+
+## تقدم 2026-06-01
+
+- **تحسين الصفحة الرئيسية - المرحلة الأولى**
+  - إعادة ترتيب أقسام الصفحة الرئيسية بدون لمس باقي الصفحات.
+  - إضافة قسم `Arrivés récemment` لعرض أحدث الإعلانات.
+  - إضافة قسم `Annonces proches` عند توفر بيانات المسافة من البحث القريب.
+  - تحسين عناوين الأقسام بأيقونات وروابط `Voir tout` موحدة.
+  - جعل كروت الكاروسيل أقل ازدحاماً على الهواتف الصغيرة جداً.
+  - تنظيف أنواع `HomeClient.tsx` وفحصه عبر ESLint بنجاح.
+
+## تقدم 2026-06-11
+
+- **إصلاح مشكلة عدم ظهور بعض صور الإعلانات**
+  - السبب الجذري: بعض الإعلانات تشير إلى ملفات صور غير موجودة في تخزين Supabase (تعطي 404)، غالباً بيانات تجريبية/مُدخلة يدوياً.
+  - السبب المُفاقم: مكوّن `src/components/AdCard.tsx` (المستخدم في الصفحة الرئيسية وصفحات أخرى) كان **بدون معالج `onError`**، فيظهر رمز الصورة المكسور بدل بديل أنيق.
+  - الإصلاح: تحويل `AdCard` إلى مكوّن عميل (`"use client"`) وإضافة `onError` يعرض البديل الموجود "No Image" عند فشل تحميل الصورة.
+  - إصلاح إضافي مهم: حذف دالة `ensureFullUrl` التي كانت تحوّل أي مسار صورة نسبي إلى دومين الموقع `jootiya.com` بدل Supabase، وترك `getOptimizedImageUrl` تتولى تحويل مسارات التخزين النسبية إلى روابط Supabase صحيحة.
+  - ملاحظة: لا يوجد ملف `placeholder-ad.png/.jpg` في `public/` (الـ fallback المرجعي في `ensureFullUrl`/`getOptimizedImageUrl` كود ميّت لأن البديل الفعلي هو div الـ "No Image").
+  - لمعالجة جذرية كاملة: يُنصح بفحص قيم `image_urls` للإعلانات المعطوبة في قاعدة البيانات وحذف/تصحيح الروابط المفقودة.
 
 ## أفكار / خطوات قادمة محتملة
 

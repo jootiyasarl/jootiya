@@ -248,7 +248,7 @@ export default function Footer() {
                                 Jootiya : La Marketplace n°1 pour l'Achat et la Vente au Maroc
                             </h2>
                             <p className="text-sm leading-relaxed text-zinc-500 font-medium">
-                                Vous cherchez la meilleure affaire à Marrakech, Casablanca ou Tanger ? Jootiya est votre destination privilégiée pour acheter et vendre smartphones, voitures, et immobilier en toute sécurité.
+                                Vous cherchez la meilleure affaire à Marrakech, Casablanca ou Tanger ? Jootiya est votre destination privilégiée pour acheter et vendre smartphones, voitures, et articles d'occasion en toute sécurité.
                             </p>
                             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                                 <li className="flex items-center gap-3 text-zinc-400 text-[13px] font-bold">
@@ -271,7 +271,7 @@ export default function Footer() {
                         </div>
                         <div className="space-y-4">
                             <h3 className="text-xl md:text-2xl font-black text-white leading-tight uppercase tracking-tighter">
-                                Des milliers de catégories : Électronique, Véhicules & Immobilier
+                                Des milliers de catégories : Électronique, Véhicules & Mode
                             </h3>
                             <p className="text-sm leading-relaxed text-zinc-500 font-medium">
                                 Rejoignez des milliers d'utilisateurs quotidiens sur la plus grande plateforme de commerce libre au Maroc. Nous vous offrons les outils nécessaires pour propulser vos ventes et atteindre des clients dans toutes les villes du Royaume.

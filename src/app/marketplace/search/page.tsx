@@ -58,18 +58,6 @@ export default async function SearchResultsPage({ searchParams }: SearchPageProp
                         </ol>
                     </nav>
                     
-                    <div className="flex flex-col gap-1">
-                        <h1 className="text-2xl font-black text-zinc-900 dark:text-white tracking-tight">
-                            {q ? (
-                                <>Résultats pour <span className="text-orange-500">"{q}"</span></>
-                            ) : (
-                                <>Toutes les <span className="text-orange-500">annonces</span></>
-                            )}
-                        </h1>
-                        <p className="text-sm text-zinc-500 font-bold">
-                            {count || 0} annonces trouvées {city && city !== 'Toutes les villes' ? `à ${city}` : 'au Maroc'}
-                        </p>
-                    </div>
                 </div>
 
                 <Suspense fallback={<ListingSkeleton />}>

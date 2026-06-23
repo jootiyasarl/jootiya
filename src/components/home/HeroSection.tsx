@@ -21,14 +21,14 @@ export function HeroSection() {
                         Tout ce dont vous avez besoin, <br /> <span className="text-orange-500 not-italic">en un seul endroit.</span>
                     </h1>
                     <p className="mt-4 sm:mt-6 text-sm sm:text-lg leading-relaxed text-zinc-300 font-medium px-4 sm:px-0">
-                        Le meilleur marché en ligne au Maroc. Électronique, immobilier, voitures, et plus encore. Vendez et achetez en toute sécurité.
+                        Le meilleur marché en ligne au Maroc. Électronique, voitures, mode, et plus encore. Vendez et achetez en toute sécurité.
                     </p>
 
                     <div className="mt-8 hidden sm:flex items-center justify-center gap-x-6 text-sm">
                         <span className="text-zinc-400">Les plus recherchés :</span>
                         <div className="flex gap-2">
                             <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition-colors">iPhone 15</span>
-                            <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition-colors">Appartement</span>
+                            <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition-colors">PlayStation 5</span>
                             <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 cursor-pointer transition-colors">Golf 7</span>
                         </div>
                     </div>

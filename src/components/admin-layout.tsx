@@ -167,6 +167,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           email: user.email || ''
         });
       }
+      // If no user client-side, leave as null — we are still logged in via httpOnly cookie.
     }
     getAdminData();
 
@@ -188,13 +189,13 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   const handleLogout = async () => {
     try {
       setIsLoggingOut(true);
-      await supabase.auth.signOut();
-      await fetch("/api/auth/logout", { method: "POST" });
-      
-      // Clear all possible auth cookies manually to be safe
-      document.cookie = "sb-access-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-      document.cookie = "sb-refresh-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-      
+      // Client-side signOut() is unreliable with httpOnly cookies.
+      // The server endpoint clears cookies and ends the session.
+      const response = await fetch("/api/auth/logout", { method: "POST" });
+      if (!response.ok) {
+        console.error("Server logout failed:", await response.text());
+      }
+
       toast.success("Déconnexion réussie");
       window.location.href = "/";
     } catch (error: any) {
@@ -320,7 +321,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                       {adminData?.name?.charAt(0).toUpperCase() || "A"}
                     </div>
                     <div className="hidden flex-col text-xs text-zinc-100 sm:flex">
-                      <span className="font-medium">{adminData?.name || "Chargement..."}</span>
+                      <span className="font-medium">{adminData?.name || "Admin"}</span>
                       <span className="text-[11px] text-zinc-400">
                         {adminData?.email || ""}
                       </span>

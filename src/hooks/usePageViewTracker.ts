@@ -20,7 +20,7 @@ export function usePageViewTracker() {
         const deviceType = isMobile ? "mobile" : "desktop";
 
         await supabase.from("page_views").insert({
-          page_path: pathname,
+          path: pathname,
           device_type: deviceType,
           referrer: referrer || "direct",
         });

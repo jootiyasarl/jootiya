@@ -158,18 +158,22 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
         }
         setIsSubmitting(true);
         try {
-            const newUploadedUrls = [];
+            const newUploadedUrls: string[] = [];
             const tempAdId = initialData?.id || `temp-${Math.random().toString(36).substring(2, 7)}`;
             
-            for (const file of images) {
+            // Upload all images in parallel instead of sequentially
+            const uploadPromises = images.map(async (file) => {
                 const formData = new FormData();
                 formData.append('file', file);
                 formData.append('adId', tempAdId);
                 const response = await fetch('/api/ads/upload-seo', { method: 'POST', body: formData });
                 if (!response.ok) throw new Error("Échec du traitement de l'image");
                 const { url } = await response.json();
-                newUploadedUrls.push(url);
-            }
+                return url;
+            });
+            
+            const urls = await Promise.all(uploadPromises);
+            newUploadedUrls.push(...urls);
 
             const existingUrls = (initialData?.image_urls || []).filter(url => previews.includes(url));
             const finalImageUrls = [...existingUrls, ...newUploadedUrls];

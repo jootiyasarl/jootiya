@@ -40,12 +40,19 @@ export function MobileMenu({ initialUserEmail = null }: MobileMenuProps) {
     useEffect(() => {
         const checkSession = async () => {
             const { data: { session } } = await supabase.auth.getSession();
-            setUserEmail(session?.user?.email ?? null);
+            if (session?.user) {
+                setUserEmail(session.user.email ?? null);
+            }
+            // Don't clear if no session: server already provided email via httpOnly cookie
         };
         checkSession();
 
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-            setUserEmail(session?.user?.email ?? null);
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            if (session?.user) {
+                setUserEmail(session.user.email ?? null);
+            } else if (event === 'SIGNED_OUT') {
+                setUserEmail(null);
+            }
         });
 
         return () => subscription.unsubscribe();
@@ -85,7 +92,6 @@ export function MobileMenu({ initialUserEmail = null }: MobileMenuProps) {
         { name: "Accueil", href: "/", icon: Home, color: "text-orange-600", bg: "bg-orange-50" },
         { name: "Électronique", href: "/categories/electronics", icon: Smartphone, color: "text-blue-600", bg: "bg-blue-50" },
         { name: "Véhicules", href: "/categories/vehicles", icon: Car, color: "text-orange-600", bg: "bg-orange-50" },
-        { name: "Immobilier", href: "/categories/real-estate", icon: Home, color: "text-emerald-600", bg: "bg-emerald-50" },
         { name: "Mode & Chaussures", href: "/categories/fashion", icon: Shirt, color: "text-pink-600", bg: "bg-pink-50" },
         { name: "Maison & Ameublement", href: "/categories/home-furniture", icon: Package, color: "text-green-600", bg: "bg-green-50" },
         { name: "Outils & Équipement", href: "/categories/tools-equipment", icon: Hammer, color: "text-zinc-600", bg: "bg-zinc-50" },
@@ -99,10 +105,10 @@ export function MobileMenu({ initialUserEmail = null }: MobileMenuProps) {
         <>
             <button
                 onClick={() => setIsMobileMenuOpen(true)}
-                className="lg:hidden p-2 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-xl transition-colors"
+                className="lg:hidden btn btn-ghost btn-circle btn-sm"
                 aria-label="Menu"
             >
-                <Menu className="w-6 h-6" />
+                <Menu className="w-5 h-5" />
             </button>
 
             {isMobileMenuOpen && (
@@ -118,7 +124,7 @@ export function MobileMenu({ initialUserEmail = null }: MobileMenuProps) {
                             </span>
                             <button
                                 onClick={() => setIsMobileMenuOpen(false)}
-                                className="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 transition-colors"
+                                className="btn btn-ghost btn-circle btn-sm"
                             >
                                 <X className="w-5 h-5" />
                             </button>
@@ -128,7 +134,7 @@ export function MobileMenu({ initialUserEmail = null }: MobileMenuProps) {
                             {/* Apparence */}
                             <div className="space-y-2">
                                 <h3 className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 px-1">Apparence</h3>
-                                <div className="flex items-center gap-1 p-1 bg-zinc-100 dark:bg-zinc-800/50 rounded-xl w-fit">
+                                <div className="join">
                                     {[
                                         { id: 'light', icon: Sun },
                                         { id: 'system', icon: Monitor },
@@ -141,8 +147,8 @@ export function MobileMenu({ initialUserEmail = null }: MobileMenuProps) {
                                             key={opt.id}
                                             onClick={() => setTheme(opt.id)}
                                             className={cn(
-                                                "p-2 rounded-lg transition-all",
-                                                isActive ? "bg-white dark:bg-zinc-700 text-orange-600 shadow-sm" : "text-zinc-400"
+                                                "btn btn-sm join-item",
+                                                isActive ? "btn-active" : "btn-ghost"
                                             )}
                                             aria-label={`Changer le thème en ${opt.id}`}
                                             title={`Thème ${opt.id}`}
@@ -158,30 +164,31 @@ export function MobileMenu({ initialUserEmail = null }: MobileMenuProps) {
                             <div className="space-y-2">
                                 <h3 className="text-[10px] font-bold uppercase tracking-wider text-zinc-400 px-1">Compte personnel</h3>
                                 {userEmail ? (
-                                    <div className="space-y-1">
-                                        <Link href="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center justify-between p-3 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800/50 group border border-transparent hover:border-zinc-100 dark:hover:border-zinc-700" rel="nofollow">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/20 flex items-center justify-center text-orange-600 dark:text-orange-500">
-                                                    <User className="w-5 h-5" />
+                                    <div className="card bg-base-100 border border-zinc-200 dark:border-zinc-700 shadow-sm">
+                                        <div className="card-body p-3 gap-2">
+                                            <Link href="/dashboard" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center justify-between group" rel="nofollow">
+                                                <div className="flex items-center gap-3">
+                                                    <span className="flex h-10 w-10 items-center justify-center rounded-full bg-orange-100 dark:bg-orange-900/20 text-orange-600 dark:text-orange-500">
+                                                        <User className="w-5 h-5" />
+                                                    </span>
+                                                    <div className="flex flex-col">
+                                                        <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100">Mon profil</span>
+                                                        <span className="text-[11px] text-zinc-500 truncate max-w-[140px] leading-tight">{userEmail}</span>
+                                                    </div>
                                                 </div>
-                                                <div className="flex flex-col">
-                                                    <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100">Mon profil</span>
-                                                    <span className="text-[11px] text-zinc-500 truncate max-w-[140px] leading-tight">{userEmail}</span>
-                                                </div>
-                                            </div>
-                                            <ChevronRight className="w-4 h-4 text-zinc-300 group-hover:text-orange-500 transition-colors" />
-                                        </Link>
-                                        <button onClick={handleLogout} className="w-full flex items-center gap-3 p-3 rounded-xl text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors text-sm font-medium">
-                                            <LogOut className="w-4 h-4" />
-                                            Déconnexion
-                                        </button>
+                                                <ChevronRight className="w-4 h-4 text-zinc-300 group-hover:text-orange-500 transition-colors" />
+                                            </Link>
+                                            <div className="divider my-0" />
+                                            <button onClick={handleLogout} className="btn btn-ghost btn-sm text-red-600 justify-start gap-2">
+                                                <LogOut className="w-4 h-4" />
+                                                Déconnexion
+                                            </button>
+                                        </div>
                                     </div>
                                 ) : (
-                                    <Link href="/login" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 p-3 rounded-xl bg-orange-600 hover:bg-orange-700 text-white shadow-md shadow-orange-200 dark:shadow-none transition-all" rel="nofollow">
-                                        <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                                            <User className="w-4 h-4" />
-                                        </div>
-                                        <span className="text-sm font-bold">Se connecter</span>
+                                    <Link href="/login" onClick={() => setIsMobileMenuOpen(false)} className="btn btn-primary w-full gap-2" rel="nofollow">
+                                        <User className="w-4 h-4" />
+                                        Se connecter
                                     </Link>
                                 )}
                             </div>
@@ -195,19 +202,17 @@ export function MobileMenu({ initialUserEmail = null }: MobileMenuProps) {
                                             key={link.name} 
                                             href={link.href} 
                                             onClick={() => setIsMobileMenuOpen(false)} 
-                                            className="flex items-center justify-between p-3 rounded-2xl hover:bg-zinc-50 dark:hover:bg-zinc-800/50 group transition-all border border-transparent active:scale-[0.98]"
+                                            className="flex items-center justify-between py-3 px-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white transition-all active:scale-[0.98] group shadow-sm"
                                         >
-                                            <div className="flex items-center gap-4">
+                                            <div className="flex items-center gap-4 flex-1">
                                                 <div className={cn(
-                                                    "w-10 h-10 rounded-xl flex items-center justify-center transition-colors shadow-sm",
-                                                    link.bg,
-                                                    "dark:bg-zinc-800"
+                                                    "w-10 h-10 rounded-xl flex items-center justify-center shadow-sm bg-white/20"
                                                 )}>
-                                                    <link.icon className={cn("w-5 h-5", link.color)} />
+                                                    <link.icon className="w-5 h-5 text-white" />
                                                 </div>
-                                                <span className="text-sm font-bold text-zinc-700 dark:text-zinc-300 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">{link.name}</span>
+                                                <span className="text-sm font-bold">{link.name}</span>
                                             </div>
-                                            <ChevronRight className="w-4 h-4 text-zinc-300 group-hover:text-orange-500 group-hover:translate-x-0.5 transition-all" />
+                                            <ChevronRight className="w-4 h-4 text-white/70 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
                                         </Link>
                                     ))}
                                 </div>
@@ -215,11 +220,9 @@ export function MobileMenu({ initialUserEmail = null }: MobileMenuProps) {
                         </div>
 
                         <div className="p-4 border-t border-zinc-100 dark:border-zinc-800">
-                            <Link href="/marketplace/post" onClick={() => setIsMobileMenuOpen(false)}>
-                                <div className="w-full h-12 rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-black shadow-[0_12px_30px_rgba(255,102,0,0.18)] text-sm flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.98]">
-                                    <PlusCircle className="w-4 h-4" />
-                                    Déposer une annonce
-                                </div>
+                            <Link href="/marketplace/post" onClick={() => setIsMobileMenuOpen(false)} className="btn btn-primary w-full gap-2">
+                                <PlusCircle className="w-4 h-4" />
+                                Déposer une annonce
                             </Link>
                         </div>
                     </div>

@@ -1,16 +1,28 @@
 "use client";
 
-import React, { useEffect, useState, Suspense, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { SellBanner } from "@/components/home/SellBanner";
-import { BlogSection } from "@/components/home/BlogSection";
-import { AdCard } from "@/components/AdCard";
-import { Package, ArrowRight, WifiOff } from "lucide-react";
+import { TrustSection } from "@/components/home/TrustSection";
+import { AdCard, type PublicAdCardAd } from "@/components/AdCard";
+import { Package, ArrowRight, WifiOff, ChevronLeft, ChevronRight, PlusCircle, Clock3, MapPin, Sparkles } from "lucide-react";
 import { getCachedAds, saveAds } from "@/lib/pwa/jootiya-db";
 import { supabase } from "@/lib/supabaseClient";
-import { LocationPrompt } from "@/components/LocationPrompt";
 import { fetchNearbyAds } from "@/lib/nearbyAds";
 import useEmblaCarousel from "embla-carousel-react";
+
+const CATEGORY_LABELS: { [key: string]: string } = {
+  "electronics": "Électronique",
+  "home-furniture": "Maison & Ameublement",
+  "vehicles": "Véhicules & Transport",
+  "fashion": "Mode & Chaussures",
+  "tools-equipment": "Outils & Équipement",
+  "hobbies": "Loisirs & Divertissement",
+  "animals": "Animaux",
+  "books": "Livres & Études",
+  "used-clearance": "Occasions",
+  "other": "Autres",
+};
 
 type HomepageAd = {
   id: string;
@@ -29,7 +41,43 @@ type HomepageAd = {
   sellerAvatar?: string;
 };
 
-export default function HomeClient({ initialParams }: { initialParams: any }) {
+type HomeInitialParams = {
+  lat?: string;
+  lng?: string;
+  radius?: string;
+};
+
+type HomepageAdRow = {
+  id: string;
+  title: string;
+  price: number | string | null;
+  currency?: string | null;
+  city?: string | null;
+  neighborhood?: string | null;
+  created_at?: string | null;
+  is_featured?: boolean | null;
+  images?: string[] | null;
+  image_urls?: string[] | null;
+  category?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  distanceKm?: number;
+  profiles?: {
+    full_name?: string | null;
+    username?: string | null;
+    avatar_url?: string | null;
+  } | Array<{
+    full_name?: string | null;
+    username?: string | null;
+    avatar_url?: string | null;
+  }>;
+  sellerName?: string;
+  seller_name?: string;
+  sellerAvatar?: string;
+  seller_avatar?: string;
+};
+
+export default function HomeClient({ initialParams }: { initialParams: HomeInitialParams }) {
   const [ads, setAds] = useState<HomepageAd[]>([]);
   const [isOfflineData, setIsOfflineData] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -61,7 +109,6 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
       }
 
       try {
-        let data: any[] | null = [];
         let storedLocation = null;
         
         if (typeof window !== "undefined") {
@@ -76,7 +123,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
         const lat = latParam || storedLocation?.lat;
         const lon = lngParam || storedLocation?.lon;
 
-        let resultData: any[] | null = null;
+        let resultData: HomepageAdRow[] | null = null;
         if (lat && lon) {
           console.log("Fetching nearby ads...");
           resultData = await fetchNearbyAds({
@@ -115,7 +162,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
 
         if (resultData && isMounted) {
           console.log("Data fetched successfully:", resultData.length);
-          const formattedAds = resultData.map((row: any): HomepageAd => {
+          const formattedAds = resultData.map((row): HomepageAd => {
             const locationParts: string[] = [];
             if (row.neighborhood) locationParts.push(row.neighborhood);
             if (row.city) locationParts.push(row.city);
@@ -135,19 +182,19 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
             const priceLabel = row.price != null ? `${row.price} ${currency || "MAD"}` : "—";
 
             // Get seller name/avatar (safely)
-            const profile = (row as any)?.profiles;
+            const profile = row.profiles;
             const profileObj = Array.isArray(profile) ? profile[0] : profile;
 
             const sellerName =
-              (typeof (row as any)?.sellerName === 'string' ? (row as any).sellerName : undefined) ||
-              (typeof (row as any)?.seller_name === 'string' ? (row as any).seller_name : undefined) ||
+              (typeof row.sellerName === 'string' ? row.sellerName : undefined) ||
+              (typeof row.seller_name === 'string' ? row.seller_name : undefined) ||
               profileObj?.full_name ||
               profileObj?.username ||
               "Utilisateur";
 
             const sellerAvatar =
-              (typeof (row as any)?.sellerAvatar === 'string' ? (row as any).sellerAvatar : undefined) ||
-              (typeof (row as any)?.seller_avatar === 'string' ? (row as any).seller_avatar : undefined) ||
+              (typeof row.sellerAvatar === 'string' ? row.sellerAvatar : undefined) ||
+              (typeof row.seller_avatar === 'string' ? row.seller_avatar : undefined) ||
               profileObj?.avatar_url;
 
             return {
@@ -159,12 +206,12 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
               sellerBadge: row.is_featured ? "À la une" : undefined,
               isFeatured: Boolean(row.is_featured),
               imageUrl: primaryImageUrl,
-              categorySlug: row.category,
+              categorySlug: row.category || undefined,
               latitude: row.latitude || 0,
               longitude: row.longitude || 0,
               distanceKm: row.distanceKm,
               sellerName: sellerName,
-              sellerAvatar: sellerAvatar,
+              sellerAvatar: sellerAvatar || undefined,
             };
           });
 
@@ -176,9 +223,9 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
             saveAds(formattedAds);
           }
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Fetch error:", err);
-        setError(err.message || "Erreur de chargement");
+        setError(err instanceof Error ? err.message : "Erreur de chargement");
         setLoading(false);
       }
     }
@@ -186,8 +233,6 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
     initData();
     return () => { isMounted = false; };
   }, [latParam, lngParam, radiusParam]);
-
-  const mapAds = ads.filter(a => a.latitude && a.longitude).slice(0, 10);
 
   const categoryMapping: { [key: string]: string } = {
     "electronics": "electronics",
@@ -216,7 +261,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
     return categoryMapping[categoryName] || "other";
   };
 
-  const groupedAds = ads.reduce((acc: any, ad) => {
+  const groupedAds = ads.reduce<Record<string, HomepageAd[]>>((acc, ad) => {
     const category = ad.categorySlug || "Autre";
     if (!acc[category]) acc[category] = [];
     acc[category].push(ad);
@@ -233,7 +278,7 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
     return a.localeCompare(b, "fr", { sensitivity: "base" });
   });
 
-  const toAdCard = (ad: HomepageAd) => ({
+  const toAdCard = (ad: HomepageAd): PublicAdCardAd => ({
     id: ad.id,
     title: ad.title,
     price: ad.price,
@@ -243,6 +288,48 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
     isFeatured: ad.isFeatured,
     imageUrl: ad.imageUrl,
   });
+
+  const latestAds = ads.slice(0, 12);
+  const nearbyAds = ads
+    .filter((ad) => typeof ad.distanceKm === "number" && Number.isFinite(ad.distanceKm))
+    .sort((a, b) => (a.distanceKm ?? Number.MAX_SAFE_INTEGER) - (b.distanceKm ?? Number.MAX_SAFE_INTEGER))
+    .slice(0, 12);
+
+  function SectionHeader({
+    eyebrow,
+    title,
+    href,
+    icon: Icon,
+  }: {
+    eyebrow: string;
+    title: string;
+    href?: string;
+    icon?: React.ElementType;
+  }) {
+    return (
+      <div className="flex items-end justify-between gap-3">
+        <div className="flex min-w-0 flex-col gap-1.5">
+          <span className="home-section-eyebrow inline-flex items-center gap-1.5">
+            {Icon && <Icon className="h-3.5 w-3.5" />}
+            {eyebrow}
+          </span>
+          <h2 className="home-section-title truncate">
+            {title}
+          </h2>
+        </div>
+        {href && (
+          <Link 
+            href={href}
+            className="btn btn-ghost btn-circle btn-sm shrink-0"
+            aria-label="Voir tout"
+            title="Voir tout"
+          >
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        )}
+      </div>
+    );
+  }
 
   function CategoryCarousel({ items }: { items: HomepageAd[] }) {
     const slides = items.slice(0, 10);
@@ -256,15 +343,15 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
     const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
 
     return (
-      <div className="relative">
+      <div className="relative group/carousel">
         <div className="overflow-hidden" ref={emblaRef}>
-          <div className="flex gap-3 pb-4">
+          <div className="flex gap-3 sm:gap-4 pb-2">
             {slides.map((ad) => (
               <div
                 key={ad.id}
-                className="flex-[0_0_72%] sm:flex-[0_0_45%] md:flex-[0_0_32%] lg:flex-[0_0_24%] min-w-0"
+                className="flex-[0_0_72%] min-[360px]:flex-[0_0_62%] min-[420px]:flex-[0_0_46%] sm:flex-[0_0_31%] md:flex-[0_0_24%] xl:flex-[0_0_19%] min-w-0"
               >
-                <AdCard ad={toAdCard(ad) as any} href={`/ads/${ad.id}`} />
+                <AdCard ad={toAdCard(ad)} href={`/ads/${ad.id}`} />
               </div>
             ))}
           </div>
@@ -273,18 +360,18 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
         <button
           type="button"
           onClick={scrollPrev}
-          className="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm border border-zinc-200 shadow-sm items-center justify-center text-zinc-800 hover:text-orange-600 transition-colors"
+          className="hidden md:flex absolute -left-3 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-white border border-zinc-200 shadow-lg items-center justify-center text-zinc-700 hover:text-orange-600 hover:border-orange-200 hover:scale-105 transition-all opacity-0 group-hover/carousel:opacity-100 active:scale-95"
           aria-label="Précédent"
         >
-          <span className="text-lg font-black">‹</span>
+          <ChevronLeft className="w-5 h-5" strokeWidth={2.5} />
         </button>
         <button
           type="button"
           onClick={scrollNext}
-          className="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm border border-zinc-200 shadow-sm items-center justify-center text-zinc-800 hover:text-orange-600 transition-colors"
+          className="hidden md:flex absolute -right-3 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-white border border-zinc-200 shadow-lg items-center justify-center text-zinc-700 hover:text-orange-600 hover:border-orange-200 hover:scale-105 transition-all opacity-0 group-hover/carousel:opacity-100 active:scale-95"
           aria-label="Suivant"
         >
-          <span className="text-lg font-black">›</span>
+          <ChevronRight className="w-5 h-5" strokeWidth={2.5} />
         </button>
       </div>
     );
@@ -292,54 +379,57 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
 
   return (
     <div dir="ltr" className="min-h-screen bg-white font-sans text-zinc-900 pb-12">
-      <LocationPrompt />
-      {isOfflineData && (
-        <div className="bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest py-1 text-center flex items-center justify-center gap-2">
-          <WifiOff className="w-3 h-3" />
-          Mode hors-ligne : Affichage des données en cache
-        </div>
-      )}
       
-      <main className="main-container py-4 sm:py-6 lg:py-8">
+      {/* Sell banner — light, compact CTA strip */}
+      <section className="main-container">
+        <SellBanner />
+      </section>
+
+      <main className="main-container pb-4 pt-6 sm:pt-8">
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-2xl text-red-600 text-sm font-bold flex flex-col items-center gap-3">
-            <p>Impossible de charger les annonces : {error}</p>
-            <button 
-              onClick={() => window.location.reload()} 
-              className="px-4 py-2 bg-red-600 text-white rounded-xl text-xs"
-            >
-              Réessayer
-            </button>
+          <div className="alert alert-error mb-6 shadow-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current shrink-0 w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <div>
+              <h3 className="font-bold">Erreur de chargement</h3>
+              <div className="text-xs">{error}</div>
+            </div>
+            <button onClick={() => window.location.reload()} className="btn btn-sm btn-ghost">Réessayer</button>
           </div>
         )}
-        <div className="block mb-6 md:mb-10">
-          <SellBanner />
-        </div>
-        
-        <div className="space-y-12 sm:space-y-16 min-w-0">
+        <div className="space-y-8 sm:space-y-12 min-w-0 pt-2">
           {ads.length === 0 && !loading ? (
-            <div className="flex flex-col items-center justify-center py-24 text-center border border-dashed border-zinc-200 rounded-[2.5rem] bg-zinc-50/40 px-4">
-              <div className="bg-white p-6 rounded-2xl mb-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-zinc-100">
-                <Package className="w-10 h-10 text-zinc-400" />
+            <div className="card bg-base-100 shadow-xl border border-zinc-200 px-6 py-16 text-center">
+              <div className="card-body items-center">
+                <div className="bg-zinc-50 p-6 rounded-2xl mb-4">
+                  <Package className="w-10 h-10 text-zinc-400" />
+                </div>
+                <h3 className="card-title text-zinc-900">Aucune annonce trouvée</h3>
+                <p className="text-zinc-500 max-w-xs mx-auto">Soyez le premier à publier une annonce dans votre région.</p>
+                <div className="card-actions mt-6">
+                  <Link href="/marketplace/post" className="btn btn-primary gap-2">
+                    <PlusCircle className="w-5 h-5" />
+                    Déposer une annonce
+                  </Link>
+                </div>
               </div>
-              <h3 className="text-xl font-bold text-zinc-900">Aucune annonce trouvée</h3>
-              <Link href="/marketplace/post" className="mt-8 inline-flex items-center justify-center px-8 h-12 bg-orange-500 text-white rounded-2xl font-black hover:bg-orange-600 transition-all shadow-[0_12px_30px_rgba(255,102,0,0.18)] hover:shadow-[0_18px_40px_rgba(255,102,0,0.22)] active:scale-[0.98]">
-                Déposer une annonce
-              </Link>
             </div>
           ) : (
             <>
               {loading ? (
-                <div className="space-y-8 py-4 px-2">
+                <div className="space-y-10">
                   {[...Array(2)].map((_, sectionIndex) => (
                     <div key={sectionIndex} className="space-y-4">
-                      <div className="flex flex-col gap-1 px-1">
-                        <div className="h-3 w-16 bg-zinc-100 animate-pulse rounded-full" />
-                        <div className="h-6 w-32 bg-zinc-100 animate-pulse rounded-lg mt-1" />
+                      <div className="flex flex-col gap-2">
+                        <div className="skeleton h-3 w-20 rounded-full" />
+                        <div className="skeleton h-7 w-44 rounded-lg" />
                       </div>
-                      <div className="flex overflow-x-auto no-scrollbar gap-3 pb-2">
-                        {[...Array(3)].map((_, i) => (
-                          <div key={i} className="jootiya-card flex-[0_0_75%] min-[400px]:flex-[0_0_60%] aspect-[3/4] bg-zinc-100 animate-pulse rounded-[1.5rem] shrink-0" />
+                      <div className="flex gap-3 sm:gap-4 pb-2">
+                        {[...Array(5)].map((_, i) => (
+                          <div key={i} className="flex-[0_0_72%] min-[360px]:flex-[0_0_62%] min-[420px]:flex-[0_0_46%] sm:flex-[0_0_31%] md:flex-[0_0_24%] xl:flex-[0_0_19%] shrink-0">
+                            <div className="skeleton aspect-[4/3] rounded-[1.5rem]" />
+                            <div className="skeleton h-4 w-3/4 rounded mt-3" />
+                            <div className="skeleton h-4 w-1/3 rounded mt-2" />
+                          </div>
                         ))}
                       </div>
                     </div>
@@ -347,30 +437,29 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
                 </div>
               ) : (
                 <>
+                  {latestAds.length > 0 && (
+                    <section className="card bg-base-100 shadow-sm border border-orange-100 p-4 sm:p-6 space-y-4 sm:space-y-5">
+                      <SectionHeader eyebrow="Nouveautés" title="Arrivés récemment" href="/marketplace" icon={Clock3} />
+                      <CategoryCarousel items={latestAds} />
+                    </section>
+                  )}
+
+                  {nearbyAds.length > 0 && (
+                    <section className="card bg-base-100 shadow-sm border border-zinc-200 p-4 sm:p-6 space-y-4 sm:space-y-5">
+                      <SectionHeader eyebrow="Autour de vous" title="Annonces proches" href="/marketplace" icon={MapPin} />
+                      <CategoryCarousel items={nearbyAds} />
+                    </section>
+                  )}
+
                   {orderedCategories.map((category) => {
                     const categoryAds = groupedAds[category];
                     if (categoryAds.length === 0) return null;
 
-                    return (
-                      <section key={category} className="space-y-6">
-                        <div className="flex items-center justify-between">
-                          <div className="flex flex-col gap-1">
-                            <span className="text-[10px] font-black uppercase text-orange-500 tracking-[0.2em]">{category}</span>
-                            <h2 className="text-2xl md:text-3xl font-black text-zinc-900 dark:text-white tracking-tighter">
-                              {category}
-                            </h2>
-                          </div>
-                          <Link 
-                            href={`/categories/${getCategorySlug(category)}`}
-                            className="group flex items-center gap-2 text-sm font-bold text-zinc-500 hover:text-orange-600 transition-all duration-300"
-                          >
-                            Voir tout
-                            <div className="w-8 h-8 rounded-full bg-zinc-100 flex items-center justify-center group-hover:bg-orange-500 group-hover:text-white transition-all">
-                              <ArrowRight className="w-4 h-4" />
-                            </div>
-                          </Link>
-                        </div>
+                    const categoryLabel = CATEGORY_LABELS[category] || category;
 
+                    return (
+                      <section key={category} className="card bg-base-100 shadow-sm border border-zinc-200 p-4 sm:p-6 space-y-4 sm:space-y-5">
+                        <SectionHeader eyebrow="Catégorie" title={categoryLabel} href={`/categories/${getCategorySlug(category)}`} icon={Sparkles} />
                         <CategoryCarousel items={categoryAds} />
                       </section>
                     );
@@ -381,6 +470,9 @@ export default function HomeClient({ initialParams }: { initialParams: any }) {
           )}
         </div>
       </main>
+
+      {/* Trust / value proposition */}
+      <TrustSection />
     </div>
   );
 }

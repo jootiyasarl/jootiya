@@ -13,34 +13,23 @@ export type AdFilters = {
 const IS_UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 export async function getAds(supabase: any, { query, category, sellerId, minPrice, maxPrice, city, sort = 'newest' }: AdFilters) {
-    // If there's a search query, use smart search function
+    // If there's a search query, use ilike search (search_ads_smart RPC may not exist)
     if (query && query.trim().length > 0) {
         const trimmedQuery = query.trim();
-        const { data, error } = await supabase.rpc('search_ads_smart', {
-            search_query: trimmedQuery,
-            similarity_threshold: 0.2, // Lowered threshold for better matching
-            result_limit: 100
-        });
-
-        let results = data || [];
-
-        // If smart search returns few results, fallback to a broader ilike search
-        if (!error && results.length < 5) {
-            const partialQuery = trimmedQuery.length >= 3 ? trimmedQuery.substring(0, 3) : trimmedQuery;
-            const { data: fallbackData } = await supabase
-                .from('ads')
-                .select('*, profiles:seller_id(full_name, avatar_url, username)')
-                .in('status', ['active', 'approved'])
-                .or(`title.ilike.%${trimmedQuery}%,title.ilike.%${partialQuery}%,description.ilike.%${trimmedQuery}%`)
-                .limit(50);
-            
-            if (fallbackData) {
-                // Merge results and remove duplicates by ID
-                const existingIds = new Set(results.map((r: any) => r.id));
-                const uniqueFallback = fallbackData.filter((r: any) => !existingIds.has(r.id));
-                results = [...results, ...uniqueFallback];
-            }
+        const partialQuery = trimmedQuery.length >= 3 ? trimmedQuery.substring(0, 3) : trimmedQuery;
+        
+        const { data: fallbackData, error: fallbackError } = await supabase
+            .from('ads')
+            .select('*')
+            .in('status', ['active', 'approved'])
+            .or(`title.ilike.%${trimmedQuery}%,title.ilike.%${partialQuery}%,description.ilike.%${trimmedQuery}%`)
+            .limit(100);
+        
+        if (fallbackError) {
+            console.error('Search fallback error:', fallbackError);
         }
+        
+        let results = fallbackData || [];
 
         if (results.length > 0) {
             // Apply additional filters to results
@@ -68,7 +57,7 @@ export async function getAds(supabase: any, { query, category, sellerId, minPric
                 filteredData = filteredData.filter((ad: any) => ad.price <= maxPrice);
             }
 
-            // Apply sorting (smart search already sorts by relevance)
+            // Apply sorting
             if (sort !== 'newest') {
                 filteredData = [...filteredData].sort((a: any, b: any) => {
                     switch (sort) {
@@ -86,10 +75,10 @@ export async function getAds(supabase: any, { query, category, sellerId, minPric
         }
     }
 
-    // Regular query with status filtering
+    // Regular query with status filtering (no FK join - fetch profiles separately)
     let dbQuery = supabase
         .from('ads')
-        .select('*, profiles:seller_id(full_name, avatar_url, username)', { count: 'exact' })
+        .select('*', { count: 'exact' })
         .in('status', ['active', 'approved']);
 
     if (sellerId && IS_UUID.test(sellerId)) {
@@ -142,7 +131,7 @@ export async function getAds(supabase: any, { query, category, sellerId, minPric
 export async function getRelatedAds(supabase: any, category: string, limit: number = 4) {
   const { data, error } = await supabase
     .from("ads")
-    .select("*, profiles(full_name, avatar_url, username)")
+    .select("*")
     .in('status', ['active', 'approved'])
     .or(`category.ilike.${category},category_id.ilike.${category}`)
     .limit(limit);
@@ -151,5 +140,5 @@ export async function getRelatedAds(supabase: any, category: string, limit: numb
     console.error("Error fetching related ads:", error);
     return [];
   }
-  return data;
+  return data || [];
 }

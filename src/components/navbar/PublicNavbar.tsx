@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { PlusCircle } from "lucide-react";
 import { JootiyaProSearchBar } from "@/components/search/JootiyaProSearchBar";
@@ -14,24 +15,20 @@ export default async function PublicNavbar() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-[100] w-full bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl border-b border-zinc-100 dark:border-zinc-800 flex flex-col justify-center min-h-[56px] md:min-h-[64px] pt-[env(safe-area-inset-top)] overflow-visible">
-      <div className="w-full px-2 sm:px-4 md:px-8 max-w-[1440px] mx-auto overflow-visible">
+      <div className="w-full px-1 min-[360px]:px-2 sm:px-4 md:px-8 max-w-[1440px] mx-auto overflow-visible">
         {/* Main Nav Row (TOP) */}
-        <div className="flex h-12 md:h-14 items-center justify-between gap-1 sm:gap-4 relative z-[110] py-2 min-w-0 overflow-visible">
-          {/* Left: Logo - Hidden on very small screens to give space to search */}
+        <div className="flex h-12 md:h-14 items-center justify-between gap-0.5 min-[360px]:gap-1 sm:gap-4 relative z-[110] py-2 min-w-0 overflow-visible">
+          {/* Left: Logo */}
           <div className="flex items-center shrink-0 min-w-0">
-            <div className="hidden min-[350px]:block">
-              <NavbarLogo />
-            </div>
-            <div className="min-[350px]:hidden">
-               {/* Tiny logo or icon for <350px if needed, otherwise just hide text logo */}
-               <Link href="/" className="text-orange-600 font-black text-xl tracking-tighter shrink-0">J.</Link>
-            </div>
+            <NavbarLogo />
           </div>
 
-          {/* Center: Search Bar - Takes priority */}
-          <div className="flex-1 flex justify-center px-1 sm:px-6 relative z-[120] min-w-0 overflow-visible">
+          {/* Center: Search Bar */}
+          <div className="flex flex-1 justify-center px-0.5 min-[360px]:px-1 sm:px-6 relative z-[120] min-w-0 overflow-visible">
             <div className="w-full max-w-2xl flex justify-center min-w-0 overflow-visible">
-              <JootiyaProSearchBar />
+              <Suspense fallback={<div className="w-full h-9 min-[360px]:h-10 bg-zinc-100 dark:bg-zinc-800 rounded-full border border-zinc-200 dark:border-zinc-700 animate-pulse" />}>
+                <JootiyaProSearchBar />
+              </Suspense>
             </div>
           </div>
 
@@ -43,10 +40,10 @@ export default async function PublicNavbar() {
               rel="nofollow"
               aria-label="Déposer une annonce"
             >
-              <div className="rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-black h-10 px-4 text-[10px] uppercase tracking-wider shadow-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap">
+              <span className="btn btn-primary btn-sm gap-2">
                 <PlusCircle className="w-4 h-4 shrink-0" />
-                <span>Déposer une annonce</span>
-              </div>
+                Déposer une annonce
+              </span>
             </Link>
 
             {/* Client-side actions (Auth, Notifications, Theme) */}

@@ -1,12 +1,9 @@
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { SubmitButton } from "@/components/submit-button";
 import { createSupabaseServerClient, setAuthSession } from "@/lib/supabase-server";
-import { UserPlus, ShieldCheck, Mail, Lock, ChevronLeft, Phone } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Inscription | Jootiya",
@@ -47,6 +44,18 @@ async function registerAction(formData: FormData) {
     const params = new URLSearchParams();
     params.set("error", "Le mot de passe doit faire au moins 8 caractères.");
     redirect(`/register?${params.toString()}`);
+  }
+
+  // Only Gmail or Yahoo emails allowed
+  if (trimmedEmail) {
+    const lowerEmail = trimmedEmail.toLowerCase();
+    const allowedDomains = ["@gmail.com", "@yahoo.com", "@yahoo.fr"];
+    const isAllowed = allowedDomains.some(d => lowerEmail.endsWith(d));
+    if (!isAllowed) {
+      const params = new URLSearchParams();
+      params.set("error", "Seules les adresses Gmail ou Yahoo sont acceptées. Vous n'êtes pas le bienvenu ici.");
+      redirect(`/register?${params.toString()}`);
+    }
   }
 
   const supabase = createSupabaseServerClient();
@@ -155,11 +164,11 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
           </div>
 
           <div className="grid grid-cols-2 gap-4 pt-8">
-            <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-sm">
+            <div className="card bg-base-100 border border-zinc-200 shadow-sm p-4">
               <p className="text-2xl font-black text-zinc-900">10k+</p>
               <p className="text-sm text-zinc-500 font-bold uppercase">Annonces</p>
             </div>
-            <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-sm">
+            <div className="card bg-base-100 border border-zinc-200 shadow-sm p-4">
               <p className="text-2xl font-black text-zinc-900">24/7</p>
               <p className="text-sm text-zinc-500 font-bold uppercase">Support</p>
             </div>
@@ -177,45 +186,45 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
             </div>
 
             {error && (
-              <div className="rounded-xl bg-red-500/5 p-4 border border-red-500/10 flex gap-3 items-center animate-in fade-in slide-in-from-top-2">
-                <ShieldCheck className="w-5 h-5 text-red-500 flex-shrink-0" />
-                <p className="text-sm font-bold text-red-600 leading-tight">{error}</p>
+              <div className="alert alert-error">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current shrink-0 w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span className="text-sm font-bold">{error}</span>
               </div>
             )}
 
             <form action={registerAction} className="space-y-5">
               <div className="space-y-1">
-                <Label htmlFor="phone" className="text-xs font-black uppercase tracking-widest text-zinc-500 ml-1">Téléphone</Label>
-                <Input
+                <label htmlFor="phone" className="label text-xs font-black uppercase tracking-widest text-zinc-500 ml-1">Téléphone</label>
+                <input
                   id="phone"
                   name="phone"
                   type="tel"
                   placeholder="06/07..."
                   required
-                  className="h-14 px-6 rounded-xl bg-zinc-50 border-zinc-200 text-zinc-900 placeholder:text-zinc-400 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all text-base font-bold"
+                  className="input input-bordered w-full h-14 px-6 text-base font-bold"
                 />
               </div>
 
               <div className="space-y-1">
-                <Label htmlFor="email" className="text-xs font-black uppercase tracking-widest text-zinc-500 ml-1">Email (Optionnel)</Label>
-                <Input
+                <label htmlFor="email" className="label text-xs font-black uppercase tracking-widest text-zinc-500 ml-1">Email (Optionnel)</label>
+                <input
                   id="email"
                   name="email"
                   type="email"
-                  placeholder="nom@exemple.com"
-                  className="h-14 px-6 rounded-xl bg-zinc-50 border-zinc-200 text-zinc-900 placeholder:text-zinc-400 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all text-base font-bold"
+                  placeholder="exemple@gmail.com"
+                  className="input input-bordered w-full h-14 px-6 text-base font-bold"
                 />
               </div>
 
               <div className="space-y-1">
-                <Label htmlFor="password" className="text-xs font-black uppercase tracking-widest text-zinc-500 ml-1">Mot de passe</Label>
-                <Input
+                <label htmlFor="password" className="label text-xs font-black uppercase tracking-widest text-zinc-500 ml-1">Mot de passe</label>
+                <input
                   id="password"
                   name="password"
                   type="password"
                   placeholder="••••••••"
                   required
-                  className="h-14 px-6 rounded-xl bg-zinc-50 border-zinc-200 text-zinc-900 placeholder:text-zinc-400 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all text-base font-bold"
+                  className="input input-bordered w-full h-14 px-6 text-base font-bold"
                 />
               </div>
 
@@ -223,7 +232,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
                 <SubmitButton
                   label="Créer mon compte"
                   loadingLabel="Création..."
-                  className="w-full h-14 text-lg font-black rounded-2xl bg-orange-500 hover:bg-orange-600 text-white shadow-lg shadow-orange-500/20 transition-all active:scale-[0.98]"
+                  className="btn btn-primary w-full h-14 text-lg font-black"
                 />
               </div>
             </form>

@@ -1,7 +1,25 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getAuthenticatedServerClient, getServerUser } from "@/lib/supabase-server";
+import { createClient } from "@supabase/supabase-js";
+import { getAuthenticatedServerClient, getServerUser, createSupabaseServerClient } from "@/lib/supabase-server";
+
+// Helper to bypass RLS for anonymous actions (safe in server actions only)
+function getAdminClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  // Try multiple common env var names
+  const serviceRoleKey =
+    process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    process.env.SUPABASE_SERVICE_ROLE ||
+    process.env.SERVICE_ROLE_KEY ||
+    process.env.SUPABASE_ADMIN_KEY;
+  console.log("[DEBUG] service role key found?", !!serviceRoleKey, "tried: SUPABASE_SERVICE_ROLE_KEY, SUPABASE_SERVICE_ROLE, SERVICE_ROLE_KEY, SUPABASE_ADMIN_KEY");
+  if (serviceRoleKey) {
+    return createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } });
+  }
+  console.error("[DEBUG] No service role key found in environment variables");
+  return null;
+}
 
 export async function toggleFavoriteAction(adId: string) {
   const user = await getServerUser();
@@ -47,11 +65,39 @@ export async function submitReportAction(formData: {
   targetType: "ad" | "user";
   reason: string;
   details?: string;
+  reporterName?: string;
+  reporterPhone?: string;
+  reporterEmail?: string;
 }) {
   const user = await getServerUser();
-  // Reporting can be anonymous or authenticated, but we prefer authenticated
-  
-  const supabase = await getAuthenticatedServerClient();
+
+  // MUST use admin client to bypass RLS on reports table
+  const adminClient = getAdminClient();
+  if (!adminClient) {
+    return { error: "Service de signalement temporairement indisponible. Veuillez réessayer plus tard." };
+  }
+  const supabase = adminClient;
+
+  let reporterName: string | null = formData.reporterName ?? null;
+  let reporterEmail: string | null = formData.reporterEmail ?? null;
+
+  // Fetch reporter profile data if logged in (overrides guest input with verified data)
+  if (user?.id) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("full_name, email, phone")
+      .eq("id", user.id)
+      .maybeSingle();
+
+    reporterName = profile?.full_name ?? reporterName;
+    reporterEmail = profile?.email ?? reporterEmail;
+    if (profile?.phone) {
+      reporterName = reporterName ? `${reporterName} (${profile.phone})` : profile.phone;
+    }
+  } else if (formData.reporterPhone) {
+    // For guests, append phone to name
+    reporterName = reporterName ? `${reporterName} (${formData.reporterPhone})` : formData.reporterPhone;
+  }
 
   const { error } = await supabase
     .from("reports")
@@ -60,8 +106,9 @@ export async function submitReportAction(formData: {
       ad_id: formData.targetType === "ad" ? formData.targetId : null,
       reported_user_id: formData.targetType === "user" ? formData.targetId : null,
       reporter_id: user?.id || null,
-      reason: formData.reason,
-      details: { comment: formData.details }
+      reporter_name: reporterName,
+      reporter_email: reporterEmail,
+      reason: formData.reason + (formData.details ? ` — ${formData.details}` : "")
     });
 
   if (error) {

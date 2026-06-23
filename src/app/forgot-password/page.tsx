@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { createClient } from "@supabase/supabase-js";
 import { Input } from "@/components/ui/input";
 import { SubmitButton } from "@/components/submit-button";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
@@ -13,15 +14,99 @@ export const metadata: Metadata = {
 async function forgotPasswordAction(formData: FormData) {
   "use server";
 
-  const email = formData.get("email")?.toString();
+  const rawIdentifier = formData.get("identifier")?.toString();
 
-  if (!email) {
-    redirect("/forgot-password?error=Veuillez entrer votre email");
+  if (!rawIdentifier) {
+    redirect("/forgot-password?error=Veuillez entrer votre email ou numéro de téléphone");
   }
+
+  const identifier = rawIdentifier.trim().toLowerCase();
 
   try {
     const supabase = createSupabaseServerClient();
-    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+
+    let targetEmail: string | null = null;
+
+    if (/^(06|07)\d{8}$/.test(identifier)) {
+      // User entered phone number — look up email in profiles
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("id, email")
+        .eq("phone", identifier)
+        .maybeSingle();
+
+      if (profile?.email) {
+        targetEmail = profile.email;
+      } else {
+        // No email linked to this phone — show support message
+        redirect(
+          "/forgot-password?success=" +
+            encodeURIComponent(
+              `Aucun email n'est associé à ce numéro. Veuillez contacter le support au jootiyasarl@gmail.com pour réinitialiser votre mot de passe.`,
+            ),
+        );
+      }
+    } else {
+      // User entered email directly
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("id, email")
+        .ilike("email", identifier)
+        .maybeSingle();
+
+      if (profile?.email) {
+        targetEmail = profile.email;
+      }
+    }
+
+    // For security, show same message if email not found (no leak)
+    const successRedirect =
+      "/forgot-password?success=" +
+      encodeURIComponent(
+        `Si un compte est associé, un e-mail de réinitialisation a été envoyé à ${targetEmail}. Vérifiez votre boîte de réception ET le dossier SPAM/Junk.`,
+      );
+
+    if (!targetEmail) {
+      redirect(successRedirect);
+    }
+
+    // Sync the Supabase Auth email to the real email
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (!serviceRoleKey) {
+      console.error("Forgot Password - SUPABASE_SERVICE_ROLE_KEY is missing.");
+      redirect(
+        "/forgot-password?error=" +
+          encodeURIComponent(
+            "Le service de réinitialisation est temporairement indisponible. Veuillez contacter le support au jootiyasarl@gmail.com.",
+          ),
+      );
+    }
+
+    const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey, {
+      auth: { persistSession: false },
+    });
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("id")
+      .ilike("email", targetEmail)
+      .maybeSingle();
+
+    if (profile) {
+      const { error: updateError } = await supabaseAdmin.auth.admin.updateUserById(profile.id, {
+        email: targetEmail,
+        email_confirm: true,
+      });
+
+      if (updateError) {
+        console.error("Forgot Password - updateUserById error:", updateError);
+      }
+    }
+
+    // Send reset email
+    const { error } = await supabase.auth.resetPasswordForEmail(targetEmail, {
       redirectTo: `https://jootiya.com/auth/reset-password`,
     });
 
@@ -30,10 +115,9 @@ async function forgotPasswordAction(formData: FormData) {
       redirect(`/forgot-password?error=${encodeURIComponent(error.message)}`);
     }
 
-    // Explicitly return success for UI feedback
-    redirect("/forgot-password?success=Un e-mail de réinitialisation a été envoyé à " + encodeURIComponent(email) + ". Veuillez vérifier votre boîte de réception (et vos spams).");
+    redirect(successRedirect);
   } catch (err) {
-    if (err instanceof Error && err.message.includes('NEXT_REDIRECT')) throw err;
+    if (err instanceof Error && err.message.includes("NEXT_REDIRECT")) throw err;
     console.error("Forgot Password Action Error:", err);
     redirect("/forgot-password?error=Une erreur inattendue est survenue.");
   }
@@ -64,7 +148,7 @@ export default async function ForgotPasswordPage({
         <div className="w-full max-w-md space-y-8 text-left flex flex-col justify-center h-full" dir="ltr">
           <div className="space-y-2">
             <h1 className="text-4xl font-black text-zinc-900 tracking-tighter">Réinitialisation</h1>
-            <p className="text-zinc-500 font-medium">Entrez votre email pour recevoir un lien</p>
+            <p className="text-zinc-500 font-medium">Entrez votre email ou numéro de téléphone</p>
           </div>
 
           <div className="flex-grow flex flex-col justify-center space-y-8">
@@ -89,11 +173,12 @@ export default async function ForgotPasswordPage({
 
             <form action={forgotPasswordAction} className="space-y-5">
               <div className="space-y-1">
+                <label className="text-xs font-bold uppercase tracking-widest text-zinc-500">Email ou Téléphone</label>
                 <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="Votre adresse e-mail"
+                  id="identifier"
+                  name="identifier"
+                  type="text"
+                  placeholder="exemple@gmail.com ou 06XXXXXXXX"
                   required
                   className="h-14 px-6 rounded-xl bg-zinc-50 border-zinc-200 text-zinc-900 placeholder:text-zinc-400 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all text-base font-bold"
                 />

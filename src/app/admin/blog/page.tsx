@@ -124,9 +124,58 @@ export default function BlogAdminPage() {
       toast.error("Erreur lors de la suppression");
     } else {
       toast.success("Article supprimé");
-      fetchPosts();
+      setPosts(prev => prev.filter(p => p.id !== id));
     }
   };
+
+  // Extract base64 images from HTML content, upload them to Supabase, and replace with URLs
+  async function processContentImages(content: string): Promise<string> {
+    const base64Regex = /<img[^>]+src="(data:image\/[^;]+;base64,[^"]+)"[^>]*>/gi;
+    let match;
+    let processedContent = content;
+    const matches: { fullTag: string; base64: string; mimeType: string }[] = [];
+
+    // Collect all base64 images
+    while ((match = base64Regex.exec(content)) !== null) {
+      const fullTag = match[0];
+      const base64 = match[1];
+      const mimeType = base64.match(/data:([^;]+);/)?.[1] || "image/webp";
+      matches.push({ fullTag, base64, mimeType });
+    }
+
+    if (matches.length === 0) return content;
+
+    toast.info(`Optimisation de ${matches.length} image(s) en cours...`);
+
+    for (const { fullTag, base64, mimeType } of matches) {
+      try {
+        const base64Data = base64.split(",")[1];
+        const buffer = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+        const ext = mimeType.split("/")[1] || "webp";
+        const fileName = `blog-inline-${Date.now()}-${Math.random().toString(36).substring(2, 8)}.${ext}`;
+        const filePath = `blog/content/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from("ad-images")
+          .upload(filePath, buffer, { contentType: mimeType });
+
+        if (uploadError) {
+          console.error("Failed to upload inline image:", uploadError);
+          continue;
+        }
+
+        const { data: { publicUrl } } = supabase.storage
+          .from("ad-images")
+          .getPublicUrl(filePath);
+
+        processedContent = processedContent.replace(fullTag, fullTag.replace(base64, publicUrl));
+      } catch (err) {
+        console.error("Error processing inline image:", err);
+      }
+    }
+
+    return processedContent;
+  }
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -149,12 +198,16 @@ export default function BlogAdminPage() {
         throw new Error("Vous devez être connecté pour publier");
       }
 
+      // CRITICAL: Extract and upload base64 images before saving
+      const processedContent = await processContentImages(formData.content);
+
       const slug = formData.slug || generateSlug(formData.title);
       console.log("Generated slug:", slug);
       
       const { id, ...dataWithoutId } = formData;
       const payload = {
         ...dataWithoutId,
+        content: processedContent,
         slug,
         author_id: session.user.id,
         published_at: formData.status === "published" ? new Date().toISOString() : null
@@ -190,13 +243,23 @@ export default function BlogAdminPage() {
 
       console.log("Save operation successful, received data:", data);
       toast.success("Article enregistré avec succès !");
-      await fetchPosts();
-      console.log("Posts refetched, switching to list view");
-      
-      // Reset loading explicitly before view change
+
+      // Update local posts immediately without re-fetching
+      if (data && data[0]) {
+        setPosts(prev => {
+          const existingIndex = prev.findIndex(p => p.id === data[0].id);
+          if (existingIndex >= 0) {
+            const updated = [...prev];
+            updated[existingIndex] = data[0];
+            return updated;
+          }
+          return [data[0], ...prev];
+        });
+      }
+
       setLoading(false);
       setView("list");
-      return; // Early return to prevent falling through
+      return;
     } catch (error: any) {
       console.error("Caught error in handleSave:", error);
       toast.error(error.message || "Erreur lors de l'enregistrement");
