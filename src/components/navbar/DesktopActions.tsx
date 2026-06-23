@@ -140,18 +140,20 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                 document.cookie = `sb-refresh-token=${session.refresh_token}; path=/; SameSite=Lax; max-age=${maxAge}`;
             }
 
-            await fetch("/api/auth/set-session", {
+            fetch("/api/auth/set-session", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ session }),
                 credentials: "include",
                 cache: "no-store",
+            }).catch((error) => {
+                console.error("Failed to sync session before navigation", error);
             });
 
-            window.location.assign(href);
+            window.location.href = href;
         } catch (error) {
             console.error("Failed to sync session before navigation", error);
-            window.location.assign(href);
+            window.location.href = href;
         }
     };
 
