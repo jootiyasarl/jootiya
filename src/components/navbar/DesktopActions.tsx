@@ -7,12 +7,25 @@ import {
     MessageCircle,
     User,
     LogOut,
-    ShieldAlert
+    ShieldAlert,
+    LayoutDashboard,
+    Package,
+    Settings,
+    ChevronDown
 } from "lucide-react";
+import Image from "next/image";
 import { supabase } from "@/lib/supabaseClient";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { useRouter } from "next/navigation";
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 
 interface DesktopActionsProps {
     initialUserEmail?: string | null;
@@ -24,6 +37,8 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
     const [isAdmin, setIsAdmin] = useState(initialIsAdmin);
     const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
     const [isGoogleUser, setIsGoogleUser] = useState(false);
+    const [fullName, setFullName] = useState<string | null>(null);
+    const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
     const router = useRouter();
 
     const isAdminEmail = (email: string) => email === "jootiyasarl@gmail.com";
@@ -39,12 +54,18 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                     user.app_metadata?.provider === "google" ||
                     Array.isArray(user.app_metadata?.providers) && user.app_metadata.providers.includes("google")
                 );
+
+                const meta = user.user_metadata ?? {};
+                setAvatarUrl(meta.avatar_url || meta.picture || null);
                 
                 const { data: profile } = await supabase
                     .from('profiles')
-                    .select('role, phone')
+                    .select('role, phone, full_name, avatar_url')
                     .eq('id', user.id)
                     .maybeSingle();
+
+                setFullName(profile?.full_name || meta.full_name || meta.name || null);
+                if (profile?.avatar_url) setAvatarUrl(profile.avatar_url);
 
                 const isAuthorized = 
                     user.email === "jootiyasarl@gmail.com" || 
@@ -75,6 +96,8 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                 setIsAdmin(false);
                 setHasUnreadMessages(false);
                 setIsGoogleUser(false);
+                setFullName(null);
+                setAvatarUrl(null);
             }
         };
 
@@ -91,11 +114,17 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                     Array.isArray(user.app_metadata?.providers) && user.app_metadata.providers.includes("google")
                 );
 
+                const meta = user.user_metadata ?? {};
+                setAvatarUrl(meta.avatar_url || meta.picture || null);
+
                 const { data: profile } = await supabase
                     .from('profiles')
-                    .select('role, phone')
+                    .select('role, phone, full_name, avatar_url')
                     .eq('id', user.id)
                     .maybeSingle();
+
+                setFullName(profile?.full_name || meta.full_name || meta.name || null);
+                if (profile?.avatar_url) setAvatarUrl(profile.avatar_url);
 
                 const isAuthorized = 
                     user.email === "jootiyasarl@gmail.com" || 
@@ -117,6 +146,8 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                 setIsAdmin(false);
                 setHasUnreadMessages(false);
                 setIsGoogleUser(false);
+                setFullName(null);
+                setAvatarUrl(null);
             }
         });
 
@@ -163,6 +194,8 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
             setIsAdmin(false);
             setHasUnreadMessages(false);
             setIsGoogleUser(false);
+            setFullName(null);
+            setAvatarUrl(null);
             await supabase.auth.signOut();
             await fetch("/api/auth/logout", { method: "POST" });
             
@@ -211,7 +244,7 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                     </button>
 
                     <div className="ml-1 pl-1 border-l border-zinc-200 dark:border-zinc-800 flex items-center gap-1">
-                        {isAdmin ? (
+                        {isAdmin && (
                             <Link
                                 href="/admin"
                                 className="btn btn-warning btn-circle btn-sm"
@@ -220,23 +253,76 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                             >
                                 <ShieldAlert className="w-5 h-5" />
                             </Link>
-                        ) : (
-                            <button
-                                type="button"
-                                onClick={() => syncSessionAndGo("/dashboard")}
-                                className="btn btn-ghost btn-circle btn-sm"
-                                title="Dashboard"
-                            >
-                                <User className="w-5 h-5" />
-                            </button>
                         )}
-                        <button
-                            onClick={handleLogout}
-                            className="btn btn-ghost btn-circle btn-sm text-zinc-400 hover:text-red-500"
-                            title="Déconnexion"
-                        >
-                            <LogOut className="w-5 h-5" />
-                        </button>
+
+                        <DropdownMenu>
+                            <DropdownMenuTrigger
+                                className="flex items-center gap-1.5 rounded-full p-0.5 pr-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                                aria-label="Menu du compte"
+                            >
+                                <span className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400">
+                                    {avatarUrl ? (
+                                        <Image
+                                            src={avatarUrl}
+                                            alt={fullName || "Profil"}
+                                            fill
+                                            sizes="32px"
+                                            className="object-cover"
+                                        />
+                                    ) : (
+                                        <User className="h-4 w-4" />
+                                    )}
+                                </span>
+                                <ChevronDown className="h-4 w-4 text-zinc-400" />
+                            </DropdownMenuTrigger>
+
+                            <DropdownMenuContent className="w-64">
+                                <DropdownMenuLabel>
+                                    <div className="flex flex-col">
+                                        <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 truncate">
+                                            {fullName || "Mon compte"}
+                                        </span>
+                                        {userEmail && (
+                                            <span className="text-xs font-normal text-zinc-500 truncate">
+                                                {userEmail}
+                                            </span>
+                                        )}
+                                    </div>
+                                </DropdownMenuLabel>
+
+                                <DropdownMenuSeparator />
+
+                                <DropdownMenuItem onClick={() => syncSessionAndGo("/dashboard")}>
+                                    <LayoutDashboard className="mr-2 h-4 w-4" />
+                                    Tableau de bord
+                                </DropdownMenuItem>
+
+                                <DropdownMenuItem onClick={() => syncSessionAndGo("/dashboard/ads")}>
+                                    <Package className="mr-2 h-4 w-4" />
+                                    Mes annonces
+                                </DropdownMenuItem>
+
+                                <DropdownMenuItem onClick={() => syncSessionAndGo("/dashboard/profile")}>
+                                    <User className="mr-2 h-4 w-4" />
+                                    Mon profil
+                                </DropdownMenuItem>
+
+                                <DropdownMenuItem onClick={() => syncSessionAndGo("/dashboard/settings")}>
+                                    <Settings className="mr-2 h-4 w-4" />
+                                    Paramètres
+                                </DropdownMenuItem>
+
+                                <DropdownMenuSeparator />
+
+                                <DropdownMenuItem
+                                    onClick={handleLogout}
+                                    className="text-red-600 focus:text-red-600 dark:text-red-400"
+                                >
+                                    <LogOut className="mr-2 h-4 w-4" />
+                                    Déconnexion
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                 </>
             ) : (
