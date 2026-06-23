@@ -36,7 +36,6 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
     const [userEmail, setUserEmail] = useState<string | null>(initialUserEmail);
     const [isAdmin, setIsAdmin] = useState(initialIsAdmin);
     const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
-    const [isGoogleUser, setIsGoogleUser] = useState(false);
     const [fullName, setFullName] = useState<string | null>(null);
     const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
     const router = useRouter();
@@ -50,10 +49,6 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
             if (session?.user) {
                 const user = session.user;
                 setUserEmail(user.email ?? null);
-                setIsGoogleUser(
-                    user.app_metadata?.provider === "google" ||
-                    Array.isArray(user.app_metadata?.providers) && user.app_metadata.providers.includes("google")
-                );
 
                 const meta = user.user_metadata ?? {};
                 setAvatarUrl(meta.avatar_url || meta.picture || null);
@@ -95,7 +90,6 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                 setUserEmail(null);
                 setIsAdmin(false);
                 setHasUnreadMessages(false);
-                setIsGoogleUser(false);
                 setFullName(null);
                 setAvatarUrl(null);
             }
@@ -109,10 +103,6 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
             
             if (user) {
                 setUserEmail(user.email ?? null);
-                setIsGoogleUser(
-                    user.app_metadata?.provider === "google" ||
-                    Array.isArray(user.app_metadata?.providers) && user.app_metadata.providers.includes("google")
-                );
 
                 const meta = user.user_metadata ?? {};
                 setAvatarUrl(meta.avatar_url || meta.picture || null);
@@ -145,7 +135,6 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                 setUserEmail(null);
                 setIsAdmin(false);
                 setHasUnreadMessages(false);
-                setIsGoogleUser(false);
                 setFullName(null);
                 setAvatarUrl(null);
             }
@@ -159,7 +148,6 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
     const syncSessionAndGo = async (href: string) => {
         try {
             const { data: { session } } = await supabase.auth.getSession();
-
             if (!session) {
                 window.location.assign(`/login?redirectTo=${encodeURIComponent(href)}`);
                 return;
@@ -178,12 +166,11 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                 credentials: "include",
                 cache: "no-store",
             }).catch((error) => {
-                console.error("Failed to sync session before navigation", error);
+                console.error("Failed to sync session", error);
             });
-
-            window.location.href = href;
         } catch (error) {
             console.error("Failed to sync session before navigation", error);
+        } finally {
             window.location.href = href;
         }
     };
@@ -193,7 +180,6 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
             setUserEmail(null);
             setIsAdmin(false);
             setHasUnreadMessages(false);
-            setIsGoogleUser(false);
             setFullName(null);
             setAvatarUrl(null);
             await supabase.auth.signOut();
