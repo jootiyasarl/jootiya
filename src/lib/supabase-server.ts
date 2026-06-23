@@ -46,15 +46,15 @@ export async function getAuthenticatedServerClient() {
 export async function setAuthSession(session: Session) {
     const cookieStore = await cookies();
     const secure = process.env.NODE_ENV === "production";
-    // Keep users permanently logged in (365 days)
-    const ONE_YEAR = 60 * 60 * 24 * 365;
+    // Keep users permanently logged in (20 years)
+    const TWENTY_YEARS = 60 * 60 * 24 * 365 * 20;
 
     cookieStore.set("sb-access-token", session.access_token, {
         httpOnly: true,
         sameSite: "lax",
         secure,
         path: "/",
-        maxAge: ONE_YEAR,
+        maxAge: TWENTY_YEARS,
     });
 
     if (session.refresh_token) {
@@ -63,7 +63,7 @@ export async function setAuthSession(session: Session) {
             sameSite: "lax",
             secure,
             path: "/",
-            maxAge: ONE_YEAR,
+            maxAge: TWENTY_YEARS,
         });
     }
 }
