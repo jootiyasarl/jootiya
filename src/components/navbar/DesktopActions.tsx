@@ -223,9 +223,9 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                         ) : (
                             <button
                                 type="button"
-                                onClick={() => syncSessionAndGo("/dashboard/profile")}
+                                onClick={() => syncSessionAndGo("/dashboard")}
                                 className="btn btn-ghost btn-circle btn-sm"
-                                title="Mon profil"
+                                title="Dashboard"
                             >
                                 <User className="w-5 h-5" />
                             </button>
