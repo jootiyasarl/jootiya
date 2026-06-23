@@ -182,7 +182,7 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
         <div className="hidden lg:flex items-center gap-1.5 ml-2 border-l border-zinc-200 dark:border-zinc-800 pl-3">
             <ThemeToggle compact />
             
-            {isGoogleUser ? (
+            {userEmail ? (
                 <>
                     <NotificationBell />
                     <button
