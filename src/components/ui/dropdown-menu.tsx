@@ -150,6 +150,11 @@ export const DropdownMenuItem = React.forwardRef<
         href={href}
         role="menuitem"
         className={cn(baseClassName, "no-underline")}
+        onClick={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          window.location.href = href;
+        }}
         {...props as React.AnchorHTMLAttributes<HTMLAnchorElement>}
       >
         {children}
