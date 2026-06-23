@@ -23,6 +23,7 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
     const [userEmail, setUserEmail] = useState<string | null>(initialUserEmail);
     const [isAdmin, setIsAdmin] = useState(initialIsAdmin);
     const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
+    const [isGoogleUser, setIsGoogleUser] = useState(false);
     const router = useRouter();
 
     const isAdminEmail = (email: string) => email === "jootiyasarl@gmail.com";
@@ -34,6 +35,10 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
             if (session?.user) {
                 const user = session.user;
                 setUserEmail(user.email ?? null);
+                setIsGoogleUser(
+                    user.app_metadata?.provider === "google" ||
+                    Array.isArray(user.app_metadata?.providers) && user.app_metadata.providers.includes("google")
+                );
                 
                 const { data: profile } = await supabase
                     .from('profiles')
@@ -69,6 +74,7 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                 setUserEmail(null);
                 setIsAdmin(false);
                 setHasUnreadMessages(false);
+                setIsGoogleUser(false);
             }
         };
 
@@ -80,6 +86,10 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
             
             if (user) {
                 setUserEmail(user.email ?? null);
+                setIsGoogleUser(
+                    user.app_metadata?.provider === "google" ||
+                    Array.isArray(user.app_metadata?.providers) && user.app_metadata.providers.includes("google")
+                );
 
                 const { data: profile } = await supabase
                     .from('profiles')
@@ -106,6 +116,7 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                 setUserEmail(null);
                 setIsAdmin(false);
                 setHasUnreadMessages(false);
+                setIsGoogleUser(false);
             }
         });
 
@@ -149,6 +160,7 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
             setUserEmail(null);
             setIsAdmin(false);
             setHasUnreadMessages(false);
+            setIsGoogleUser(false);
             await supabase.auth.signOut();
             await fetch("/api/auth/logout", { method: "POST" });
             
@@ -170,7 +182,7 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
         <div className="hidden lg:flex items-center gap-1.5 ml-2 border-l border-zinc-200 dark:border-zinc-800 pl-3">
             <ThemeToggle compact />
             
-            {userEmail ? (
+            {isGoogleUser ? (
                 <>
                     <NotificationBell />
                     <button
