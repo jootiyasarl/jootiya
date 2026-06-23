@@ -8,6 +8,27 @@ export default function AuthCallbackPage() {
   const [message, setMessage] = useState("Connexion en cours...");
 
   useEffect(() => {
+    let completed = false;
+
+    const finishLogin = async (session: any) => {
+      if (completed) return;
+      completed = true;
+
+      try {
+        if (session?.access_token) {
+          await fetch("/api/auth/set-session", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ session }),
+          });
+        }
+      } catch (error) {
+        console.error("Set session API failed:", error);
+      }
+
+      window.location.replace("/marketplace/post");
+    };
+
     const handleAuth = async () => {
       try {
         const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
@@ -16,70 +37,59 @@ export default function AuthCallbackPage() {
         const refreshToken = hashParams.get("refresh_token");
         const code = queryParams.get("code");
 
-        let session = null;
-
         if (accessToken) {
-          const { data, error } = await supabase.auth.setSession({
+          const { data } = await supabase.auth.setSession({
             access_token: accessToken,
             refresh_token: refreshToken || "",
           });
 
-          if (error) {
-            console.error("Set session error:", error.message);
+          if (data.session) {
+            await finishLogin(data.session);
+            return;
           }
-
-          session = data.session;
         }
 
-        if (!session && code) {
-          const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+        if (code) {
+          const { data } = await supabase.auth.exchangeCodeForSession(code);
 
-          if (error) {
-            console.error("Exchange code error:", error.message);
+          if (data.session) {
+            await finishLogin(data.session);
+            return;
           }
-
-          session = data.session;
         }
 
-        if (!session) {
-          const { data } = await supabase.auth.getSession();
-          session = data.session;
-        }
+        const { data } = await supabase.auth.getSession();
 
-        if (!session) {
-          setMessage("Session introuvable. Redirection...");
-          window.location.replace("/login?error=session_missing");
+        if (data.session) {
+          await finishLogin(data.session);
           return;
         }
-
-        const controller = new AbortController();
-        const timeout = window.setTimeout(() => controller.abort(), 8000);
-
-        try {
-          const res = await fetch("/api/auth/set-session", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ session }),
-            signal: controller.signal,
-          });
-
-          if (!res.ok) {
-            console.error("Set session API error:", await res.text());
-          }
-        } catch (error) {
-          console.error("Set session API failed:", error);
-        } finally {
-          window.clearTimeout(timeout);
-        }
-
-        window.location.replace("/marketplace/post");
       } catch (err) {
         console.error("Callback error:", err);
-        window.location.replace("/marketplace/post");
       }
     };
 
+    const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        finishLogin(session);
+      }
+    });
+
     handleAuth();
+
+    const retry = window.setTimeout(handleAuth, 1000);
+    const fallback = window.setTimeout(() => {
+      if (!completed) {
+        setMessage("Redirection vers la page de publication...");
+        window.location.replace("/marketplace/post");
+      }
+    }, 3000);
+
+    return () => {
+      window.clearTimeout(retry);
+      window.clearTimeout(fallback);
+      subscription.subscription.unsubscribe();
+    };
   }, []);
 
   return (
