@@ -61,8 +61,6 @@ export function AdCard({ ad, variant = "default", footerSlot, href, priority = f
         {ad.imageUrl ? (
           (() => {
             const src = getOptimizedImageUrl(ad.imageUrl, { width: 400, height: 300, quality: 80, format: 'webp' });
-            const supabaseBase = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://ssfcfvuosxxmvsdoktws.supabase.co";
-            const isSupabase = typeof src === 'string' && src.includes(new URL(supabaseBase).host);
             return (
               <Image
                 src={src}
@@ -72,7 +70,13 @@ export function AdCard({ ad, variant = "default", footerSlot, href, priority = f
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 sizes="(max-width: 420px) 72vw, (max-width: 640px) 46vw, (max-width: 1024px) 24vw, 19vw"
                 loading={priority ? "eager" : "lazy"}
-                unoptimized={!isSupabase}
+                unoptimized={true}
+                onError={(e) => {
+                  const target = e.currentTarget as HTMLImageElement;
+                  if (target.src !== '/placeholder-ad.png') {
+                    target.src = '/placeholder-ad.png';
+                  }
+                }}
               />
             );
           })()
