@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import Image from "next/image";
+// Using a standard img for this card to avoid any layout quirks with next/image fill
 import Link from "next/link";
 import { Clock3, MapPin, Sparkles } from "lucide-react";
 import { FavoriteButton } from "./ads/FavoriteButton";
@@ -10,7 +10,7 @@ import { getOptimizedImageUrl } from "@/lib/storageUtils";
 
 // Helper to ensure full URL for images
 const ensureFullUrl = (url: string | null) => {
-  if (!url) return '/placeholder-ad.png';
+  if (!url) return '/placeholder-ad.jpg';
   if (url.startsWith('http')) return url;
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://jootiya.com';
   const cleanPath = url.startsWith('/') ? url.substring(1) : url;
@@ -63,18 +63,15 @@ export function AdCard({ ad, variant = "default", footerSlot, href, priority = f
         
         {ad.imageUrl && !imgFailed ? (
           (() => {
-            const src = getOptimizedImageUrl(ad.imageUrl, { width: 400, height: 300, quality: 80, format: 'webp' });
+            const src = getOptimizedImageUrl(ad.imageUrl, { width: 800, height: 600, quality: 80, format: 'webp' });
             return (
-              <Image
+              <img
                 src={src}
                 alt={ad.title}
-                fill
-                priority={priority}
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                sizes="(max-width: 420px) 72vw, (max-width: 640px) 46vw, (max-width: 1024px) 24vw, 19vw"
                 loading={priority ? "eager" : "lazy"}
-                unoptimized={true}
                 onError={() => { setImgFailed(true); }}
+                decoding="async"
               />
             );
           })()

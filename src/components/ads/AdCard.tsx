@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Image from 'next/image';
+// Use standard img to avoid partial rendering quirks
 import Link from 'next/link';
 import { Pencil, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -22,8 +22,8 @@ export interface Ad {
 
 export function AdCard({ ad, canBoost, onEdit, onDelete }: { ad: Ad; canBoost?: boolean; onEdit?: (ad: Ad) => void; onDelete?: (ad: Ad) => void }) {
   const primary = (Array.isArray(ad.images) && ad.images[0]) || (Array.isArray(ad.image_urls) && ad.image_urls[0]) || '/placeholder-ad.jpg';
-  const thumbnailUrl = getOptimizedImageUrl(primary, { width: 500, height: 500, quality: 75 });
-  const blurUrl = getOptimizedImageUrl(primary, { width: 20, height: 20, quality: 10 });
+  const thumbnailUrl = getOptimizedImageUrl(primary, { width: 800, height: 600, quality: 80 });
+  const blurUrl = getOptimizedImageUrl(primary, { width: 24, height: 24, quality: 10 });
 
   const [imgSrc, setImgSrc] = useState(thumbnailUrl);
 
@@ -41,16 +41,11 @@ export function AdCard({ ad, canBoost, onEdit, onDelete }: { ad: Ad; canBoost?: 
     >
       {/* Image Container */}
       <div className="airbnb-card-image-wrapper">
-        <Image
+        <img
           src={imgSrc}
           alt={ad.title}
-          fill
-          placeholder="blur"
-          blurDataURL={blurUrl}
-          className="airbnb-card-image"
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          className="airbnb-card-image absolute inset-0 w-full h-full object-cover"
           loading="lazy"
-          unoptimized
           onError={() => {
             const direct = (Array.isArray(ad.images) && ad.images[0]) || (Array.isArray(ad.image_urls) && ad.image_urls[0]) || '';
             if (imgSrc !== direct && direct) {
@@ -59,6 +54,7 @@ export function AdCard({ ad, canBoost, onEdit, onDelete }: { ad: Ad; canBoost?: 
               setImgSrc('/placeholder-ad.jpg');
             }
           }}
+          decoding="async"
         />
 
         {/* Wishlist Heart */}
