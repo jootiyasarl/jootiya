@@ -6,12 +6,12 @@ import { supabase } from "./supabaseClient";
  * NOTE: Requires Supabase Pro/Paid plan for image transformations.
  */
 export function getOptimizedImageUrl(url: string, options: { width?: number; height?: number; quality?: number; resize?: 'cover' | 'contain' | 'fill'; format?: 'webp' | 'origin' } = {}) {
-    if (!url || url === '/placeholder-ad.jpg') return '/placeholder-ad.jpg';
+    if (!url || url === '/placeholder-ad.jpg') return '/icon-512x512.png';
 
     // 1. Fix URL encoding issues (handle spaces and special characters in paths)
-    if (!url) return '/placeholder-ad.jpg';
+    if (!url) return '/icon-512x512.png';
     let processedUrl = url.trim();
-    if (processedUrl === '/placeholder-ad.jpg') return '/placeholder-ad.jpg';
+    if (processedUrl === '/placeholder-ad.jpg') return '/icon-512x512.png';
     
     // Check if it's already a full Supabase public URL
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;

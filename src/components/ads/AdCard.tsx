@@ -21,7 +21,7 @@ export interface Ad {
 }
 
 export function AdCard({ ad, canBoost, onEdit, onDelete }: { ad: Ad; canBoost?: boolean; onEdit?: (ad: Ad) => void; onDelete?: (ad: Ad) => void }) {
-  const primary = (Array.isArray(ad.images) && ad.images[0]) || (Array.isArray(ad.image_urls) && ad.image_urls[0]) || '/placeholder-ad.jpg';
+  const primary = (Array.isArray(ad.images) && ad.images[0]) || (Array.isArray(ad.image_urls) && ad.image_urls[0]) || '/icon-512x512.png';
   const thumbnailUrl = getOptimizedImageUrl(primary, { width: 800, height: 600, quality: 80 });
   const blurUrl = getOptimizedImageUrl(primary, { width: 24, height: 24, quality: 10 });
 
@@ -50,8 +50,8 @@ export function AdCard({ ad, canBoost, onEdit, onDelete }: { ad: Ad; canBoost?: 
             const direct = (Array.isArray(ad.images) && ad.images[0]) || (Array.isArray(ad.image_urls) && ad.image_urls[0]) || '';
             if (imgSrc !== direct && direct) {
               setImgSrc(direct);
-            } else if (imgSrc !== '/placeholder-ad.jpg') {
-              setImgSrc('/placeholder-ad.jpg');
+            } else if (imgSrc !== '/icon-512x512.png') {
+              setImgSrc('/icon-512x512.png');
             }
           }}
           decoding="async"

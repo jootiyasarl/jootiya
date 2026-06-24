@@ -106,7 +106,7 @@ export function AirbnbAdPageClient({
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
               loading="eager"
               decoding="async"
-              onError={(e) => { const t = e.currentTarget as HTMLImageElement; if (t.src !== '/placeholder-ad.jpg') t.src = '/placeholder-ad.jpg'; }}
+              onError={(e) => { const t = e.currentTarget as HTMLImageElement; if (t.src !== '/icon-512x512.png') t.src = '/icon-512x512.png'; }}
             />
             {/* Overlay Gradient for better button visibility */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/0 to-transparent opacity-80 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -135,7 +135,7 @@ export function AirbnbAdPageClient({
               </div>
               <div className="h-14 w-14 rounded-2xl bg-zinc-100 dark:bg-zinc-800 overflow-hidden relative border border-zinc-200 dark:border-zinc-800 shrink-0">
                 {sellerAvatar ? (
-                  <img src={sellerAvatar} alt={sellerName} className="absolute inset-0 h-full w-full object-cover" onError={(e) => { const t = e.currentTarget as HTMLImageElement; if (t.src !== '/placeholder-ad.jpg') t.src = '/placeholder-ad.jpg'; }} />
+                  <img src={sellerAvatar} alt={sellerName} className="absolute inset-0 h-full w-full object-cover" onError={(e) => { const t = e.currentTarget as HTMLImageElement; if (t.src !== '/icon-512x512.png') t.src = '/icon-512x512.png'; }} />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-xl font-bold text-zinc-400">
                     {sellerName.charAt(0).toUpperCase()}
@@ -226,7 +226,7 @@ export function AirbnbAdPageClient({
               <div className="mb-5 flex items-center gap-3 rounded-2xl bg-zinc-50 p-3 dark:bg-zinc-800/60">
                 <div className="relative h-11 w-11 overflow-hidden rounded-2xl bg-white dark:bg-zinc-900">
                   {sellerAvatar ? (
-                    <img src={sellerAvatar} alt={sellerName} className="absolute inset-0 h-full w-full object-cover" onError={(e) => { const t = e.currentTarget as HTMLImageElement; if (t.src !== '/placeholder-ad.jpg') t.src = '/placeholder-ad.jpg'; }} />
+                    <img src={sellerAvatar} alt={sellerName} className="absolute inset-0 h-full w-full object-cover" onError={(e) => { const t = e.currentTarget as HTMLImageElement; if (t.src !== '/icon-512x512.png') t.src = '/icon-512x512.png'; }} />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center text-base font-black text-zinc-400">
                       {sellerName.charAt(0).toUpperCase()}

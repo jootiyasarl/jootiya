@@ -14,12 +14,9 @@ export function GoogleLoginButton() {
     setIsLoading(true);
 
     try {
-      const redirect = searchParams.get("redirect") ?? searchParams.get("redirectTo");
       const origin = window.location.origin;
-
-      const redirectTo = redirect
-        ? `${origin}/login?redirect=${encodeURIComponent(redirect)}`
-        : `${origin}/login`;
+      // Always go through our OAuth callback so the server exchanges the code and sets cookies
+      const redirectTo = `${origin}/auth/callback`;
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
