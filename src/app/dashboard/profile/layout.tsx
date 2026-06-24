@@ -44,7 +44,47 @@ async function ensureSeller() {
     redirect("/");
   }
 
-  const role = (profile?.role ?? "").toString().trim();
+  // Self-heal: if no profile row exists yet (e.g. fresh Google login),
+  // create one as a seller so the user can access their profile space.
+  if (!profile) {
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (serviceRoleKey) {
+      const admin = createClient(supabaseUrl, serviceRoleKey, {
+        auth: { persistSession: false },
+      });
+      const meta = (data.user.user_metadata ?? {}) as Record<string, unknown>;
+      const fullName =
+        (meta.full_name as string) ||
+        (meta.name as string) ||
+        (data.user.email ? data.user.email.split("@")[0] : "Utilisateur");
+      const avatarUrl =
+        (meta.avatar_url as string) || (meta.picture as string) || null;
+      const role =
+        data.user.email === "jootiyasarl@gmail.com" ? "super_admin" : "seller";
+
+      await admin.from("profiles").insert({
+        id: data.user.id,
+        email: data.user.email,
+        full_name: fullName,
+        avatar_url: avatarUrl,
+        role,
+        updated_at: new Date().toISOString(),
+      });
+
+      if (role !== "seller") {
+        redirect("/admin");
+      }
+      return; // allow access as seller
+    }
+    // No service role available: allow access rather than bounce
+    return;
+  }
+
+  const role = (profile.role ?? "").toString().trim();
+
+  if (role === "super_admin" || role === "admin") {
+    redirect("/admin");
+  }
 
   if (role !== "seller") {
     redirect("/");
