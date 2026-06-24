@@ -60,7 +60,7 @@ export function AdCard({ ad, variant = "default", footerSlot, href, priority = f
         
         {ad.imageUrl ? (
           <Image
-            src={getOptimizedImageUrl(ensureFullUrl(ad.imageUrl), { width: 400, height: 300, quality: 80, format: 'webp' })}
+            src={getOptimizedImageUrl(ad.imageUrl, { width: 400, height: 300, quality: 80, format: 'webp' })}
             alt={ad.title}
             fill
             priority={priority}
