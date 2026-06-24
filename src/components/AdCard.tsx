@@ -73,8 +73,8 @@ export function AdCard({ ad, variant = "default", footerSlot, href, priority = f
                 unoptimized={true}
                 onError={(e) => {
                   const target = e.currentTarget as HTMLImageElement;
-                  if (target.src !== '/placeholder-ad.png') {
-                    target.src = '/placeholder-ad.png';
+                  if (target.src !== '/placeholder-ad.jpg') {
+                    target.src = '/placeholder-ad.jpg';
                   }
                 }}
               />
