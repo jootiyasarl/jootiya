@@ -24,7 +24,35 @@ export function createSupabaseServerClient() {
 
 export async function getAuthenticatedServerClient() {
     const cookieStore = await cookies();
-    const accessToken = cookieStore.get("sb-access-token")?.value;
+    let accessToken = cookieStore.get("sb-access-token")?.value;
+    const refreshToken = cookieStore.get("sb-refresh-token")?.value;
+
+    // Validate the access token; if invalid/missing, try to refresh it
+    let tokenValid = false;
+    if (accessToken) {
+        const probe = createClient(supabaseUrl as string, supabaseAnonKey as string, {
+            auth: { persistSession: false },
+        });
+        const { data, error } = await probe.auth.getUser(accessToken);
+        tokenValid = !error && !!data.user;
+    }
+
+    if (!tokenValid && refreshToken) {
+        try {
+            const refresher = createClient(supabaseUrl as string, supabaseAnonKey as string, {
+                auth: { persistSession: false },
+            });
+            const { data, error } = await refresher.auth.refreshSession({
+                refresh_token: refreshToken,
+            });
+            if (!error && data.session?.access_token) {
+                accessToken = data.session.access_token;
+                tokenValid = true;
+            }
+        } catch {
+            // ignore
+        }
+    }
 
     const options: any = {
         auth: {
@@ -32,7 +60,7 @@ export async function getAuthenticatedServerClient() {
         },
     };
 
-    if (accessToken) {
+    if (accessToken && tokenValid) {
         options.global = {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -113,17 +141,31 @@ export async function getProfileRole(userId: string): Promise<UserRole | null> {
 export async function getServerUser(): Promise<User | null> {
     const cookieStore = await cookies();
     const accessToken = cookieStore.get("sb-access-token")?.value;
-
-    if (!accessToken) {
-        return null;
-    }
+    const refreshToken = cookieStore.get("sb-refresh-token")?.value;
 
     const supabase = createSupabaseServerClient();
-    const { data, error } = await supabase.auth.getUser(accessToken);
 
-    if (error || !data.user) {
-        return null;
+    // 1) Try the access token first
+    if (accessToken) {
+        const { data, error } = await supabase.auth.getUser(accessToken);
+        if (!error && data.user) {
+            return data.user;
+        }
     }
 
-    return data.user;
+    // 2) Fallback: refresh the session using the refresh token
+    if (refreshToken) {
+        try {
+            const { data, error } = await supabase.auth.refreshSession({
+                refresh_token: refreshToken,
+            });
+            if (!error && data.user) {
+                return data.user;
+            }
+        } catch {
+            // ignore and fall through
+        }
+    }
+
+    return null;
 }
