@@ -94,13 +94,12 @@ export function ListingCard(props: ListingCardProps) {
                 <div className="flex h-full">
                   {images.map((src, idx) => (
                     <div key={`${id}-${idx}`} className="relative min-w-0 flex-[0_0_100%] h-full">
-                      <Image
+                      <img
                         src={src}
                         alt={title}
-                        fill
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        unoptimized
+                        className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        loading="lazy"
+                        decoding="async"
                         onError={(e) => {
                           const img = e.currentTarget as HTMLImageElement;
                           if (img.src !== '/placeholder-ad.jpg') {
