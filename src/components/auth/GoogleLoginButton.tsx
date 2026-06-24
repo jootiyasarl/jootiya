@@ -15,8 +15,10 @@ export function GoogleLoginButton() {
 
     try {
       const origin = window.location.origin;
-      // Use client callback to exchange code on the browser, then sync cookies
-      const redirectTo = `${origin}/auth/callback-client`;
+      const desired = searchParams.get("redirectTo");
+      const nextParam = desired && desired.startsWith("/") ? `?next=${encodeURIComponent(desired)}` : "";
+      // Use client callback to exchange code on the browser, then sync cookies, preserving desired redirect
+      const redirectTo = `${origin}/auth/callback-client${nextParam}`;
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",

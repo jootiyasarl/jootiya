@@ -10,6 +10,16 @@ export default function OAuthCallbackClientPage() {
 
   useEffect(() => {
     const code = searchParams.get("code");
+    const rawNext = searchParams.get("next") || searchParams.get("redirectTo") || "";
+    const safeNext = (() => {
+      if (!rawNext) return "";
+      try {
+        const n = decodeURIComponent(rawNext);
+        // prevent open redirects; allow only internal paths
+        if (n.startsWith("/") && !n.startsWith("//") && !n.startsWith("/\\\\")) return n;
+      } catch {}
+      return "";
+    })();
 
     if (!code) {
       router.replace("/login");
@@ -32,7 +42,11 @@ export default function OAuthCallbackClientPage() {
           });
 
           const isAdmin = data.session.user?.email === "jootiyasarl@gmail.com";
-          router.replace(isAdmin ? "/admin" : "/marketplace/post");
+          if (safeNext) {
+            router.replace(safeNext);
+          } else {
+            router.replace(isAdmin ? "/admin" : "/marketplace/post");
+          }
         } catch {
           router.replace("/marketplace/post");
         }
