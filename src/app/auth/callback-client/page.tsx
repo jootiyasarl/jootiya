@@ -41,12 +41,8 @@ export default function OAuthCallbackClientPage() {
             body: JSON.stringify({ session: data.session }),
           });
 
-          const isAdmin = data.session.user?.email === "jootiyasarl@gmail.com";
-          if (safeNext) {
-            router.replace(safeNext);
-          } else {
-            router.replace(isAdmin ? "/admin" : "/marketplace/post");
-          }
+          // Per requirement: after Google login, always go to Post Ad page
+          router.replace("/marketplace/post");
         } catch {
           router.replace("/marketplace/post");
         }
