@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
+// Use standard <img> where possible to avoid edge cases with next/image during hydration
 import Link from "next/link";
 import { 
   ChevronRight, 
@@ -100,12 +100,13 @@ export function AirbnbAdPageClient({
         {/* Desktop & Mobile: Single Main Image with Lightbox Trigger */}
         <div className="main-container px-0 md:px-8 overflow-hidden">
           <div className="w-full aspect-[4/3] md:aspect-[16/9] lg:aspect-[21/9] relative overflow-hidden bg-zinc-100 dark:bg-zinc-800 rounded-none md:rounded-[2rem] cursor-pointer group shadow-sm" onClick={() => setIsLightboxOpen(true)}>
-             <Image 
+             <img 
               src={images[0]} 
               alt={ad.title} 
-              fill 
-              className="object-cover transition-transform duration-700 group-hover:scale-105"
-              priority
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              loading="eager"
+              decoding="async"
+              onError={(e) => { const t = e.currentTarget as HTMLImageElement; if (t.src !== '/placeholder-ad.jpg') t.src = '/placeholder-ad.jpg'; }}
             />
             {/* Overlay Gradient for better button visibility */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/0 to-transparent opacity-80 md:opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -134,7 +135,7 @@ export function AirbnbAdPageClient({
               </div>
               <div className="h-14 w-14 rounded-2xl bg-zinc-100 dark:bg-zinc-800 overflow-hidden relative border border-zinc-200 dark:border-zinc-800 shrink-0">
                 {sellerAvatar ? (
-                  <Image src={sellerAvatar} alt={sellerName} fill className="object-cover" />
+                  <img src={sellerAvatar} alt={sellerName} className="absolute inset-0 h-full w-full object-cover" onError={(e) => { const t = e.currentTarget as HTMLImageElement; if (t.src !== '/placeholder-ad.jpg') t.src = '/placeholder-ad.jpg'; }} />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-xl font-bold text-zinc-400">
                     {sellerName.charAt(0).toUpperCase()}
@@ -225,7 +226,7 @@ export function AirbnbAdPageClient({
               <div className="mb-5 flex items-center gap-3 rounded-2xl bg-zinc-50 p-3 dark:bg-zinc-800/60">
                 <div className="relative h-11 w-11 overflow-hidden rounded-2xl bg-white dark:bg-zinc-900">
                   {sellerAvatar ? (
-                    <Image src={sellerAvatar} alt={sellerName} fill className="object-cover" />
+                    <img src={sellerAvatar} alt={sellerName} className="absolute inset-0 h-full w-full object-cover" onError={(e) => { const t = e.currentTarget as HTMLImageElement; if (t.src !== '/placeholder-ad.jpg') t.src = '/placeholder-ad.jpg'; }} />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center text-base font-black text-zinc-400">
                       {sellerName.charAt(0).toUpperCase()}

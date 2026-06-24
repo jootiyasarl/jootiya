@@ -127,9 +127,18 @@ export default async function AdPage({ params }: AdPageProps) {
     const formattedPrice = retryAd.price ? `${Number(retryAd.price).toLocaleString()} ${retryAd.currency || 'MAD'}` : "Sur demande";
     const formattedDate = new Date(retryAd.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
 
-    const images = (retryAd.image_urls || []).map((img: string) => 
-      img.startsWith('http') ? img : `${baseUrl}/${img.startsWith('/') ? img.substring(1) : img}`
-    );
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const images = (retryAd.image_urls || []).map((img: string) => {
+      if (!img) return '/placeholder-ad.jpg';
+      if (img.startsWith('http')) return img;
+      const cleanPath = img.startsWith('/') ? img.substring(1) : img;
+      if (cleanPath.startsWith('storage/v1/object/public/')) {
+        return `${supabaseUrl}/${cleanPath}`;
+      } else if (cleanPath.startsWith('ad-images/')) {
+        return `${supabaseUrl}/storage/v1/object/public/${cleanPath}`;
+      }
+      return `${supabaseUrl}/storage/v1/object/public/ad-images/${cleanPath}`;
+    });
 
     const { data: stats } = await supabase.rpc('get_seller_stats', { target_seller_id: retryAd.seller_id });
     const avgRating = stats?.[0]?.avg_rating || 5.0;
@@ -174,9 +183,18 @@ export default async function AdPage({ params }: AdPageProps) {
       : "2024";
     const sellerPhone = ad.phone || profileData?.phone || ad.profiles?.phone;
 
-  const images = (ad.image_urls || []).map((img: string) => 
-    img.startsWith('http') ? img : `${baseUrl}/${img.startsWith('/') ? img.substring(1) : img}`
-  );
+  const supabaseUrl2 = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const images = (ad.image_urls || []).map((img: string) => {
+    if (!img) return '/placeholder-ad.jpg';
+    if (img.startsWith('http')) return img;
+    const cleanPath = img.startsWith('/') ? img.substring(1) : img;
+    if (cleanPath.startsWith('storage/v1/object/public/')) {
+      return `${supabaseUrl2}/${cleanPath}`;
+    } else if (cleanPath.startsWith('ad-images/')) {
+      return `${supabaseUrl2}/storage/v1/object/public/${cleanPath}`;
+    }
+    return `${supabaseUrl2}/storage/v1/object/public/ad-images/${cleanPath}`;
+  });
 
   const { data: stats } = await supabase.rpc('get_seller_stats', { target_seller_id: ad.seller_id });
   const avgRating = stats?.[0]?.avg_rating || 5.0;
