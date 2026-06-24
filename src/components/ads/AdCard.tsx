@@ -13,16 +13,17 @@ export interface Ad {
   title: string;
   price: number | null;
   currency: string | null;
-  images: string[] | null;
+  images?: string[] | null;
+  image_urls?: string[] | null; // tolerate alternative field from DB
   location?: string | null;
   created_at: string;
   status?: string;
 }
 
 export function AdCard({ ad, canBoost, onEdit, onDelete }: { ad: Ad; canBoost?: boolean; onEdit?: (ad: Ad) => void; onDelete?: (ad: Ad) => void }) {
-  const mainImage = ad.images?.[0] || '/placeholder-ad.jpg';
-  const thumbnailUrl = getOptimizedImageUrl(mainImage, { width: 500, height: 500, quality: 75 });
-  const blurUrl = getOptimizedImageUrl(mainImage, { width: 20, height: 20, quality: 10 });
+  const primary = (Array.isArray(ad.images) && ad.images[0]) || (Array.isArray(ad.image_urls) && ad.image_urls[0]) || '/placeholder-ad.jpg';
+  const thumbnailUrl = getOptimizedImageUrl(primary, { width: 500, height: 500, quality: 75 });
+  const blurUrl = getOptimizedImageUrl(primary, { width: 20, height: 20, quality: 10 });
 
   const [imgSrc, setImgSrc] = useState(thumbnailUrl);
 
@@ -49,9 +50,11 @@ export function AdCard({ ad, canBoost, onEdit, onDelete }: { ad: Ad; canBoost?: 
           className="airbnb-card-image"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           loading="lazy"
+          unoptimized
           onError={() => {
-            if (imgSrc !== mainImage && mainImage.startsWith('http')) {
-              setImgSrc(mainImage);
+            const direct = (Array.isArray(ad.images) && ad.images[0]) || (Array.isArray(ad.image_urls) && ad.image_urls[0]) || '';
+            if (imgSrc !== direct && direct) {
+              setImgSrc(direct);
             } else if (imgSrc !== '/placeholder-ad.jpg') {
               setImgSrc('/placeholder-ad.jpg');
             }
