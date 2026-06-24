@@ -1,14 +1,35 @@
 "use client";
 
-import React, { Suspense } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Search, PlusCircle, MessageCircle, User, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { MobileLocationFilter } from "@/components/home/MobileLocationFilter";
+import { supabase } from "@/lib/supabaseClient";
 
 export function MobileBottomNav() {
     const pathname = usePathname();
+    const [profileHref, setProfileHref] = useState<string>("/login?redirectTo=/dashboard");
+
+    useEffect(() => {
+        const resolveProfileHref = (email: string | null | undefined) => {
+            if (!email) return "/login?redirectTo=/dashboard";
+            if (email === "jootiyasarl@gmail.com") return "/admin";
+            return "/dashboard";
+        };
+
+        const init = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            setProfileHref(resolveProfileHref(session?.user?.email));
+        };
+        init();
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            setProfileHref(resolveProfileHref(session?.user?.email));
+        });
+
+        return () => subscription.unsubscribe();
+    }, []);
 
     // Hide bottom nav on chat detail pages to give full space to the conversation
     if (pathname?.startsWith("/dashboard/messages/") && pathname !== "/dashboard/messages") {
@@ -72,10 +93,10 @@ export function MobileBottomNav() {
                 </Link>
 
                 <Link
-                    href="/dashboard"
+                    href={profileHref}
                     className={cn(
                         "inline-flex flex-col items-center justify-center min-h-[44px] min-w-[44px] px-1 min-[360px]:px-2 hover:bg-zinc-50 dark:hover:bg-zinc-900 group gap-0.5 min-[360px]:gap-1 transition-all",
-                        pathname === "/dashboard" ? "text-orange-600" : "text-zinc-400 dark:text-zinc-500"
+                        (pathname === "/dashboard" || pathname === "/admin") ? "text-orange-600" : "text-zinc-400 dark:text-zinc-500"
                     )}
                     aria-label="Votre profil"
                 >
