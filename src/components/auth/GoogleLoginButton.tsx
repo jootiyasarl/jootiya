@@ -1,12 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import { Loader2 } from "lucide-react";
 
 export function GoogleLoginButton() {
-  const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleGoogleLogin = async () => {
@@ -15,8 +13,9 @@ export function GoogleLoginButton() {
 
     try {
       const origin = window.location.origin;
-      // Always land on Post Ad after OAuth via callback-client
-      const redirectTo = `${origin}/auth/callback-client`;
+      // Redirect to the Site URL root (always allowed by Supabase). The global
+      // OAuthRedirectHandler will catch the return and send the user to Post Ad.
+      const redirectTo = `${origin}/`;
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",

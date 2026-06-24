@@ -16,6 +16,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { PageViewTracker } from "@/components/analytics/PageViewTracker";
 import { GoogleAnalytics } from '@next/third-parties/google'
 import InstallPWA from "@/components/pwa/InstallPWA";
+import { OAuthRedirectHandler } from "@/components/auth/OAuthRedirectHandler";
 
 const tajawal = Tajawal({
   variable: "--font-tajawal",
@@ -198,6 +199,9 @@ export default function RootLayout({
             <PageViewTracker />
           </Suspense>
           <ScrollToTop />
+          <Suspense fallback={null}>
+            <OAuthRedirectHandler />
+          </Suspense>
           <Suspense fallback={null}>
             <ProgressBar />
           </Suspense>

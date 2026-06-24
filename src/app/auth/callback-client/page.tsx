@@ -10,26 +10,25 @@ export default function OAuthCallbackClientPage() {
 
   useEffect(() => {
     const code = searchParams.get("code");
-    const rawNext = searchParams.get("next") || searchParams.get("redirectTo") || "";
-    const safeNext = (() => {
-      if (!rawNext) return "";
-      try {
-        const n = decodeURIComponent(rawNext);
-        // prevent open redirects; allow only internal paths
-        if (n.startsWith("/") && !n.startsWith("//") && !n.startsWith("/\\\\")) return n;
-      } catch {}
-      return "";
-    })();
-
-    if (!code) {
-      router.replace("/login");
-      return;
-    }
 
     const run = async () => {
       try {
-        const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-        if (error || !data?.session) {
+        // Give Supabase a tick to process hash tokens if present (implicit flow)
+        await new Promise((r) => setTimeout(r, 0));
+
+        let { data: { session } } = await supabase.auth.getSession();
+
+        // If no session yet and we have a code, use PKCE exchange
+        if (!session && code) {
+          const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+          if (error || !data?.session) {
+            router.replace("/login");
+            return;
+          }
+          session = data.session;
+        }
+
+        if (!session) {
           router.replace("/login");
           return;
         }
@@ -38,7 +37,7 @@ export default function OAuthCallbackClientPage() {
           await fetch("/api/auth/set-session", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ session: data.session }),
+            body: JSON.stringify({ session }),
           });
 
           // Per requirement: after Google login, always go to Post Ad page
