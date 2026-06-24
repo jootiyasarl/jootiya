@@ -40,10 +40,10 @@ export default async function PublicNavbar() {
               rel="nofollow"
               aria-label="Déposer une annonce"
             >
-              <div className="rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-black h-10 px-4 text-[10px] uppercase tracking-wider shadow-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap">
+              <span className="btn btn-primary btn-sm gap-2">
                 <PlusCircle className="w-4 h-4 shrink-0" />
-                <span>Déposer une annonce</span>
-              </div>
+                Déposer une annonce
+              </span>
             </Link>
 
             {/* Client-side actions (Auth, Notifications, Theme) */}

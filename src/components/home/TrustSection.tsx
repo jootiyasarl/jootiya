@@ -29,21 +29,21 @@ export function TrustSection() {
                     </p>
                 </div>
                 <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
-                    <dl className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-3">
+                    <div className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-8 lg:max-w-none lg:grid-cols-3">
                         {FEATURES.map((feature) => (
-                            <div key={feature.title} className="flex flex-col items-center text-center">
-                                <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-orange-50 text-orange-600 ring-1 ring-orange-100">
-                                    <feature.icon className="h-8 w-8 text-orange-600" aria-hidden="true" />
+                            <div key={feature.title} className="card bg-base-100 border border-zinc-200 dark:border-zinc-700 shadow-sm text-center">
+                                <div className="card-body items-center">
+                                    <span className="flex h-16 w-16 mb-4 items-center justify-center rounded-2xl bg-orange-100 text-orange-600 dark:bg-orange-950/30">
+                                        <feature.icon className="h-8 w-8" aria-hidden="true" />
+                                    </span>
+                                    <h3 className="card-title text-zinc-900 dark:text-zinc-100">
+                                        {feature.title}
+                                    </h3>
+                                    <p className="text-zinc-600 dark:text-zinc-400">{feature.description}</p>
                                 </div>
-                                <dt className="text-xl font-semibold leading-7 text-zinc-900">
-                                    {feature.title}
-                                </dt>
-                                <dd className="mt-4 flex flex-auto flex-col text-base leading-7 text-zinc-600">
-                                    <p className="flex-auto">{feature.description}</p>
-                                </dd>
                             </div>
                         ))}
-                    </dl>
+                    </div>
                 </div>
             </div>
         </section>
