@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Clock3, MapPin, Sparkles } from "lucide-react";
@@ -43,6 +43,7 @@ export interface AdCardProps {
 
 export function AdCard({ ad, variant = "default", footerSlot, href, priority = false }: AdCardProps) {
   const isFeatured = variant === "featured" || ad.isFeatured;
+  const [imgFailed, setImgFailed] = useState(false);
   
   // SEO: Generate slug if not provided, then construct the new URL structure /ads/[id]/[slug]
   const adSlug = ad.slug || generateSlug(ad.title);
@@ -58,7 +59,7 @@ export function AdCard({ ad, variant = "default", footerSlot, href, priority = f
           </Link>
         )}
         
-        {ad.imageUrl ? (
+        {ad.imageUrl && !imgFailed ? (
           (() => {
             const src = getOptimizedImageUrl(ad.imageUrl, { width: 400, height: 300, quality: 80, format: 'webp' });
             return (
@@ -71,12 +72,7 @@ export function AdCard({ ad, variant = "default", footerSlot, href, priority = f
                 sizes="(max-width: 420px) 72vw, (max-width: 640px) 46vw, (max-width: 1024px) 24vw, 19vw"
                 loading={priority ? "eager" : "lazy"}
                 unoptimized={true}
-                onError={(e) => {
-                  const target = e.currentTarget as HTMLImageElement;
-                  if (target.src !== '/placeholder-ad.jpg') {
-                    target.src = '/placeholder-ad.jpg';
-                  }
-                }}
+                onError={() => { setImgFailed(true); }}
               />
             );
           })()
