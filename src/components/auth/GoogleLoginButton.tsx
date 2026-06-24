@@ -15,8 +15,8 @@ export function GoogleLoginButton() {
 
     try {
       const origin = window.location.origin;
-      // Always go through our OAuth callback so the server exchanges the code and sets cookies
-      const redirectTo = `${origin}/auth/callback`;
+      // Use client callback to exchange code on the browser, then sync cookies
+      const redirectTo = `${origin}/auth/callback-client`;
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
