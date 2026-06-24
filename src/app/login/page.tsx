@@ -25,7 +25,7 @@ async function loginAction(formData: FormData) {
 
   const identifier = formData.get("identifier");
   const password = formData.get("password");
-  const redirectTo = formData.get("redirectTo")?.toString() || "/marketplace";
+  const redirectTo = formData.get("redirectTo")?.toString() || "/marketplace/post";
 
   if (typeof identifier !== "string" || typeof password !== "string") {
     const params = new URLSearchParams();

@@ -67,8 +67,8 @@ export async function GET(request: Request) {
         return NextResponse.redirect(`${requestUrl.origin}/admin`);
       }
 
-      // Default redirect for other users (if Google is enabled later)
-      return NextResponse.redirect(`${requestUrl.origin}/marketplace`);
+      // Default redirect for other users: go directly to the ad posting page
+      return NextResponse.redirect(`${requestUrl.origin}/marketplace/post`);
     }
   }
 
