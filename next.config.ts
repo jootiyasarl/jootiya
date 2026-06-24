@@ -62,6 +62,12 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/storage/v1/render/image/public/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
   async headers() {

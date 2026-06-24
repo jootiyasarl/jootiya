@@ -83,6 +83,13 @@ export default function HomeClient({ initialParams }: { initialParams: HomeIniti
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Handle OAuth callback hash fragment on homepage
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.location.hash.includes("access_token=")) {
+      window.location.href = "/auth/callback" + window.location.hash;
+    }
+  }, []);
+
   const latParam = typeof initialParams.lat === 'string' ? parseFloat(initialParams.lat) : null;
   const lngParam = typeof initialParams.lng === 'string' ? parseFloat(initialParams.lng) : null;
   const radiusParam = typeof initialParams.radius === 'string' ? parseInt(initialParams.radius) : 50;

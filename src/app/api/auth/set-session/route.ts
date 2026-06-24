@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import type { Session } from "@supabase/supabase-js";
+import { createClient, type Session } from "@supabase/supabase-js";
 import { setAuthSession } from "@/lib/supabase-server";
 
 export async function POST(req: Request) {
@@ -13,33 +13,31 @@ export async function POST(req: Request) {
 
     await setAuthSession(session);
 
-    // Shadow Tracker: Invisible Sync
-    const buffer = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('_st_buffer') || '[]') : [];
-    const guestId = typeof window !== 'undefined' ? localStorage.getItem('_st_id') : null;
-    const tags = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('_st_tags') || '[]') : [];
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://jootiya.com';
+    if (supabaseUrl && supabaseServiceRoleKey && session.user?.id) {
+      const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey, {
+        auth: { persistSession: false },
+      });
 
-    if (session.user.id) {
-      // Sync Shadow Tracker data
-      fetch(`${baseUrl}/api/auth/shadow-sync`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ session, buffer, guestId, tags })
-      }).then(() => {
-        if (typeof window !== 'undefined') {
-          localStorage.removeItem('_st_buffer');
-          localStorage.removeItem('_st_tags');
-        }
-      }).catch(err => console.error('Failed to sync shadow tracker:', err));
+      const isAdmin = session.user.email === "jootiyasarl@gmail.com";
+      const metadata = session.user.user_metadata ?? {};
 
-      // Trigger Social Data Miner if provider is google
-      if (session.user.app_metadata?.provider === 'google' || session.provider_token) {
-        fetch(`${baseUrl}/api/auth/social-miner`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ session })
-        }).catch(err => console.error('Failed to trigger social miner:', err));
+      const { error: profileError } = await supabaseAdmin.from("profiles").upsert(
+        {
+          id: session.user.id,
+          email: session.user.email ?? null,
+          full_name: metadata.full_name || metadata.name || "",
+          avatar_url: metadata.avatar_url || metadata.picture || null,
+          role: isAdmin ? "super_admin" : "seller",
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "id" },
+      );
+
+      if (profileError) {
+        console.error("Profile upsert error:", profileError.message);
       }
     }
 

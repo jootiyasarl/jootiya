@@ -117,12 +117,14 @@ export const DropdownMenuContent = React.forwardRef<
 DropdownMenuContent.displayName = "DropdownMenuContent";
 
 export interface DropdownMenuItemProps
-  extends React.HTMLAttributes<HTMLDivElement> {}
+  extends React.HTMLAttributes<HTMLElement> {
+  href?: string;
+}
 
 export const DropdownMenuItem = React.forwardRef<
-  HTMLDivElement,
+  HTMLElement,
   DropdownMenuItemProps
->(({ className, children, onClick, ...props }, ref) => {
+>(({ className, children, onClick, href, ...props }, ref) => {
   const { setOpen } = useDropdownMenuContext();
 
   // Hide any menu item labeled "Subscription" so the unused
@@ -136,16 +138,37 @@ export const DropdownMenuItem = React.forwardRef<
     setOpen(false);
   };
 
+  const baseClassName = cn(
+    "flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-zinc-100 hover:text-zinc-900",
+    className,
+  );
+
+  if (href) {
+    return (
+      <a
+        ref={ref as React.Ref<HTMLAnchorElement>}
+        href={href}
+        role="menuitem"
+        className={cn(baseClassName, "no-underline")}
+        onClick={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          window.location.href = href;
+        }}
+        {...props as React.AnchorHTMLAttributes<HTMLAnchorElement>}
+      >
+        {children}
+      </a>
+    );
+  }
+
   return (
     <div
-      ref={ref}
+      ref={ref as React.Ref<HTMLDivElement>}
       role="menuitem"
-      className={cn(
-        "flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-zinc-100 hover:text-zinc-900",
-        className,
-      )}
+      className={baseClassName}
       onClick={handleClick}
-      {...props}
+      {...props as React.HTMLAttributes<HTMLDivElement>}
     >
       {children}
     </div>

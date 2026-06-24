@@ -7,12 +7,25 @@ import {
     MessageCircle,
     User,
     LogOut,
-    ShieldAlert
+    ShieldAlert,
+    LayoutDashboard,
+    Package,
+    Settings,
+    ChevronDown
 } from "lucide-react";
+import Image from "next/image";
 import { supabase } from "@/lib/supabaseClient";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { useRouter } from "next/navigation";
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 
 interface DesktopActionsProps {
     initialUserEmail?: string | null;
@@ -23,6 +36,9 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
     const [userEmail, setUserEmail] = useState<string | null>(initialUserEmail);
     const [isAdmin, setIsAdmin] = useState(initialIsAdmin);
     const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
+    const [fullName, setFullName] = useState<string | null>(null);
+    const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+    const [menuOpen, setMenuOpen] = useState(false);
     const router = useRouter();
 
     const isAdminEmail = (email: string) => email === "jootiyasarl@gmail.com";
@@ -34,12 +50,18 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
             if (session?.user) {
                 const user = session.user;
                 setUserEmail(user.email ?? null);
+
+                const meta = user.user_metadata ?? {};
+                setAvatarUrl(meta.avatar_url || meta.picture || null);
                 
                 const { data: profile } = await supabase
                     .from('profiles')
-                    .select('role, phone')
+                    .select('role, phone, full_name, avatar_url')
                     .eq('id', user.id)
                     .maybeSingle();
+
+                setFullName(profile?.full_name || meta.full_name || meta.name || null);
+                if (profile?.avatar_url) setAvatarUrl(profile.avatar_url);
 
                 const isAuthorized = 
                     user.email === "jootiyasarl@gmail.com" || 
@@ -69,6 +91,8 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                 setUserEmail(null);
                 setIsAdmin(false);
                 setHasUnreadMessages(false);
+                setFullName(null);
+                setAvatarUrl(null);
             }
         };
 
@@ -81,11 +105,17 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
             if (user) {
                 setUserEmail(user.email ?? null);
 
+                const meta = user.user_metadata ?? {};
+                setAvatarUrl(meta.avatar_url || meta.picture || null);
+
                 const { data: profile } = await supabase
                     .from('profiles')
-                    .select('role, phone')
+                    .select('role, phone, full_name, avatar_url')
                     .eq('id', user.id)
                     .maybeSingle();
+
+                setFullName(profile?.full_name || meta.full_name || meta.name || null);
+                if (profile?.avatar_url) setAvatarUrl(profile.avatar_url);
 
                 const isAuthorized = 
                     user.email === "jootiyasarl@gmail.com" || 
@@ -106,6 +136,8 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                 setUserEmail(null);
                 setIsAdmin(false);
                 setHasUnreadMessages(false);
+                setFullName(null);
+                setAvatarUrl(null);
             }
         });
 
@@ -114,11 +146,53 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
         };
     }, []);
 
+    useEffect(() => {
+        if (!menuOpen) return;
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (!session) return;
+            const maxAge = 60 * 60 * 24 * 365 * 20;
+            document.cookie = `sb-access-token=${session.access_token}; path=/; SameSite=Lax; max-age=${maxAge}`;
+            if (session.refresh_token) {
+                document.cookie = `sb-refresh-token=${session.refresh_token}; path=/; SameSite=Lax; max-age=${maxAge}`;
+            }
+            fetch("/api/auth/set-session", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ session }),
+                credentials: "include",
+                cache: "no-store",
+            }).catch(() => {});
+        });
+    }, [menuOpen]);
+
+    const syncSessionToCookies = async () => {
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) return;
+            const maxAge = 60 * 60 * 24 * 365 * 20;
+            document.cookie = `sb-access-token=${session.access_token}; path=/; SameSite=Lax; max-age=${maxAge}`;
+            if (session.refresh_token) {
+                document.cookie = `sb-refresh-token=${session.refresh_token}; path=/; SameSite=Lax; max-age=${maxAge}`;
+            }
+            fetch("/api/auth/set-session", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ session }),
+                credentials: "include",
+                cache: "no-store",
+            }).catch(() => {});
+        } catch (error) {
+            console.error("Failed to sync session to cookies", error);
+        }
+    };
+
     const handleLogout = async () => {
         try {
             setUserEmail(null);
             setIsAdmin(false);
             setHasUnreadMessages(false);
+            setFullName(null);
+            setAvatarUrl(null);
             await supabase.auth.signOut();
             await fetch("/api/auth/logout", { method: "POST" });
             
@@ -143,31 +217,33 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
             {userEmail ? (
                 <>
                     <NotificationBell />
-                    <Link
-                        href="/dashboard/favorites"
+                    <button
+                        type="button"
+                        onMouseEnter={() => syncSessionToCookies()}
+                        onClick={() => { window.location.href = "/dashboard/favorites"; }}
                         className="btn btn-ghost btn-circle btn-sm"
                         aria-label="Voir vos annonces favorites"
                         title="Favoris"
-                        rel="nofollow"
                     >
                         <Heart className="w-5 h-5" />
-                    </Link>
+                    </button>
 
-                    <Link
-                        href="/dashboard/messages"
+                    <button
+                        type="button"
+                        onMouseEnter={() => syncSessionToCookies()}
+                        onClick={() => { window.location.href = "/dashboard/messages"; }}
                         className="btn btn-ghost btn-circle btn-sm relative"
                         aria-label="Voir vos messages"
                         title="Messages"
-                        rel="nofollow"
                     >
                         <MessageCircle className="w-5 h-5" />
                         {hasUnreadMessages && (
                             <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-orange-500 rounded-full border-2 border-white dark:border-zinc-900" />
                         )}
-                    </Link>
+                    </button>
 
                     <div className="ml-1 pl-1 border-l border-zinc-200 dark:border-zinc-800 flex items-center gap-1">
-                        {isAdmin ? (
+                        {isAdmin && (
                             <Link
                                 href="/admin"
                                 className="btn btn-warning btn-circle btn-sm"
@@ -176,23 +252,76 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                             >
                                 <ShieldAlert className="w-5 h-5" />
                             </Link>
-                        ) : (
-                            <Link
-                                href="/dashboard"
-                                className="btn btn-ghost btn-circle btn-sm"
-                                title="Mon Compte"
-                                rel="nofollow"
-                            >
-                                <User className="w-5 h-5" />
-                            </Link>
                         )}
-                        <button
-                            onClick={handleLogout}
-                            className="btn btn-ghost btn-circle btn-sm text-zinc-400 hover:text-red-500"
-                            title="Déconnexion"
-                        >
-                            <LogOut className="w-5 h-5" />
-                        </button>
+
+                        <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
+                            <DropdownMenuTrigger
+                                className="flex items-center gap-1.5 rounded-full p-0.5 pr-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                                aria-label="Menu du compte"
+                            >
+                                <span className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400">
+                                    {avatarUrl ? (
+                                        <Image
+                                            src={avatarUrl}
+                                            alt={fullName || "Profil"}
+                                            fill
+                                            sizes="32px"
+                                            className="object-cover"
+                                        />
+                                    ) : (
+                                        <User className="h-4 w-4" />
+                                    )}
+                                </span>
+                                <ChevronDown className="h-4 w-4 text-zinc-400" />
+                            </DropdownMenuTrigger>
+
+                            <DropdownMenuContent className="w-64">
+                                <DropdownMenuLabel>
+                                    <div className="flex flex-col">
+                                        <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 truncate">
+                                            {fullName || "Mon compte"}
+                                        </span>
+                                        {userEmail && (
+                                            <span className="text-xs font-normal text-zinc-500 truncate">
+                                                {userEmail}
+                                            </span>
+                                        )}
+                                    </div>
+                                </DropdownMenuLabel>
+
+                                <DropdownMenuSeparator />
+
+                                <DropdownMenuItem href="/dashboard">
+                                    <LayoutDashboard className="mr-2 h-4 w-4" />
+                                    Tableau de bord
+                                </DropdownMenuItem>
+
+                                <DropdownMenuItem href="/dashboard/ads">
+                                    <Package className="mr-2 h-4 w-4" />
+                                    Mes annonces
+                                </DropdownMenuItem>
+
+                                <DropdownMenuItem href="/dashboard/profile">
+                                    <User className="mr-2 h-4 w-4" />
+                                    Mon profil
+                                </DropdownMenuItem>
+
+                                <DropdownMenuItem href="/dashboard/settings">
+                                    <Settings className="mr-2 h-4 w-4" />
+                                    Paramètres
+                                </DropdownMenuItem>
+
+                                <DropdownMenuSeparator />
+
+                                <DropdownMenuItem
+                                    onClick={handleLogout}
+                                    className="text-red-600 focus:text-red-600 dark:text-red-400"
+                                >
+                                    <LogOut className="mr-2 h-4 w-4" />
+                                    Déconnexion
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                 </>
             ) : (
