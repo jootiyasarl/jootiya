@@ -152,7 +152,7 @@ export default function HomeClient({ initialParams }: { initialParams: HomeIniti
               longitude, 
               seller_id
             `)
-            .or("status.eq.active,status.eq.approved")
+            .or("status.eq.active,status.eq.approved,status.eq.pending")
             .order("is_featured", { ascending: false })
             .order("created_at", { ascending: false })
             .limit(60);

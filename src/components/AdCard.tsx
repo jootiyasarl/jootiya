@@ -59,16 +59,23 @@ export function AdCard({ ad, variant = "default", footerSlot, href, priority = f
         )}
         
         {ad.imageUrl ? (
-          <Image
-            src={getOptimizedImageUrl(ad.imageUrl, { width: 400, height: 300, quality: 80, format: 'webp' })}
-            alt={ad.title}
-            fill
-            priority={priority}
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            sizes="(max-width: 420px) 72vw, (max-width: 640px) 46vw, (max-width: 1024px) 24vw, 19vw"
-            loading={priority ? "eager" : "lazy"}
-            unoptimized={false}
-          />
+          (() => {
+            const src = getOptimizedImageUrl(ad.imageUrl, { width: 400, height: 300, quality: 80, format: 'webp' });
+            const supabaseBase = process.env.NEXT_PUBLIC_SUPABASE_URL || "https://ssfcfvuosxxmvsdoktws.supabase.co";
+            const isSupabase = typeof src === 'string' && src.includes(new URL(supabaseBase).host);
+            return (
+              <Image
+                src={src}
+                alt={ad.title}
+                fill
+                priority={priority}
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                sizes="(max-width: 420px) 72vw, (max-width: 640px) 46vw, (max-width: 1024px) 24vw, 19vw"
+                loading={priority ? "eager" : "lazy"}
+                unoptimized={!isSupabase}
+              />
+            );
+          })()
         ) : (
           <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-zinc-100 to-zinc-200 text-zinc-400 dark:from-zinc-800 dark:to-zinc-900">
             <span className="text-[10px] font-black uppercase tracking-widest">No Image</span>
