@@ -100,6 +100,13 @@ export function ListingCard(props: ListingCardProps) {
                         fill
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                         className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        unoptimized
+                        onError={(e) => {
+                          const img = e.currentTarget as HTMLImageElement;
+                          if (img.src !== '/placeholder-ad.jpg') {
+                            img.src = '/placeholder-ad.jpg';
+                          }
+                        }}
                       />
                     </div>
                   ))}
