@@ -46,15 +46,17 @@ export async function uploadAvatarAction(base64Image: string, fileName: string) 
   const supabase = await getAuthenticatedServerClient();
 
   // Convert base64 to Buffer
+  const mimeMatch = base64Image.match(/^data:(image\/\w+);base64,/);
+  const mimeType = mimeMatch?.[1] || "image/jpeg";
   const base64Data = base64Image.replace(/^data:image\/\w+;base64,/, "");
   const buffer = Buffer.from(base64Data, "base64");
-  const fileExt = fileName.split('.').pop();
+  const fileExt = fileName.split('.').pop()?.toLowerCase() || "jpg";
   const filePath = `${user.id}/${Date.now()}.${fileExt}`;
 
   const { error: uploadError } = await supabase.storage
     .from("ad-images")
     .upload(filePath, buffer, {
-      contentType: `image/${fileExt}`,
+      contentType: mimeType,
       upsert: true
     });
 

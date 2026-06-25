@@ -217,7 +217,14 @@ export function ProfileForm({
             <div className="relative group">
               <div className="h-24 w-24 rounded-full border-4 border-zinc-50 bg-zinc-100 overflow-hidden flex items-center justify-center shadow-sm">
                 {personalInfo.avatar_url ? (
-                  <Image src={personalInfo.avatar_url} alt="Avatar" width={96} height={96} className="h-full w-full object-cover" />
+                  <Image
+                    src={personalInfo.avatar_url}
+                    alt="Avatar"
+                    width={96}
+                    height={96}
+                    className="h-full w-full object-cover"
+                    onError={() => setPersonalInfo(prev => ({ ...prev, avatar_url: "" }))}
+                  />
                 ) : (
                   <UserIcon className="h-10 w-10 text-zinc-300" />
                 )}
