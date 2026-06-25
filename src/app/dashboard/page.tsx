@@ -1,4 +1,4 @@
-import { createSupabaseServerClient, getServerUser, getAuthenticatedServerClient } from "@/lib/supabase-server";
+import { getServerUser, getAuthenticatedServerClient } from "@/lib/supabase-server";
 import { getSellerAds, getSellerStats } from "@/lib/db/dashboard";
 import SellerDashboard from "@/components/dashboard/SellerDashboard";
 import { redirect } from "next/navigation";
@@ -6,14 +6,9 @@ import { redirect } from "next/navigation";
 export default async function DashboardPage() {
   const user = await getServerUser();
 
+  // Silent protection only: if there's no session, go to login.
   if (!user) {
     redirect("/login?redirectTo=/dashboard");
-  }
-
-  // Admin Check: redirect if admin tries to access seller dashboard
-  if (user.email === 'jootiyasarl@gmail.com') {
-    console.log("Admin detected in /dashboard, redirecting to /admin");
-    redirect("/admin");
   }
 
   const supabase = await getAuthenticatedServerClient();
