@@ -13,9 +13,9 @@ export function GoogleLoginButton() {
 
     try {
       const origin = window.location.origin;
-      // Redirect to the Site URL root (always allowed by Supabase). The global
-      // OAuthRedirectHandler will catch the return and send the user to Post Ad.
-      const redirectTo = `${origin}/`;
+      // Send the user straight to the final destination (Post Ad page).
+      // The global OAuthRedirectHandler only syncs cookies for SSR.
+      const redirectTo = `${origin}/marketplace/post`;
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",

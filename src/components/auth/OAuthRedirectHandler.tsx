@@ -59,8 +59,16 @@ export function OAuthRedirectHandler() {
           });
         } catch {}
 
-        cleanUrl();
-        router.replace("/marketplace/post");
+        // Fallback: if Supabase dropped the user on the root (redirectTo not
+        // whitelisted), send them to the Post Ad page. Otherwise just clean
+        // the URL and stay where redirectTo already landed them.
+        const onRoot = window.location.pathname === "/";
+        if (onRoot) {
+          router.replace("/marketplace/post");
+        } else {
+          cleanUrl();
+          router.refresh();
+        }
       } catch {
         // ignore
       }
