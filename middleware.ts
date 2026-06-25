@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { createClient, type User } from "@supabase/supabase-js";
+import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -16,138 +16,36 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   },
 });
 
-type Role = "seller" | "admin" | "super_admin" | "moderator" | "buyer";
-
-async function getUserRole(user: User): Promise<Role | null> {
-  // 0) الفحص الذهبي: الأدمن المطلق عبر الإيميل
-  if (user.email === 'jootiyasarl@gmail.com') {
-    return 'super_admin';
-  }
-
-  // 1) Prefer the canonical role stored in the profiles table.
-  const { data: profile, error } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .maybeSingle();
-
-  if (!error && profile?.role) {
-    const value = String(profile.role).trim();
-    if (
-      value === "seller" ||
-      value === "admin" ||
-      value === "super_admin" ||
-      value === "moderator" ||
-      value === "buyer"
-    ) {
-      return value as Role;
-    }
-  }
-
-  // 2) Backwards-compatible fallback to metadata-based roles.
-  const meta = (user.app_metadata as any) ?? {};
-  const userMeta = (user.user_metadata as any) ?? {};
-  const roleFromMeta = (meta.role ?? userMeta.role) as string | undefined;
-
-  if (!roleFromMeta) return null;
-
-  if (
-    roleFromMeta === "seller" ||
-    roleFromMeta === "admin" ||
-    roleFromMeta === "super_admin" ||
-    roleFromMeta === "moderator" ||
-    roleFromMeta === "buyer"
-  ) {
-    return roleFromMeta as Role;
-  }
-
-  return null;
-}
-
-function getRoleHome(role: Role | null): string {
-  switch (role) {
-    case "seller":
-      return "/dashboard";
-    case "admin":
-    case "super_admin":
-      return "/admin";
-    case "moderator":
-      return "/moderator";
-    default:
-      return "/";
-  }
-}
-
-async function getUserFromRequest(req: NextRequest) {
+async function isAuthenticated(req: NextRequest): Promise<boolean> {
   const accessToken = req.cookies.get("sb-access-token")?.value;
+  const refreshToken = req.cookies.get("sb-refresh-token")?.value;
 
-  if (!accessToken) {
-    return null;
+  // Consider the user authenticated if a session cookie exists. A refresh
+  // token alone is enough to recover a session on the client/server pages.
+  if (!accessToken && !refreshToken) {
+    return false;
   }
 
-  const { data, error } = await supabase.auth.getUser(accessToken);
-
-  if (error || !data.user) {
-    return null;
+  if (accessToken) {
+    const { data, error } = await supabase.auth.getUser(accessToken);
+    if (!error && data.user) return true;
   }
 
-  return data.user;
+  // Access token missing/expired but a refresh token is present → treat as
+  // authenticated and let the page handle the refresh. Avoids false logouts.
+  return !!refreshToken;
 }
 
 export async function middleware(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
 
-  const isAuthPage = pathname === "/login" || pathname === "/register";
-  const isProtectedRoute =
-    pathname.startsWith("/dashboard") ||
-    pathname.startsWith("/admin") ||
-    pathname.startsWith("/moderator") ||
-    pathname === "/marketplace/post";
+  // Silent protection only: block unauthenticated access to protected routes.
+  const authed = await isAuthenticated(req);
 
-  const user = await getUserFromRequest(req);
-  const role = user ? await getUserRole(user) : null;
-
-  // Not logged in → redirect to /login for protected routes
-  if (!user && isProtectedRoute) {
+  if (!authed) {
     const loginUrl = new URL("/login", req.url);
-    if (pathname !== "/login") {
-      loginUrl.searchParams.set("redirectTo", `${pathname}${search}`);
-    }
+    loginUrl.searchParams.set("redirectTo", `${pathname}${search}`);
     return NextResponse.redirect(loginUrl);
-  }
-
-  // Logged in user hitting /login or /register → send to role-based home
-  if (user && isAuthPage) {
-    const target = getRoleHome(role);
-    const redirectUrl = new URL(target, req.url);
-    return NextResponse.redirect(redirectUrl);
-  }
-
-  // Role-based redirects for logged-in users on protected routes
-  if (user && isProtectedRoute) {
-    const targetForRole = getRoleHome(role);
-
-    // Admin-only area (admins and super_admins)
-    if (
-      pathname.startsWith("/admin") &&
-      !(role === "admin" || role === "super_admin")
-    ) {
-      return NextResponse.redirect(new URL(targetForRole, req.url));
-    }
-
-    // Moderator-only area
-    if (pathname.startsWith("/moderator") && role !== "moderator") {
-      return NextResponse.redirect(new URL(targetForRole, req.url));
-    }
-
-    // Dashboard is primary for sellers; admins/moderators go to their own area
-    if (pathname.startsWith("/dashboard")) {
-      if (role !== "seller") {
-        const loginUrl = new URL("/login", req.url);
-        loginUrl.searchParams.set("redirectTo", `${pathname}${search}`);
-        return NextResponse.redirect(loginUrl);
-      }
-    }
   }
 
   return NextResponse.next();
@@ -155,12 +53,10 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
-    "/login",
-    "/register",
     "/dashboard/:path*",
     "/admin/:path*",
     "/moderator/:path*",
     "/marketplace/post",
-    "/ads/:id",
+    "/poste-annonce",
   ],
 };
