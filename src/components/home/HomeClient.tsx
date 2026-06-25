@@ -24,7 +24,7 @@ const CATEGORY_LABELS: { [key: string]: string } = {
   "other": "Autres",
 };
 
-type HomepageAd = {
+export type HomepageAd = {
   id: string;
   title: string;
   price: string;
@@ -47,7 +47,7 @@ type HomeInitialParams = {
   radius?: string;
 };
 
-type HomepageAdRow = {
+export type HomepageAdRow = {
   id: string;
   title: string;
   price: number | string | null;
@@ -62,6 +62,7 @@ type HomepageAdRow = {
   latitude?: number | null;
   longitude?: number | null;
   distanceKm?: number;
+  dist_meters?: number;
   profiles?: {
     full_name?: string | null;
     username?: string | null;
@@ -77,10 +78,62 @@ type HomepageAdRow = {
   seller_avatar?: string;
 };
 
-export default function HomeClient({ initialParams }: { initialParams: HomeInitialParams }) {
-  const [ads, setAds] = useState<HomepageAd[]>([]);
+function mapHomepageAdRow(row: HomepageAdRow): HomepageAd {
+  const locationParts: string[] = [];
+  if (row.neighborhood) locationParts.push(row.neighborhood);
+  if (row.city) locationParts.push(row.city);
+  const location = locationParts.join(", ") || "Maroc";
+
+  let createdAtLabel: string | undefined;
+  if (row.created_at) {
+    const d = new Date(row.created_at);
+    if (!Number.isNaN(d.getTime())) {
+      createdAtLabel = d.toLocaleDateString("fr-FR", { month: 'short', day: 'numeric' }) + " à " + d.toLocaleTimeString("fr-FR", { hour: '2-digit', minute: '2-digit' });
+    }
+  }
+
+  const images = row.images || row.image_urls;
+  const primaryImageUrl = Array.isArray(images) && images.length > 0 ? (images[0] as string) : undefined;
+  const currency = typeof row.currency === 'string' ? row.currency.trim() : "MAD";
+  const priceLabel = row.price != null ? `${row.price} ${currency || "MAD"}` : "—";
+
+  const profile = row.profiles;
+  const profileObj = Array.isArray(profile) ? profile[0] : profile;
+
+  const sellerName =
+    (typeof row.sellerName === 'string' ? row.sellerName : undefined) ||
+    (typeof row.seller_name === 'string' ? row.seller_name : undefined) ||
+    profileObj?.full_name ||
+    profileObj?.username ||
+    "Utilisateur";
+
+  const sellerAvatar =
+    (typeof row.sellerAvatar === 'string' ? row.sellerAvatar : undefined) ||
+    (typeof row.seller_avatar === 'string' ? row.seller_avatar : undefined) ||
+    profileObj?.avatar_url;
+
+  return {
+    id: row.id,
+    title: row.title,
+    price: priceLabel,
+    location,
+    createdAt: createdAtLabel,
+    sellerBadge: row.is_featured ? "À la une" : undefined,
+    isFeatured: Boolean(row.is_featured),
+    imageUrl: primaryImageUrl,
+    categorySlug: row.category || undefined,
+    latitude: row.latitude || 0,
+    longitude: row.longitude || 0,
+    distanceKm: row.distanceKm ?? (row.dist_meters != null ? row.dist_meters / 1000 : undefined),
+    sellerName,
+    sellerAvatar: sellerAvatar || undefined,
+  };
+}
+
+export default function HomeClient({ initialParams, initialAds }: { initialParams: HomeInitialParams; initialAds?: HomepageAdRow[] }) {
+  const [ads, setAds] = useState<HomepageAd[]>(() => (initialAds || []).map(mapHomepageAdRow));
   const [isOfflineData, setIsOfflineData] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!initialAds?.length);
   const [error, setError] = useState<string | null>(null);
 
   const latParam = typeof initialParams.lat === 'string' ? parseFloat(initialParams.lat) : null;
@@ -89,7 +142,16 @@ export default function HomeClient({ initialParams }: { initialParams: HomeIniti
 
   useEffect(() => {
     let isMounted = true;
-    
+
+    // If the server already provided fresh ads, avoid the stale cache + refetch dance
+    if (initialAds?.length) {
+      if (isMounted) {
+        setLoading(false);
+        setIsOfflineData(false);
+      }
+      return;
+    }
+
     async function initData() {
       if (!isMounted) return;
       
@@ -162,58 +224,7 @@ export default function HomeClient({ initialParams }: { initialParams: HomeIniti
 
         if (resultData && isMounted) {
           console.log("Data fetched successfully:", resultData.length);
-          const formattedAds = resultData.map((row): HomepageAd => {
-            const locationParts: string[] = [];
-            if (row.neighborhood) locationParts.push(row.neighborhood);
-            if (row.city) locationParts.push(row.city);
-            const location = locationParts.join(", ") || "Maroc";
-
-            let createdAtLabel: string | undefined;
-            if (row.created_at) {
-              const d = new Date(row.created_at);
-              if (!Number.isNaN(d.getTime())) {
-                createdAtLabel = d.toLocaleDateString("fr-FR", { month: 'short', day: 'numeric' }) + " à " + d.toLocaleTimeString("fr-FR", { hour: '2-digit', minute: '2-digit' });
-              }
-            }
-
-            const images = row.images || row.image_urls;
-            const primaryImageUrl = Array.isArray(images) && images.length > 0 ? (images[0] as string) : undefined;
-            const currency = typeof row.currency === 'string' ? row.currency.trim() : "MAD";
-            const priceLabel = row.price != null ? `${row.price} ${currency || "MAD"}` : "—";
-
-            // Get seller name/avatar (safely)
-            const profile = row.profiles;
-            const profileObj = Array.isArray(profile) ? profile[0] : profile;
-
-            const sellerName =
-              (typeof row.sellerName === 'string' ? row.sellerName : undefined) ||
-              (typeof row.seller_name === 'string' ? row.seller_name : undefined) ||
-              profileObj?.full_name ||
-              profileObj?.username ||
-              "Utilisateur";
-
-            const sellerAvatar =
-              (typeof row.sellerAvatar === 'string' ? row.sellerAvatar : undefined) ||
-              (typeof row.seller_avatar === 'string' ? row.seller_avatar : undefined) ||
-              profileObj?.avatar_url;
-
-            return {
-              id: row.id,
-              title: row.title,
-              price: priceLabel,
-              location,
-              createdAt: createdAtLabel,
-              sellerBadge: row.is_featured ? "À la une" : undefined,
-              isFeatured: Boolean(row.is_featured),
-              imageUrl: primaryImageUrl,
-              categorySlug: row.category || undefined,
-              latitude: row.latitude || 0,
-              longitude: row.longitude || 0,
-              distanceKm: row.distanceKm,
-              sellerName: sellerName,
-              sellerAvatar: sellerAvatar || undefined,
-            };
-          });
+          const formattedAds = resultData.map(mapHomepageAdRow);
 
           setAds(formattedAds);
           setIsOfflineData(false);
@@ -232,7 +243,7 @@ export default function HomeClient({ initialParams }: { initialParams: HomeIniti
 
     initData();
     return () => { isMounted = false; };
-  }, [latParam, lngParam, radiusParam]);
+  }, [latParam, lngParam, radiusParam, initialAds]);
 
   const categoryMapping: { [key: string]: string } = {
     "electronics": "electronics",
