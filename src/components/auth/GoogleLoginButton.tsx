@@ -4,7 +4,7 @@ import { useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { Loader2 } from "lucide-react";
 
-export function GoogleLoginButton() {
+export function GoogleLoginButton({ redirectTo }: { redirectTo?: string }) {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleGoogleLogin = async () => {
@@ -13,14 +13,15 @@ export function GoogleLoginButton() {
 
     try {
       const origin = window.location.origin;
+      const finalTarget = redirectTo || "/poste-annonce";
       // Go through the client callback so the session is posted to the server
       // and stored in HTTP-only cookies for SSR/dashboard access.
-      const redirectTo = `${origin}/auth/callback-client`;
+      const redirectToUrl = `${origin}/auth/callback-client?redirectTo=${encodeURIComponent(finalTarget)}`;
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo,
+          redirectTo: redirectToUrl,
           // Request only basic scopes; offline+consent for refresh token when allowed
           queryParams: {
             scope: 'openid email profile',

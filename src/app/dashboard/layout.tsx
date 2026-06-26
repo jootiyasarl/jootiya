@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { Menu, ChevronDown, ArrowLeft, ExternalLink, User, CreditCard, LogOut } from "lucide-react";
+import { Menu, ChevronDown, ArrowLeft, ExternalLink, User, CreditCard, LogOut, Settings, KeyRound } from "lucide-react";
 import { DashboardSidebar } from "@/components/dashboard-sidebar";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { Button } from "@/components/ui/button";
@@ -29,7 +29,15 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   };
 
   const handleProfileClick = () => {
-    router.push("/dashboard/profile");
+    router.push("/profile");
+  };
+
+  const handleSettingsClick = () => {
+    router.push("/settings");
+  };
+
+  const handleChangePasswordClick = () => {
+    router.push("/change-password");
   };
 
   const handleSubscriptionClick = () => {
@@ -138,6 +146,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 </DropdownMenuLabel>
                 <DropdownMenuItem onClick={handleProfileClick} className="rounded-xl px-3 py-2.5 font-bold text-sm cursor-pointer hover:bg-zinc-50 gap-3">
                   <User className="w-4 h-4 text-zinc-400" /> Profil
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleSettingsClick} className="rounded-xl px-3 py-2.5 font-bold text-sm cursor-pointer hover:bg-zinc-50 gap-3">
+                  <Settings className="w-4 h-4 text-zinc-400" /> Paramètres
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleChangePasswordClick} className="rounded-xl px-3 py-2.5 font-bold text-sm cursor-pointer hover:bg-zinc-50 gap-3">
+                  <KeyRound className="w-4 h-4 text-zinc-400" /> Mot de passe
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleSubscriptionClick} className="rounded-xl px-3 py-2.5 font-bold text-sm cursor-pointer hover:bg-zinc-50 gap-3">
                   <CreditCard className="w-4 h-4 text-zinc-400" /> Abonnement

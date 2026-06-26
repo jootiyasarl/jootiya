@@ -238,7 +238,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
                   <span className="bg-white px-3 text-[11px] font-black uppercase tracking-widest text-zinc-400">أو</span>
                 </div>
               </div>
-              <GoogleLoginButton />
+              <GoogleLoginButton redirectTo="/poste-annonce" />
             </div>
 
             <Link href="/" className="group flex items-center justify-center gap-2 text-xs font-black text-zinc-400 hover:text-zinc-600 transition-colors uppercase tracking-widest">

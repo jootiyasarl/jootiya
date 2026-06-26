@@ -186,7 +186,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           </form>
 
           <div className="space-y-4">
-            <GoogleLoginButton />
+            <GoogleLoginButton redirectTo={redirectTo || "/poste-annonce"} />
           </div>
 
           <div className="pt-8 text-center">

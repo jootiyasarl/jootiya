@@ -15,7 +15,8 @@ import {
   MessageCircle,
   Bell,
   Home,
-  Star
+  Star,
+  KeyRound
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNotifications } from "@/hooks/useNotifications";
@@ -44,7 +45,7 @@ export function DashboardSidebar({ onItemClick }: DashboardSidebarProps) {
         },
         {
           label: "Publier une annonce",
-          href: "/marketplace/post",
+          href: "/poste-annonce",
           icon: PlusCircle,
         },
         {
@@ -64,7 +65,7 @@ export function DashboardSidebar({ onItemClick }: DashboardSidebarProps) {
       items: [
         {
           label: "Mon Profil",
-          href: "/dashboard/profile",
+          href: "/profile",
           icon: User2,
         },
         {
@@ -80,8 +81,13 @@ export function DashboardSidebar({ onItemClick }: DashboardSidebarProps) {
         },
         {
           label: "Paramètres",
-          href: "/dashboard/settings",
+          href: "/settings",
           icon: Settings,
+        },
+        {
+          label: "Mot de passe",
+          href: "/change-password",
+          icon: KeyRound,
         },
       ]
     }

@@ -40,8 +40,15 @@ export default function OAuthCallbackClientPage() {
             body: JSON.stringify({ session }),
           });
 
-          // Per requirement: after Google login, always go to Post Ad page
-          router.replace("/poste-annonce");
+          // Final destination is controlled by the `redirectTo` query param.
+          // Only accept relative paths to avoid open redirects.
+          const redirectTo = searchParams.get("redirectTo");
+          const finalTarget =
+            redirectTo && redirectTo.startsWith("/") && !redirectTo.startsWith("//")
+              ? redirectTo
+              : "/poste-annonce";
+
+          router.replace(finalTarget);
         } catch {
           router.replace("/poste-annonce");
         }
