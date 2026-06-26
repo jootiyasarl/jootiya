@@ -229,8 +229,8 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
               </div>
             </form>
 
-            <div className="space-y-6">
-              <div className="relative py-4">
+            <div className="space-y-2 !mt-2">
+              <div className="relative py-2">
                 <div className="absolute inset-0 flex items-center" aria-hidden="true">
                   <div className="w-full border-t border-zinc-100" />
                 </div>
