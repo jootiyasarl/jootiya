@@ -171,7 +171,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
       {/* Right Side: Register Form */}
       <div className="w-full lg:w-1/2 bg-white flex items-center justify-center p-6 sm:p-12 relative overflow-hidden h-full">
         <div className="w-full max-w-md space-y-8 relative z-10 text-left flex flex-col justify-center" dir="ltr">
-          <div className="flex-grow flex flex-col justify-center space-y-8">
+          <div className="flex-grow flex flex-col justify-center space-y-4">
             <div className="space-y-2">
               <h1 className="text-5xl font-black text-zinc-900 tracking-tighter">Inscription</h1>
               <p className="text-zinc-500 text-lg font-medium">Créer un compte professionnel</p>
@@ -229,7 +229,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
               </div>
             </form>
 
-            <div className="space-y-2 !mt-2">
+            <div className="space-y-3">
               <div className="relative py-2">
                 <div className="absolute inset-0 flex items-center" aria-hidden="true">
                   <div className="w-full border-t border-zinc-100" />
