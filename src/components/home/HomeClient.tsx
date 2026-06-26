@@ -2,9 +2,9 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
+import { SellBanner } from "@/components/home/SellBanner";
 import { TrustSection } from "@/components/home/TrustSection";
 import { type PublicAdCardAd } from "@/components/AdCard";
-import { Hero } from "@/components/home/Hero";
 import { HomeAdCard } from "@/components/home/HomeAdCard";
 import { Package, ArrowRight, WifiOff, ChevronLeft, ChevronRight, PlusCircle, Clock3, MapPin, Sparkles } from "lucide-react";
 import { getCachedAds, saveAds } from "@/lib/pwa/jootiya-db";
@@ -393,7 +393,10 @@ export default function HomeClient({ initialParams, initialAds }: { initialParam
   return (
     <div dir="ltr" className="min-h-screen bg-white font-sans text-zinc-900 pb-12">
       
-      <Hero />
+      {/* Sell banner — light, compact CTA strip */}
+      <section className="main-container">
+        <SellBanner />
+      </section>
 
       <main className="main-container pb-4 pt-6 sm:pt-8">
         {error && (
