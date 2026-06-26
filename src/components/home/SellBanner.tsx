@@ -14,7 +14,7 @@ export function SellBanner() {
                 </h2>
                 
                 <Link 
-                    href="/marketplace/post"
+                    href="/poste-annonce"
                     className="group/btn relative inline-flex items-center justify-center gap-1.5 px-4 sm:px-5 h-9 sm:h-10 bg-[#F25C05] hover:bg-[#D44D04] text-white rounded-xl sm:rounded-2xl font-black text-[10px] sm:text-xs uppercase tracking-wider shadow-md dark:shadow-none transition-all duration-300 hover:-translate-y-0.5 active:scale-95 overflow-hidden whitespace-nowrap w-full"
                 >
                     <PlusCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />

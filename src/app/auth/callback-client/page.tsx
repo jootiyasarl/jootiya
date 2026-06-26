@@ -41,9 +41,9 @@ export default function OAuthCallbackClientPage() {
           });
 
           // Per requirement: after Google login, always go to Post Ad page
-          router.replace("/marketplace/post");
+          router.replace("/poste-annonce");
         } catch {
-          router.replace("/marketplace/post");
+          router.replace("/poste-annonce");
         }
       } catch {
         router.replace("/login");

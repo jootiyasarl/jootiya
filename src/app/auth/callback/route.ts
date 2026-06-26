@@ -68,7 +68,7 @@ export async function GET(request: Request) {
       }
 
       // Default redirect for other users: go directly to the ad posting page
-      return NextResponse.redirect(`${requestUrl.origin}/marketplace/post`);
+      return NextResponse.redirect(`${requestUrl.origin}/poste-annonce`);
     }
   }
 

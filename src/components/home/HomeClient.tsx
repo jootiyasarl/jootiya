@@ -419,7 +419,7 @@ export default function HomeClient({ initialParams, initialAds }: { initialParam
                 </div>
                 <h3 className="card-title text-xl">Aucune annonce trouvée</h3>
                 <p className="text-sm text-zinc-500 font-medium max-w-xs">Soyez le premier à publier une annonce dans votre région.</p>
-                <Link href="/marketplace/post" className="btn btn-primary mt-4">
+                <Link href="/poste-annonce" className="btn btn-primary mt-4">
                   <PlusCircle className="w-5 h-5" />
                   Déposer une annonce
                 </Link>

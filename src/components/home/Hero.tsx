@@ -63,7 +63,7 @@ export function Hero() {
           </div>
 
           <Link
-            href="/marketplace/post"
+            href="/poste-annonce"
             className="btn btn-primary btn-lg mt-4 inline-flex items-center gap-2 shadow-xl shadow-orange-500/20"
           >
             <PlusCircle className="h-5 w-5" />
