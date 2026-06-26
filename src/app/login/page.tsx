@@ -1,8 +1,6 @@
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Card, CardContent } from "@/components/ui/card";
-import { GoogleLoginButton } from "@/components/auth/GoogleLoginButton";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SubmitButton } from "@/components/submit-button";
@@ -121,18 +119,6 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             </div>
           )}
 
-          <div className="space-y-4">
-            <GoogleLoginButton />
-            <div className="relative py-2">
-              <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                <div className="w-full border-t border-zinc-100" />
-              </div>
-              <div className="relative flex justify-center">
-                <span className="bg-white px-3 text-[11px] font-black uppercase tracking-widest text-zinc-400">أو عبر البريد</span>
-              </div>
-            </div>
-          </div>
-
           <form action={loginAction} className="space-y-6">
             <input type="hidden" name="redirectTo" value={redirectTo || ""} />
             
@@ -211,7 +197,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           <div className="pt-10 border-t border-zinc-100 flex items-center justify-between">
             <Link href="/" className="group flex items-center gap-2 text-xs font-black text-zinc-400 hover:text-zinc-600 transition-colors uppercase tracking-widest">
               <ChevronLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-              Retour à l'accueil
+              Retour à l&apos;accueil
             </Link>
           </div>
         </div>
