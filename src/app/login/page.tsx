@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SubmitButton } from "@/components/submit-button";
+import { GoogleLoginButton } from "@/components/auth/GoogleLoginButton";
 import { createSupabaseServerClient, setAuthSession } from "@/lib/supabase-server";
 import { ShieldCheck, Lock, ChevronLeft, Mail } from "lucide-react";
 
@@ -183,6 +184,10 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
               />
             </div>
           </form>
+
+          <div className="space-y-4">
+            <GoogleLoginButton />
+          </div>
 
           <div className="pt-8 text-center">
             <p className="text-zinc-500 text-sm font-medium">
