@@ -26,7 +26,10 @@ export async function getAuthenticatedServerClient() {
     const cookieStore = await cookies();
     const accessToken = cookieStore.get("sb-access-token")?.value;
 
-    const options: any = {
+    const options: {
+        auth: { persistSession: false };
+        global?: { headers: { Authorization: string } };
+    } = {
         auth: {
             persistSession: false,
         },
@@ -113,17 +116,26 @@ export async function getProfileRole(userId: string): Promise<UserRole | null> {
 export async function getServerUser(): Promise<User | null> {
     const cookieStore = await cookies();
     const accessToken = cookieStore.get("sb-access-token")?.value;
-
-    if (!accessToken) {
-        return null;
-    }
+    const refreshToken = cookieStore.get("sb-refresh-token")?.value;
 
     const supabase = createSupabaseServerClient();
-    const { data, error } = await supabase.auth.getUser(accessToken);
 
-    if (error || !data.user) {
-        return null;
+    // Try the current access token first
+    if (accessToken) {
+        const { data, error } = await supabase.auth.getUser(accessToken);
+        if (!error && data.user) {
+            return data.user;
+        }
     }
 
-    return data.user;
+    // If the access token is missing or expired, try to refresh the session
+    if (refreshToken) {
+        const { data, error } = await supabase.auth.refreshSession({ refresh_token: refreshToken });
+        if (!error && data.session) {
+            await setAuthSession(data.session);
+            return data.session.user;
+        }
+    }
+
+    return null;
 }

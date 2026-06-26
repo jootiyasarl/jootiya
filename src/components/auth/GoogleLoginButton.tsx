@@ -13,9 +13,9 @@ export function GoogleLoginButton() {
 
     try {
       const origin = window.location.origin;
-      // Send the user straight to the final destination (Post Ad page).
-      // The global OAuthRedirectHandler only syncs cookies for SSR.
-      const redirectTo = `${origin}/marketplace/post`;
+      // Go through the client callback so the session is posted to the server
+      // and stored in HTTP-only cookies for SSR/dashboard access.
+      const redirectTo = `${origin}/auth/callback-client`;
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
