@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { createSupabaseServerClient } from "@/lib/supabase-server";
+import { getServerUser, createSupabaseServerClient } from "@/lib/supabase-server";
 import { AdminLayout } from "@/components/admin-layout";
 
 interface AdminAppLayoutProps {
@@ -9,22 +8,17 @@ interface AdminAppLayoutProps {
 }
 
 async function checkAdminAuth() {
-  const supabase = createSupabaseServerClient();
-  const { data: { user }, error } = await supabase.auth.getUser();
+  const user = await getServerUser();
 
-  // Admin Check
-  if (user?.email === 'jootiyasarl@gmail.com') {
+  if (!user) {
+    redirect("/login?redirectTo=/admin");
+  }
+
+  if (user.email === 'jootiyasarl@gmail.com') {
     return; // Authorized
   }
 
-  // If no user or error, do not redirect automatically to prevent loops
-  if (error || !user) {
-    console.error('Admin Layout: No valid user session', error);
-    // Instead of redirect, return null or an error message
-    return; 
-  }
-
-  // Check roles from database for other admins
+  const supabase = createSupabaseServerClient();
   const { data: profile } = await supabase
     .from("profiles")
     .select("role, phone")

@@ -1,7 +1,15 @@
 import AdPostForm from "@/components/ads/AdPostForm";
 import { Sparkles, ShieldCheck, Zap } from "lucide-react";
+import { getServerUser } from "@/lib/supabase-server";
+import { redirect } from "next/navigation";
 
-export default function PostAdPage() {
+export default async function PostAdPage() {
+  const user = await getServerUser();
+  if (!user) {
+    redirect("/login?redirectTo=/marketplace/post");
+  }
+
+
     return (
         <div className="min-h-screen bg-[#fafafa] dark:bg-zinc-950 relative overflow-hidden pb-40 lg:pb-20">
             {/* Dynamic Background Elements */}
@@ -47,7 +55,7 @@ export default function PostAdPage() {
                 <div className="mt-24 grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
                     <div className="p-8 rounded-[2rem] bg-white shadow-lg shadow-zinc-100 border border-zinc-50">
                         <h4 className="font-black text-zinc-900 uppercase tracking-tight mb-3">Est-ce gratuit ?</h4>
-                        <p className="text-sm text-zinc-500 leading-relaxed font-medium">Oui, la publication d'annonces standard est entièrement gratuite pour tous les utilisateurs.</p>
+                        <p className="text-sm text-zinc-500 leading-relaxed font-medium">Oui, la publication d&apos;annonces standard est entièrement gratuite pour tous les utilisateurs.</p>
                     </div>
                     <div className="p-8 rounded-[2rem] bg-white shadow-lg shadow-zinc-100 border border-zinc-50">
                         <h4 className="font-black text-zinc-900 uppercase tracking-tight mb-3">Temps de validation</h4>
@@ -55,7 +63,7 @@ export default function PostAdPage() {
                     </div>
                     <div className="p-8 rounded-[2rem] bg-white shadow-lg shadow-zinc-100 border border-zinc-50">
                         <h4 className="font-black text-zinc-900 uppercase tracking-tight mb-3">Conseils photo</h4>
-                        <p className="text-sm text-zinc-500 leading-relaxed font-medium">Utilisez une lumière naturelle et montrez l'objet sous plusieurs angles pour vendre 2x plus vite.</p>
+                        <p className="text-sm text-zinc-500 leading-relaxed font-medium">Utilisez une lumière naturelle et montrez l&apos;objet sous plusieurs angles pour vendre 2x plus vite.</p>
                     </div>
                 </div>
             </div>
