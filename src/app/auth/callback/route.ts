@@ -21,13 +21,12 @@ export async function GET(request: Request) {
     if (!error && data.session) {
       const user = data.session.user;
       const cookieStore = await cookies();
-      const secure = process.env.NODE_ENV === "production";
       
       // Set access token
       cookieStore.set("sb-access-token", data.session.access_token, {
         httpOnly: true,
         sameSite: "lax",
-        secure,
+        secure: false,
         path: "/",
         maxAge: data.session.expires_in ?? 3600,
       });
@@ -37,11 +36,18 @@ export async function GET(request: Request) {
         cookieStore.set("sb-refresh-token", data.session.refresh_token, {
           httpOnly: true,
           sameSite: "lax",
-          secure,
+          secure: false,
           path: "/",
           maxAge: 60 * 60 * 24 * 30, // 30 days
         });
       }
+
+      // Determine the final destination safely (only relative paths)
+      const redirectTo = requestUrl.searchParams.get("redirectTo");
+      const safeRedirectTo =
+        redirectTo && redirectTo.startsWith("/") && !redirectTo.startsWith("//")
+          ? redirectTo
+          : "/poste-annonce";
 
       // Check if user is admin and handle redirection/profile creation
       if (user.email === 'jootiyasarl@gmail.com') {
@@ -68,7 +74,7 @@ export async function GET(request: Request) {
       }
 
       // Default redirect for other users: go directly to the ad posting page
-      return NextResponse.redirect(`${requestUrl.origin}/poste-annonce`);
+      return NextResponse.redirect(`${requestUrl.origin}${safeRedirectTo}`);
     }
   }
 

@@ -14,9 +14,9 @@ export function GoogleLoginButton({ redirectTo }: { redirectTo?: string }) {
     try {
       const origin = window.location.origin;
       const finalTarget = redirectTo || "/poste-annonce";
-      // Go through the client callback so the session is posted to the server
-      // and stored in HTTP-only cookies for SSR/dashboard access.
-      const redirectToUrl = `${origin}/auth/callback-client?redirectTo=${encodeURIComponent(finalTarget)}`;
+      // Use the server-side callback so HTTP-only cookies are set directly from
+      // the response, avoiding fetch/cookie timing issues in the client.
+      const redirectToUrl = `${origin}/auth/callback?redirectTo=${encodeURIComponent(finalTarget)}`;
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",

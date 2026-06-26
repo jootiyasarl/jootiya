@@ -48,13 +48,12 @@ export async function getAuthenticatedServerClient() {
 
 export async function setAuthSession(session: Session) {
     const cookieStore = await cookies();
-    const secure = process.env.NODE_ENV === "production";
     const accessTokenMaxAge = session.expires_in ?? 60 * 60;
 
     cookieStore.set("sb-access-token", session.access_token, {
         httpOnly: true,
         sameSite: "lax",
-        secure,
+        secure: false,
         path: "/",
         maxAge: accessTokenMaxAge,
     });
@@ -63,7 +62,7 @@ export async function setAuthSession(session: Session) {
         cookieStore.set("sb-refresh-token", session.refresh_token, {
             httpOnly: true,
             sameSite: "lax",
-            secure,
+            secure: false,
             path: "/",
             maxAge: 60 * 60 * 24 * 30,
         });
@@ -72,12 +71,11 @@ export async function setAuthSession(session: Session) {
 
 export async function clearAuthSession() {
     const cookieStore = await cookies();
-    const secure = process.env.NODE_ENV === "production";
 
     cookieStore.set("sb-access-token", "", {
         httpOnly: true,
         sameSite: "lax",
-        secure,
+        secure: false,
         path: "/",
         maxAge: 0,
     });
@@ -85,7 +83,7 @@ export async function clearAuthSession() {
     cookieStore.set("sb-refresh-token", "", {
         httpOnly: true,
         sameSite: "lax",
-        secure,
+        secure: false,
         path: "/",
         maxAge: 0,
     });
