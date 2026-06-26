@@ -178,25 +178,18 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
             </div>
 
             {error && (
-              <div className="rounded-xl bg-red-500/5 p-4 border border-red-500/10 flex gap-3 items-center animate-in fade-in slide-in-from-top-2">
-                <ShieldCheck className="w-5 h-5 text-red-500 flex-shrink-0" />
-                <p className="text-sm font-bold text-red-600 leading-tight">{error}</p>
+              <div className="alert alert-error flex items-center gap-3">
+                <ShieldCheck className="w-5 h-5 flex-shrink-0" />
+                <p className="text-sm font-bold leading-tight">{error}</p>
               </div>
             )}
 
-            <div className="space-y-4">
+            <div className="space-y-6">
               <GoogleLoginButton />
-              <div className="relative py-2">
-                <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                  <div className="w-full border-t border-zinc-100" />
-                </div>
-                <div className="relative flex justify-center">
-                  <span className="bg-white px-3 text-[11px] font-black uppercase tracking-widest text-zinc-400">أو</span>
-                </div>
-              </div>
+              <div className="divider text-xs font-black uppercase tracking-widest text-zinc-400">أو</div>
             </div>
 
-            <form action={registerAction} className="space-y-5">
+            <form action={registerAction} className="space-y-5 mt-4">
               <div className="space-y-1">
                 <Label htmlFor="phone" className="text-xs font-black uppercase tracking-widest text-zinc-500 ml-1">Téléphone</Label>
                 <Input
