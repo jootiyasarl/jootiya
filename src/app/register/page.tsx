@@ -1,13 +1,12 @@
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SubmitButton } from "@/components/submit-button";
 import { GoogleLoginButton } from "@/components/auth/GoogleLoginButton";
-import { createSupabaseServerClient, setAuthSession } from "@/lib/supabase-server";
-import { UserPlus, ShieldCheck, Mail, Lock, ChevronLeft, Phone } from "lucide-react";
+import { createSupabaseServerClient, setAuthSession, setSellerSession } from "@/lib/supabase-server";
+import { ShieldCheck, ChevronLeft } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Inscription | Jootiya",
@@ -118,8 +117,9 @@ async function registerAction(formData: FormData) {
 
   // Handle session correctly for Next.js Server Components
   if (data.session) {
-    await setAuthSession(data.session);
-    redirect("/marketplace/post");
+    await setAuthSession(data.session);          // Supabase cookies
+    await setSellerSession(data.session, "seller"); // Middleware cookies
+    redirect("/seller/dashboard");
   } else if (user && !error) {
     // If no session but user created (e.g. email confirmation enabled or delay in session sync)
     // We try to sign in immediately since we have the credentials
@@ -130,7 +130,8 @@ async function registerAction(formData: FormData) {
 
     if (!signInError && signInData.session) {
       await setAuthSession(signInData.session);
-      redirect("/marketplace/post");
+      await setSellerSession(signInData.session, "seller");
+      redirect("/seller/dashboard");
     }
   }
 }
@@ -238,7 +239,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
                   <span className="bg-white px-3 text-[11px] font-black uppercase tracking-widest text-zinc-400">أو</span>
                 </div>
               </div>
-              <GoogleLoginButton redirectTo="/poste-annonce" />
+              <GoogleLoginButton redirectTo="/seller/dashboard" />
             </div>
 
             <Link href="/" className="group flex items-center justify-center gap-2 text-xs font-black text-zinc-400 hover:text-zinc-600 transition-colors uppercase tracking-widest">

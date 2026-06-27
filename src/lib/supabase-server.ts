@@ -69,6 +69,28 @@ export async function setAuthSession(session: Session) {
     }
 }
 
+export async function setSellerSession(session: Session, role: "seller" | "admin") {
+    const cookieStore = await cookies();
+
+    // `session_token` is the token the middleware checks for protected routes.
+    cookieStore.set("session_token", session.access_token, {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: false,
+        path: "/",
+        maxAge: session.expires_in ?? 60 * 60,
+    });
+
+    // `user_role` allows the middleware to distinguish sellers from other users.
+    cookieStore.set("user_role", role, {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: false,
+        path: "/",
+        maxAge: 60 * 60 * 24 * 30,
+    });
+}
+
 export async function clearAuthSession() {
     const cookieStore = await cookies();
 
@@ -81,6 +103,22 @@ export async function clearAuthSession() {
     });
 
     cookieStore.set("sb-refresh-token", "", {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: false,
+        path: "/",
+        maxAge: 0,
+    });
+
+    cookieStore.set("session_token", "", {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: false,
+        path: "/",
+        maxAge: 0,
+    });
+
+    cookieStore.set("user_role", "", {
         httpOnly: true,
         sameSite: "lax",
         secure: false,

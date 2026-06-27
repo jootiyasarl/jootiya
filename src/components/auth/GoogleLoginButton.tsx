@@ -13,7 +13,8 @@ export function GoogleLoginButton({ redirectTo }: { redirectTo?: string }) {
 
     try {
       const origin = window.location.origin;
-      const finalTarget = redirectTo || "/poste-annonce";
+      // Sellers log in via Google; default destination is the seller dashboard.
+      const finalTarget = redirectTo || "/seller/dashboard";
       // Use the server-side callback so HTTP-only cookies are set directly from
       // the response, avoiding fetch/cookie timing issues in the client.
       const redirectToUrl = `${origin}/auth/callback?redirectTo=${encodeURIComponent(finalTarget)}`;
