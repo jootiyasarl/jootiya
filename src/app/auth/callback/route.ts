@@ -60,7 +60,7 @@ export async function GET(request: Request) {
       ? next
       : isAdmin
         ? "/admin"
-        : "/dashboard";
+        : "/poste-annonce";
 
   // 5. Build redirect response and set cookies directly on it to avoid any edge/runtime mismatch.
   const res = NextResponse.redirect(`${requestUrl.origin}${safeRedirectTo}`);

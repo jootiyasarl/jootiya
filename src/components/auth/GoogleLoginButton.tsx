@@ -18,7 +18,7 @@ export function GoogleLoginButton({ redirectTo }: { redirectTo?: string }) {
       // Control the final destination exclusively via the `next` param.
       // If not provided as prop, honor URL ?next= or ?redirectTo= from current page.
       const fromQuery = search?.get("next") || search?.get("redirectTo");
-      const finalTarget = redirectTo || fromQuery || "/dashboard";
+      const finalTarget = redirectTo || fromQuery || "/poste-annonce";
       // Use the server-side callback so HTTP-only cookies are set directly from
       // the response, avoiding fetch/cookie timing issues in the client.
       const redirectToUrl = `${origin}/auth/callback?next=${encodeURIComponent(finalTarget)}`;

@@ -17,6 +17,7 @@ interface LoginPageProps {
     error?: string;
     message?: string;
     redirectTo?: string;
+    next?: string;
   }>;
 }
 
@@ -25,7 +26,7 @@ async function loginAction(formData: FormData) {
 
   const identifier = formData.get("identifier");
   const password = formData.get("password");
-  const redirectTo = formData.get("redirectTo")?.toString() || "/dashboard";
+  const redirectTo = formData.get("redirectTo")?.toString() || "/poste-annonce";
 
   if (typeof identifier !== "string" || typeof password !== "string") {
     const params = new URLSearchParams();
@@ -74,7 +75,7 @@ async function loginAction(formData: FormData) {
 }
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
-  const { error, message, redirectTo } = await searchParams;
+  const { error, message, redirectTo, next } = await searchParams;
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-orange-50 via-white to-zinc-100 p-6 font-sans">
@@ -127,7 +128,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
         {/* Email / Phone Login Form */}
         <form action={loginAction} className="space-y-5">
-          <input type="hidden" name="redirectTo" value={redirectTo || ""} />
+          <input type="hidden" name="redirectTo" value={next || redirectTo || "/poste-annonce"} />
 
           <div className="space-y-2 group">
             <Label htmlFor="identifier" className="text-xs font-black uppercase tracking-widest text-zinc-500 ml-1 group-focus-within:text-orange-500 transition-colors">

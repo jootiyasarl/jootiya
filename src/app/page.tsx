@@ -1,4 +1,5 @@
 import React, { Suspense } from "react";
+import { SessionSync } from "@/components/auth/SessionSync";
 import HomeClient, { type HomepageAdRow } from "@/components/home/HomeClient";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 
@@ -55,6 +56,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Hom
 
   return (
     <Suspense fallback={<div className="min-h-screen bg-white animate-pulse" />}>
+      <SessionSync defaultNext="/poste-annonce" />
       <HomeClient initialParams={resolvedParams} initialAds={initialAds} />
     </Suspense>
   );
