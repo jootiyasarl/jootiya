@@ -61,8 +61,42 @@ export async function GET(request: Request) {
         ? "/admin"
         : "/dashboard";
 
-  // 5. Redirect the user to the post-login destination.
-  return NextResponse.redirect(`${requestUrl.origin}${safeRedirectTo}`);
+  // 5. Build redirect response and set cookies directly on it to avoid any edge/runtime mismatch.
+  const res = NextResponse.redirect(`${requestUrl.origin}${safeRedirectTo}`);
+
+  const isProd = process.env.NODE_ENV === "production";
+  const domain = isProd ? ".jootiya.com" : undefined;
+  const common = {
+    httpOnly: true as const,
+    sameSite: "lax" as const,
+    secure: isProd ? true : false,
+    path: "/",
+    domain,
+  };
+
+  // Supabase session cookies
+  res.cookies.set("sb-access-token", session.access_token, {
+    ...common,
+    maxAge: session.expires_in ?? 60 * 60,
+  });
+  if (session.refresh_token) {
+    res.cookies.set("sb-refresh-token", session.refresh_token, {
+      ...common,
+      maxAge: 60 * 60 * 24 * 30,
+    });
+  }
+
+  // Middleware cookies
+  res.cookies.set("session_token", session.access_token, {
+    ...common,
+    maxAge: session.expires_in ?? 60 * 60,
+  });
+  res.cookies.set("user_role", role, {
+    ...common,
+    maxAge: 60 * 60 * 24 * 30,
+  });
+
+  return res;
 }
 
 /**
