@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import { Loader2 } from "lucide-react";
 
 export function GoogleLoginButton({ redirectTo }: { redirectTo?: string }) {
   const [isLoading, setIsLoading] = useState(false);
+  const search = useSearchParams();
 
   const handleGoogleLogin = async () => {
     if (isLoading) return;
@@ -14,8 +16,9 @@ export function GoogleLoginButton({ redirectTo }: { redirectTo?: string }) {
     try {
       const origin = window.location.origin;
       // Control the final destination exclusively via the `next` param.
-      // If not provided, default to the main dashboard.
-      const finalTarget = redirectTo || "/dashboard";
+      // If not provided as prop, honor URL ?next= or ?redirectTo= from current page.
+      const fromQuery = search?.get("next") || search?.get("redirectTo");
+      const finalTarget = redirectTo || fromQuery || "/dashboard";
       // Use the server-side callback so HTTP-only cookies are set directly from
       // the response, avoiding fetch/cookie timing issues in the client.
       const redirectToUrl = `${origin}/auth/callback?next=${encodeURIComponent(finalTarget)}`;
