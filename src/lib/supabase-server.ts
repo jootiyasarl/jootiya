@@ -12,6 +12,20 @@ if (!supabaseUrl || !supabaseAnonKey) {
     );
 }
 
+function resolveCookieOptions(maxAge: number) {
+    const isProd = process.env.NODE_ENV === "production";
+    // Share session across apex and www by scoping to the root domain in prod.
+    const domain = isProd ? ".jootiya.com" : undefined;
+    return {
+        httpOnly: true as const,
+        sameSite: "lax" as const,
+        secure: isProd ? true : false,
+        path: "/",
+        maxAge,
+        domain,
+    };
+}
+
 export type UserRole = "seller" | "admin" | "super_admin";
 
 export function createSupabaseServerClient() {
@@ -50,22 +64,10 @@ export async function setAuthSession(session: Session) {
     const cookieStore = await cookies();
     const accessTokenMaxAge = session.expires_in ?? 60 * 60;
 
-    cookieStore.set("sb-access-token", session.access_token, {
-        httpOnly: true,
-        sameSite: "lax",
-        secure: false,
-        path: "/",
-        maxAge: accessTokenMaxAge,
-    });
+    cookieStore.set("sb-access-token", session.access_token, resolveCookieOptions(accessTokenMaxAge));
 
     if (session.refresh_token) {
-        cookieStore.set("sb-refresh-token", session.refresh_token, {
-            httpOnly: true,
-            sameSite: "lax",
-            secure: false,
-            path: "/",
-            maxAge: 60 * 60 * 24 * 30,
-        });
+        cookieStore.set("sb-refresh-token", session.refresh_token, resolveCookieOptions(60 * 60 * 24 * 30));
     }
 }
 
@@ -73,58 +75,22 @@ export async function setSellerSession(session: Session, role: "seller" | "admin
     const cookieStore = await cookies();
 
     // `session_token` is the token the middleware checks for protected routes.
-    cookieStore.set("session_token", session.access_token, {
-        httpOnly: true,
-        sameSite: "lax",
-        secure: false,
-        path: "/",
-        maxAge: session.expires_in ?? 60 * 60,
-    });
+    cookieStore.set("session_token", session.access_token, resolveCookieOptions(session.expires_in ?? 60 * 60));
 
     // `user_role` allows the middleware to distinguish sellers from other users.
-    cookieStore.set("user_role", role, {
-        httpOnly: true,
-        sameSite: "lax",
-        secure: false,
-        path: "/",
-        maxAge: 60 * 60 * 24 * 30,
-    });
+    cookieStore.set("user_role", role, resolveCookieOptions(60 * 60 * 24 * 30));
 }
 
 export async function clearAuthSession() {
     const cookieStore = await cookies();
 
-    cookieStore.set("sb-access-token", "", {
-        httpOnly: true,
-        sameSite: "lax",
-        secure: false,
-        path: "/",
-        maxAge: 0,
-    });
+    cookieStore.set("sb-access-token", "", resolveCookieOptions(0));
 
-    cookieStore.set("sb-refresh-token", "", {
-        httpOnly: true,
-        sameSite: "lax",
-        secure: false,
-        path: "/",
-        maxAge: 0,
-    });
+    cookieStore.set("sb-refresh-token", "", resolveCookieOptions(0));
 
-    cookieStore.set("session_token", "", {
-        httpOnly: true,
-        sameSite: "lax",
-        secure: false,
-        path: "/",
-        maxAge: 0,
-    });
+    cookieStore.set("session_token", "", resolveCookieOptions(0));
 
-    cookieStore.set("user_role", "", {
-        httpOnly: true,
-        sameSite: "lax",
-        secure: false,
-        path: "/",
-        maxAge: 0,
-    });
+    cookieStore.set("user_role", "", resolveCookieOptions(0));
 }
 
 export async function getProfileRole(userId: string): Promise<UserRole | null> {
