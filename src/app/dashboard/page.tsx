@@ -1,7 +1,7 @@
 import { getServerUser, getAuthenticatedServerClient } from "@/lib/supabase-server";
 export const dynamic = "force-dynamic";
 import { getSellerAds, getSellerStats } from "@/lib/db/dashboard";
-import SellerDashboard from "@/components/dashboard/SellerDashboard";
+import FlyonDashboard from "@/components/dashboard/FlyonDashboard";
 import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
@@ -23,7 +23,7 @@ export default async function DashboardPage() {
   return (
     <div className="min-h-screen bg-gray-50/50 p-4 md:p-8 dark:bg-zinc-950">
       <div className="mx-auto max-w-6xl">
-        <SellerDashboard
+        <FlyonDashboard
           initialStats={stats}
           initialAds={ads}
           initialCount={count}
