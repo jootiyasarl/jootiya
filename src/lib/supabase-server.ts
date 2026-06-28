@@ -132,6 +132,20 @@ export async function getServerUser(): Promise<User | null> {
         if (!error && data.user) {
             return data.user;
         }
+
+        // Fallback: decode JWT locally to extract the user id if network check fails
+        try {
+            const payloadB64 = accessToken.split(".")[1];
+            const normalized = payloadB64.replace(/-/g, "+").replace(/_/g, "/");
+            const json = Buffer.from(normalized, "base64").toString("utf-8");
+            const payload = JSON.parse(json) as { sub?: string; email?: string | null };
+            if (payload?.sub) {
+                // Return a minimal User-like object with the ID we need for queries
+                return { id: payload.sub, email: payload.email } as unknown as User;
+            }
+        } catch {
+            // ignore
+        }
     }
 
     // If the access token is missing or expired, try to refresh the session

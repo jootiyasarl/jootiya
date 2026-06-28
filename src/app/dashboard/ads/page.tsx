@@ -20,7 +20,7 @@ export default async function MyAdsPage({
     redirect("/login?next=/dashboard/ads");
   }
 
-  const supabase = createSupabaseServerClient();
+  const supabase = await getAuthenticatedServerClient();
 
   // Fetch count and data in parallel
   const [countResult, adsResult] = await Promise.all([
