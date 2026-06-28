@@ -9,11 +9,11 @@ import { supabase } from "@/lib/supabaseClient";
 
 export function MobileBottomNav() {
     const pathname = usePathname();
-    const [profileHref, setProfileHref] = useState<string>("/login?redirectTo=/dashboard");
+    const [profileHref, setProfileHref] = useState<string>("/login?next=/dashboard");
 
     useEffect(() => {
         const resolveProfileHref = (email: string | null | undefined) => {
-            if (!email) return "/login?redirectTo=/dashboard";
+            if (!email) return "/login?next=/dashboard";
             if (email === "jootiyasarl@gmail.com") return "/admin";
             return "/dashboard";
         };

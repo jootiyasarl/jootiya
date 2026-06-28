@@ -61,7 +61,7 @@ export function ContactActions({ adId, sellerId, sellerPhone, currentUser }: Con
 
             if (result.error) {
                 if (result.error.includes("connecter")) {
-                    router.push(`/login?redirectTo=/ads/${adId}`);
+                    router.push(`/login?next=/ads/${adId}`);
                 } else {
                     toast.error(result.error);
                 }

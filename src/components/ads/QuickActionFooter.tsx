@@ -50,7 +50,7 @@ export function QuickActionFooter({ phone, adTitle, adPrice, adId, sellerId, cur
 
     const handleFavoriteClick = async () => {
         if (!currentUser) {
-            router.push(`/login?redirectTo=/ads/${adId}`);
+            router.push(`/login?next=/ads/${adId}`);
             return;
         }
 

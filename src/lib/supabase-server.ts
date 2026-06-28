@@ -38,7 +38,8 @@ export function createSupabaseServerClient() {
 
 export async function getAuthenticatedServerClient() {
     const cookieStore = await cookies();
-    const accessToken = cookieStore.get("sb-access-token")?.value;
+    const accessToken = cookieStore.get("sb-access-token")?.value
+        || cookieStore.get("session_token")?.value;
 
     const options: {
         auth: { persistSession: false };
@@ -117,7 +118,8 @@ export async function getProfileRole(userId: string): Promise<UserRole | null> {
 
 export async function getServerUser(): Promise<User | null> {
     const cookieStore = await cookies();
-    const accessToken = cookieStore.get("sb-access-token")?.value;
+    const accessToken = cookieStore.get("sb-access-token")?.value
+        || cookieStore.get("session_token")?.value;
     const refreshToken = cookieStore.get("sb-refresh-token")?.value;
 
     const supabase = createSupabaseServerClient();

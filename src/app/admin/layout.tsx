@@ -11,7 +11,7 @@ async function checkAdminAuth() {
   const user = await getServerUser();
 
   if (!user) {
-    redirect("/login?redirectTo=/admin");
+    redirect("/login?next=/admin");
   }
 
   if (user.email === 'jootiyasarl@gmail.com') {

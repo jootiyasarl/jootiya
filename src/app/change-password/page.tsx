@@ -1,11 +1,12 @@
 import { getServerUser } from "@/lib/supabase-server";
+export const dynamic = "force-dynamic";
 import { redirect } from "next/navigation";
 import { ChangePasswordForm } from "@/components/auth/ChangePasswordForm";
 
 export default async function ChangePasswordPage() {
   const user = await getServerUser();
   if (!user) {
-    redirect("/login?redirectTo=/change-password");
+    redirect("/login?next=/change-password");
   }
 
   return (

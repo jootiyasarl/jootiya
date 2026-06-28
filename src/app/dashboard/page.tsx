@@ -9,7 +9,7 @@ export default async function DashboardPage() {
 
   // Silent protection only: if there's no session, go to login.
   if (!user) {
-    redirect("/login?redirectTo=/dashboard");
+    redirect("/login?next=/dashboard");
   }
 
   const supabase = await getAuthenticatedServerClient();

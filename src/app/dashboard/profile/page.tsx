@@ -1,11 +1,12 @@
 import { ProfileForm } from "@/components/profile/ProfileForm";
 import { getServerUser, createSupabaseServerClient } from "@/lib/supabase-server";
+export const dynamic = "force-dynamic";
 import { redirect } from "next/navigation";
 
 export default async function ProfilePage() {
   const user = await getServerUser();
   if (!user) {
-    redirect("/login?redirectTo=/dashboard/profile");
+    redirect("/login?next=/dashboard/profile");
   }
 
   const supabase = createSupabaseServerClient();

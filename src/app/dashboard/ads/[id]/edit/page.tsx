@@ -13,7 +13,7 @@ export default async function EditAdPage({ params }: EditAdPageProps) {
     const user = await getServerUser();
 
     if (!user) {
-        redirect(`/login?redirectTo=/dashboard/ads/${id}/edit`);
+        redirect(`/login?next=/dashboard/ads/${id}/edit`);
     }
 
     const supabase = createSupabaseServerClient();

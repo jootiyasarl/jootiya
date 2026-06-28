@@ -1,4 +1,5 @@
 import { getServerUser } from "@/lib/supabase-server";
+export const dynamic = "force-dynamic";
 import { redirect } from "next/navigation";
 import { getConversations } from "@/lib/db/messaging";
 import { MessagingClient } from "./MessagingClient";
@@ -9,7 +10,7 @@ export default async function MessagesPage() {
     const user = await getServerUser();
 
     if (!user) {
-        redirect("/login?redirectTo=/dashboard/messages");
+        redirect("/login?next=/dashboard/messages");
     }
 
     const conversations = await getConversations();

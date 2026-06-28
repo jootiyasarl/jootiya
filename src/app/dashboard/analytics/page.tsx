@@ -2,12 +2,13 @@ import { createSupabaseServerClient, getServerUser, getAuthenticatedServerClient
 import { getSellerAds, getSellerStats } from "@/lib/db/dashboard";
 import { AnalyticsClient } from "@/components/dashboard/AnalyticsClient";
 import { redirect } from "next/navigation";
+export const dynamic = "force-dynamic";
 
 export default async function SellerAnalyticsPage() {
   const user = await getServerUser();
 
   if (!user) {
-    redirect("/login?redirectTo=/dashboard/analytics");
+    redirect("/login?next=/dashboard/analytics");
   }
 
   const supabase = await getAuthenticatedServerClient();

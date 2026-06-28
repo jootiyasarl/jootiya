@@ -17,7 +17,7 @@ export default async function MyAdsPage({
   const pageSize = 15;
 
   if (!user) {
-    redirect("/login?redirectTo=/dashboard/ads");
+    redirect("/login?next=/dashboard/ads");
   }
 
   const supabase = createSupabaseServerClient();

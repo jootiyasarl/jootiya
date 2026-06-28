@@ -1,4 +1,5 @@
 import { createSupabaseServerClient, getServerUser } from "@/lib/supabase-server";
+export const dynamic = "force-dynamic";
 import { redirect } from "next/navigation";
 import { AdCard } from "@/components/AdCard";
 import { Heart } from "lucide-react";
@@ -9,7 +10,7 @@ export default async function FavoritesPage() {
     const user = await getServerUser();
 
     if (!user) {
-        redirect("/login?redirectTo=/dashboard/favorites");
+        redirect("/login?next=/dashboard/favorites");
     }
 
     const supabase = createSupabaseServerClient();
