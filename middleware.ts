@@ -30,7 +30,8 @@ export function middleware(request: NextRequest) {
     if (!isAuthenticatedSeller) {
       // Build the login URL and remember where the user wanted to go.
       const loginUrl = new URL("/login", request.url);
-      loginUrl.searchParams.set("redirectTo", pathname);
+      // Use a single, unified param name `next` for OAuth/login flows.
+      loginUrl.searchParams.set("next", pathname);
       return NextResponse.redirect(loginUrl);
     }
     // Seller is authenticated → allow the request.
@@ -40,9 +41,10 @@ export function middleware(request: NextRequest) {
   // 3. Redirect logged-in sellers away from the login/register pages.
   if (pathname === "/login" || pathname === "/register") {
     if (isAuthenticatedSeller) {
-      const redirectTo = request.nextUrl.searchParams.get("redirectTo");
-      const hasSafeRedirect = redirectTo && redirectTo.startsWith("/") && !redirectTo.startsWith("//");
-      const dest = hasSafeRedirect ? redirectTo! : "/dashboard";
+      const next = request.nextUrl.searchParams.get("next")
+        || request.nextUrl.searchParams.get("redirectTo");
+      const hasSafeRedirect = next && next.startsWith("/") && !next.startsWith("//");
+      const dest = hasSafeRedirect ? next! : "/dashboard";
       return NextResponse.redirect(new URL(dest, request.url));
     }
   }

@@ -53,7 +53,8 @@ export async function GET(request: Request) {
   await setSellerSession(session, role); // cookies the middleware reads
 
   // 4. Determine the final destination via `next` (only allow relative paths).
-  const next = requestUrl.searchParams.get("next");
+  const next = requestUrl.searchParams.get("next")
+    || requestUrl.searchParams.get("redirectTo");
   const safeRedirectTo =
     next && next.startsWith("/") && !next.startsWith("//")
       ? next
