@@ -122,11 +122,13 @@ export async function getServerUser(): Promise<User | null> {
         || cookieStore.get("session_token")?.value;
     const refreshToken = cookieStore.get("sb-refresh-token")?.value;
 
-    const supabase = createSupabaseServerClient();
-
-    // Try the current access token first
+    // Try the current access token first using an authenticated server client
     if (accessToken) {
-        const { data, error } = await supabase.auth.getUser(accessToken);
+        const authed = createClient(supabaseUrl as string, supabaseAnonKey as string, {
+            auth: { persistSession: false },
+            global: { headers: { Authorization: `Bearer ${accessToken}` } },
+        });
+        const { data, error } = await authed.auth.getUser();
         if (!error && data.user) {
             return data.user;
         }
@@ -134,6 +136,7 @@ export async function getServerUser(): Promise<User | null> {
 
     // If the access token is missing or expired, try to refresh the session
     if (refreshToken) {
+        const supabase = createSupabaseServerClient();
         const { data, error } = await supabase.auth.refreshSession({ refresh_token: refreshToken });
         if (!error && data.session) {
             await setAuthSession(data.session);
