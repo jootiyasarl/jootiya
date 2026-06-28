@@ -119,7 +119,7 @@ async function registerAction(formData: FormData) {
   if (data.session) {
     await setAuthSession(data.session);          // Supabase cookies
     await setSellerSession(data.session, "seller"); // Middleware cookies
-    redirect("/seller/dashboard");
+    redirect("/poste-annonce");
   } else if (user && !error) {
     // If no session but user created (e.g. email confirmation enabled or delay in session sync)
     // We try to sign in immediately since we have the credentials
@@ -131,7 +131,7 @@ async function registerAction(formData: FormData) {
     if (!signInError && signInData.session) {
       await setAuthSession(signInData.session);
       await setSellerSession(signInData.session, "seller");
-      redirect("/seller/dashboard");
+      redirect("/poste-annonce");
     }
   }
 }
@@ -239,7 +239,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
                   <span className="bg-white px-3 text-[11px] font-black uppercase tracking-widest text-zinc-400">أو</span>
                 </div>
               </div>
-              <GoogleLoginButton redirectTo="/seller/dashboard" />
+              <GoogleLoginButton redirectTo="/poste-annonce" />
             </div>
 
             <Link href="/" className="group flex items-center justify-center gap-2 text-xs font-black text-zinc-400 hover:text-zinc-600 transition-colors uppercase tracking-widest">

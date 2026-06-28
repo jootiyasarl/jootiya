@@ -13,11 +13,12 @@ export function GoogleLoginButton({ redirectTo }: { redirectTo?: string }) {
 
     try {
       const origin = window.location.origin;
-      // Sellers log in via Google; default destination is the seller dashboard.
-      const finalTarget = redirectTo || "/seller/dashboard";
+      // Control the final destination exclusively via the `next` param.
+      // If not provided, default to the main dashboard.
+      const finalTarget = redirectTo || "/dashboard";
       // Use the server-side callback so HTTP-only cookies are set directly from
       // the response, avoiding fetch/cookie timing issues in the client.
-      const redirectToUrl = `${origin}/auth/callback?redirectTo=${encodeURIComponent(finalTarget)}`;
+      const redirectToUrl = `${origin}/auth/callback?next=${encodeURIComponent(finalTarget)}`;
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",

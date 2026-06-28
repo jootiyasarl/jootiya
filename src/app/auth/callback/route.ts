@@ -52,14 +52,14 @@ export async function GET(request: Request) {
   await setAuthSession(session); // legacy Supabase cookies
   await setSellerSession(session, role); // cookies the middleware reads
 
-  // 4. Determine the final destination (only allow relative paths).
-  const redirectTo = requestUrl.searchParams.get("redirectTo");
+  // 4. Determine the final destination via `next` (only allow relative paths).
+  const next = requestUrl.searchParams.get("next");
   const safeRedirectTo =
-    redirectTo && redirectTo.startsWith("/") && !redirectTo.startsWith("//")
-      ? redirectTo
+    next && next.startsWith("/") && !next.startsWith("//")
+      ? next
       : isAdmin
         ? "/admin"
-        : "/seller/dashboard";
+        : "/dashboard";
 
   // 5. Redirect the user to the post-login destination.
   return NextResponse.redirect(`${requestUrl.origin}${safeRedirectTo}`);

@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+export const dynamic = "force-dynamic";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { Breadcrumbs, BreadcrumbItem } from "@/components/navigation/Breadcrumbs";
 import { AdCard } from "@/components/AdCard";
@@ -33,7 +34,8 @@ export async function generateMetadata({ params }: CategoryPageProps) {
 
     if (!category) return { title: "Catégorie introuvable | Jootiya" };
 
-    const seo = (category.seo_metadata as any) || {};
+    type CategorySEO = { title?: string; description?: string; keywords?: string } | null;
+    const seo = (category.seo_metadata as CategorySEO) ?? {};
     return {
         title: seo.title || `${category.name} à vendre au Maroc | Jootiya`,
         description: seo.description || category.description || `Découvrez les meilleures offres de ${category.name} sur Jootiya, la plateforme n°1 au Maroc.`,

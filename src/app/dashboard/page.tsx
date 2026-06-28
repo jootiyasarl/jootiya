@@ -1,4 +1,5 @@
 import { getServerUser, getAuthenticatedServerClient } from "@/lib/supabase-server";
+export const dynamic = "force-dynamic";
 import { getSellerAds, getSellerStats } from "@/lib/db/dashboard";
 import SellerDashboard from "@/components/dashboard/SellerDashboard";
 import { redirect } from "next/navigation";

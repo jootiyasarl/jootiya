@@ -40,7 +40,7 @@ export function middleware(request: NextRequest) {
   // 3. Redirect logged-in sellers away from the login/register pages.
   if (pathname === "/login" || pathname === "/register") {
     if (isAuthenticatedSeller) {
-      return NextResponse.redirect(new URL("/seller/dashboard", request.url));
+      return NextResponse.redirect(new URL("/dashboard", request.url));
     }
   }
 

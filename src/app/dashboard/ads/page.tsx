@@ -1,4 +1,5 @@
 import { createSupabaseServerClient, getServerUser, getAuthenticatedServerClient } from "@/lib/supabase-server";
+export const dynamic = "force-dynamic";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -46,7 +47,11 @@ export default async function MyAdsPage({
   const totalAds = countResult.count || 0;
   const totalPages = Math.ceil(totalAds / pageSize);
 
-  const mappedAds = (adsResult.data || []).map((ad: any) => ({
+  type Row = {
+    id: string; title: string; price: number; currency: string; status: string;
+    neighborhood?: string | null; city?: string | null; created_at: string; views_count?: number; image_urls?: string[];
+  };
+  const mappedAds = (adsResult.data || []).map((ad: Row) => ({
     id: ad.id,
     title: ad.title,
     price: ad.price,

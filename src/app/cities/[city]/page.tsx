@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+export const dynamic = "force-dynamic";
 import Link from 'next/link';
 import Image from 'next/image';
 import { Cloud, Clock, MapPin, ChevronRight, Share2, Sparkles, Image as ImageIcon } from 'lucide-react';
@@ -95,7 +96,7 @@ export default async function CityLandingPage({ params }: Props) {
                         Marché <span className="text-orange-600">{cityData.name}</span>
                     </h1>
                     <p className="text-sm text-zinc-500 font-medium leading-relaxed">
-                        Découvrez les dernières annonces de vente et d'achat à {cityData.name}. Bonnes affaires exclusives, voitures, téléphones et articles d'occasion.
+                        Découvrez les dernières annonces de vente et d&apos;achat à {cityData.name}. Bonnes affaires exclusives, voitures, téléphones et articles d&apos;occasion.
                     </p>
                 </div>
 

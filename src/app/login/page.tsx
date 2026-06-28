@@ -25,7 +25,7 @@ async function loginAction(formData: FormData) {
 
   const identifier = formData.get("identifier");
   const password = formData.get("password");
-  const redirectTo = formData.get("redirectTo")?.toString() || "/seller/dashboard";
+  const redirectTo = formData.get("redirectTo")?.toString() || "/dashboard";
 
   if (typeof identifier !== "string" || typeof password !== "string") {
     const params = new URLSearchParams();
@@ -111,7 +111,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
         {/* Google Login — primary CTA for sellers */}
         <div className="space-y-4">
-          <GoogleLoginButton redirectTo={redirectTo || "/seller/dashboard"} />
+          <GoogleLoginButton redirectTo={"/dashboard"} />
         </div>
 
         <div className="relative">
