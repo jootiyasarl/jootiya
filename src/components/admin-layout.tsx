@@ -236,7 +236,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
         )}
       >
         <div className="flex items-center justify-between px-1 pb-4 border-b border-zinc-900/50 mb-4">
-          <Link href="/admin" className="flex items-center gap-2.5 group">
+          <Link href="/" className="flex items-center gap-2.5 group">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-600 shadow-lg shadow-orange-900/20 group-hover:scale-105 transition-transform duration-300 rotate-3 group-hover:rotate-0">
               <ShieldCheck className="h-6 w-6 text-white" />
             </div>
@@ -271,7 +271,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
         >
           <div className="flex items-center justify-between px-1 pb-4">
             <Link
-              href="/admin"
+              href="/"
               className="flex items-center gap-2"
               onClick={() => setMobileOpen(false)}
             >

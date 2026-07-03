@@ -59,7 +59,7 @@ export default function SellerLayout({
       <header className="navbar sticky top-0 z-50 border-b border-zinc-100 bg-white/80 backdrop-blur-xl px-4 sm:px-6">
         <div className="max-w-5xl mx-auto h-16 flex items-center justify-between w-full">
           <Link
-            href="/seller/dashboard"
+            href="/"
             className="flex items-center gap-2 text-lg font-black text-zinc-900 tracking-tight"
           >
             <div className="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center text-white shadow-lg shadow-orange-500/20">

@@ -129,9 +129,14 @@ export function MobileMenu({ initialUserEmail = null }: MobileMenuProps) {
                     />
                     <div className="fixed top-0 bottom-0 left-0 z-[10001] w-full h-screen bg-white dark:bg-zinc-900 animate-in slide-in-from-left duration-300 ease-out flex flex-col lg:hidden overflow-hidden">
                         <div className="flex items-center justify-between p-4 border-b border-zinc-100 dark:border-zinc-800 flex-shrink-0 bg-white dark:bg-zinc-900 shadow-sm relative z-10">
-                            <span className="text-xl font-black text-[#0F172A] dark:text-white tracking-tighter">
+                            <Link
+                                href="/"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="text-xl font-black text-[#0F172A] dark:text-white tracking-tighter"
+                                aria-label="Jootiya - Retour à l'accueil"
+                            >
                                 JOOTIYA<span className="text-orange-500">.</span>
-                            </span>
+                            </Link>
                             <button
                                 onClick={() => setIsMobileMenuOpen(false)}
                                 className="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 transition-colors"

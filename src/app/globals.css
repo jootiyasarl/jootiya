@@ -1,5 +1,20 @@
 @import "tailwindcss";
 @plugin "flyonui";
+
+@plugin "flyonui/theme" {
+  name: "light";
+  --color-primary: #f97316;
+  --color-primary-hover: #ea580c;
+  --color-primary-active: #c2410c;
+}
+
+@plugin "flyonui/theme" {
+  name: "dark";
+  --color-primary: #f97316;
+  --color-primary-hover: #ea580c;
+  --color-primary-active: #c2410c;
+}
+
 @plugin "@tailwindcss/typography";
 @import "../../node_modules/flyonui/variants.css";
 @source "../../node_modules/flyonui/dist/index.js";
