@@ -91,10 +91,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       {sidebarOpen && (
         <>
           <div
-            className="fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm lg:hidden transition-opacity border-none"
+            className="drawer-overlay fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm lg:hidden transition-opacity border-none"
             onClick={() => setSidebarOpen(false)}
           />
-          <div className="fixed inset-y-0 left-0 z-[70] w-[85%] max-w-sm bg-white lg:hidden animate-in slide-in-from-left duration-300 ease-out flex flex-col shadow-2xl">
+          <div className="drawer-side fixed inset-y-0 left-0 z-[70] w-[85%] max-w-sm bg-base-100 lg:hidden animate-in slide-in-from-left duration-300 ease-out flex flex-col shadow-2xl">
             <DashboardSidebar onItemClick={() => setSidebarOpen(false)} />
           </div>
         </>
@@ -103,11 +103,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Main column */}
       <div className="flex min-h-screen flex-1 flex-col">
         {/* Topbar */}
-        <header className="sticky top-0 z-50 flex h-16 md:h-20 items-center justify-between border-b bg-white/80 px-4 backdrop-blur-xl lg:px-10">
+        <header className="navbar sticky top-0 z-50 flex h-16 md:h-20 items-center justify-between border-b bg-white/80 px-4 backdrop-blur-xl lg:px-10">
           <div className="flex items-center gap-4">
             <button
               onClick={() => setSidebarOpen(true)}
-              className="lg:hidden p-2 text-zinc-600 hover:bg-zinc-100 rounded-xl transition-colors"
+              className="lg:hidden btn btn-ghost btn-square text-zinc-600 rounded-xl"
             >
               <Menu className="w-6 h-6" />
             </button>
@@ -127,7 +127,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               type="button"
               variant="ghost"
               size="sm"
-              className="h-10 px-4 rounded-xl text-sm font-bold text-orange-600 hover:bg-orange-50 transition-all flex items-center gap-2 group"
+              className="btn btn-text h-10 px-4 rounded-xl text-sm font-bold text-orange-600 hover:bg-orange-50 transition-all flex items-center gap-2 group border-none"
               onClick={handleBackToHome}
             >
               <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
@@ -139,7 +139,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             <NotificationBell />
 
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center gap-3 rounded-2xl border border-zinc-100 bg-white p-1 pr-4 text-left shadow-sm transition hover:bg-zinc-50 outline-none hover:ring-4 hover:ring-zinc-100">
+              <DropdownMenuTrigger className="btn btn-outline border-zinc-100 bg-white hover:bg-zinc-50 flex items-center gap-3 pr-4 pl-1 rounded-2xl h-12 shadow-sm outline-none hover:ring-4 hover:ring-zinc-100">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-900 text-[13px] font-black uppercase text-white shadow-lg shadow-black/10">
                   SA
                 </div>
@@ -154,7 +154,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 <ChevronDown className="ml-1 h-4 w-4 text-zinc-400" />
               </DropdownMenuTrigger>
 
-              <DropdownMenuContent className="mt-2 w-56 rounded-2xl border-zinc-100 shadow-2xl p-2">
+              <DropdownMenuContent className="mt-2 w-56 rounded-2xl border-zinc-100 shadow-2xl p-2 bg-base-100">
                 <DropdownMenuLabel className="px-3 pb-2 pt-1 text-[11px] font-black uppercase tracking-widest text-zinc-400">
                   Gestion Compte
                 </DropdownMenuLabel>

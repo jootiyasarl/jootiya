@@ -56,8 +56,8 @@ export default function SellerLayout({
 
   return (
     <div className="min-h-screen bg-zinc-50">
-      <header className="sticky top-0 z-50 border-b border-zinc-100 bg-white/80 backdrop-blur-xl px-4 sm:px-6">
-        <div className="max-w-5xl mx-auto h-16 flex items-center justify-between">
+      <header className="navbar sticky top-0 z-50 border-b border-zinc-100 bg-white/80 backdrop-blur-xl px-4 sm:px-6">
+        <div className="max-w-5xl mx-auto h-16 flex items-center justify-between w-full">
           <Link
             href="/seller/dashboard"
             className="flex items-center gap-2 text-lg font-black text-zinc-900 tracking-tight"
@@ -71,14 +71,14 @@ export default function SellerLayout({
           <nav className="hidden sm:flex items-center gap-1">
             <Link
               href="/seller/dashboard"
-              className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 transition-colors"
+              className="btn btn-ghost btn-sm rounded-xl flex items-center gap-2 text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 border-none font-bold"
             >
               <LayoutDashboard className="w-4 h-4" />
               Dashboard
             </Link>
             <Link
               href="/seller/profile"
-              className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-bold text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 transition-colors"
+              className="btn btn-ghost btn-sm rounded-xl flex items-center gap-2 text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 border-none font-bold"
             >
               <User className="w-4 h-4" />
               Profil
@@ -87,7 +87,7 @@ export default function SellerLayout({
 
           <button
             onClick={handleLogout}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-red-600 hover:bg-red-50 transition-colors active:scale-[0.98]"
+            className="btn btn-ghost btn-sm text-red-600 hover:bg-red-50 hover:text-red-600 rounded-xl flex items-center gap-2 border-none font-bold"
           >
             <LogOut className="w-4 h-4" />
             <span className="hidden sm:inline">Déconnexion</span>

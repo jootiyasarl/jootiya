@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @plugin "flyonui";
 @plugin "@tailwindcss/typography";
+@import "../../node_modules/flyonui/variants.css";
+@source "../../node_modules/flyonui/dist/index.js";
 
 @custom-variant dark (&:where(.dark, .dark *));
 

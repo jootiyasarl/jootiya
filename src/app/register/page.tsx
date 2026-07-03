@@ -179,45 +179,51 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
             </div>
 
             {error && (
-              <div className="rounded-xl bg-red-500/5 p-4 border border-red-500/10 flex gap-3 items-center animate-in fade-in slide-in-from-top-2">
-                <ShieldCheck className="w-5 h-5 text-red-500 flex-shrink-0" />
-                <p className="text-sm font-bold text-red-600 leading-tight">{error}</p>
+              <div className="alert alert-error rounded-xl p-4 flex gap-3 items-center animate-in fade-in slide-in-from-top-2">
+                <span className="icon-[tabler--alert-circle] text-xl"></span>
+                <p className="text-sm font-bold">{error}</p>
               </div>
             )}
 
             <form action={registerAction} className="space-y-5">
               <div className="space-y-1">
-                <Label htmlFor="phone" className="text-xs font-black uppercase tracking-widest text-zinc-500 ml-1">Téléphone</Label>
+                <Label htmlFor="phone" className="label text-xs font-black uppercase tracking-widest text-zinc-500 ml-1">
+                  <span className="label-text">Téléphone</span>
+                </Label>
                 <Input
                   id="phone"
                   name="phone"
                   type="tel"
                   placeholder="06/07..."
                   required
-                  className="h-14 px-6 rounded-xl bg-zinc-50 border-zinc-200 text-zinc-900 placeholder:text-zinc-400 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all text-base font-bold"
+                  className="input input-bordered focus:input-primary h-14 px-6 rounded-xl bg-zinc-50 border-zinc-200 text-zinc-900 placeholder:text-zinc-400 transition-all text-base font-bold"
                 />
               </div>
 
               <div className="space-y-1">
-                <Label htmlFor="email" className="text-xs font-black uppercase tracking-widest text-zinc-500 ml-1">Email (Optionnel)</Label>
+                <Label htmlFor="email" className="label text-xs font-black uppercase tracking-widest text-zinc-500 ml-1">
+                  <span className="label-text">Email (Optionnel)</span>
+                </Label>
                 <Input
                   id="email"
                   name="email"
                   type="email"
                   placeholder="nom@exemple.com"
-                  className="h-14 px-6 rounded-xl bg-zinc-50 border-zinc-200 text-zinc-900 placeholder:text-zinc-400 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all text-base font-bold"
+                  className="input input-bordered focus:input-primary h-14 px-6 rounded-xl bg-zinc-50 border-zinc-200 text-zinc-900 placeholder:text-zinc-400 transition-all text-base font-bold"
                 />
               </div>
 
               <div className="space-y-1">
-                <Label htmlFor="password" className="text-xs font-black uppercase tracking-widest text-zinc-500 ml-1">Mot de passe</Label>
+                <Label htmlFor="password" className="label text-xs font-black uppercase tracking-widest text-zinc-500 ml-1">
+                  <span className="label-text">Mot de passe</span>
+                </Label>
                 <Input
                   id="password"
                   name="password"
                   type="password"
                   placeholder="••••••••"
                   required
-                  className="h-14 px-6 rounded-xl bg-zinc-50 border-zinc-200 text-zinc-900 placeholder:text-zinc-400 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all text-base font-bold"
+                  className="input input-bordered focus:input-primary h-14 px-6 rounded-xl bg-zinc-50 border-zinc-200 text-zinc-900 placeholder:text-zinc-400 transition-all text-base font-bold"
                 />
               </div>
 
@@ -225,7 +231,7 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
                 <SubmitButton
                   label="Créer mon compte"
                   loadingLabel="Création..."
-                  className="w-full h-14 text-lg font-black rounded-2xl bg-orange-500 hover:bg-orange-600 text-white shadow-lg shadow-orange-500/20 transition-all active:scale-[0.98]"
+                  className="btn btn-primary w-full h-14 text-lg font-black rounded-2xl text-white shadow-lg shadow-orange-500/20 transition-all active:scale-[0.98]"
                 />
               </div>
             </form>

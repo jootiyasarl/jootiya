@@ -118,29 +118,32 @@ function AdminSidebarNav({ collapsed, onItemClick }: AdminSidebarNavProps) {
   const pathname = usePathname();
 
   return (
-    <nav className="mt-3 space-y-1">
-      {adminNavItems.map((item) => {
-        const Icon = item.icon;
-        const isActive =
-          pathname === item.href || pathname?.startsWith(`${item.href}/`);
+    <nav className="menu mt-3 w-full">
+      <ul className="space-y-1">
+        {adminNavItems.map((item) => {
+          const Icon = item.icon;
+          const isActive =
+            pathname === item.href || pathname?.startsWith(`${item.href}/`);
 
-        return (
-          <Link
-            key={item.href}
-            href={item.href}
-            onClick={onItemClick}
-            className={cn(
-              "flex items-center gap-2 rounded-lg px-2 py-2.5 text-sm font-medium text-zinc-400 transition-colors hover:bg-zinc-900 hover:text-zinc-50 lg:px-3",
-              isActive &&
-              "bg-zinc-50 text-zinc-950 hover:bg-zinc-50 hover:text-zinc-950",
-              collapsed && "justify-center px-2",
-            )}
-          >
-            <Icon className="h-4 w-4" />
-            {!collapsed && <span>{item.label}</span>}
-          </Link>
-        );
-      })}
+          return (
+            <li key={item.href}>
+              <Link
+                href={item.href}
+                onClick={onItemClick}
+                className={cn(
+                  "flex items-center gap-2 rounded-lg px-2 py-2.5 text-sm font-medium text-zinc-400 transition-colors hover:bg-zinc-900 hover:text-zinc-50 lg:px-3",
+                  isActive &&
+                  "active bg-zinc-50 text-zinc-950 hover:bg-zinc-50 hover:text-zinc-950",
+                  collapsed && "justify-center px-2",
+                )}
+              >
+                <Icon className="h-4 w-4" />
+                {!collapsed && <span>{item.label}</span>}
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
     </nav>
   );
 }
@@ -297,13 +300,13 @@ export function AdminLayout({ children }: AdminLayoutProps) {
 
       {/* Main content */}
       <div className="flex min-h-screen flex-1 flex-col bg-zinc-950 overflow-hidden">
-        <header className="sticky top-0 z-30 border-b border-zinc-900 bg-zinc-950/80 backdrop-blur">
+        <header className="navbar sticky top-0 z-30 border-b border-zinc-900 bg-zinc-950/80 backdrop-blur">
           <div className="flex items-center gap-3 px-4 py-3 md:px-6">
             <Button
               type="button"
               variant="ghost"
               size="icon"
-              className="h-8 w-8 text-zinc-400 hover:text-zinc-50 md:hidden"
+              className="btn btn-ghost btn-square h-8 w-8 text-zinc-400 hover:text-zinc-50 md:hidden"
               onClick={() => setMobileOpen(true)}
               aria-label="Open navigation"
             >
@@ -325,35 +328,35 @@ export function AdminLayout({ children }: AdminLayoutProps) {
                   type="button"
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 text-zinc-400 hover:text-zinc-50"
+                  className="btn btn-ghost btn-square h-8 w-8 text-zinc-400 hover:text-zinc-50"
                   aria-label="Notifications"
                 >
                   <Bell className="h-4 w-4" />
                 </Button>
 
                 <DropdownMenu>
-                  <DropdownMenuTrigger className="flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900 px-2 py-1.5 text-left text-xs md:text-sm">
+                  <DropdownMenuTrigger className="btn btn-outline border-zinc-800 bg-zinc-900 hover:bg-zinc-800 flex items-center gap-2 rounded-full px-3 py-1 text-left text-xs md:text-sm h-10">
                     <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-sky-500 text-[11px] font-semibold text-zinc-950">
                       {adminData?.name?.charAt(0).toUpperCase() || "A"}
                     </div>
                     <div className="hidden flex-col text-xs text-zinc-100 sm:flex">
-                      <span className="font-medium">{adminData?.name || "Chargement..."}</span>
-                      <span className="text-[11px] text-zinc-400">
+                      <span className="font-medium leading-none">{adminData?.name || "Chargement..."}</span>
+                      <span className="text-[9px] text-zinc-400 mt-0.5 leading-none">
                         {adminData?.email || ""}
                       </span>
                     </div>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="mt-2 min-w-[190px] border-zinc-800 bg-zinc-950 text-zinc-50">
-                    <DropdownMenuLabel>Compte</DropdownMenuLabel>
+                  <DropdownMenuContent className="mt-2 min-w-[190px] border-zinc-800 bg-zinc-900 text-zinc-50 rounded-xl p-2">
+                    <DropdownMenuLabel className="px-3 pb-2 pt-1 text-[11px] font-black uppercase tracking-widest text-zinc-500">Compte</DropdownMenuLabel>
                     <DropdownMenuItem 
-                      className="cursor-pointer"
+                      className="cursor-pointer rounded-lg hover:bg-zinc-800"
                       onClick={() => router.push("/dashboard/profile")}
                     >
                       Profil
                     </DropdownMenuItem>
-                    <DropdownMenuSeparator />
+                    <DropdownMenuSeparator className="bg-zinc-800 my-1" />
                     <DropdownMenuItem 
-                      className="text-red-400 focus:text-red-400 cursor-pointer"
+                      className="text-red-400 focus:text-red-400 cursor-pointer rounded-lg hover:bg-zinc-800"
                       onClick={() => !isLoggingOut && handleLogout()}
                     >
                       {isLoggingOut ? (

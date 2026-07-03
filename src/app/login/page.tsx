@@ -98,15 +98,15 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
         {/* Error / Message */}
         {error && (
-          <div className="rounded-2xl bg-red-500/5 p-4 border border-red-500/10 flex gap-3 items-center animate-in shake duration-500">
-            <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
-            <p className="text-sm font-bold text-red-600">{error}</p>
+          <div className="alert alert-error rounded-2xl p-4 flex gap-3 items-center animate-in shake duration-500">
+            <span className="icon-[tabler--alert-circle] text-xl"></span>
+            <p className="text-sm font-bold">{error}</p>
           </div>
         )}
         {message && (
-          <div className="rounded-2xl bg-green-500/5 p-4 border border-green-500/10 flex gap-3 items-center">
-            <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-            <p className="text-sm font-bold text-green-600">{message}</p>
+          <div className="alert alert-success rounded-2xl p-4 flex gap-3 items-center">
+            <span className="icon-[tabler--circle-check] text-xl"></span>
+            <p className="text-sm font-bold">{message}</p>
           </div>
         )}
 
@@ -131,8 +131,8 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           <input type="hidden" name="redirectTo" value={next || redirectTo || "/poste-annonce"} />
 
           <div className="space-y-2 group">
-            <Label htmlFor="identifier" className="text-xs font-black uppercase tracking-widest text-zinc-500 ml-1 group-focus-within:text-orange-500 transition-colors">
-              Email ou Téléphone
+            <Label htmlFor="identifier" className="label text-xs font-black uppercase tracking-widest text-zinc-500 ml-1 group-focus-within:text-orange-500 transition-colors">
+              <span className="label-text">Email ou Téléphone</span>
             </Label>
             <div className="relative">
               <Input
@@ -141,7 +141,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
                 type="text"
                 placeholder="nom@exemple.com"
                 required
-                className="h-14 px-5 rounded-2xl bg-zinc-50 border-zinc-200 text-zinc-900 placeholder:text-zinc-400 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all text-base font-bold"
+                className="input input-bordered focus:input-primary h-14 px-5 rounded-2xl bg-zinc-50 border-zinc-200 text-zinc-900 placeholder:text-zinc-400 transition-all text-base font-bold"
               />
               <Mail className="absolute right-5 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-400 group-focus-within:text-orange-500 transition-colors" />
             </div>
@@ -149,8 +149,8 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
           <div className="space-y-2 group">
             <div className="flex justify-between items-end px-1">
-              <Label htmlFor="password" className="text-xs font-black uppercase tracking-widest text-zinc-500 group-focus-within:text-orange-500 transition-colors">
-                Mot de passe
+              <Label htmlFor="password" className="label text-xs font-black uppercase tracking-widest text-zinc-500 group-focus-within:text-orange-500 transition-colors">
+                <span className="label-text">Mot de passe</span>
               </Label>
               <Link href="/forgot-password" title="Réinitialiser" className="text-[11px] font-black text-orange-500 hover:text-orange-600 transition-colors uppercase tracking-tight">
                 Oublié ?
@@ -163,7 +163,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
                 type="password"
                 placeholder="••••••••"
                 required
-                className="h-14 px-5 rounded-2xl bg-zinc-50 border-zinc-200 text-zinc-900 placeholder:text-zinc-400 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all text-base font-bold"
+                className="input input-bordered focus:input-primary h-14 px-5 rounded-2xl bg-zinc-50 border-zinc-200 text-zinc-900 placeholder:text-zinc-400 transition-all text-base font-bold"
               />
               <Lock className="absolute right-5 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-400 group-focus-within:text-orange-500 transition-colors" />
             </div>
@@ -172,7 +172,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           <SubmitButton
             label="Se connecter"
             loadingLabel="Vérification..."
-            className="w-full h-14 text-base font-black rounded-2xl bg-zinc-900 hover:bg-zinc-800 text-white shadow-xl shadow-zinc-900/20 transition-all active:scale-[0.98]"
+            className="btn btn-neutral w-full h-14 text-base font-black rounded-2xl text-white shadow-xl shadow-zinc-900/20 transition-all active:scale-[0.98]"
           />
         </form>
 

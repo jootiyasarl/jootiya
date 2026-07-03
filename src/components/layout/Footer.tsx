@@ -69,7 +69,7 @@ export default function Footer() {
     return (
         <footer className="bg-[#0b0f1a] text-zinc-400 pt-20 pb-10 border-t border-zinc-800/50" dir="ltr">
             <div className="container mx-auto px-4 md:px-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-8 mb-16">
+                <div className="footer grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-12 lg:gap-8 mb-16">
 
                     {/* Column 1: Brand & Bio */}
                     <div className="lg:col-span-1 space-y-6">
@@ -91,7 +91,7 @@ export default function Footer() {
 
                     {/* Column 2: SEO Categories */}
                     <div className="space-y-6">
-                        <h4 className="text-white text-xs font-black uppercase tracking-widest flex items-center gap-2">
+                        <h4 className="footer-title text-white text-xs font-black uppercase tracking-widest flex items-center gap-2">
                             <Zap className="w-3 h-3 text-orange-500" />
                             Catégories Populaires
                         </h4>
@@ -112,7 +112,7 @@ export default function Footer() {
 
                     {/* Column 3: SEO Cities */}
                     <div className="space-y-6">
-                        <h4 className="text-white text-xs font-black uppercase tracking-widest flex items-center gap-2">
+                        <h4 className="footer-title text-white text-xs font-black uppercase tracking-widest flex items-center gap-2">
                             <MapPin className="w-3 h-3 text-orange-500" />
                             Villes Principales
                         </h4>
@@ -133,7 +133,7 @@ export default function Footer() {
 
                     {/* Column 4: Links & Support */}
                     <div className="space-y-6">
-                        <h4 className="text-white text-xs font-black uppercase tracking-widest flex items-center gap-2">
+                        <h4 className="footer-title text-white text-xs font-black uppercase tracking-widest flex items-center gap-2">
                             <ShieldCheck className="w-3 h-3 text-orange-500" />
                             Aide & Légal
                         </h4>
@@ -156,7 +156,7 @@ export default function Footer() {
 
                     {/* Column 5: Newsletter & Contact */}
                     <div className="lg:col-span-1 space-y-6">
-                        <h4 className="text-white text-xs font-black uppercase tracking-widest flex items-center gap-2">
+                        <h4 className="footer-title text-white text-xs font-black uppercase tracking-widest flex items-center gap-2">
                             <Mail className="w-3 h-3 text-orange-500" />
                             Newsletter
                         </h4>
@@ -168,10 +168,10 @@ export default function Footer() {
                                 <input
                                     type="email"
                                     placeholder="Votre email..."
-                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-xs outline-none focus:border-orange-500/50 focus:ring-4 focus:ring-orange-500/10 transition-all text-white pr-12 placeholder:text-zinc-500"
+                                    className="input input-bordered w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white pr-12 placeholder:text-zinc-500"
                                 />
                                 <button 
-                                    className="absolute right-1 top-1 bottom-1 px-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors flex items-center justify-center"
+                                    className="btn btn-primary absolute right-1 top-1 bottom-1 px-3 min-h-0 h-auto text-white rounded-lg transition-colors flex items-center justify-center"
                                     aria-label="S'abonner à la newsletter"
                                     title="S'abonner"
                                 >

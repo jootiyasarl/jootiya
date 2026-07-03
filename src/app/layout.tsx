@@ -16,6 +16,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { PageViewTracker } from "@/components/analytics/PageViewTracker";
 import { GoogleAnalytics } from '@next/third-parties/google'
 import InstallPWA from "@/components/pwa/InstallPWA";
+import FlyonuiInit from "@/components/FlyonuiInit";
 
 const tajawal = Tajawal({
   variable: "--font-tajawal",
@@ -194,6 +195,7 @@ export default function RootLayout({
         <h1 className="sr-only">Jootiya : Petites annonces au Maroc - Achat et vente en toute sécurité</h1>
 
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <FlyonuiInit />
           <Suspense fallback={null}>
             <PageViewTracker />
           </Suspense>

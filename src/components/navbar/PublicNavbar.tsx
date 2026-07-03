@@ -14,7 +14,7 @@ export default async function PublicNavbar() {
   const isAdmin = userEmail === "jootiyasarl@gmail.com";
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-[100] w-full bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl border-b border-zinc-100 dark:border-zinc-800 flex flex-col justify-center min-h-[56px] md:min-h-[64px] pt-[env(safe-area-inset-top)] overflow-visible">
+    <header className="navbar fixed top-0 left-0 right-0 z-[100] w-full bg-white/80 dark:bg-zinc-950/80 backdrop-blur-xl border-b border-zinc-100 dark:border-zinc-800 flex flex-col justify-center min-h-[56px] md:min-h-[64px] pt-[env(safe-area-inset-top)] overflow-visible">
       <div className="w-full px-1 min-[360px]:px-2 sm:px-4 md:px-8 max-w-[1440px] mx-auto overflow-visible">
         {/* Main Nav Row (TOP) */}
         <div className="flex h-12 md:h-14 items-center justify-between gap-0.5 min-[360px]:gap-1 sm:gap-4 relative z-[110] py-2 min-w-0 overflow-visible">
@@ -40,7 +40,7 @@ export default async function PublicNavbar() {
               rel="nofollow"
               aria-label="Déposer une annonce"
             >
-              <div className="rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-black h-10 px-4 text-[10px] uppercase tracking-wider shadow-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap">
+              <div className="btn btn-primary h-10 min-h-0 px-4 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-sm flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap">
                 <PlusCircle className="w-4 h-4 shrink-0" />
                 <span>Déposer une annonce</span>
               </div>
