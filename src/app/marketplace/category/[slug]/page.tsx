@@ -26,8 +26,9 @@ export async function generateStaticParams() {
     }));
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-    const label = CATEGORY_LABELS[params.slug] || "Catégorie";
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+    const resolvedParams = await params;
+    const label = CATEGORY_LABELS[resolvedParams.slug] || "Catégorie";
     return {
         title: `Acheter ${label} d'occasion au Maroc | Jootiya`,
         description: `Découvrez les meilleures offres sur ${label} au Maroc. Achetez et vendez en toute sécurité sur Jootiya, la plateforme n°1 d'occasion.`,
@@ -38,17 +39,19 @@ export default async function CategoryPage({
     params,
     searchParams,
 }: {
-    params: { slug: string };
-    searchParams: { [key: string]: string | string[] | undefined };
+    params: Promise<{ slug: string }>;
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
+    const resolvedParams = await params;
+    const resolvedSearchParams = await searchParams;
     const supabase = createSupabaseServerClient();
-    const category = params.slug;
+    const category = resolvedParams.slug;
     
-    const query = typeof searchParams.q === 'string' ? searchParams.q : undefined;
-    const minPrice = typeof searchParams.minPrice === 'string' ? Number(searchParams.minPrice) : undefined;
-    const maxPrice = typeof searchParams.maxPrice === 'string' ? Number(searchParams.maxPrice) : undefined;
-    const sort = typeof searchParams.sort === 'string' ? (searchParams.sort as any) : 'newest';
-    const city = typeof searchParams.city === 'string' ? searchParams.city : undefined;
+    const query = typeof resolvedSearchParams.q === 'string' ? resolvedSearchParams.q : undefined;
+    const minPrice = typeof resolvedSearchParams.minPrice === 'string' ? Number(resolvedSearchParams.minPrice) : undefined;
+    const maxPrice = typeof resolvedSearchParams.maxPrice === 'string' ? Number(resolvedSearchParams.maxPrice) : undefined;
+    const sort = typeof resolvedSearchParams.sort === 'string' ? (resolvedSearchParams.sort as any) : 'newest';
+    const city = typeof resolvedSearchParams.city === 'string' ? resolvedSearchParams.city : undefined;
 
     const { ads, error } = await getAds(supabase, {
         query,

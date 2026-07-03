@@ -3,9 +3,9 @@ import { notFound, redirect } from "next/navigation";
 import AdPostForm from "@/components/ads/AdPostForm";
 
 interface EditAdPageProps {
-    params: {
+    params: Promise<{
         id: string;
-    };
+    }>;
 }
 
 export default async function EditAdPage({ params }: EditAdPageProps) {
