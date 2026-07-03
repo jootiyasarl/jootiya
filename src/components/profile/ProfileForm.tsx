@@ -182,8 +182,28 @@ export function ProfileForm({
     setError(null);
 
     try {
-      const { error: signOutError } = await supabase.auth.signOut();
-      if (signOutError) throw signOutError;
+      try {
+        await supabase.auth.signOut();
+      } catch (err) {
+        console.error("Supabase signOut error", err);
+      }
+      try {
+        await fetch("/api/auth/logout", { method: "POST" });
+      } catch (err) {
+        console.error("Failed to clear auth session:", err);
+      }
+
+      document.cookie = "sb-access-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      document.cookie = "sb-refresh-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      document.cookie = "sb-access-token=; path=/; SameSite=Lax; max-age=0";
+      document.cookie = "session_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      document.cookie = "user_role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+
+      if (typeof window !== 'undefined') {
+        localStorage.clear();
+        sessionStorage.clear();
+      }
+
       toast.success("Compte déconnecté. Redirection...");
       setTimeout(() => { window.location.href = "/"; }, 1500);
     } catch (err: any) {

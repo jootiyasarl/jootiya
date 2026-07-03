@@ -46,16 +46,30 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   const handleSignOut = async () => {
     try {
-      await supabase.auth.signOut();
+      try {
+        await supabase.auth.signOut();
+      } catch (err) {
+        console.error("Supabase signOut error", err);
+      }
       
       // Clear cookies by calling the logout API
-      await fetch("/api/auth/logout", { method: "POST" });
+      try {
+        await fetch("/api/auth/logout", { method: "POST" });
+      } catch (err) {
+        console.error("Failed to clear auth session:", err);
+      }
       
       // Clear local storage and session storage just in case
       if (typeof window !== 'undefined') {
         localStorage.clear();
         sessionStorage.clear();
       }
+
+      document.cookie = "sb-access-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      document.cookie = "sb-refresh-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      document.cookie = "sb-access-token=; path=/; SameSite=Lax; max-age=0";
+      document.cookie = "session_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      document.cookie = "user_role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
 
       router.replace("/login");
       router.refresh();

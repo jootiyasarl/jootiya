@@ -119,13 +119,30 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
             setUserEmail(null);
             setIsAdmin(false);
             setHasUnreadMessages(false);
-            await supabase.auth.signOut();
-            await fetch("/api/auth/logout", { method: "POST" });
+            
+            try {
+                await supabase.auth.signOut();
+            } catch (err) {
+                console.error("Supabase signOut error", err);
+            }
+
+            try {
+                await fetch("/api/auth/logout", { method: "POST" });
+            } catch (err) {
+                console.error("Server logout API error", err);
+            }
             
             // Clear all possible auth cookies manually to be safe
             document.cookie = "sb-access-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
             document.cookie = "sb-refresh-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
             document.cookie = "sb-access-token=; path=/; SameSite=Lax; max-age=0";
+            document.cookie = "session_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+            document.cookie = "user_role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+
+            if (typeof window !== "undefined") {
+                localStorage.clear();
+                sessionStorage.clear();
+            }
 
             router.refresh();
             window.location.assign("/");

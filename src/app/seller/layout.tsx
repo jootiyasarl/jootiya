@@ -24,11 +24,30 @@ export default function SellerLayout({
   const router = useRouter();
 
   const handleLogout = async () => {
-    // 1. Sign out from the Supabase client.
-    await supabase.auth.signOut();
+    try {
+      // 1. Sign out from the Supabase client.
+      await supabase.auth.signOut();
+    } catch (err) {
+      console.error("Supabase signOut error", err);
+    }
 
-    // 2. Ask the server to clear the HTTP-only cookies (session_token, user_role, etc.).
-    await fetch("/api/auth/logout", { method: "POST" });
+    try {
+      // 2. Ask the server to clear the HTTP-only cookies (session_token, user_role, etc.).
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch (err) {
+      console.error("Failed to clear auth session:", err);
+    }
+
+    document.cookie = "sb-access-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    document.cookie = "sb-refresh-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    document.cookie = "sb-access-token=; path=/; SameSite=Lax; max-age=0";
+    document.cookie = "session_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    document.cookie = "user_role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+
+    if (typeof window !== 'undefined') {
+      localStorage.clear();
+      sessionStorage.clear();
+    }
 
     // 3. Redirect to the public login page and refresh the router cache.
     router.replace("/login");
