@@ -21,8 +21,19 @@ const CATEGORY_LABELS: { [key: string]: string } = {
   "hobbies": "Loisirs & Divertissement",
   "animals": "Animaux",
   "books": "Livres & Études",
-  "used-clearance": "Occasions",
+  "used-clearance": "Occasions / Vide-grenier",
   "other": "Autres",
+  // French labels fallback
+  "Électronique": "Électronique",
+  "Maison & Ameublement": "Maison & Ameublement",
+  "Véhicules & Transport": "Véhicules & Transport",
+  "Mode & Chaussures": "Mode & Chaussures",
+  "Outils & Équipement": "Outils & Équipement",
+  "Loisirs & Divertissement": "Loisirs & Divertissement",
+  "Animaux": "Animaux",
+  "Livres & Études": "Livres & Études",
+  "Occasions / Vide-grenier": "Occasions / Vide-grenier",
+  "Autres": "Autres",
 };
 
 export type HomepageAd = {
@@ -247,6 +258,7 @@ export default function HomeClient({ initialParams, initialAds }: { initialParam
   }, [latParam, lngParam, radiusParam, initialAds]);
 
   const categoryMapping: { [key: string]: string } = {
+    // English IDs
     "electronics": "electronics",
     "home-furniture": "home-furniture",
     "vehicles": "vehicles",
@@ -257,16 +269,26 @@ export default function HomeClient({ initialParams, initialAds }: { initialParam
     "books": "books",
     "used-clearance": "used-clearance",
     "other": "other",
+    // French labels
     "Électronique": "electronics",
     "Maison & Ameublement": "home-furniture",
     "Véhicules & Transport": "vehicles",
     "Mode & Chaussures": "fashion",
     "Outils & Équipement": "tools-equipment",
-    "Loisirs & Diverتissement": "hobbies",
+    "Loisirs & Divertissement": "hobbies",
     "Animaux": "animals",
     "Livres & Études": "books",
     "Occasions / Vide-grenier": "used-clearance",
-    "Autres": "other"
+    "Autres": "other",
+    // Variations
+    "electronique": "electronics",
+    "maison": "home-furniture",
+    "vehicules": "vehicles",
+    "mode": "fashion",
+    "outils": "tools-equipment",
+    "loisirs": "hobbies",
+    "livres": "books",
+    "occasions": "used-clearance",
   };
 
   const getCategorySlug = (categoryName: string) => {
