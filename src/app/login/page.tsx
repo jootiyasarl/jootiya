@@ -26,7 +26,7 @@ async function loginAction(formData: FormData) {
 
   const identifier = formData.get("identifier");
   const password = formData.get("password");
-  const redirectTo = formData.get("redirectTo")?.toString() || "/poste-annonce";
+  const redirectTo = formData.get("redirectTo")?.toString() || "/";
 
   if (typeof identifier !== "string" || typeof password !== "string") {
     const params = new URLSearchParams();
@@ -112,7 +112,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
         {/* Google Login — primary CTA for sellers */}
         <div className="space-y-4">
-          <GoogleLoginButton redirectTo={next || redirectTo || "/poste-annonce"} />
+          <GoogleLoginButton redirectTo={next || redirectTo || "/"} />
         </div>
 
         <div className="relative">
@@ -128,7 +128,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
         {/* Email / Phone Login Form */}
         <form action={loginAction} className="space-y-5">
-          <input type="hidden" name="redirectTo" value={next || redirectTo || "/poste-annonce"} />
+          <input type="hidden" name="redirectTo" value={next || redirectTo || "/"} />
 
           <div className="space-y-2 group">
             <Label htmlFor="identifier" className="label text-xs font-black uppercase tracking-widest text-zinc-500 ml-1 group-focus-within:text-orange-500 transition-colors">
