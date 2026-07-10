@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SubmitButton } from "@/components/submit-button";
 import { GoogleLoginButton } from "@/components/auth/GoogleLoginButton";
+import { NavbarLogo } from "@/components/navbar/NavbarLogo";
 import { createSupabaseServerClient, setAuthSession, setSellerSession } from "@/lib/supabase-server";
 import { ShieldCheck, ChevronLeft } from "lucide-react";
 
@@ -140,7 +141,12 @@ export default async function RegisterPage({ searchParams }: RegisterPageProps) 
   const { error, message } = await searchParams;
 
   return (
-    <div className="h-screen w-screen bg-white flex flex-col lg:flex-row font-sans overflow-hidden">
+    <div className="min-h-screen w-screen bg-white flex flex-col lg:flex-row font-sans overflow-hidden">
+      {/* Mobile Logo Header */}
+      <div className="lg:hidden flex justify-center pt-6 pb-4">
+        <NavbarLogo />
+      </div>
+
       {/* Left Side: Brand Experience */}
       <div className="hidden lg:flex lg:w-1/2 bg-[#fdfbf7] items-center justify-center p-12 relative border-r border-zinc-100">
         {/* Animated Background Gradients */}

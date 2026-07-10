@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SubmitButton } from "@/components/submit-button";
 import { GoogleLoginButton } from "@/components/auth/GoogleLoginButton";
+import { NavbarLogo } from "@/components/navbar/NavbarLogo";
 import { createSupabaseServerClient, setAuthSession, setSellerSession } from "@/lib/supabase-server";
 import { Lock, ChevronLeft, Mail, Store } from "lucide-react";
 
@@ -78,8 +79,14 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const { error, message, redirectTo, next } = await searchParams;
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-orange-50 via-white to-zinc-100 p-6 font-sans">
-      <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl shadow-zinc-200/50 p-8 sm:p-10 space-y-8 relative overflow-hidden">
+    <div className="min-h-screen w-full flex flex-col bg-gradient-to-br from-orange-50 via-white to-zinc-100 p-6 font-sans">
+      {/* Logo Header */}
+      <div className="flex justify-center pt-6 pb-4">
+        <NavbarLogo />
+      </div>
+
+      <div className="flex-grow flex items-center justify-center">
+        <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl shadow-zinc-200/50 p-8 sm:p-10 space-y-8 relative overflow-hidden">
         {/* Decorative top bar */}
         <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-orange-400 via-orange-500 to-zinc-800" />
 
@@ -190,6 +197,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             Retour à l&apos;accueil
           </Link>
         </div>
+      </div>
       </div>
     </div>
   );
