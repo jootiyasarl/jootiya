@@ -112,7 +112,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
         {/* Google Login — primary CTA for sellers */}
         <div className="space-y-4">
-          <GoogleLoginButton />
+          <GoogleLoginButton redirectTo={next || redirectTo || "/poste-annonce"} />
         </div>
 
         <div className="relative">

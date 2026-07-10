@@ -83,7 +83,7 @@ async function registerAction(formData: FormData) {
         phone: trimmedPhone,
         real_email: trimmedEmail,
       },
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://jootiya.com'}/marketplace`,
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://jootiya.com'}/poste-annonce`,
     }
   });
 
