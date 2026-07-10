@@ -41,7 +41,7 @@ export function RootNavbarShellClient({ children, navbar, footer }: RootNavbarSh
             {navbar}
           </Suspense>
           <div
-            className={cn((pathname?.startsWith("/marketplace/post") || pathname?.startsWith("/ads/")) && "hidden")}
+            className={cn(pathname?.startsWith("/ads/") && "hidden")}
           >
             <MobileBottomNav />
           </div>
