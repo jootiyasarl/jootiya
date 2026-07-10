@@ -31,6 +31,7 @@ interface AirbnbAdPageClientProps {
   totalReviews: number;
   isTrusted: boolean;
   user: any;
+  similarAds?: any[];
 }
 
 export function AirbnbAdPageClient({
@@ -45,7 +46,8 @@ export function AirbnbAdPageClient({
   avgRating,
   totalReviews,
   isTrusted,
-  user
+  user,
+  similarAds = []
 }: AirbnbAdPageClientProps) {
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
@@ -264,12 +266,58 @@ export function AirbnbAdPageClient({
       </div>
 
       <QuickActionFooter phone={sellerPhone || ""} adTitle={ad.title} adPrice={formattedPrice} adId={ad.id} sellerId={ad.seller_id} currentUser={user} />
-      
-      <AdImageGallery 
-        images={images} 
-        hideMainGallery={true} 
-        isForcedOpen={isLightboxOpen} 
-        onOpenChange={setIsLightboxOpen} 
+
+      {/* Similar Ads Section */}
+      {similarAds.length > 0 && (
+        <div className="main-container mt-12 px-4 md:px-8">
+          <h2 className="text-2xl font-black mb-6 text-zinc-900 dark:text-white">Annonces similaires</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {similarAds.map((similarAd) => {
+              const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+              const firstImage = similarAd.image_urls?.[0];
+              const imageUrl = firstImage?.startsWith('http')
+                ? firstImage
+                : firstImage
+                  ? `${supabaseUrl}/storage/v1/object/public/ad-images/${firstImage.startsWith('/') ? firstImage.substring(1) : firstImage}`
+                  : '/placeholder-ad.jpg';
+              const adSlug = similarAd.slug || similarAd.title?.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+              const formattedSimilarPrice = similarAd.price
+                ? `${Number(similarAd.price).toLocaleString()} ${similarAd.currency || 'MAD'}`
+                : 'Sur demande';
+
+              return (
+                <Link
+                  key={similarAd.id}
+                  href={`/ads/${similarAd.id}/${adSlug}`}
+                  className="block"
+                >
+                  <div className="rounded-2xl border border-zinc-100 bg-white shadow-sm hover:shadow-md transition-shadow overflow-hidden dark:border-zinc-800 dark:bg-zinc-900">
+                    <div className="aspect-square relative overflow-hidden">
+                      <img
+                        src={imageUrl}
+                        alt={similarAd.title}
+                        className="w-full h-full object-cover"
+                        onError={(e) => { const t = e.currentTarget as HTMLImageElement; if (t.src !== '/icon-512x512.png') t.src = '/icon-512x512.png'; }}
+                      />
+                    </div>
+                    <div className="p-4">
+                      <h3 className="font-semibold text-sm text-zinc-900 dark:text-white line-clamp-2 mb-2">{similarAd.title}</h3>
+                      <p className="text-orange-600 font-black">{formattedSimilarPrice}</p>
+                      <p className="text-xs text-zinc-500 mt-1">{similarAd.city}</p>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      <AdImageGallery
+        images={images}
+        hideMainGallery={true}
+        isForcedOpen={isLightboxOpen}
+        onOpenChange={setIsLightboxOpen}
       />
     </div>
   );

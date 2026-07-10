@@ -201,6 +201,17 @@ export default async function AdPage({ params }: AdPageProps) {
   const totalReviews = stats?.[0]?.total_reviews || 0;
   const isTrusted = totalReviews > 10 && avgRating >= 4.5;
 
+  // Fetch similar ads (same category, same city, exclude current ad, limit to 4)
+  const { data: similarAds } = await supabase
+    .from("ads")
+    .select("id, title, price, currency, city, image_urls, slug")
+    .eq("category", ad.category)
+    .eq("city", ad.city)
+    .neq("id", ad.id)
+    .eq("status", "approved")
+    .order("created_at", { ascending: false })
+    .limit(4);
+
   return (
     <>
       <ShadowViewTracker adId={ad.id} category={ad.category} />
@@ -217,6 +228,7 @@ export default async function AdPage({ params }: AdPageProps) {
         totalReviews={totalReviews}
         isTrusted={isTrusted}
         user={user}
+        similarAds={similarAds || []}
       />
     </>
   );
