@@ -196,31 +196,59 @@ export default function HomeClient({ initialParams, initialAds }: { initialParam
             limit: 60,
           });
         } else {
-          console.log("Fetching standard ads...");
-          const { data: standardData, error: fetchError } = await supabase
-            .from("ads")
-            .select(`
-              id, 
-              title, 
-              price, 
-              currency, 
-              city, 
-              neighborhood, 
-              created_at, 
-              is_featured, 
-              image_urls, 
-              category, 
-              status, 
-              latitude, 
-              longitude, 
-              seller_id
-            `)
-            .or("status.eq.active,status.eq.approved,status.eq.pending")
-            .order("is_featured", { ascending: false })
-            .order("created_at", { ascending: false })
-            .limit(60);
-          if (fetchError) throw fetchError;
-          resultData = standardData;
+          console.log("Fetching standard ads per category...");
+          const HOMEPAGE_CATEGORIES = [
+            "electronics", "home-furniture", "vehicles", "fashion",
+            "tools-equipment", "hobbies", "animals", "books",
+            "used-clearance", "other",
+          ];
+          const ADS_PER_CAT = 6;
+
+          const categoryResults = await Promise.all(
+            HOMEPAGE_CATEGORIES.map((cat) =>
+              supabase
+                .from("ads")
+                .select(`
+                  id, 
+                  title, 
+                  price, 
+                  currency, 
+                  city, 
+                  neighborhood, 
+                  created_at, 
+                  is_featured, 
+                  image_urls, 
+                  category, 
+                  status, 
+                  latitude, 
+                  longitude, 
+                  seller_id
+                `)
+                .or("status.eq.active,status.eq.approved,status.eq.pending")
+                .eq("category", cat)
+                .order("is_featured", { ascending: false })
+                .order("created_at", { ascending: false })
+                .limit(ADS_PER_CAT)
+            )
+          );
+
+          const allAds: HomepageAdRow[] = [];
+          for (const res of categoryResults) {
+            if (res.error) {
+              console.error("Error fetching category ads:", res.error);
+              continue;
+            }
+            allAds.push(...(res.data ?? []));
+          }
+
+          allAds.sort((a, b) => {
+            const aF = a.is_featured ? 1 : 0;
+            const bF = b.is_featured ? 1 : 0;
+            if (bF !== aF) return bF - aF;
+            return new Date(b.created_at ?? 0).getTime() - new Date(a.created_at ?? 0).getTime();
+          });
+
+          resultData = allAds;
         }
 
         if (resultData && isMounted) {
