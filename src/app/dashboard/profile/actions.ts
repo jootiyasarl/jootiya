@@ -53,19 +53,35 @@ export async function uploadAvatarAction(base64Image: string, fileName: string) 
   const fileExt = fileName.split('.').pop()?.toLowerCase() || "jpg";
   const filePath = `${user.id}/${Date.now()}.${fileExt}`;
 
+  // Try 'avatars' bucket first, fall back to 'ad-images' if it doesn't exist
+  let uploadBucket = "avatars";
   const { error: uploadError } = await supabase.storage
-    .from("ad-images")
+    .from(uploadBucket)
     .upload(filePath, buffer, {
       contentType: mimeType,
       upsert: true
     });
 
   if (uploadError) {
-    return { error: uploadError.message };
+    // If 'avatars' bucket doesn't exist, use 'ad-images'
+    if (uploadError.message?.includes("not found") || uploadError.message?.includes("Bucket")) {
+      uploadBucket = "ad-images";
+      const { error: fallbackError } = await supabase.storage
+        .from(uploadBucket)
+        .upload(filePath, buffer, {
+          contentType: mimeType,
+          upsert: true
+        });
+      if (fallbackError) {
+        return { error: fallbackError.message };
+      }
+    } else {
+      return { error: uploadError.message };
+    }
   }
 
   const { data: { publicUrl } } = supabase.storage
-    .from("ad-images")
+    .from(uploadBucket)
     .getPublicUrl(filePath);
 
   // Update profile with new avatar URL
@@ -79,6 +95,7 @@ export async function uploadAvatarAction(base64Image: string, fileName: string) 
   }
 
   revalidatePath("/dashboard/profile");
+  revalidatePath("/profile");
   return { success: true, publicUrl };
 }
 
@@ -100,6 +117,7 @@ export async function deleteAvatarAction() {
   }
 
   revalidatePath("/dashboard/profile");
+  revalidatePath("/profile");
   return { success: true };
 }
 
