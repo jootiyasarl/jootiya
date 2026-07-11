@@ -145,6 +145,16 @@ export default async function AdPage({ params }: AdPageProps) {
     const totalReviews = stats?.[0]?.total_reviews || 0;
     const isTrusted = totalReviews > 10 && avgRating >= 4.5;
 
+    // Fetch similar ads for retry path
+    const { data: retrySimilarAds } = await supabase
+      .from("ads")
+      .select("id, title, price, currency, city, image_urls, slug")
+      .eq("category", retryAd.category)
+      .neq("id", retryAd.id)
+      .or("status.eq.active,status.eq.approved")
+      .order("created_at", { ascending: false })
+      .limit(4);
+
     return (
       <>
         <ShadowViewTracker adId={retryAd.id} category={retryAd.category} />
@@ -161,6 +171,7 @@ export default async function AdPage({ params }: AdPageProps) {
           totalReviews={totalReviews}
           isTrusted={isTrusted}
           user={user}
+          similarAds={retrySimilarAds || []}
         />
       </>
     );
@@ -201,14 +212,13 @@ export default async function AdPage({ params }: AdPageProps) {
   const totalReviews = stats?.[0]?.total_reviews || 0;
   const isTrusted = totalReviews > 10 && avgRating >= 4.5;
 
-  // Fetch similar ads (same category, same city, exclude current ad, limit to 4)
+  // Fetch similar ads (same category, exclude current ad, limit to 4)
   const { data: similarAds } = await supabase
     .from("ads")
     .select("id, title, price, currency, city, image_urls, slug")
     .eq("category", ad.category)
-    .eq("city", ad.city)
     .neq("id", ad.id)
-    .eq("status", "approved")
+    .or("status.eq.active,status.eq.approved")
     .order("created_at", { ascending: false })
     .limit(4);
 
