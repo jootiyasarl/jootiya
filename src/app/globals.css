@@ -15,6 +15,20 @@
   --color-primary-active: #c2410c;
 }
 
+.btn-primary {
+  background-color: #f97316 !important;
+  border-color: #f97316 !important;
+  color: #ffffff !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+  background-color: #ea580c !important;
+  border-color: #ea580c !important;
+  color: #ffffff !important;
+}
+
 @plugin "@tailwindcss/typography";
 @import "../../node_modules/flyonui/variants.css";
 @source "../../node_modules/flyonui/dist/index.js";

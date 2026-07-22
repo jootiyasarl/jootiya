@@ -40,7 +40,7 @@ export default async function PublicNavbar() {
               rel="nofollow"
               aria-label="Déposer une annonce"
             >
-              <div className="btn btn-primary h-10 min-h-0 px-4 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-sm flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap">
+              <div className="btn bg-orange-500 hover:bg-orange-600 border-none text-white h-10 min-h-0 px-4 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-md shadow-orange-500/20 flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap transition-all active:scale-[0.98]">
                 <PlusCircle className="w-4 h-4 shrink-0" />
                 <span>Déposer une annonce</span>
               </div>

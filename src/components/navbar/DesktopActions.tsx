@@ -216,7 +216,7 @@ export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false
                 <div className="ml-1 pl-1 border-l border-zinc-200 dark:border-zinc-800 flex items-center gap-1">
                     <Link
                         href="/login"
-                        className="btn btn-primary flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm font-bold shadow-sm transition-all active:scale-[0.98]"
+                        className="btn bg-orange-500 hover:bg-orange-600 border-none flex items-center gap-2 px-4 py-2 rounded-xl text-white text-sm font-bold shadow-md shadow-orange-500/20 transition-all active:scale-[0.98]"
                         rel="nofollow"
                     >
                         <User className="w-4 h-4" />
