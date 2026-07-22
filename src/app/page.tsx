@@ -81,7 +81,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Hom
 
   return (
     <Suspense fallback={<div className="min-h-screen bg-white animate-pulse" />}>
-      <SessionSync defaultNext="/poste-annonce" />
+      <SessionSync />
       <HomeClient initialParams={resolvedParams} initialAds={initialAds} />
     </Suspense>
   );

@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 
-export function SessionSync({ defaultNext = "/poste-annonce" }: { defaultNext?: string }) {
+export function SessionSync({ defaultNext }: { defaultNext?: string }) {
   const router = useRouter();
   const search = useSearchParams();
 
@@ -21,10 +21,11 @@ export function SessionSync({ defaultNext = "/poste-annonce" }: { defaultNext?: 
         body: JSON.stringify({ session }),
       });
 
-      const next = search?.get("next") || search?.get("redirectTo") || defaultNext;
-      // Avoid loops: only push when we're on / or /login
-      if (window.location.pathname === "/" || window.location.pathname === "/login") {
-        router.replace(next);
+      const nextParam = search?.get("next") || search?.get("redirectTo");
+      if (nextParam && (window.location.pathname === "/" || window.location.pathname === "/login")) {
+        router.replace(nextParam);
+      } else if (defaultNext && window.location.pathname === "/login") {
+        router.replace(defaultNext);
       }
     };
 
