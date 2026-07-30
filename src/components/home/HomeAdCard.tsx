@@ -22,7 +22,7 @@ export function HomeAdCard({ ad, priority = false }: { ad: PublicAdCardAd; prior
 
         {ad.imageUrl && !imgFailed ? (
           <img
-            src={getOptimizedImageUrl(ad.imageUrl, { width: 800, height: 600, quality: 80, format: "webp" })}
+            src={getOptimizedImageUrl(ad.imageUrl, { width: 400, height: 400, quality: 75, format: "webp" })}
             alt={ad.title}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             loading={priority ? "eager" : "lazy"}

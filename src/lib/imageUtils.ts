@@ -9,8 +9,9 @@ import sharp from 'sharp';
 export async function processImageForSEO(buffer: Buffer): Promise<Buffer> {
     try {
         return await sharp(buffer)
+            .resize({ width: 1200, height: 1200, fit: 'inside', withoutEnlargement: true })
             .withMetadata() // Crucial for preserving location/date EXIF data
-            .webp({ quality: 80 }) // Industry standard for 2026 speed/quality balance
+            .webp({ quality: 75 }) // Industry standard for 2026 speed/quality balance
             .toBuffer();
     } catch (error) {
         console.error('Sharp Image Processing Error:', error);

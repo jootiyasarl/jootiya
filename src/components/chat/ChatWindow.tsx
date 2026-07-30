@@ -245,7 +245,7 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
             // Phase 2: Professional Compression (if image)
             if (isImage) {
                 const options = {
-                    maxSizeMB: 0.5,
+                    maxSizeMB: 0.2,
                     maxWidthOrHeight: 1200,
                     useWebWorker: true,
                 };

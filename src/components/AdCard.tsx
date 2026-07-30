@@ -63,7 +63,7 @@ export function AdCard({ ad, variant = "default", footerSlot, href, priority = f
         
         {ad.imageUrl && !imgFailed ? (
           (() => {
-            const src = getOptimizedImageUrl(ad.imageUrl, { width: 800, height: 600, quality: 80, format: 'webp' });
+            const src = getOptimizedImageUrl(ad.imageUrl, { width: 400, height: 400, quality: 75, format: 'webp' });
             return (
               <img
                 src={src}

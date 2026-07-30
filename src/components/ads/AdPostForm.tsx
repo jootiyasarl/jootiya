@@ -30,6 +30,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { MOROCCAN_CITIES } from '@/lib/constants/cities';
 import { toast } from 'sonner';
 import { createAdAction, updateAdAction } from '@/app/dashboard/ads/ad-actions';
+import { compressImageFile } from '@/lib/adImages';
 
 const adSchema = z.object({
     title: z.string().min(5, "Le titre doit contenir au moins 5 caractères"),
@@ -162,8 +163,9 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
             const tempAdId = initialData?.id || `temp-${Math.random().toString(36).substring(2, 7)}`;
             
             for (const file of images) {
+                const compressedFile = await compressImageFile(file, { maxSizeMB: 0.25, maxWidth: 1200 });
                 const formData = new FormData();
-                formData.append('file', file);
+                formData.append('file', compressedFile);
                 formData.append('adId', tempAdId);
                 const response = await fetch('/api/ads/upload-seo', { method: 'POST', body: formData });
                 if (!response.ok) throw new Error("Échec du traitement de l'image");
