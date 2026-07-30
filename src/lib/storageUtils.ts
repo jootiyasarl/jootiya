@@ -46,11 +46,11 @@ export function getOptimizedImageUrl(url: string, options: { width?: number; hei
         absoluteUrl = absoluteUrl.replace(/ /g, '%20');
     }
 
-    // 4. Enable transformations by default unless explicitly disabled with 'false'
-    const isTransformDisabled = process.env.NEXT_PUBLIC_SUPABASE_TRANSFORMATIONS_ENABLED === 'false';
+    // 4. Check if transformations are explicitly enabled (requires Supabase Pro)
+    const isTransformEnabled = process.env.NEXT_PUBLIC_SUPABASE_TRANSFORMATIONS_ENABLED === 'true';
 
-    // If it's not a Supabase URL or transformations are explicitly off, return the absolute URL
-    if (isTransformDisabled || !absoluteUrl.includes('/storage/v1/object/public/')) {
+    // If it's not a Supabase URL or transformations are not enabled, return the absolute URL
+    if (!isTransformEnabled || !absoluteUrl.includes('/storage/v1/object/public/')) {
         return absoluteUrl;
     }
 
