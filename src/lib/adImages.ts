@@ -65,7 +65,7 @@ export async function uploadAdImages(
     const { error: uploadError } = await supabase.storage
       .from(AD_IMAGES_BUCKET)
       .upload(path, compressed, {
-        cacheControl: "3600",
+        cacheControl: "31536000, immutable",
         upsert: false,
         contentType: compressed.type,
       });

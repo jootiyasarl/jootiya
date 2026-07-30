@@ -59,6 +59,7 @@ export async function uploadAvatarAction(base64Image: string, fileName: string) 
     .from(uploadBucket)
     .upload(filePath, buffer, {
       contentType: mimeType,
+      cacheControl: "31536000, immutable",
       upsert: true
     });
 
@@ -70,6 +71,7 @@ export async function uploadAvatarAction(base64Image: string, fileName: string) 
         .from(uploadBucket)
         .upload(filePath, buffer, {
           contentType: mimeType,
+          cacheControl: "31536000, immutable",
           upsert: true
         });
       if (fallbackError) {

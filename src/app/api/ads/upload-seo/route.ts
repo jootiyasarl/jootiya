@@ -33,7 +33,7 @@ export async function POST(request: Request) {
             .from('ad-images')
             .upload(fileName, processedBuffer, {
                 contentType: 'image/webp',
-                cacheControl: '3600',
+                cacheControl: '31536000, immutable',
                 upsert: false
             });
 

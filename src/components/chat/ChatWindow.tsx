@@ -260,7 +260,10 @@ export function ChatWindow({ conversation, currentUser, onMessageSent, onBack }:
 
             const { error: uploadError } = await supabase.storage
                 .from('chat-attachments')
-                .upload(filePath, file);
+                .upload(filePath, file, {
+                    cacheControl: "31536000, immutable",
+                    upsert: false
+                });
 
             if (uploadError) throw uploadError;
 

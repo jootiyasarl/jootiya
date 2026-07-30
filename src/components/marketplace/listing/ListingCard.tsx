@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Heart, User, MapPin } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import { useEffect, useState } from "react";
+import { getOptimizedImageUrl } from "@/lib/storageUtils";
 
 function formatDistance(distanceKm?: number): string | null {
   if (distanceKm === undefined || distanceKm === null || isNaN(distanceKm)) return null;
@@ -94,18 +95,14 @@ export function ListingCard(props: ListingCardProps) {
                 <div className="flex h-full">
                   {images.map((src, idx) => (
                     <div key={`${id}-${idx}`} className="relative min-w-0 flex-[0_0_100%] h-full">
-                      <img
-                        src={src}
+                      <Image
+                        src={getOptimizedImageUrl(src, { width: 600, height: 600, quality: 75 })}
                         alt={title}
-                        className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        loading="lazy"
-                        decoding="async"
-                        onError={(e) => {
-                          const img = e.currentTarget as HTMLImageElement;
-                          if (img.src !== '/placeholder-ad.jpg') {
-                            img.src = '/placeholder-ad.jpg';
-                          }
-                        }}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                        quality={75}
+                        priority={idx === 0}
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     </div>
                   ))}

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
+import { getOptimizedImageUrl } from "@/lib/storageUtils";
 import { useRouter } from "next/navigation";
 import { 
   PlusCircle, 
@@ -294,8 +295,7 @@ export default function FlyonDashboard({ initialStats, initialAds, initialCount 
                   {/* Thumbnail */}
                   <div className="w-16 h-16 rounded-xl bg-zinc-100 dark:bg-zinc-800 overflow-hidden shrink-0">
                     {ad.image_urls?.[0] ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={ad.image_urls[0]} alt={ad.title} className="w-full h-full object-cover" />
+                      <img src={getOptimizedImageUrl(ad.image_urls[0], { width: 150, height: 150, quality: 75, format: "webp" })} alt={ad.title} className="w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-[9px] font-black uppercase text-zinc-400">NO IMG</div>
                     )}

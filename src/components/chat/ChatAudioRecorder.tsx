@@ -132,7 +132,7 @@ export function ChatAudioRecorder({ onSend, onCancel, initialX, initialY }: Chat
                 .from("chat-audios")
                 .upload(filePath, blobToUpload, {
                     contentType: finalMimeType,
-                    cacheControl: '3600',
+                    cacheControl: '31536000, immutable',
                     upsert: false
                 });
 

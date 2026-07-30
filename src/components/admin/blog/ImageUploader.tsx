@@ -83,7 +83,7 @@ export const ImageUploader = ({ onUploadComplete, currentImage, label = "Image d
       const { data, error } = await supabase.storage
         .from(bucketName)
         .upload(filePath, file, {
-          cacheControl: "3600",
+          cacheControl: "31536000, immutable",
           upsert: false
         });
 

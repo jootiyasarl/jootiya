@@ -171,7 +171,7 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
       const { data, error } = await supabase.storage
         .from(bucketName)
         .upload(filePath, compressedFile, {
-          cacheControl: "3600",
+          cacheControl: "31536000, immutable",
           upsert: false,
           contentType: "image/webp" // Explicitly set content type
         });
