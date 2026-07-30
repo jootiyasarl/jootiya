@@ -22,7 +22,7 @@ export interface Ad {
 
 export function AdCard({ ad, canBoost, onEdit, onDelete }: { ad: Ad; canBoost?: boolean; onEdit?: (ad: Ad) => void; onDelete?: (ad: Ad) => void }) {
   const primary = (Array.isArray(ad.images) && ad.images[0]) || (Array.isArray(ad.image_urls) && ad.image_urls[0]) || '/icon-512x512.png';
-  const thumbnailUrl = getOptimizedImageUrl(primary, { width: 400, height: 400, quality: 75 });
+  const thumbnailUrl = getOptimizedImageUrl(primary, { width: 500, quality: 75 });
   const blurUrl = getOptimizedImageUrl(primary, { width: 24, height: 24, quality: 10 });
 
   const [imgSrc, setImgSrc] = useState(thumbnailUrl);

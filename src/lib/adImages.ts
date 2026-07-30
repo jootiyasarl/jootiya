@@ -17,7 +17,7 @@ export async function compressImageFile(
   options: any = {},
 ): Promise<File> {
   const compressionOptions = {
-    maxSizeMB: options.maxSizeMB || 0.25, // 250KB max
+    maxSizeMB: options.maxSizeMB || 0.3, // 300KB max
     maxWidthOrHeight: options.maxWidth || 1200,
     useWebWorker: true,
     preserveExif: false, // Explicitly strip EXIF/GPS metadata for privacy

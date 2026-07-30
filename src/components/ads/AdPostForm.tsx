@@ -163,7 +163,7 @@ export default function AdPostForm({ mode = 'create', initialData, onSuccess }: 
             const tempAdId = initialData?.id || `temp-${Math.random().toString(36).substring(2, 7)}`;
             
             for (const file of images) {
-                const compressedFile = await compressImageFile(file, { maxSizeMB: 0.25, maxWidth: 1200 });
+                const compressedFile = await compressImageFile(file, { maxSizeMB: 0.3, maxWidth: 1200 });
                 const formData = new FormData();
                 formData.append('file', compressedFile);
                 formData.append('adId', tempAdId);

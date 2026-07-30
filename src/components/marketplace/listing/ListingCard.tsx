@@ -96,7 +96,7 @@ export function ListingCard(props: ListingCardProps) {
                   {images.map((src, idx) => (
                     <div key={`${id}-${idx}`} className="relative min-w-0 flex-[0_0_100%] h-full">
                       <Image
-                        src={getOptimizedImageUrl(src, { width: 600, height: 600, quality: 75 })}
+                        src={getOptimizedImageUrl(src, { width: 500, quality: 75 })}
                         alt={title}
                         fill
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
