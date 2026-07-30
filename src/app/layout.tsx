@@ -70,6 +70,14 @@ export default function RootLayout({
   return (
     <html lang="fr" dir="ltr" className="scroll-smooth bg-white" suppressHydrationWarning prefix="og: https://ogp.me/ns#">
       <head>
+        {/* Preconnect & DNS-Prefetch to eliminate latency on critical network chains */}
+        <link rel="preconnect" href="https://ssfcfvuosxxmvsdoktws.supabase.co" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://ssfcfvuosxxmvsdoktws.supabase.co" />
+        <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+
         <style dangerouslySetInnerHTML={{ __html: `
           :root { --primary: 25 95% 53%; --background: 0 0% 100%; --foreground: 222 47% 11%; }
           .dark { --background: 224 71% 4%; --foreground: 213 31% 91%; }
