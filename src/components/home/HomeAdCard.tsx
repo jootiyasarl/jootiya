@@ -14,8 +14,8 @@ export function HomeAdCard({ ad, priority = false }: { ad: PublicAdCardAd; prior
   const linkHref = `/ads/${ad.id}/${adSlug}`;
 
   return (
-    <article className="card card-border bg-white dark:bg-zinc-900 group overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 active:scale-[0.99]">
-      <figure className="relative aspect-[4/3] bg-zinc-100 dark:bg-zinc-800 overflow-hidden m-0">
+    <article className="card card-border bg-white dark:bg-zinc-900 group overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 active:scale-[0.99] h-full flex flex-col justify-between">
+      <figure className="relative aspect-[4/3] bg-zinc-100 dark:bg-zinc-800 overflow-hidden m-0 shrink-0">
         <Link href={linkHref} className="absolute inset-0 z-10" aria-label={ad.title}>
           <span className="sr-only">Voir l&apos;annonce</span>
         </Link>
@@ -60,24 +60,26 @@ export function HomeAdCard({ ad, priority = false }: { ad: PublicAdCardAd; prior
         )}
       </figure>
 
-      <div className="card-body p-4 flex flex-col gap-3">
-        <Link href={linkHref} className="block group/link">
-          <h3 className="card-title line-clamp-2 text-sm font-extrabold leading-snug text-zinc-900 dark:text-zinc-100 group-hover/link:text-orange-600 transition-colors">
-            {ad.title}
-          </h3>
-        </Link>
+      <div className="card-body p-4 flex flex-col justify-between flex-1 gap-3">
+        <div className="flex flex-col gap-2">
+          <Link href={linkHref} className="block group/link">
+            <h3 className="card-title line-clamp-2 min-h-[2.5rem] text-sm font-extrabold leading-snug text-zinc-900 dark:text-zinc-100 group-hover/link:text-orange-600 transition-colors">
+              {ad.title}
+            </h3>
+          </Link>
 
-        <p className="text-lg font-black tracking-tight text-orange-600 dark:text-orange-500">
-          {ad.price}
-        </p>
+          <p className="text-lg font-black tracking-tight text-orange-600 dark:text-orange-500">
+            {ad.price}
+          </p>
+        </div>
 
-        <div className="flex flex-col gap-1 text-xs font-semibold text-zinc-500 dark:text-zinc-400">
+        <div className="flex flex-col gap-1 text-xs font-semibold text-zinc-500 dark:text-zinc-400 mt-auto">
           <span className="inline-flex items-center gap-1.5">
-            <MapPin className="h-3.5 w-3.5 shrink-0" />
+            <MapPin className="h-3.5 w-3.5 shrink-0 text-zinc-400" />
             <span className="truncate">{ad.location}</span>
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <Clock3 className="h-3.5 w-3.5 shrink-0" />
+            <Clock3 className="h-3.5 w-3.5 shrink-0 text-zinc-400" />
             <span className="truncate">{ad.createdAt || "Aujourd'hui"}</span>
           </span>
         </div>

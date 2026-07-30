@@ -112,12 +112,12 @@ export function AdCard({ ad, variant = "default", footerSlot, href, priority = f
       </div>
 
       {/* Info Section */}
-      <div className="flex flex-grow flex-col px-2.5 pb-3 pt-3 sm:px-3.5 sm:pb-3.5">
+      <div className="flex flex-grow flex-col justify-between px-2.5 pb-3 pt-3 sm:px-3.5 sm:pb-3.5">
         <h3 className="line-clamp-2 min-h-[2.5rem] text-[13px] font-extrabold leading-snug text-zinc-900 transition-colors group-hover:text-orange-600 dark:text-zinc-100 sm:text-sm">
           {ad.title}
         </h3>
         
-        <div className="mt-2.5 flex flex-col gap-2">
+        <div className="mt-auto pt-2.5 flex flex-col gap-2">
           <p className="truncate text-base font-black tracking-tight text-orange-600 dark:text-orange-500 sm:text-lg">
             {ad.price}
           </p>

@@ -73,15 +73,15 @@ export function HomepageAdCard({
         ) : null}
       </div>
 
-      <CardContent>
+      <CardContent className="flex flex-col justify-between flex-1 p-3 pt-3">
         <div className="space-y-1">
-          <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-zinc-900">
+          <h3 className="line-clamp-2 min-h-[2.5rem] text-sm font-semibold leading-snug text-zinc-900">
             {title}
           </h3>
           <p className="text-sm font-semibold text-zinc-900">{priceLabel}</p>
         </div>
 
-        <div className="mt-2 flex items-center justify-between gap-2 text-[11px] text-zinc-500">
+        <div className="mt-2 flex items-center justify-between gap-2 text-[11px] text-zinc-500 mt-auto">
           <span className="truncate">
             {neighborhoodLabel ?? "Nearby"}
           </span>
