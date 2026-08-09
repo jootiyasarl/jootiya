@@ -423,7 +423,7 @@ export default function HomeClient({ initialParams, initialAds }: { initialParam
     <div dir="ltr" className="min-h-screen bg-white font-sans text-zinc-900 pb-12">
       
       {/* Header AdSense banner right under menu */}
-      <section className="main-container pt-2">
+      <section className="main-container">
         <HomeHeaderAd />
       </section>
 

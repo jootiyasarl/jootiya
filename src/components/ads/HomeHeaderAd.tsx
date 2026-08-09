@@ -17,7 +17,7 @@ export function HomeHeaderAd() {
   }, []);
 
   return (
-    <div className="w-full my-3 flex justify-center items-center overflow-hidden min-h-[90px]">
+    <div className="w-full flex justify-center items-center overflow-hidden">
       <Script
         id="adsense-init"
         strategy="afterInteractive"
