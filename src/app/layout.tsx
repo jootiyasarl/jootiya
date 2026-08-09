@@ -223,12 +223,6 @@ export default function RootLayout({
         </ThemeProvider>
 
         <Script
-          id="adsense-init"
-          strategy="lazyOnload"
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4945284817184050"
-          crossOrigin="anonymous"
-        />
-        <Script
           id="google-gdpr"
           strategy="lazyOnload"
           src="https://fundingchoicesmessages.google.com/i/pub-4945284817184050?ers=1"
