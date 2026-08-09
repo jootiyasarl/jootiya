@@ -3,7 +3,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { SellBanner } from "@/components/home/SellBanner";
-import { HomeHeaderAd } from "@/components/ads/HomeHeaderAd";
 import { TrustSection } from "@/components/home/TrustSection";
 import { type PublicAdCardAd } from "@/components/AdCard";
 import { HomeAdCard } from "@/components/home/HomeAdCard";
@@ -422,11 +421,6 @@ export default function HomeClient({ initialParams, initialAds }: { initialParam
   return (
     <div dir="ltr" className="min-h-screen bg-white font-sans text-zinc-900 pb-12">
       
-      {/* Header AdSense banner right under menu */}
-      <section className="main-container">
-        <HomeHeaderAd />
-      </section>
-
       {/* Sell banner — light, compact CTA strip */}
       <section className="main-container">
         <SellBanner />

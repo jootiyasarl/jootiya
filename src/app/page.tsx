@@ -1,4 +1,5 @@
 import React, { Suspense } from "react";
+import Script from "next/script";
 import { SessionSync } from "@/components/auth/SessionSync";
 import HomeClient, { type HomepageAdRow } from "@/components/home/HomeClient";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
@@ -80,9 +81,17 @@ export default async function Home({ searchParams }: { searchParams: Promise<Hom
   }
 
   return (
-    <Suspense fallback={<div className="min-h-screen bg-white animate-pulse" />}>
-      <SessionSync />
-      <HomeClient initialParams={resolvedParams} initialAds={initialAds} />
-    </Suspense>
+    <>
+      <Script
+        id="adsense-init"
+        strategy="lazyOnload"
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4945284817184050"
+        crossOrigin="anonymous"
+      />
+      <Suspense fallback={<div className="min-h-screen bg-white animate-pulse" />}>
+        <SessionSync />
+        <HomeClient initialParams={resolvedParams} initialAds={initialAds} />
+      </Suspense>
+    </>
   );
 }
