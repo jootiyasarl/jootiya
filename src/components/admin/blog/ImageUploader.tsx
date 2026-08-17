@@ -39,36 +39,40 @@ export const ImageUploader = ({ onUploadComplete, currentImage, label = "Image d
     }
 
     try {
-      setIsCompressing(true);
-      
-      const options = {
-        maxSizeMB: 0.2, // 200KB
-        maxWidthOrHeight: 1200,
-        useWebWorker: true,
-        fileType: "image/webp",
-      };
+      let fileToUpload = file;
 
-      console.log(`Original size: ${formatSize(file.size)}`);
-      
-      const compressedFile = await imageCompression(file, options);
-      
-      setCompressionStats({
-        original: formatSize(file.size),
-        compressed: formatSize(compressedFile.size)
-      });
+      if (file.size > 200 * 1024) {
+        setIsCompressing(true);
+        const options = {
+          maxSizeMB: 0.2, // 200KB
+          maxWidthOrHeight: 1200,
+          useWebWorker: true,
+          fileType: "image/webp",
+        };
 
-      // Local preview
-      const localPreview = URL.createObjectURL(compressedFile);
+        try {
+          fileToUpload = await imageCompression(file, options);
+          setCompressionStats({
+            original: formatSize(file.size),
+            compressed: formatSize(fileToUpload.size)
+          });
+        } catch (compErr) {
+          console.warn("Compression error, uploading original:", compErr);
+        } finally {
+          setIsCompressing(false);
+        }
+      }
+
+      const localPreview = URL.createObjectURL(fileToUpload);
       setPreview(localPreview);
-      setIsCompressing(false);
 
       // Start Upload
-      await uploadToSupabase(compressedFile);
+      await uploadToSupabase(fileToUpload);
 
     } catch (error) {
-      console.error("Compression error:", error);
-      toast.error("Erreur lors della compression de l'image");
+      console.error("Upload error:", error);
       setIsCompressing(false);
+      uploadToSupabase(file);
     }
   };
 

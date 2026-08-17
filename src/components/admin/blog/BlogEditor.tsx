@@ -148,32 +148,90 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
       },
     },
     onUpdate: ({ editor }) => {
-      // Outputs clean HTML for Database storage
-      onChange(editor.getHTML());
+      const html = editor.getHTML();
+      onChange(html);
+
+      // Auto-upload base64 images pasted into editor asynchronously to prevent editor freezing
+      if (html.includes("data:image/")) {
+        const div = document.createElement("div");
+        div.innerHTML = html;
+        const base64Imgs = Array.from(div.querySelectorAll('img[src^="data:image/"]'));
+        if (base64Imgs.length > 0) {
+          (async () => {
+            let hasChanged = false;
+            for (const img of base64Imgs) {
+              const src = img.getAttribute("src");
+              if (!src) continue;
+              try {
+                const res = await fetch(src);
+                const blob = await res.blob();
+                const fileExt = blob.type.split("/")[1] || "webp";
+                const fileName = `pasted-${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
+                const filePath = `blog/content/${fileName}`;
+
+                const { error } = await supabase.storage
+                  .from("ad-images")
+                  .upload(filePath, blob, {
+                    cacheControl: "31536000, immutable",
+                    upsert: false,
+                    contentType: blob.type || "image/webp"
+                  });
+
+                if (!error) {
+                  const { data: { publicUrl } } = supabase.storage
+                    .from("ad-images")
+                    .getPublicUrl(filePath);
+                  img.setAttribute("src", publicUrl);
+                  hasChanged = true;
+                }
+              } catch (e) {
+                console.error("Base64 upload error:", e);
+              }
+            }
+            if (hasChanged) {
+              const newHtml = div.innerHTML;
+              editor.commands.setContent(newHtml, { emitUpdate: false });
+              onChange(newHtml);
+              toast.success("Images collées converties et optimisées !");
+            }
+          })();
+        }
+      }
     },
   });
 
   const handleImageUpload = async (file: File) => {
     try {
       setIsUploading(true);
-      const options = {
-        maxSizeMB: 1, // Increased to 1MB to allow better quality for large images
-        maxWidthOrHeight: 1920, // Increased to Full HD
-        useWebWorker: true,
-        fileType: "image/webp",
-      };
+      let fileToUpload = file;
 
-      const compressedFile = await imageCompression(file, options);
-      const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.webp`;
+      // Skip CPU compression if file is already small (< 300KB)
+      if (file.size > 300 * 1024) {
+        try {
+          const options = {
+            maxSizeMB: 0.4,
+            maxWidthOrHeight: 1200,
+            useWebWorker: true,
+            fileType: "image/webp",
+          };
+          fileToUpload = await imageCompression(file, options);
+        } catch (compError) {
+          console.warn("Compression error, uploading original:", compError);
+          fileToUpload = file;
+        }
+      }
+
+      const fileExt = fileToUpload.type.split("/")[1] || "webp";
+      const fileName = `${Math.random().toString(36).substring(2)}-${Date.now()}.${fileExt}`;
       const filePath = `blog/content/${fileName}`;
 
       const bucketName = "ad-images";
       const { data, error } = await supabase.storage
         .from(bucketName)
-        .upload(filePath, compressedFile, {
+        .upload(filePath, fileToUpload, {
           cacheControl: "31536000, immutable",
           upsert: false,
-          contentType: "image/webp" // Explicitly set content type
+          contentType: fileToUpload.type || "image/webp"
         });
 
       if (error) throw error;
@@ -183,10 +241,10 @@ export const BlogEditor = ({ content, onChange }: BlogEditorProps) => {
         .getPublicUrl(filePath);
 
       editor?.chain().focus().setImage({ src: publicUrl }).run();
-      toast.success("Image optimisée et insérée !");
+      toast.success("Image insérée avec succès !");
     } catch (error: any) {
       console.error("Editor Image Upload Error:", error);
-      toast.error("Échec de l'optimisation ou du téléchargement de l'image");
+      toast.error("Échec du téléchargement de l'image");
     } finally {
       setIsUploading(false);
     }
