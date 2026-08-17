@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { Menu, ChevronDown, ArrowLeft, ExternalLink, User, CreditCard, LogOut, Settings, KeyRound } from "lucide-react";
+import { Menu, ChevronDown, ArrowLeft, ExternalLink, User, CreditCard, LogOut, Settings, KeyRound, ShieldCheck, Loader2 } from "lucide-react";
 import { DashboardSidebar } from "@/components/dashboard-sidebar";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/lib/supabaseClient";
+import { toast } from "sonner";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -22,7 +23,66 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = React.useState(false);
+  const [isLocked, setIsLocked] = React.useState(false);
   const router = useRouter();
+
+  const lockDashboard = async (reason?: string) => {
+    setIsLocked(true);
+    try {
+      await supabase.auth.signOut();
+    } catch (err) {}
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch (err) {}
+
+    document.cookie = "sb-access-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    document.cookie = "sb-refresh-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    document.cookie = "session_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    document.cookie = "user_role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+
+    if (typeof window !== 'undefined') {
+      localStorage.clear();
+      sessionStorage.clear();
+    }
+
+    if (reason) {
+      toast.error(reason);
+    }
+
+    window.location.href = "/login?next=/dashboard";
+  };
+
+  React.useEffect(() => {
+    async function checkSellerAuth() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session || !session.user) {
+        lockDashboard("Session non valide. Veuillez vous connecter.");
+      }
+    }
+
+    checkSellerAuth();
+
+    // Listen to real-time auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_OUT" || !session) {
+        lockDashboard("Déconnexion détectée. Verrouillage du tableau de bord...");
+      }
+    });
+
+    // Check session on window focus
+    const handleFocus = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        lockDashboard("Session expirée. Redirection...");
+      }
+    };
+    window.addEventListener("focus", handleFocus);
+
+    return () => {
+      subscription.unsubscribe();
+      window.removeEventListener("focus", handleFocus);
+    };
+  }, []);
 
   const handleBackToHome = () => {
     router.push("/");
@@ -45,40 +105,23 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   };
 
   const handleSignOut = async () => {
-    try {
-      try {
-        await supabase.auth.signOut();
-      } catch (err) {
-        console.error("Supabase signOut error", err);
-      }
-      
-      // Clear cookies by calling the logout API
-      try {
-        await fetch("/api/auth/logout", { method: "POST" });
-      } catch (err) {
-        console.error("Failed to clear auth session:", err);
-      }
-      
-      // Clear local storage and session storage just in case
-      if (typeof window !== 'undefined') {
-        localStorage.clear();
-        sessionStorage.clear();
-      }
-
-      document.cookie = "sb-access-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-      document.cookie = "sb-refresh-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-      document.cookie = "sb-access-token=; path=/; SameSite=Lax; max-age=0";
-      document.cookie = "session_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-      document.cookie = "user_role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-
-      router.replace("/login");
-      router.refresh();
-    } catch (error) {
-      console.error("Failed to sign out:", error);
-      // Fallback redirect even if API fails
-      router.replace("/login");
-    }
+    await lockDashboard("Déconnexion réussie");
   };
+
+  if (isLocked) {
+    return (
+      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-zinc-950 text-white p-6">
+        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-orange-500/10 border border-orange-500/20 mb-4 animate-pulse">
+          <ShieldCheck className="h-8 w-8 text-orange-500" />
+        </div>
+        <h2 className="text-xl font-black mb-2 text-zinc-100 uppercase tracking-wider">Espace Vendeur Verrouillé</h2>
+        <p className="text-xs text-zinc-400 mb-6 text-center max-w-sm font-medium">
+          La session est terminée ou expirée. Redirection vers la page de connexion...
+        </p>
+        <Loader2 className="h-6 w-6 animate-spin text-orange-500" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen bg-zinc-50/50">

@@ -2,45 +2,30 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Store, LogOut, LayoutDashboard, User } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Store, LogOut, LayoutDashboard, User, ShieldCheck, Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
-
-/**
- * Seller Layout
- *
- * A minimal client-side shell for every `/seller/*` page. It provides:
- * - A branded top navigation bar.
- * - A logout button that clears the session on the client and on the server.
- *
- * Note: route protection itself is handled by middleware.ts so this layout
- * never needs to perform an auth check itself.
- */
+import { toast } from "sonner";
 
 export default function SellerLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const [isLocked, setIsLocked] = useState(false);
   const router = useRouter();
 
-  const handleLogout = async () => {
+  const lockDashboard = async (reason?: string) => {
+    setIsLocked(true);
     try {
-      // 1. Sign out from the Supabase client.
       await supabase.auth.signOut();
-    } catch (err) {
-      console.error("Supabase signOut error", err);
-    }
-
+    } catch (err) {}
     try {
-      // 2. Ask the server to clear the HTTP-only cookies (session_token, user_role, etc.).
       await fetch("/api/auth/logout", { method: "POST" });
-    } catch (err) {
-      console.error("Failed to clear auth session:", err);
-    }
+    } catch (err) {}
 
     document.cookie = "sb-access-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     document.cookie = "sb-refresh-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-    document.cookie = "sb-access-token=; path=/; SameSite=Lax; max-age=0";
     document.cookie = "session_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     document.cookie = "user_role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
 
@@ -49,10 +34,63 @@ export default function SellerLayout({
       sessionStorage.clear();
     }
 
-    // 3. Redirect to the public login page and refresh the router cache.
-    router.replace("/login");
-    router.refresh();
+    if (reason) {
+      toast.error(reason);
+    }
+
+    window.location.href = "/login?next=/seller/dashboard";
   };
+
+  useEffect(() => {
+    async function checkSellerAuth() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session || !session.user) {
+        lockDashboard("Session non valide. Veuillez vous connecter.");
+      }
+    }
+
+    checkSellerAuth();
+
+    // Listen to real-time auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_OUT" || !session) {
+        lockDashboard("Déconnexion détectée. Verrouillage de l'espace vendeur...");
+      }
+    });
+
+    // Check session on tab focus
+    const handleFocus = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        lockDashboard("Session expirée. Redirection...");
+      }
+    };
+    window.addEventListener("focus", handleFocus);
+
+    return () => {
+      subscription.unsubscribe();
+      window.removeEventListener("focus", handleFocus);
+    };
+  }, []);
+
+  const handleLogout = async () => {
+    await lockDashboard("Déconnexion réussie");
+  };
+
+  if (isLocked) {
+    return (
+      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-zinc-900 text-white p-6">
+        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-orange-500/10 border border-orange-500/20 mb-4 animate-pulse">
+          <ShieldCheck className="h-8 w-8 text-orange-500" />
+        </div>
+        <h2 className="text-xl font-black mb-2 text-zinc-100 uppercase tracking-wider">Espace Vendeur Verrouillé</h2>
+        <p className="text-xs text-zinc-400 mb-6 text-center max-w-sm font-medium">
+          La session est terminée ou expirée. Redirection vers la page de connexion...
+        </p>
+        <Loader2 className="h-6 w-6 animate-spin text-orange-500" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-zinc-50">

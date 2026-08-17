@@ -25,22 +25,19 @@ export function middleware(request: NextRequest) {
   // A seller is considered authenticated only if both cookies exist and match.
   const isAuthenticatedSeller = Boolean(sessionToken && userRole === "seller");
 
-  // 2. Protect all seller routes.
-  if (pathname.startsWith("/seller")) {
-    if (!isAuthenticatedSeller) {
-      // Build the login URL and remember where the user wanted to go.
+  // 2. Protect all seller and dashboard routes.
+  if (pathname.startsWith("/seller") || pathname.startsWith("/dashboard")) {
+    if (!sessionToken && !request.cookies.get("sb-access-token")?.value) {
       const loginUrl = new URL("/login", request.url);
-      // Use a single, unified param name `next` for OAuth/login flows.
       loginUrl.searchParams.set("next", pathname);
       return NextResponse.redirect(loginUrl);
     }
-    // Seller is authenticated → allow the request.
     return NextResponse.next();
   }
 
   // 3. Protect all admin routes.
   if (pathname.startsWith("/admin")) {
-    if (!sessionToken) {
+    if (!sessionToken && !request.cookies.get("sb-access-token")?.value) {
       const loginUrl = new URL("/login", request.url);
       loginUrl.searchParams.set("next", pathname);
       return NextResponse.redirect(loginUrl);
@@ -65,5 +62,5 @@ export function middleware(request: NextRequest) {
 
 // Match only the routes we need to guard or redirect.
 export const config = {
-  matcher: ["/seller/:path*", "/admin/:path*", "/login", "/register"],
+  matcher: ["/seller/:path*", "/dashboard/:path*", "/admin/:path*", "/login", "/register"],
 };
