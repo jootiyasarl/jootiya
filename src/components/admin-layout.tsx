@@ -152,26 +152,82 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isLocked, setIsLocked] = useState(false);
   const [adminData, setAdminData] = useState<{ name: string; email: string } | null>(null);
   const router = useRouter();
 
-  useEffect(() => {
-    async function getAdminData() {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('full_name')
-          .eq('id', user.id)
-          .single();
-        
-        setAdminData({
-          name: profile?.full_name || 'Admin',
-          email: user.email || ''
-        });
-      }
+  const lockDashboard = async (reason?: string) => {
+    setIsLocked(true);
+    setIsLoggingOut(true);
+    try {
+      await supabase.auth.signOut();
+    } catch (err) {}
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch (err) {}
+    
+    document.cookie = "sb-access-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    document.cookie = "sb-refresh-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    document.cookie = "session_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    document.cookie = "user_role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+
+    if (typeof window !== 'undefined') {
+      localStorage.clear();
+      sessionStorage.clear();
     }
-    getAdminData();
+
+    if (reason) {
+      toast.error(reason);
+    }
+
+    window.location.href = "/login?next=/admin";
+  };
+
+  useEffect(() => {
+    async function checkAdminAuth() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session || !session.user) {
+        lockDashboard("Session non valide. Veuillez vous connecter.");
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('full_name, role, phone')
+        .eq('id', session.user.id)
+        .maybeSingle();
+      
+      const role = profile?.role?.toLowerCase();
+      const isAuthorized = role === "admin" || role === "super_admin" || session.user.email === 'jootiyasarl@gmail.com' || profile?.phone === '0618112646';
+
+      if (!isAuthorized) {
+        lockDashboard("Accès non autorisé à l'administration.");
+        return;
+      }
+
+      setAdminData({
+        name: profile?.full_name || 'Admin',
+        email: session.user.email || ''
+      });
+    }
+
+    checkAdminAuth();
+
+    // Listen to real-time auth state changes (Sign out, Token expiry, Session invalidation)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === "SIGNED_OUT" || !session) {
+        lockDashboard("Déconnexion détectée. Verrouillage du panneau d'administration...");
+      }
+    });
+
+    // Check session on window focus (e.g. if logged out in another tab)
+    const handleFocus = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        lockDashboard("Session expirée. Redirection...");
+      }
+    };
+    window.addEventListener("focus", handleFocus);
 
     // Force dark background on body AND html for admin pages to eliminate white footer
     const elements = [document.body, document.documentElement];
@@ -181,6 +237,8 @@ export function AdminLayout({ children }: AdminLayoutProps) {
     });
 
     return () => {
+      subscription.unsubscribe();
+      window.removeEventListener("focus", handleFocus);
       elements.forEach(el => {
         el.style.backgroundColor = "";
         el.style.colorScheme = "";
@@ -189,42 +247,23 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   }, [router]);
 
   const handleLogout = async () => {
-    try {
-      setIsLoggingOut(true);
-      
-      try {
-        await supabase.auth.signOut();
-      } catch (err) {
-        console.error("Supabase signOut error", err);
-      }
-
-      try {
-        await fetch("/api/auth/logout", { method: "POST" });
-      } catch (err) {
-        console.error("Failed to clear auth session:", err);
-      }
-      
-      // Clear all possible auth cookies manually to be safe
-      document.cookie = "sb-access-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-      document.cookie = "sb-refresh-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-      document.cookie = "session_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-      document.cookie = "user_role=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-
-      if (typeof window !== 'undefined') {
-        localStorage.clear();
-        sessionStorage.clear();
-      }
-      
-      toast.success("Déconnexion réussie");
-      window.location.href = "/";
-    } catch (error: any) {
-      console.error("Logout error:", error);
-      toast.error("Erreur lors de la déconnexion");
-      window.location.href = "/";
-    } finally {
-      setIsLoggingOut(false);
-    }
+    await lockDashboard("Déconnexion réussie");
   };
+
+  if (isLocked) {
+    return (
+      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-zinc-950 text-white p-6">
+        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-orange-500/10 border border-orange-500/20 mb-4 animate-pulse">
+          <ShieldCheck className="h-8 w-8 text-orange-500" />
+        </div>
+        <h2 className="text-xl font-black mb-2 text-zinc-100 uppercase tracking-wider">Panneau Admin Verrouillé</h2>
+        <p className="text-xs text-zinc-400 mb-6 text-center max-w-sm font-medium">
+          La session est terminée ou expirée. Redirection vers la page de connexion...
+        </p>
+        <Loader2 className="h-6 w-6 animate-spin text-orange-500" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen bg-zinc-950 text-zinc-50 overflow-x-hidden">

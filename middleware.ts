@@ -38,7 +38,17 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // 3. Redirect logged-in sellers away from the login/register pages.
+  // 3. Protect all admin routes.
+  if (pathname.startsWith("/admin")) {
+    if (!sessionToken) {
+      const loginUrl = new URL("/login", request.url);
+      loginUrl.searchParams.set("next", pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+    return NextResponse.next();
+  }
+
+  // 4. Redirect logged-in sellers away from the login/register pages.
   if (pathname === "/login" || pathname === "/register") {
     if (isAuthenticatedSeller) {
       const next = request.nextUrl.searchParams.get("next")
@@ -49,11 +59,11 @@ export function middleware(request: NextRequest) {
     }
   }
 
-  // 4. Let every other route pass through (public pages, API routes, etc.).
+  // 5. Let every other route pass through (public pages, API routes, etc.).
   return NextResponse.next();
 }
 
 // Match only the routes we need to guard or redirect.
 export const config = {
-  matcher: ["/seller/:path*", "/login", "/register"],
+  matcher: ["/seller/:path*", "/admin/:path*", "/login", "/register"],
 };
