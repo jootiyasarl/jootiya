@@ -26,8 +26,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [isLocked, setIsLocked] = React.useState(false);
   const router = useRouter();
 
-  const lockDashboard = async (reason?: string) => {
-    setIsLocked(true);
+  const performLogoutRedirect = async () => {
     try {
       await supabase.auth.signOut();
     } catch (err) {}
@@ -45,18 +44,15 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       sessionStorage.clear();
     }
 
-    if (reason) {
-      toast.error(reason);
-    }
-
-    window.location.href = "/login?next=/dashboard";
+    toast.success("Déconnexion réussie");
+    window.location.href = "/";
   };
 
   React.useEffect(() => {
     async function checkSellerAuth() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session || !session.user) {
-        lockDashboard("Session non valide. Veuillez vous connecter.");
+        window.location.href = "/login?next=/dashboard";
       }
     }
 
@@ -65,7 +61,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     // Listen to real-time auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_OUT" || !session) {
-        lockDashboard("Déconnexion détectée. Verrouillage du tableau de bord...");
+        performLogoutRedirect();
       }
     });
 
@@ -73,7 +69,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     const handleFocus = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        lockDashboard("Session expirée. Redirection...");
+        performLogoutRedirect();
       }
     };
     window.addEventListener("focus", handleFocus);
@@ -105,23 +101,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   };
 
   const handleSignOut = async () => {
-    await lockDashboard("Déconnexion réussie");
+    await performLogoutRedirect();
   };
-
-  if (isLocked) {
-    return (
-      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-zinc-950 text-white p-6">
-        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-orange-500/10 border border-orange-500/20 mb-4 animate-pulse">
-          <ShieldCheck className="h-8 w-8 text-orange-500" />
-        </div>
-        <h2 className="text-xl font-black mb-2 text-zinc-100 uppercase tracking-wider">Espace Vendeur Verrouillé</h2>
-        <p className="text-xs text-zinc-400 mb-6 text-center max-w-sm font-medium">
-          La session est terminée ou expirée. Redirection vers la page de connexion...
-        </p>
-        <Loader2 className="h-6 w-6 animate-spin text-orange-500" />
-      </div>
-    );
-  }
 
   return (
     <div className="flex min-h-screen bg-zinc-50/50">

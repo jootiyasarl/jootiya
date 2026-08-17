@@ -152,12 +152,10 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const [isLocked, setIsLocked] = useState(false);
   const [adminData, setAdminData] = useState<{ name: string; email: string } | null>(null);
   const router = useRouter();
 
-  const lockDashboard = async (reason?: string) => {
-    setIsLocked(true);
+  const performLogoutRedirect = async () => {
     setIsLoggingOut(true);
     try {
       await supabase.auth.signOut();
@@ -176,18 +174,15 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       sessionStorage.clear();
     }
 
-    if (reason) {
-      toast.error(reason);
-    }
-
-    window.location.href = "/login?next=/admin";
+    toast.success("Déconnexion réussie");
+    window.location.href = "/";
   };
 
   useEffect(() => {
     async function checkAdminAuth() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session || !session.user) {
-        lockDashboard("Session non valide. Veuillez vous connecter.");
+        window.location.href = "/login?next=/admin";
         return;
       }
 
@@ -201,7 +196,8 @@ export function AdminLayout({ children }: AdminLayoutProps) {
       const isAuthorized = role === "admin" || role === "super_admin" || session.user.email === 'jootiyasarl@gmail.com' || profile?.phone === '0618112646';
 
       if (!isAuthorized) {
-        lockDashboard("Accès non autorisé à l'administration.");
+        toast.error("Accès non autorisé à l'administration.");
+        window.location.href = "/";
         return;
       }
 
@@ -216,7 +212,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
     // Listen to real-time auth state changes (Sign out, Token expiry, Session invalidation)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === "SIGNED_OUT" || !session) {
-        lockDashboard("Déconnexion détectée. Verrouillage du panneau d'administration...");
+        performLogoutRedirect();
       }
     });
 
@@ -224,7 +220,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
     const handleFocus = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        lockDashboard("Session expirée. Redirection...");
+        performLogoutRedirect();
       }
     };
     window.addEventListener("focus", handleFocus);
@@ -247,23 +243,8 @@ export function AdminLayout({ children }: AdminLayoutProps) {
   }, [router]);
 
   const handleLogout = async () => {
-    await lockDashboard("Déconnexion réussie");
+    await performLogoutRedirect();
   };
-
-  if (isLocked) {
-    return (
-      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-zinc-950 text-white p-6">
-        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-orange-500/10 border border-orange-500/20 mb-4 animate-pulse">
-          <ShieldCheck className="h-8 w-8 text-orange-500" />
-        </div>
-        <h2 className="text-xl font-black mb-2 text-zinc-100 uppercase tracking-wider">Panneau Admin Verrouillé</h2>
-        <p className="text-xs text-zinc-400 mb-6 text-center max-w-sm font-medium">
-          La session est terminée ou expirée. Redirection vers la page de connexion...
-        </p>
-        <Loader2 className="h-6 w-6 animate-spin text-orange-500" />
-      </div>
-    );
-  }
 
   return (
     <div className="flex min-h-screen bg-zinc-950 text-zinc-50 overflow-x-hidden">
