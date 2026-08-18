@@ -78,6 +78,15 @@ async function loginAction(formData: FormData) {
 export default async function LoginPage({ searchParams }: LoginPageProps) {
   const { error, message, redirectTo, next } = await searchParams;
 
+  // If user is ALREADY logged in, redirect directly to the Homepage (/)
+  const supabase = createSupabaseServerClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user) {
+    redirect("/");
+  }
+
+  const targetRedirect = next || redirectTo || "/poste-annonce";
+
   return (
     <div className="min-h-screen w-full flex flex-col bg-gradient-to-br from-orange-50 via-white to-zinc-100 p-6 font-sans">
       {/* Logo Header */}
@@ -119,7 +128,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
         {/* Google Login — primary CTA for sellers */}
         <div className="space-y-4">
-          <GoogleLoginButton redirectTo={next || redirectTo || "/"} />
+          <GoogleLoginButton redirectTo={targetRedirect} />
         </div>
 
         <div className="relative">
@@ -135,7 +144,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
         {/* Email / Phone Login Form */}
         <form action={loginAction} className="space-y-5">
-          <input type="hidden" name="redirectTo" value={next || redirectTo || "/"} />
+          <input type="hidden" name="redirectTo" value={targetRedirect} />
 
           <div className="space-y-2 group">
             <Label htmlFor="identifier" className="label text-xs font-black uppercase tracking-widest text-zinc-500 ml-1 group-focus-within:text-orange-500 transition-colors">

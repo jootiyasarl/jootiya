@@ -45,14 +45,11 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // 4. Redirect logged-in sellers away from the login/register pages.
+  // 4. Redirect already logged-in users away from the login/register pages directly to the Homepage (/).
   if (pathname === "/login" || pathname === "/register") {
-    if (isAuthenticatedSeller) {
-      const next = request.nextUrl.searchParams.get("next")
-        || request.nextUrl.searchParams.get("redirectTo");
-      const hasSafeRedirect = next && next.startsWith("/") && !next.startsWith("//");
-      const dest = hasSafeRedirect ? next! : "/dashboard";
-      return NextResponse.redirect(new URL(dest, request.url));
+    const isLogged = Boolean(sessionToken || request.cookies.get("sb-access-token")?.value);
+    if (isLogged) {
+      return NextResponse.redirect(new URL("/", request.url));
     }
   }
 
