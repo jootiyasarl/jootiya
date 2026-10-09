@@ -4,8 +4,7 @@ import { SessionSync } from "@/components/auth/SessionSync";
 import HomeClient, { type HomepageAdRow } from "@/components/home/HomeClient";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+export const revalidate = 60;
 
 type HomeSearchParams = {
   lat?: string;

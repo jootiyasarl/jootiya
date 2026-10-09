@@ -44,6 +44,14 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     optimizeCss: true,
+    optimizePackageImports: [
+      'lucide-react',
+      'recharts',
+      'framer-motion',
+      '@tiptap/react',
+      'date-fns',
+      'embla-carousel-react',
+    ],
   },
   images: {
     formats: ['image/avif', 'image/webp'],
