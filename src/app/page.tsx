@@ -48,7 +48,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<Hom
         supabase
           .from("ads")
           .select(
-            "id, title, price, currency, city, neighborhood, created_at, is_featured, image_urls, category, status, latitude, longitude, seller_id, profiles: seller_id ( full_name, avatar_url )"
+            "id, title, price, currency, city, neighborhood, created_at, is_featured, image_urls, category, status, latitude, longitude, seller_id"
           )
           .or("status.eq.active,status.eq.approved,status.eq.pending")
           .eq("category", category)
