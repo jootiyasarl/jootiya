@@ -11,6 +11,8 @@ import {
   ArrowRight,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
+  Check,
   MapPin,
   Sparkles,
   Smartphone,
@@ -94,7 +96,7 @@ export type HomepageAdRow = {
 };
 
 const CATEGORIES_DATA = [
-  { id: "all", label: "Tout", icon: Sparkles, color: "text-orange-500", bg: "bg-orange-50 dark:bg-orange-950/40" },
+  { id: "all", label: "Tout explorer", icon: Sparkles, color: "text-orange-500", bg: "bg-orange-50 dark:bg-orange-950/40" },
   { id: "electronics", label: "Électronique", icon: Smartphone, color: "text-blue-500", bg: "bg-blue-50 dark:bg-blue-950/40" },
   { id: "vehicles", label: "Véhicules", icon: Car, color: "text-amber-500", bg: "bg-amber-50 dark:bg-amber-950/40" },
   { id: "home-furniture", label: "Maison", icon: Armchair, color: "text-emerald-500", bg: "bg-emerald-50 dark:bg-emerald-950/40" },
@@ -128,6 +130,13 @@ const POPULAR_SEARCH_TAGS = [
   "Golf 7",
   "Casablanca",
   "PlayStation 5",
+];
+
+const SORT_OPTIONS = [
+  { id: "recent", label: "Plus récents" },
+  { id: "price-asc", label: "Prix : Moins cher" },
+  { id: "price-desc", label: "Prix : Plus cher" },
+  { id: "featured", label: "À la une d'abord" },
 ];
 
 function mapHomepageAdRow(row: HomepageAdRow): HomepageAd {
@@ -207,7 +216,42 @@ export default function HomeClient({
   const [sortBy, setSortBy] = useState<"recent" | "price-asc" | "price-desc" | "featured">("recent");
   const [feedTab, setFeedTab] = useState<"all" | "featured" | "nearby">("all");
 
+  // Custom Dropdowns Open States
+  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
+  const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
+  const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
+
+  const categoryDropdownRef = useRef<HTMLDivElement>(null);
+  const cityDropdownRef = useRef<HTMLDivElement>(null);
+  const sortDropdownRef = useRef<HTMLDivElement>(null);
   const listingsSectionRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        categoryDropdownRef.current &&
+        !categoryDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsCategoryDropdownOpen(false);
+      }
+      if (
+        cityDropdownRef.current &&
+        !cityDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsCityDropdownOpen(false);
+      }
+      if (
+        sortDropdownRef.current &&
+        !sortDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsSortDropdownOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const latParam = typeof initialParams.lat === "string" ? parseFloat(initialParams.lat) : null;
   const lngParam = typeof initialParams.lng === "string" ? parseFloat(initialParams.lng) : null;
@@ -449,18 +493,26 @@ export default function HomeClient({
     selectedCategory !== "all" ||
     feedTab !== "all";
 
+  const selectedCategoryObj = useMemo(() => {
+    return CATEGORIES_DATA.find((c) => c.id === selectedCategory) || CATEGORIES_DATA[0];
+  }, [selectedCategory]);
+
+  const currentSortObj = useMemo(() => {
+    return SORT_OPTIONS.find((s) => s.id === sortBy) || SORT_OPTIONS[0];
+  }, [sortBy]);
+
   return (
     <div dir="ltr" className="min-h-screen bg-[#F8FAFC] dark:bg-[#07090E] font-sans text-zinc-900 dark:text-zinc-100">
       
       {/* =========================================================================
-          1. STATE-OF-THE-ART HERO SECTION (Precision Responsive: Mobile + Desktop)
+          1. HERO SECTION WITH LUXURY AIRBNB-STYLE CUSTOM DROPDOWNS (No Native Selects)
          ========================================================================= */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-orange-500/10 via-[#F8FAFC] to-[#F8FAFC] dark:from-orange-500/5 dark:via-[#07090E] dark:to-[#07090E] pt-4 sm:pt-10 pb-6 sm:pb-12 border-b border-zinc-200/60 dark:border-zinc-800/60">
+      <section className="relative overflow-visible bg-gradient-to-b from-orange-500/10 via-[#F8FAFC] to-[#F8FAFC] dark:from-orange-500/5 dark:via-[#07090E] dark:to-[#07090E] pt-4 sm:pt-10 pb-6 sm:pb-12 border-b border-zinc-200/60 dark:border-zinc-800/60">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[300px] bg-gradient-to-tr from-orange-500/15 via-amber-400/10 to-transparent rounded-full blur-3xl pointer-events-none" />
 
-        <div className="relative w-full max-w-5xl mx-auto px-3 sm:px-6 text-center">
+        <div className="relative w-full max-w-5xl mx-auto px-3 sm:px-6 text-center overflow-visible">
           {/* Moroccan Flagship Pill Badge */}
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white dark:bg-zinc-900 border border-orange-500/20 shadow-sm text-[11px] sm:text-xs font-black tracking-wide text-zinc-800 dark:text-zinc-200 mb-3 sm:mb-4">
+          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white dark:bg-zinc-900 border border-orange-500/20 shadow-sm text-[11px] sm:text-xs font-black tracking-wide text-zinc-800 dark:text-zinc-200 mb-3 sm:mb-4">
             <span>🇲🇦</span>
             <span className="bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent font-extrabold uppercase">
               Le N°1 des Petites Annonces au Maroc
@@ -481,73 +533,165 @@ export default function HomeClient({
           </p>
 
           {/* =========================================================================
-              RESPONSIVE SEARCH CAPSULE: Fits cleanly on mobile and desktop
+              AIRBNB-STYLE CUSTOM SEARCH CAPSULE (100% Custom Dropdowns, Zero Ugly Borders)
              ========================================================================= */}
           <form
             onSubmit={handleHeroSearchSubmit}
-            className="mx-auto max-w-3xl p-1.5 sm:p-2 rounded-2xl sm:rounded-[2rem] bg-white dark:bg-zinc-900 border border-zinc-200/90 dark:border-zinc-800 shadow-md sm:shadow-[0_12px_36px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_36px_rgba(0,0,0,0.4)] backdrop-blur-xl flex flex-col sm:flex-row items-center gap-1.5 sm:gap-2"
+            className="mx-auto max-w-4xl p-2 rounded-3xl md:rounded-full bg-white dark:bg-zinc-900 border border-zinc-200/90 dark:border-zinc-800 shadow-lg md:shadow-[0_12px_40px_rgba(0,0,0,0.07)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.5)] backdrop-blur-xl flex flex-col md:flex-row items-center gap-2 relative z-30"
           >
-            {/* Input: Keyword */}
-            <div className="relative flex-1 w-full flex items-center px-3 py-1.5 sm:py-2">
-              <Search className="h-4 w-4 text-orange-500 shrink-0 mr-2.5" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Que recherchez-vous ? (iPhone, Dacia...)"
-                className="w-full bg-transparent text-xs sm:text-sm font-bold text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none"
-              />
+            {/* 1. Keyword Search Input Segment */}
+            <div className="relative flex-1 w-full flex items-center px-4 py-2 hover:bg-zinc-50 dark:hover:bg-zinc-800/40 rounded-full transition-colors">
+              <Search className="h-4 w-4 text-orange-500 shrink-0 mr-3" />
+              <div className="flex flex-col text-left w-full min-w-0">
+                <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400">Recherche</span>
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Que cherchez-vous ? (iPhone, Dacia...)"
+                  className="w-full bg-transparent text-xs sm:text-sm font-bold text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none border-0 p-0 m-0"
+                />
+              </div>
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery("")}
+                  className="p-1 rounded-full text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              )}
             </div>
 
-            <div className="hidden sm:block w-px h-8 bg-zinc-200 dark:bg-zinc-800" />
+            <div className="hidden md:block w-px h-8 bg-zinc-200 dark:bg-zinc-800" />
 
-            {/* Sub-row for City + Category + Button on mobile */}
-            <div className="w-full sm:w-auto flex items-center gap-1.5 sm:gap-2">
-              {/* Select: Category */}
-              <div className="relative flex-1 sm:w-36 flex items-center px-2 py-1.5 bg-zinc-50 sm:bg-transparent dark:bg-zinc-800/40 sm:dark:bg-transparent rounded-xl sm:rounded-none">
-                <select
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="w-full bg-transparent text-[11px] sm:text-xs font-bold text-zinc-800 dark:text-zinc-200 focus:outline-none cursor-pointer"
-                >
-                  {CATEGORIES_DATA.map((c) => (
-                    <option key={c.id} value={c.id} className="dark:bg-zinc-900">
-                      {c.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="hidden sm:block w-px h-8 bg-zinc-200 dark:bg-zinc-800" />
-
-              {/* Select: City */}
-              <div className="relative flex-1 sm:w-36 flex items-center px-2 py-1.5 bg-zinc-50 sm:bg-transparent dark:bg-zinc-800/40 sm:dark:bg-transparent rounded-xl sm:rounded-none">
-                <select
-                  value={selectedCity}
-                  onChange={(e) => setSelectedCity(e.target.value)}
-                  className="w-full bg-transparent text-[11px] sm:text-xs font-bold text-zinc-800 dark:text-zinc-200 focus:outline-none cursor-pointer"
-                >
-                  {MOROCCAN_CITIES.map((city) => (
-                    <option key={city} value={city} className="dark:bg-zinc-900">
-                      {city}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Submit Button */}
+            {/* 2. Custom Category Popover Dropdown (No Native Select!) */}
+            <div ref={categoryDropdownRef} className="relative w-full md:w-48">
               <button
-                type="submit"
-                className="px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-black text-xs uppercase tracking-wider shadow-md shadow-orange-500/20 transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-1.5 shrink-0"
+                type="button"
+                onClick={() => {
+                  setIsCategoryDropdownOpen(!isCategoryDropdownOpen);
+                  setIsCityDropdownOpen(false);
+                }}
+                className="w-full flex items-center justify-between px-4 py-2 hover:bg-zinc-50 dark:hover:bg-zinc-800/40 rounded-full transition-colors text-left"
               >
-                <Search className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">Trouver</span>
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <Sparkles className="h-4 w-4 text-orange-500 shrink-0" />
+                  <div className="flex flex-col min-w-0">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400">Catégorie</span>
+                    <span className="text-xs sm:text-sm font-bold text-zinc-900 dark:text-white truncate">
+                      {selectedCategoryObj.label}
+                    </span>
+                  </div>
+                </div>
+                <ChevronDown className={`h-3.5 w-3.5 text-zinc-400 shrink-0 transition-transform ${isCategoryDropdownOpen ? "rotate-180 text-orange-500" : ""}`} />
               </button>
+
+              {/* Category Popover Menu */}
+              {isCategoryDropdownOpen && (
+                <div className="absolute top-full left-0 md:left-1/2 md:-translate-x-1/2 mt-2 w-64 max-h-80 overflow-y-auto rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 scrollbar-hide text-left">
+                  <div className="px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-zinc-400 border-b border-zinc-100 dark:border-zinc-800 mb-1">
+                    Sélectionner une catégorie
+                  </div>
+                  {CATEGORIES_DATA.map((c) => {
+                    const isSelected = selectedCategory === c.id;
+                    const Icon = c.icon;
+                    return (
+                      <button
+                        key={c.id}
+                        type="button"
+                        onClick={() => {
+                          setSelectedCategory(c.id);
+                          setIsCategoryDropdownOpen(false);
+                        }}
+                        className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                          isSelected
+                            ? "bg-orange-500 text-white shadow-sm"
+                            : "hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <Icon className={`h-4 w-4 ${isSelected ? "text-white" : c.color}`} />
+                          <span>{c.label}</span>
+                        </div>
+                        {isSelected && <Check className="h-4 w-4 text-white" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
+
+            <div className="hidden md:block w-px h-8 bg-zinc-200 dark:bg-zinc-800" />
+
+            {/* 3. Custom City Popover Dropdown (No Native Select!) */}
+            <div ref={cityDropdownRef} className="relative w-full md:w-44">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsCityDropdownOpen(!isCityDropdownOpen);
+                  setIsCategoryDropdownOpen(false);
+                }}
+                className="w-full flex items-center justify-between px-4 py-2 hover:bg-zinc-50 dark:hover:bg-zinc-800/40 rounded-full transition-colors text-left"
+              >
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <MapPin className="h-4 w-4 text-orange-500 shrink-0" />
+                  <div className="flex flex-col min-w-0">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400">Ville</span>
+                    <span className="text-xs sm:text-sm font-bold text-zinc-900 dark:text-white truncate">
+                      {selectedCity}
+                    </span>
+                  </div>
+                </div>
+                <ChevronDown className={`h-3.5 w-3.5 text-zinc-400 shrink-0 transition-transform ${isCityDropdownOpen ? "rotate-180 text-orange-500" : ""}`} />
+              </button>
+
+              {/* City Popover Menu */}
+              {isCityDropdownOpen && (
+                <div className="absolute top-full left-0 md:right-0 md:left-auto mt-2 w-60 max-h-80 overflow-y-auto rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 scrollbar-hide text-left">
+                  <div className="px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-zinc-400 border-b border-zinc-100 dark:border-zinc-800 mb-1">
+                    Villes marocaines
+                  </div>
+                  {MOROCCAN_CITIES.map((city) => {
+                    const isSelected = selectedCity === city;
+                    return (
+                      <button
+                        key={city}
+                        type="button"
+                        onClick={() => {
+                          setSelectedCity(city);
+                          setIsCityDropdownOpen(false);
+                        }}
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all ${
+                          isSelected
+                            ? "bg-orange-500 text-white shadow-sm"
+                            : "hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <MapPin className={`h-3.5 w-3.5 ${isSelected ? "text-white" : "text-zinc-400"}`} />
+                          <span>{city}</span>
+                        </div>
+                        {isSelected && <Check className="h-4 w-4 text-white" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* 4. Search Submit Button */}
+            <button
+              type="submit"
+              className="w-full md:w-auto px-7 py-3.5 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-black text-xs sm:text-sm uppercase tracking-wider shadow-lg shadow-orange-500/25 transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2 shrink-0 cursor-pointer whitespace-nowrap"
+            >
+              <Search className="h-4 w-4" />
+              <span>Trouver</span>
+            </button>
           </form>
 
           {/* Popular Trending Tags */}
-          <div className="flex flex-wrap items-center justify-center gap-1.5 mt-3 sm:mt-4 text-[11px]">
+          <div className="flex flex-wrap items-center justify-center gap-1.5 mt-4 text-[11px]">
             <span className="font-bold text-zinc-400 flex items-center gap-1">
               <TrendingUp className="h-3 w-3 text-orange-500" /> Populaire :
             </span>
@@ -566,7 +710,7 @@ export default function HomeClient({
             ))}
           </div>
 
-          {/* Trust Metrics: 2 columns on mobile, 4 on desktop */}
+          {/* Trust Metrics Strip */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 max-w-3xl mx-auto mt-6 sm:mt-8">
             <div className="flex items-center gap-2 p-2.5 rounded-xl bg-white/70 dark:bg-zinc-900/60 border border-zinc-200/60 dark:border-zinc-800/60 text-left">
               <div className="h-8 w-8 rounded-lg bg-orange-500/10 text-orange-600 dark:text-orange-400 flex items-center justify-center shrink-0">
@@ -612,7 +756,7 @@ export default function HomeClient({
       </section>
 
       {/* =========================================================================
-          2. HORIZONTAL CATEGORIES CAROUSEL: Zero vertical clutter, instant swipe
+          2. HORIZONTAL CATEGORIES BAR (Swipeable & Native feel)
          ========================================================================= */}
       <section className="w-full max-w-5xl mx-auto px-3 sm:px-6 pt-5 pb-3">
         <div className="flex items-center justify-between mb-3">
@@ -628,7 +772,7 @@ export default function HomeClient({
           </Link>
         </div>
 
-        {/* Smooth horizontal scroll on mobile, responsive row on desktop */}
+        {/* Smooth horizontal scroll */}
         <div className="flex items-center gap-2 overflow-x-auto pb-2 pt-1 scrollbar-hide no-scrollbar -mx-3 px-3 sm:mx-0 sm:px-0">
           {CATEGORIES_DATA.map((cat) => {
             const Icon = cat.icon;
@@ -642,7 +786,7 @@ export default function HomeClient({
                   setSelectedCategory(cat.id);
                   listingsSectionRef.current?.scrollIntoView({ behavior: "smooth" });
                 }}
-                className={`group flex items-center gap-2 whitespace-nowrap rounded-xl sm:rounded-2xl px-3.5 py-2 text-xs font-bold transition-all shrink-0 ${
+                className={`group flex items-center gap-2 whitespace-nowrap rounded-xl sm:rounded-2xl px-3.5 py-2 text-xs font-bold transition-all shrink-0 cursor-pointer ${
                   isSelected
                     ? "bg-orange-500 text-white shadow-md shadow-orange-500/25 scale-[1.02]"
                     : "bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:border-orange-500/40 hover:text-orange-600"
@@ -686,7 +830,7 @@ export default function HomeClient({
                 <button
                   type="button"
                   onClick={scrollPrev}
-                  className="w-8 h-8 rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm flex items-center justify-center text-zinc-700 dark:text-zinc-200 hover:text-orange-600 transition-all active:scale-95"
+                  className="w-8 h-8 rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm flex items-center justify-center text-zinc-700 dark:text-zinc-200 hover:text-orange-600 transition-all active:scale-95 cursor-pointer"
                   aria-label="Précédent"
                 >
                   <ChevronLeft className="w-4 h-4" />
@@ -694,7 +838,7 @@ export default function HomeClient({
                 <button
                   type="button"
                   onClick={scrollNext}
-                  className="w-8 h-8 rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm flex items-center justify-center text-zinc-700 dark:text-zinc-200 hover:text-orange-600 transition-all active:scale-95"
+                  className="w-8 h-8 rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm flex items-center justify-center text-zinc-700 dark:text-zinc-200 hover:text-orange-600 transition-all active:scale-95 cursor-pointer"
                   aria-label="Suivant"
                 >
                   <ChevronRight className="w-4 h-4" />
@@ -741,7 +885,7 @@ export default function HomeClient({
             <button
               type="button"
               onClick={() => setFeedTab("all")}
-              className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all whitespace-nowrap ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all whitespace-nowrap cursor-pointer ${
                 feedTab === "all"
                   ? "bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-sm"
                   : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200"
@@ -753,7 +897,7 @@ export default function HomeClient({
             <button
               type="button"
               onClick={() => setFeedTab("featured")}
-              className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all whitespace-nowrap ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all whitespace-nowrap cursor-pointer ${
                 feedTab === "featured"
                   ? "bg-orange-500 text-white shadow-sm"
                   : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200"
@@ -765,7 +909,7 @@ export default function HomeClient({
             <button
               type="button"
               onClick={() => setFeedTab("nearby")}
-              className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all whitespace-nowrap ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all whitespace-nowrap cursor-pointer ${
                 feedTab === "nearby"
                   ? "bg-emerald-600 text-white shadow-sm"
                   : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200"
@@ -775,25 +919,50 @@ export default function HomeClient({
             </button>
           </div>
 
-          {/* Right Toolbar: Counter and Sort Select */}
+          {/* Right Toolbar: Counter and Custom Sort Dropdown */}
           <div className="flex items-center justify-between sm:justify-end gap-2.5">
             <span className="text-[11px] font-bold text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-2.5 py-1 rounded-lg flex items-center gap-1 shrink-0">
               <CheckCircle2 className="h-3 w-3 text-orange-500" />
               {filteredAds.length} annonce{filteredAds.length !== 1 ? "s" : ""}
             </span>
 
-            <div className="flex items-center gap-1.5">
-              <SlidersHorizontal className="h-3.5 w-3.5 text-zinc-400 hidden sm:block" />
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
-                className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/60 px-2.5 py-1 text-[11px] sm:text-xs font-bold text-zinc-800 dark:text-zinc-200 focus:border-orange-500 focus:outline-none cursor-pointer"
+            {/* Custom Sort Dropdown (No Native Select!) */}
+            <div ref={sortDropdownRef} className="relative">
+              <button
+                type="button"
+                onClick={() => setIsSortDropdownOpen(!isSortDropdownOpen)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-[11px] sm:text-xs font-bold text-zinc-800 dark:text-zinc-200 transition-colors cursor-pointer"
               >
-                <option value="recent">Plus récents</option>
-                <option value="price-asc">Prix : Moins cher</option>
-                <option value="price-desc">Prix : Plus cher</option>
-                <option value="featured">À la une d&apos;abord</option>
-              </select>
+                <SlidersHorizontal className="h-3 w-3 text-zinc-400" />
+                <span>{currentSortObj.label}</span>
+                <ChevronDown className={`h-3 w-3 text-zinc-400 transition-transform ${isSortDropdownOpen ? "rotate-180 text-orange-500" : ""}`} />
+              </button>
+
+              {isSortDropdownOpen && (
+                <div className="absolute right-0 top-full mt-1.5 w-48 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl p-1.5 z-40 animate-in fade-in zoom-in-95 text-left">
+                  {SORT_OPTIONS.map((opt) => {
+                    const isSelected = sortBy === opt.id;
+                    return (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        onClick={() => {
+                          setSortBy(opt.id as any);
+                          setIsSortDropdownOpen(false);
+                        }}
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-bold transition-colors ${
+                          isSelected
+                            ? "bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400"
+                            : "hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200"
+                        }`}
+                      >
+                        <span>{opt.label}</span>
+                        {isSelected && <Check className="h-3.5 w-3.5 text-orange-600" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -804,7 +973,7 @@ export default function HomeClient({
             <span className="font-bold text-zinc-400">Filtres :</span>
             {selectedCategory !== "all" && (
               <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-orange-100 dark:bg-orange-950/50 text-orange-700 dark:text-orange-300 font-bold">
-                {selectedCategory}
+                {selectedCategoryObj.label}
                 <X className="h-3 w-3 cursor-pointer hover:scale-110" onClick={() => setSelectedCategory("all")} />
               </span>
             )}
@@ -823,7 +992,7 @@ export default function HomeClient({
             <button
               type="button"
               onClick={handleClearFilters}
-              className="text-[11px] font-bold text-red-500 hover:text-red-700 underline ml-1"
+              className="text-[11px] font-bold text-red-500 hover:text-red-700 underline ml-1 cursor-pointer"
             >
               Effacer
             </button>
@@ -855,7 +1024,7 @@ export default function HomeClient({
       </section>
 
       {/* =========================================================================
-          5. MOROCCAN CITIES EXPLORER: 2 columns on mobile, 6 on desktop
+          5. MOROCCAN CITIES EXPLORER
          ========================================================================= */}
       <section className="w-full max-w-5xl mx-auto px-3 sm:px-6 py-6 sm:py-10">
         <div className="rounded-2xl sm:rounded-3xl bg-white dark:bg-zinc-900 p-4 sm:p-7 border border-zinc-200/80 dark:border-zinc-800 shadow-sm">
@@ -894,7 +1063,7 @@ export default function HomeClient({
                   setSelectedCity(city.name);
                   listingsSectionRef.current?.scrollIntoView({ behavior: "smooth" });
                 }}
-                className="group p-2.5 sm:p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/70 dark:border-zinc-700/70 hover:border-orange-500 hover:bg-orange-500/5 transition-all text-left flex flex-col justify-between"
+                className="group p-2.5 sm:p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/70 dark:border-zinc-700/70 hover:border-orange-500 hover:bg-orange-500/5 transition-all text-left flex flex-col justify-between cursor-pointer"
               >
                 <div className="text-xl mb-1 group-hover:scale-110 transition-transform">
                   {city.icon}
