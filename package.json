@@ -20,6 +20,7 @@
     "@radix-ui/react-switch": "^1.2.6",
     "@supabase/supabase-js": "^2.89.0",
     "@tailwindcss/typography": "^0.5.19",
+    "@tanstack/react-virtual": "^3.14.22",
     "@tiptap/core": "3.20.1",
     "@tiptap/extension-bubble-menu": "3.20.1",
     "@tiptap/extension-color": "3.20.1",

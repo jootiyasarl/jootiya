@@ -1,29 +1,39 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { SellBanner } from "@/components/home/SellBanner";
 import { TrustSection } from "@/components/home/TrustSection";
 import { type PublicAdCardAd } from "@/components/AdCard";
 import { HomeAdCard } from "@/components/home/HomeAdCard";
-import { Package, ArrowRight, WifiOff, ChevronLeft, ChevronRight, PlusCircle, Clock3, MapPin, Sparkles } from "lucide-react";
+import { VirtualizedAdGrid } from "@/components/ads/VirtualizedAdGrid";
+import {
+  Package,
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
+  PlusCircle,
+  Clock3,
+  MapPin,
+  Sparkles,
+  Smartphone,
+  Car,
+  Armchair,
+  Shirt,
+  Hammer,
+  Gamepad2,
+  PawPrint,
+  BookOpen,
+  Tag,
+  Search,
+  SlidersHorizontal,
+  Flame,
+  CheckCircle2,
+} from "lucide-react";
 import { getCachedAds, saveAds } from "@/lib/pwa/jootiya-db";
 import { supabase } from "@/lib/supabaseClient";
 import { fetchNearbyAds } from "@/lib/nearbyAds";
 import useEmblaCarousel from "embla-carousel-react";
-
-const CATEGORY_LABELS: { [key: string]: string } = {
-  "electronics": "Électronique",
-  "home-furniture": "Maison & Ameublement",
-  "vehicles": "Véhicules & Transport",
-  "fashion": "Mode & Chaussures",
-  "tools-equipment": "Outils & Équipement",
-  "hobbies": "Loisirs & Divertissement",
-  "animals": "Animaux",
-  "books": "Livres & Études",
-  "used-clearance": "Occasions",
-  "other": "Autres",
-};
 
 export type HomepageAd = {
   id: string;
@@ -64,20 +74,38 @@ export type HomepageAdRow = {
   longitude?: number | null;
   distanceKm?: number;
   dist_meters?: number;
-  profiles?: {
-    full_name?: string | null;
-    username?: string | null;
-    avatar_url?: string | null;
-  } | Array<{
-    full_name?: string | null;
-    username?: string | null;
-    avatar_url?: string | null;
-  }>;
+  profiles?:
+    | {
+        full_name?: string | null;
+        username?: string | null;
+        avatar_url?: string | null;
+      }
+    | Array<{
+        full_name?: string | null;
+        username?: string | null;
+        avatar_url?: string | null;
+      }>;
   sellerName?: string;
   seller_name?: string;
   sellerAvatar?: string;
   seller_avatar?: string;
 };
+
+const CATEGORY_TABS = [
+  { id: "all", label: "Toutes les annonces", icon: Sparkles },
+  { id: "featured", label: "À la une", icon: Flame },
+  { id: "nearby", label: "Proches de moi", icon: MapPin },
+  { id: "electronics", label: "Électronique", icon: Smartphone },
+  { id: "vehicles", label: "Véhicules", icon: Car },
+  { id: "home-furniture", label: "Maison & Meubles", icon: Armchair },
+  { id: "fashion", label: "Mode & Vêtements", icon: Shirt },
+  { id: "tools-equipment", label: "Outils & Bricolage", icon: Hammer },
+  { id: "hobbies", label: "Loisirs & Sport", icon: Gamepad2 },
+  { id: "animals", label: "Animaux", icon: PawPrint },
+  { id: "books", label: "Livres & Études", icon: BookOpen },
+  { id: "used-clearance", label: "Occasions", icon: Tag },
+  { id: "other", label: "Autres", icon: Package },
+];
 
 function mapHomepageAdRow(row: HomepageAdRow): HomepageAd {
   const locationParts: string[] = [];
@@ -89,28 +117,32 @@ function mapHomepageAdRow(row: HomepageAdRow): HomepageAd {
   if (row.created_at) {
     const d = new Date(row.created_at);
     if (!Number.isNaN(d.getTime())) {
-      createdAtLabel = d.toLocaleDateString("fr-FR", { month: 'short', day: 'numeric' }) + " à " + d.toLocaleTimeString("fr-FR", { hour: '2-digit', minute: '2-digit' });
+      createdAtLabel =
+        d.toLocaleDateString("fr-FR", { month: "short", day: "numeric" }) +
+        " à " +
+        d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
     }
   }
 
   const images = row.images || row.image_urls;
-  const primaryImageUrl = Array.isArray(images) && images.length > 0 ? (images[0] as string) : undefined;
-  const currency = typeof row.currency === 'string' ? row.currency.trim() : "MAD";
+  const primaryImageUrl =
+    Array.isArray(images) && images.length > 0 ? (images[0] as string) : undefined;
+  const currency = typeof row.currency === "string" ? row.currency.trim() : "MAD";
   const priceLabel = row.price != null ? `${row.price} ${currency || "MAD"}` : "—";
 
   const profile = row.profiles;
   const profileObj = Array.isArray(profile) ? profile[0] : profile;
 
   const sellerName =
-    (typeof row.sellerName === 'string' ? row.sellerName : undefined) ||
-    (typeof row.seller_name === 'string' ? row.seller_name : undefined) ||
+    (typeof row.sellerName === "string" ? row.sellerName : undefined) ||
+    (typeof row.seller_name === "string" ? row.seller_name : undefined) ||
     profileObj?.full_name ||
     profileObj?.username ||
     "Utilisateur";
 
   const sellerAvatar =
-    (typeof row.sellerAvatar === 'string' ? row.sellerAvatar : undefined) ||
-    (typeof row.seller_avatar === 'string' ? row.seller_avatar : undefined) ||
+    (typeof row.sellerAvatar === "string" ? row.sellerAvatar : undefined) ||
+    (typeof row.seller_avatar === "string" ? row.seller_avatar : undefined) ||
     profileObj?.avatar_url;
 
   return {
@@ -125,59 +157,74 @@ function mapHomepageAdRow(row: HomepageAdRow): HomepageAd {
     categorySlug: row.category || undefined,
     latitude: row.latitude || 0,
     longitude: row.longitude || 0,
-    distanceKm: row.distanceKm ?? (row.dist_meters != null ? row.dist_meters / 1000 : undefined),
+    distanceKm:
+      row.distanceKm ?? (row.dist_meters != null ? row.dist_meters / 1000 : undefined),
     sellerName,
     sellerAvatar: sellerAvatar || undefined,
   };
 }
 
-export default function HomeClient({ initialParams, initialAds }: { initialParams: HomeInitialParams; initialAds?: HomepageAdRow[] }) {
-  const [ads, setAds] = useState<HomepageAd[]>(() => (initialAds || []).map(mapHomepageAdRow));
-  const [isOfflineData, setIsOfflineData] = useState(false);
+export default function HomeClient({
+  initialParams,
+  initialAds,
+}: {
+  initialParams: HomeInitialParams;
+  initialAds?: HomepageAdRow[];
+}) {
+  const [ads, setAds] = useState<HomepageAd[]>(() =>
+    (initialAds || []).map(mapHomepageAdRow)
+  );
   const [loading, setLoading] = useState(!initialAds?.length);
   const [error, setError] = useState<string | null>(null);
 
-  const latParam = typeof initialParams.lat === 'string' ? parseFloat(initialParams.lat) : null;
-  const lngParam = typeof initialParams.lng === 'string' ? parseFloat(initialParams.lng) : null;
-  const radiusParam = typeof initialParams.radius === 'string' ? parseInt(initialParams.radius) : 50;
+  // Filters & Search State
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [sortBy, setSortBy] = useState<"recent" | "price-asc" | "price-desc" | "featured">("recent");
+
+  const latParam = typeof initialParams.lat === "string" ? parseFloat(initialParams.lat) : null;
+  const lngParam = typeof initialParams.lng === "string" ? parseFloat(initialParams.lng) : null;
+  const radiusParam =
+    typeof initialParams.radius === "string" ? parseInt(initialParams.radius) : 50;
+
+  // Embla carousel for top featured VIP ads
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: false,
+    align: "start",
+    containScroll: "trimSnaps",
+  });
+  const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
+  const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
 
   useEffect(() => {
     let isMounted = true;
 
-    // If the server already provided fresh ads, avoid the stale cache + refetch dance
     if (initialAds?.length) {
-      if (isMounted) {
-        setLoading(false);
-        setIsOfflineData(false);
-      }
+      if (isMounted) setLoading(false);
       return;
     }
 
     async function initData() {
       if (!isMounted) return;
-      
+
       try {
-        console.log("Starting data fetch...");
         if (typeof window !== "undefined") {
           const cached = await getCachedAds();
           if (cached && cached.length > 0 && isMounted) {
-            console.log("Loaded from cache:", cached.length);
             setAds(cached);
-            setIsOfflineData(true);
             setLoading(false);
           }
         }
       } catch (e) {
-        console.error("IndexedDB error:", e);
+        console.error("IndexedDB cache read error:", e);
       }
 
       try {
         let storedLocation = null;
-        
         if (typeof window !== "undefined") {
           try {
-            const storedLocationStr = localStorage.getItem("user_location");
-            storedLocation = storedLocationStr ? JSON.parse(storedLocationStr) : null;
+            const stored = localStorage.getItem("user_location");
+            storedLocation = stored ? JSON.parse(stored) : null;
           } catch (e) {
             console.error("LocalStorage error:", e);
           }
@@ -188,7 +235,6 @@ export default function HomeClient({ initialParams, initialAds }: { initialParam
 
         let resultData: HomepageAdRow[] | null = null;
         if (lat && lon) {
-          console.log("Fetching nearby ads...");
           resultData = await fetchNearbyAds({
             latitude: lat,
             longitude: lon,
@@ -196,13 +242,19 @@ export default function HomeClient({ initialParams, initialAds }: { initialParam
             limit: 60,
           });
         } else {
-          console.log("Fetching standard ads per category...");
           const HOMEPAGE_CATEGORIES = [
-            "electronics", "home-furniture", "vehicles", "fashion",
-            "tools-equipment", "hobbies", "animals", "books",
-            "used-clearance", "other",
+            "electronics",
+            "home-furniture",
+            "vehicles",
+            "fashion",
+            "tools-equipment",
+            "hobbies",
+            "animals",
+            "books",
+            "used-clearance",
+            "other",
           ];
-          const ADS_PER_CAT = 6;
+          const ADS_PER_CAT = 12;
 
           const categoryResults = await Promise.all(
             HOMEPAGE_CATEGORIES.map((cat) =>
@@ -234,10 +286,7 @@ export default function HomeClient({ initialParams, initialAds }: { initialParam
 
           const allAds: HomepageAdRow[] = [];
           for (const res of categoryResults) {
-            if (res.error) {
-              console.error("Error fetching category ads:", res.error);
-              continue;
-            }
+            if (res.error) continue;
             allAds.push(...(res.data ?? []));
           }
 
@@ -252,13 +301,10 @@ export default function HomeClient({ initialParams, initialAds }: { initialParam
         }
 
         if (resultData && isMounted) {
-          console.log("Data fetched successfully:", resultData.length);
           const formattedAds = resultData.map(mapHomepageAdRow);
-
           setAds(formattedAds);
-          setIsOfflineData(false);
           setLoading(false);
-          
+
           if (!latParam && !lngParam) {
             saveAds(formattedAds);
           }
@@ -271,247 +317,279 @@ export default function HomeClient({ initialParams, initialAds }: { initialParam
     }
 
     initData();
-    return () => { isMounted = false; };
+    return () => {
+      isMounted = false;
+    };
   }, [latParam, lngParam, radiusParam, initialAds]);
 
-  const categoryMapping: { [key: string]: string } = {
-    "electronics": "electronics",
-    "home-furniture": "home-furniture",
-    "vehicles": "vehicles",
-    "fashion": "fashion",
-    "tools-equipment": "tools-equipment",
-    "hobbies": "hobbies",
-    "animals": "animals",
-    "books": "books",
-    "used-clearance": "used-clearance",
-    "other": "other",
-    "Électronique": "electronics",
-    "Maison & Ameublement": "home-furniture",
-    "Véhicules & Transport": "vehicles",
-    "Mode & Chaussures": "fashion",
-    "Outils & Équipement": "tools-equipment",
-    "Loisirs & Diverتissement": "hobbies",
-    "Animaux": "animals",
-    "Livres & Études": "books",
-    "Occasions / Vide-grenier": "used-clearance",
-    "Autres": "other"
-  };
+  const toAdCard = useCallback(
+    (ad: HomepageAd): PublicAdCardAd => ({
+      id: ad.id,
+      title: ad.title,
+      price: ad.price,
+      location: ad.location,
+      createdAt: ad.createdAt,
+      sellerBadge: ad.sellerBadge,
+      isFeatured: ad.isFeatured,
+      imageUrl: ad.imageUrl,
+    }),
+    []
+  );
 
-  const getCategorySlug = (categoryName: string) => {
-    return categoryMapping[categoryName] || "other";
-  };
+  // VIP Featured Carousel items
+  const featuredVipAds = useMemo(() => {
+    return ads.filter((ad) => ad.isFeatured).slice(0, 10);
+  }, [ads]);
 
-  const groupedAds = ads.reduce<Record<string, HomepageAd[]>>((acc, ad) => {
-    const category = ad.categorySlug || "Autre";
-    if (!acc[category]) acc[category] = [];
-    acc[category].push(ad);
-    return acc;
-  }, {});
+  // Main Filter & Sort computed list
+  const filteredAds = useMemo(() => {
+    let result = [...ads];
 
-  const orderedCategories = Object.keys(groupedAds).sort((a, b) => {
-    const preferredOrder = ["electronics", "Électronique", "electronique", "electronics"];
-    const aIndex = preferredOrder.indexOf(a);
-    const bIndex = preferredOrder.indexOf(b);
-    const aRank = aIndex === -1 ? Number.MAX_SAFE_INTEGER : aIndex;
-    const bRank = bIndex === -1 ? Number.MAX_SAFE_INTEGER : bIndex;
-    if (aRank !== bRank) return aRank - bRank;
-    return a.localeCompare(b, "fr", { sensitivity: "base" });
-  });
+    // Category Filter
+    if (selectedCategory === "featured") {
+      result = result.filter((ad) => ad.isFeatured);
+    } else if (selectedCategory === "nearby") {
+      result = result.filter(
+        (ad) => typeof ad.distanceKm === "number" && Number.isFinite(ad.distanceKm)
+      );
+    } else if (selectedCategory !== "all") {
+      result = result.filter((ad) => {
+        const cat = ad.categorySlug?.toLowerCase() || "";
+        const target = selectedCategory.toLowerCase();
+        return cat === target || cat.includes(target);
+      });
+    }
 
-  const toAdCard = (ad: HomepageAd): PublicAdCardAd => ({
-    id: ad.id,
-    title: ad.title,
-    price: ad.price,
-    location: ad.location,
-    createdAt: ad.createdAt,
-    sellerBadge: ad.sellerBadge,
-    isFeatured: ad.isFeatured,
-    imageUrl: ad.imageUrl,
-  });
+    // Search query filter
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase().trim();
+      result = result.filter(
+        (ad) =>
+          ad.title.toLowerCase().includes(q) ||
+          ad.location.toLowerCase().includes(q)
+      );
+    }
 
-  const latestAds = ads.slice(0, 12);
-  const nearbyAds = ads
-    .filter((ad) => typeof ad.distanceKm === "number" && Number.isFinite(ad.distanceKm))
-    .sort((a, b) => (a.distanceKm ?? Number.MAX_SAFE_INTEGER) - (b.distanceKm ?? Number.MAX_SAFE_INTEGER))
-    .slice(0, 12);
+    // Sorting
+    if (sortBy === "price-asc") {
+      result.sort((a, b) => {
+        const pA = parseFloat(a.price.replace(/[^0-9.]/g, "")) || 0;
+        const pB = parseFloat(b.price.replace(/[^0-9.]/g, "")) || 0;
+        return pA - pB;
+      });
+    } else if (sortBy === "price-desc") {
+      result.sort((a, b) => {
+        const pA = parseFloat(a.price.replace(/[^0-9.]/g, "")) || 0;
+        const pB = parseFloat(b.price.replace(/[^0-9.]/g, "")) || 0;
+        return pB - pA;
+      });
+    } else if (sortBy === "featured") {
+      result.sort((a, b) => (b.isFeatured ? 1 : 0) - (a.isFeatured ? 1 : 0));
+    }
 
-  function SectionHeader({
-    eyebrow,
-    title,
-    href,
-    icon: Icon,
-  }: {
-    eyebrow: string;
-    title: string;
-    href?: string;
-    icon?: React.ElementType;
-  }) {
-    return (
-      <div className="flex items-end justify-between gap-3">
-        <div className="flex min-w-0 flex-col gap-1.5">
-          <span className="home-section-eyebrow inline-flex items-center gap-1.5">
-            {Icon && <Icon className="h-3.5 w-3.5" />}
-            {eyebrow}
-          </span>
-          <h2 className="home-section-title truncate">
-            {title}
-          </h2>
-        </div>
-        {href && (
-          <Link 
-            href={href}
-            className="home-see-all group shrink-0"
-          >
-            <span className="hidden sm:inline">Voir tout</span>
-            <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center group-hover:bg-orange-500 group-hover:text-white transition-all">
-              <ArrowRight className="w-4 h-4" />
-            </div>
-          </Link>
-        )}
-      </div>
-    );
-  }
+    return result;
+  }, [ads, selectedCategory, searchQuery, sortBy]);
 
-  function CategoryCarousel({ items }: { items: HomepageAd[] }) {
-    const slides = items.slice(0, 6);
-    const [emblaRef, emblaApi] = useEmblaCarousel({
-      loop: false,
-      align: "start",
-      containScroll: "trimSnaps",
-    });
-
-    const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
-    const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
-
-    return (
-      <div className="relative group/carousel">
-        <div className="overflow-hidden" ref={emblaRef}>
-          <div className="flex gap-3 sm:gap-4 pb-2">
-            {slides.map((ad) => (
-              <div
-                key={ad.id}
-                className="flex-[0_0_72%] min-[360px]:flex-[0_0_62%] min-[420px]:flex-[0_0_46%] sm:flex-[0_0_31%] md:flex-[0_0_24%] xl:flex-[0_0_19%] min-w-0"
-              >
-                <HomeAdCard ad={toAdCard(ad)} />
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <button
-          type="button"
-          onClick={scrollPrev}
-          className="hidden md:flex absolute -left-3 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-white border border-zinc-200 shadow-lg items-center justify-center text-zinc-700 hover:text-orange-600 hover:border-orange-200 hover:scale-105 transition-all opacity-0 group-hover/carousel:opacity-100 active:scale-95"
-          aria-label="Précédent"
-        >
-          <ChevronLeft className="w-5 h-5" strokeWidth={2.5} />
-        </button>
-        <button
-          type="button"
-          onClick={scrollNext}
-          className="hidden md:flex absolute -right-3 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-white border border-zinc-200 shadow-lg items-center justify-center text-zinc-700 hover:text-orange-600 hover:border-orange-200 hover:scale-105 transition-all opacity-0 group-hover/carousel:opacity-100 active:scale-95"
-          aria-label="Suivant"
-        >
-          <ChevronRight className="w-5 h-5" strokeWidth={2.5} />
-        </button>
-      </div>
-    );
-  }
+  const virtualizedCardList = useMemo(() => {
+    return filteredAds.map(toAdCard);
+  }, [filteredAds, toAdCard]);
 
   return (
-    <div dir="ltr" className="min-h-screen bg-white font-sans text-zinc-900 pb-12">
+    <div dir="ltr" className="min-h-screen bg-[#FAFAFA] dark:bg-zinc-950 font-sans text-zinc-900 dark:text-zinc-100 pb-16">
       
-      {/* Sell banner — light, compact CTA strip */}
-      <section className="main-container">
+      {/* Top Sell Banner Strip */}
+      <section className="main-container pt-2">
         <SellBanner />
       </section>
 
-      <main className="main-container pb-4 pt-6 sm:pt-8">
+      {/* Main Container */}
+      <main className="main-container pb-8 pt-4 sm:pt-6">
         {error && (
-          <div className="alert alert-error mb-6">
-            <span className="font-bold">Impossible de charger les annonces : {error}</span>
-            <button 
-              onClick={() => window.location.reload()} 
-              className="btn btn-error btn-sm"
+          <div className="alert alert-error mb-6 rounded-2xl shadow-sm">
+            <span className="font-bold">Erreur de chargement : {error}</span>
+            <button
+              onClick={() => window.location.reload()}
+              className="btn btn-error btn-sm rounded-xl"
             >
               Réessayer
             </button>
           </div>
         )}
-        <div className="space-y-8 sm:space-y-12 min-w-0 pt-2">
-          {ads.length === 0 && !loading ? (
-            <div className="card card-border border-dashed bg-zinc-50/50 p-8 py-16 text-center">
-              <div className="card-body items-center gap-4">
-                <div className="bg-white p-6 rounded-2xl shadow-sm border border-zinc-100">
-                  <Package className="w-10 h-10 text-zinc-400" />
+
+        {/* =========================================================================
+            INTERNATIONAL CATEGORY FILTER NAVIGATION BAR (Airbnb / Dubizzle style)
+           ========================================================================= */}
+        <section className="mb-6 rounded-[1.75rem] bg-white dark:bg-zinc-900 p-2 sm:p-3 border border-zinc-200/80 dark:border-zinc-800/80 shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 pt-1 scrollbar-hide px-2">
+            {CATEGORY_TABS.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = selectedCategory === tab.id;
+
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setSelectedCategory(tab.id)}
+                  className={`group flex items-center gap-2 whitespace-nowrap rounded-2xl px-4 py-2.5 text-xs sm:text-sm font-bold transition-all duration-200 shrink-0 ${
+                    isActive
+                      ? "bg-orange-500 text-white shadow-md shadow-orange-500/25 scale-[1.02]"
+                      : "bg-zinc-100/80 dark:bg-zinc-800/80 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200/70 dark:hover:bg-zinc-700/70 hover:text-zinc-900 dark:hover:text-white"
+                  }`}
+                >
+                  <Icon
+                    className={`h-4 w-4 transition-transform group-hover:scale-110 ${
+                      isActive ? "text-white" : "text-zinc-500 dark:text-zinc-400 group-hover:text-orange-500"
+                    }`}
+                  />
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* =========================================================================
+            INTERACTIVE SEARCH & SORTING TOOLBAR
+           ========================================================================= */}
+        <section className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-zinc-900 p-3 sm:p-4 rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 shadow-sm">
+          {/* Quick Search Input */}
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Filtrer par titre ou ville..."
+              className="w-full rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/50 pl-10 pr-4 py-2 text-xs sm:text-sm font-medium text-zinc-900 dark:text-white placeholder-zinc-400 focus:border-orange-500 focus:bg-white dark:focus:bg-zinc-900 focus:outline-none transition-all"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-zinc-400 hover:text-zinc-600"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+
+          {/* Result Count and Sort Select */}
+          <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0">
+            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800/80 px-3 py-1.5 rounded-xl">
+              <CheckCircle2 className="h-3.5 w-3.5 text-orange-500" />
+              {filteredAds.length} annonce{filteredAds.length !== 1 ? "s" : ""}
+            </span>
+
+            <div className="flex items-center gap-2">
+              <SlidersHorizontal className="h-4 w-4 text-zinc-400 hidden sm:block" />
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as any)}
+                className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/50 px-3 py-2 text-xs font-bold text-zinc-700 dark:text-zinc-200 focus:border-orange-500 focus:outline-none cursor-pointer"
+              >
+                <option value="recent">Plus récents</option>
+                <option value="price-asc">Prix : Moins cher</option>
+                <option value="price-desc">Prix : Plus cher</option>
+                <option value="featured">À la une d&apos;abord</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        {/* =========================================================================
+            VIP SPOTLIGHT CAROUSEL (Showcased only on 'all' or 'featured')
+           ========================================================================= */}
+        {selectedCategory === "all" && featuredVipAds.length > 0 && !searchQuery && (
+          <section className="mb-8 rounded-3xl bg-gradient-to-br from-amber-500/10 via-orange-500/5 to-transparent p-4 sm:p-6 border border-amber-500/20 shadow-sm relative group/carousel">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-orange-500 text-white shadow-md shadow-orange-500/30">
+                  <Flame className="h-4 w-4" />
+                </span>
+                <div>
+                  <h2 className="text-base sm:text-lg font-black text-zinc-900 dark:text-white tracking-tight">
+                    Sélection VIP &quot;À la une&quot;
+                  </h2>
+                  <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400">
+                    Les meilleures offres vérifiées et mises en avant au Maroc
+                  </p>
                 </div>
-                <h3 className="card-title text-xl">Aucune annonce trouvée</h3>
-                <p className="text-sm text-zinc-500 font-medium max-w-xs">Soyez le premier à publier une annonce dans votre région.</p>
-                <Link href="/poste-annonce" className="btn btn-primary mt-4">
-                  <PlusCircle className="w-5 h-5" />
-                  Déposer une annonce
-                </Link>
+              </div>
+
+              {/* Prev / Next controls */}
+              <div className="hidden sm:flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={scrollPrev}
+                  className="w-8 h-8 rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm flex items-center justify-center text-zinc-600 dark:text-zinc-300 hover:text-orange-600 hover:border-orange-300 transition-all active:scale-95"
+                  aria-label="Précédent"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={scrollNext}
+                  className="w-8 h-8 rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm flex items-center justify-center text-zinc-600 dark:text-zinc-300 hover:text-orange-600 hover:border-orange-300 transition-all active:scale-95"
+                  aria-label="Suivant"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
               </div>
             </div>
-          ) : (
-            <>
-              {loading ? (
-                <div className="space-y-10">
-                  {[...Array(2)].map((_, sectionIndex) => (
-                    <div key={sectionIndex} className="space-y-4">
-                      <div className="flex flex-col gap-2">
-                        <div className="skeleton h-3 w-20 rounded-full" />
-                        <div className="skeleton h-7 w-44 rounded-lg" />
-                      </div>
-                      <div className="flex gap-3 sm:gap-4 pb-2">
-                        {[...Array(5)].map((_, i) => (
-                          <div key={i} className="flex-[0_0_72%] min-[360px]:flex-[0_0_62%] min-[420px]:flex-[0_0_46%] sm:flex-[0_0_31%] md:flex-[0_0_24%] xl:flex-[0_0_19%] shrink-0">
-                            <div className="skeleton aspect-[4/3] rounded-[1.5rem]" />
-                            <div className="skeleton h-4 w-3/4 rounded mt-3" />
-                            <div className="skeleton h-4 w-1/3 rounded mt-2" />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
+
+            <div className="overflow-hidden" ref={emblaRef}>
+              <div className="flex gap-3 sm:gap-4 pb-2">
+                {featuredVipAds.map((ad) => (
+                  <div
+                    key={`vip-${ad.id}`}
+                    className="flex-[0_0_72%] min-[360px]:flex-[0_0_62%] min-[420px]:flex-[0_0_46%] sm:flex-[0_0_31%] md:flex-[0_0_24%] xl:flex-[0_0_20%] min-w-0"
+                  >
+                    <HomeAdCard ad={toAdCard(ad)} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* =========================================================================
+            THE CORE: HIGH PERFORMANCE VIRTUALIZED AD GRID (@tanstack/react-virtual)
+           ========================================================================= */}
+        <section className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white tracking-tight flex items-center gap-2">
+              <span>Toutes les annonces disponibles</span>
+              <span className="text-xs font-bold text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/40 px-2.5 py-0.5 rounded-full border border-orange-200/60 dark:border-orange-900/40">
+                Ultra-rapide
+              </span>
+            </h2>
+          </div>
+
+          {loading ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
+              {[...Array(8)].map((_, i) => (
+                <div
+                  key={i}
+                  className="rounded-2xl border border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3 space-y-3"
+                >
+                  <div className="aspect-[4/3] rounded-xl bg-zinc-200 dark:bg-zinc-800 animate-pulse" />
+                  <div className="h-4 w-3/4 rounded bg-zinc-200 dark:bg-zinc-800 animate-pulse" />
+                  <div className="h-5 w-1/3 rounded bg-zinc-200 dark:bg-zinc-800 animate-pulse" />
+                  <div className="h-3 w-1/2 rounded bg-zinc-100 dark:bg-zinc-800/60 animate-pulse" />
                 </div>
-              ) : (
-                <>
-                  {latestAds.length > 0 && (
-                    <section className="card card-border bg-orange-50/40 p-4 sm:p-6 space-y-4 sm:space-y-5">
-                      <SectionHeader eyebrow="Nouveautés" title="Arrivés récemment" href="/marketplace" icon={Clock3} />
-                      <CategoryCarousel items={latestAds} />
-                    </section>
-                  )}
-
-                  {nearbyAds.length > 0 && (
-                    <section className="card card-border bg-white p-4 sm:p-6 space-y-4 sm:space-y-5">
-                      <SectionHeader eyebrow="Autour de vous" title="Annonces proches" href="/marketplace" icon={MapPin} />
-                      <CategoryCarousel items={nearbyAds} />
-                    </section>
-                  )}
-
-                  {orderedCategories.map((category) => {
-                    const categoryAds = groupedAds[category];
-                    if (categoryAds.length === 0) return null;
-
-                    const categoryLabel = CATEGORY_LABELS[category] || category;
-
-                    return (
-                      <section key={category} className="space-y-4 sm:space-y-5">
-                        <SectionHeader eyebrow="Catégorie" title={categoryLabel} href={`/categories/${getCategorySlug(category)}`} icon={Sparkles} />
-                        <CategoryCarousel items={categoryAds} />
-                      </section>
-                    );
-                  })}
-                </>
-              )}
-            </>
+              ))}
+            </div>
+          ) : (
+            <VirtualizedAdGrid
+              ads={virtualizedCardList}
+              emptyMessage="Aucune annonce ne correspond à votre recherche"
+              emptySubtext="Essayez de changer de catégorie ou de réinitialiser la recherche."
+            />
           )}
-        </div>
+        </section>
       </main>
 
-      {/* Trust / value proposition */}
+      {/* Trust & Guarantees Section */}
       <TrustSection />
     </div>
   );
