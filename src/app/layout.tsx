@@ -75,6 +75,8 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://ssfcfvuosxxmvsdoktws.supabase.co" />
         <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
+        <link rel="preconnect" href="https://googleads.g.doubleclick.net" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://googleads.g.doubleclick.net" />
         <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
 
@@ -131,6 +133,9 @@ export default function RootLayout({
           /* Font Display Swap for Critical Elements */
           .font-sans { font-display: swap; }
           h1, h2, .logo-text { font-display: swap; }
+          /* AdSense CLS & display optimization */
+          .adsbygoogle { display: block; }
+          ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
         `}} />
         <meta name="google-adsense-account" content="ca-pub-4945284817184050" />
         <meta name="google-adsense-platform-account" content="ca-host-pub-6129854895232620" />
@@ -226,6 +231,13 @@ export default function RootLayout({
           id="google-gdpr"
           strategy="lazyOnload"
           src="https://fundingchoicesmessages.google.com/i/pub-4945284817184050?ers=1"
+        />
+
+        <Script
+          id="google-adsense"
+          strategy="lazyOnload"
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4945284817184050"
+          crossOrigin="anonymous"
         />
 
         <script
