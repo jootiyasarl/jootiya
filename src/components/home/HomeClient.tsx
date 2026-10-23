@@ -6,6 +6,8 @@ import { TrustSection } from "@/components/home/TrustSection";
 import { type PublicAdCardAd } from "@/components/AdCard";
 import { HomeAdCard } from "@/components/home/HomeAdCard";
 import { VirtualizedAdGrid } from "@/components/ads/VirtualizedAdGrid";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Package,
   ArrowRight,
@@ -683,13 +685,15 @@ export default function HomeClient({
             </div>
 
             {/* 4. Search Submit Button - Compact and Perfectly Proportional */}
-            <button
+            <Button
               type="submit"
-              className="w-full md:w-auto shrink-0 h-12 md:h-11 px-6 rounded-xl md:rounded-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-black text-sm uppercase tracking-wider shadow-lg shadow-orange-500/30 transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap"
+              size="lg"
+              variant="orange"
+              className="w-full md:w-auto shrink-0 h-12 md:h-11 rounded-xl md:rounded-full"
             >
               <Search className="h-5 w-5" />
               <span>Trouver</span>
-            </button>
+            </Button>
           </form>
 
           {/* Popular Trending Tags */}
@@ -829,22 +833,26 @@ export default function HomeClient({
 
               {/* Prev / Next controls */}
               <div className="hidden sm:flex items-center gap-2">
-                <button
+                <Button
                   type="button"
                   onClick={scrollPrev}
-                  className="w-10 h-10 rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-lg flex items-center justify-center text-zinc-700 dark:text-zinc-200 hover:text-orange-600 hover:border-orange-500 transition-all active:scale-95 cursor-pointer"
+                  size="icon"
+                  variant="outline"
+                  className="rounded-full"
                   aria-label="Précédent"
                 >
                   <ChevronLeft className="w-5 h-5" />
-                </button>
-                <button
+                </Button>
+                <Button
                   type="button"
                   onClick={scrollNext}
-                  className="w-10 h-10 rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-lg flex items-center justify-center text-zinc-700 dark:text-zinc-200 hover:text-orange-600 hover:border-orange-500 transition-all active:scale-95 cursor-pointer"
+                  size="icon"
+                  variant="outline"
+                  className="rounded-full"
                   aria-label="Suivant"
                 >
                   <ChevronRight className="w-5 h-5" />
-                </button>
+                </Button>
               </div>
             </div>
 
@@ -884,41 +892,32 @@ export default function HomeClient({
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800/80 shadow-xl shadow-zinc-200/10 dark:shadow-none">
           {/* Feed Tabs Switcher */}
           <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-hide no-scrollbar">
-            <button
+            <Button
               type="button"
               onClick={() => setFeedTab("all")}
-              className={`px-4 py-2 rounded-2xl text-sm font-bold transition-all whitespace-nowrap cursor-pointer ${
-                feedTab === "all"
-                  ? "bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-lg"
-                  : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700"
-              }`}
+              variant={feedTab === "all" ? "default" : "outline"}
+              className="rounded-2xl"
             >
               ✨ Toutes
-            </button>
+            </Button>
 
-            <button
+            <Button
               type="button"
               onClick={() => setFeedTab("featured")}
-              className={`px-4 py-2 rounded-2xl text-sm font-bold transition-all whitespace-nowrap cursor-pointer ${
-                feedTab === "featured"
-                  ? "bg-orange-500 text-white shadow-lg shadow-orange-500/30"
-                  : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700"
-              }`}
+              variant={feedTab === "featured" ? "orange" : "outline"}
+              className="rounded-2xl"
             >
               🔥 À la une
-            </button>
+            </Button>
 
-            <button
+            <Button
               type="button"
               onClick={() => setFeedTab("nearby")}
-              className={`px-4 py-2 rounded-2xl text-sm font-bold transition-all whitespace-nowrap cursor-pointer ${
-                feedTab === "nearby"
-                  ? "bg-emerald-600 text-white shadow-lg shadow-emerald-500/30"
-                  : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700"
-              }`}
+              variant={feedTab === "nearby" ? "default" : "outline"}
+              className="rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-500/30"
             >
               📍 Proches
-            </button>
+            </Button>
           </div>
 
           {/* Right Toolbar: Counter and Custom Sort Dropdown */}
@@ -991,13 +990,14 @@ export default function HomeClient({
                 <X className="h-4 w-4 cursor-pointer hover:scale-110" onClick={() => setSearchQuery("")} />
               </span>
             )}
-            <button
+            <Button
               type="button"
               onClick={handleClearFilters}
-              className="text-sm font-bold text-red-500 hover:text-red-700 underline ml-2 cursor-pointer"
+              variant="ghost"
+              className="text-sm font-bold text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/20 ml-2"
             >
               Effacer
-            </button>
+            </Button>
           </div>
         )}
 

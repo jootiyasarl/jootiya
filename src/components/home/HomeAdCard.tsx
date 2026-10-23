@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Clock3, MapPin, Sparkles } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { FavoriteButton } from "@/components/ads/FavoriteButton";
 import { generateSlug } from "@/lib/seo-utils";
 import { getOptimizedImageUrl } from "@/lib/storageUtils";
@@ -47,10 +48,10 @@ export function HomeAdCard({ ad, priority = false }: { ad: PublicAdCardAd; prior
         {/* Featured / À la une Badge */}
         {ad.isFeatured && (
           <div className="absolute top-3 left-3 z-20 pointer-events-none">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 px-3 py-1.5 text-[10px] sm:text-[11px] font-black tracking-tight text-white shadow-lg shadow-orange-500/30">
-              <Sparkles className="h-3.5 w-3.5" />
+            <Badge variant="orange" className="text-[10px] sm:text-[11px] font-black tracking-tight">
+              <Sparkles className="h-3.5 w-3.5 mr-1" />
               À la une
-            </span>
+            </Badge>
           </div>
         )}
 

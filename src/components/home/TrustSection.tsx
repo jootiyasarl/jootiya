@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import { ShieldCheck, Zap, HeartHandshake, MapPin, PlusCircle, ArrowRight, CheckCircle2 } from "lucide-react";
 
 const FEATURES = [
@@ -102,13 +103,12 @@ export function TrustSection() {
             </p>
           </div>
 
-          <Link
-            href="/poste-annonce"
-            className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-black text-sm sm:text-base uppercase tracking-wider shadow-xl shadow-orange-500/30 transition-all hover:scale-105 active:scale-95 shrink-0 z-10"
-          >
-            <PlusCircle className="h-5 w-5" />
-            <span>Déposer une annonce</span>
-            <ArrowRight className="h-5 w-5" />
+          <Link href="/poste-annonce">
+            <Button size="xl" variant="orange" className="shrink-0 z-10">
+              <PlusCircle className="h-5 w-5" />
+              <span>Déposer une annonce</span>
+              <ArrowRight className="h-5 w-5" />
+            </Button>
           </Link>
         </div>
       </div>
