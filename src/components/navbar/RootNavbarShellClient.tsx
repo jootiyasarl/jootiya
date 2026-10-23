@@ -54,17 +54,21 @@ export function RootNavbarShellClient({ children, navbar, footer }: RootNavbarSh
         >
           {!isSpecialPath ? (
             <div className="max-w-[1440px] mx-auto px-2 min-[360px]:px-3 sm:px-4 md:px-8 relative">
-              <div className="flex flex-col 2xl:flex-row gap-6 2xl:gap-8 items-start relative">
-                <aside className="hidden 2xl:block w-44 sticky top-[120px] self-start shrink-0 z-30 transition-all">
-                  <SidebarAd />
-                </aside>
+              {pathname === "/" ? (
+                <div className="w-full">{children}</div>
+              ) : (
+                <div className="flex flex-col 2xl:flex-row gap-6 2xl:gap-8 items-start relative">
+                  <aside className="hidden 2xl:block w-44 sticky top-[120px] self-start shrink-0 z-30 transition-all">
+                    <SidebarAd />
+                  </aside>
 
-                <div className="flex-1 min-w-0 w-full">{children}</div>
+                  <div className="flex-1 min-w-0 w-full">{children}</div>
 
-                <aside className="hidden 2xl:block w-44 sticky top-[120px] self-start shrink-0 z-30 transition-all">
-                  <SidebarAd />
-                </aside>
-              </div>
+                  <aside className="hidden 2xl:block w-44 sticky top-[120px] self-start shrink-0 z-30 transition-all">
+                    <SidebarAd />
+                  </aside>
+                </div>
+              )}
             </div>
           ) : (
             <div className="max-w-[1440px] mx-auto px-2 min-[360px]:px-3 sm:px-4 md:px-8">

@@ -502,34 +502,36 @@ export default function HomeClient({
   }, [sortBy]);
 
   return (
-    <div dir="ltr" className="min-h-screen bg-[#F8FAFC] dark:bg-[#07090E] font-sans text-zinc-900 dark:text-zinc-100">
+    <div dir="ltr" className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950 font-sans text-zinc-900 dark:text-zinc-100">
       
       {/* =========================================================================
           1. HERO SECTION WITH LUXURY AIRBNB-STYLE CUSTOM DROPDOWNS (No Native Selects)
          ========================================================================= */}
-      <section className="relative overflow-visible bg-gradient-to-b from-orange-500/10 via-[#F8FAFC] to-[#F8FAFC] dark:from-orange-500/5 dark:via-[#07090E] dark:to-[#07090E] pt-4 sm:pt-10 pb-6 sm:pb-12 border-b border-zinc-200/60 dark:border-zinc-800/60">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[300px] bg-gradient-to-tr from-orange-500/15 via-amber-400/10 to-transparent rounded-full blur-3xl pointer-events-none" />
+      <section className="relative overflow-hidden bg-gradient-to-br from-orange-50 via-white to-amber-50 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950 pt-6 sm:pt-16 pb-8 sm:pb-16 border-b border-zinc-200/50 dark:border-zinc-800/50">
+        {/* Ambient Background Gradients */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-tr from-orange-500/10 via-amber-400/5 to-transparent rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-[600px] h-[300px] bg-gradient-to-bl from-amber-500/5 via-orange-400/5 to-transparent rounded-full blur-3xl pointer-events-none" />
 
-        <div className="relative w-full max-w-5xl mx-auto px-3 sm:px-6 text-center overflow-visible">
+        <div className="relative w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Moroccan Flagship Pill Badge */}
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white dark:bg-zinc-900 border border-orange-500/20 shadow-sm text-[11px] sm:text-xs font-black tracking-wide text-zinc-800 dark:text-zinc-200 mb-3 sm:mb-4">
-            <span>🇲🇦</span>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm border border-orange-500/20 shadow-lg shadow-orange-500/5 text-[11px] sm:text-xs font-black tracking-widest text-zinc-800 dark:text-zinc-200 mb-4 sm:mb-6">
+            <span className="text-sm">🇲🇦</span>
             <span className="bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent font-extrabold uppercase">
-              Le N°1 des Petites Annonces au Maroc
+              Le N°1 au Maroc
             </span>
-            <span className="flex h-2 w-2 rounded-full bg-orange-500 animate-pulse" />
+            <span className="flex h-2 w-2 rounded-full bg-orange-500 animate-pulse shadow-sm shadow-orange-500/50" />
           </div>
 
           {/* Responsive Headline */}
-          <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-zinc-950 dark:text-white tracking-tight leading-[1.18] mb-2 sm:mb-3">
-            Achetez & Vendez au Maroc <br className="hidden sm:inline" />
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-zinc-950 dark:text-white tracking-tight leading-[1.1] mb-3 sm:mb-4">
+            Achetez & Vendez <br className="hidden sm:inline" />
             <span className="bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500 bg-clip-text text-transparent">
               en toute confiance
             </span>
           </h1>
 
-          <p className="text-xs sm:text-base text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto font-medium mb-5 sm:mb-7 leading-relaxed">
-            Téléphones, voitures, immobilier, mode et articles vérifiés près de chez vous.
+          <p className="text-sm sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto font-medium mb-6 sm:mb-8 leading-relaxed">
+            Découvrez des milliers d'annonces vérifiées près de chez vous. Téléphones, voitures, immobilier, mode et plus encore.
           </p>
 
           {/* =========================================================================
@@ -537,10 +539,10 @@ export default function HomeClient({
              ========================================================================= */}
           <form
             onSubmit={handleHeroSearchSubmit}
-            className="mx-auto max-w-4xl p-2 rounded-3xl md:rounded-full bg-white dark:bg-zinc-900 border border-zinc-200/90 dark:border-zinc-800 shadow-lg md:shadow-[0_12px_40px_rgba(0,0,0,0.07)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.5)] backdrop-blur-xl flex flex-col md:flex-row items-center gap-2 relative z-30"
+            className="mx-auto w-full max-w-5xl p-1.5 md:p-2 rounded-2xl md:rounded-full bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl shadow-zinc-200/20 dark:shadow-zinc-900/50 flex flex-col md:flex-row items-stretch md:items-center gap-1.5 md:gap-2 relative z-30"
           >
             {/* 1. Keyword Search Input Segment */}
-            <div className="relative flex-1 w-full flex items-center px-4 py-2 hover:bg-zinc-50 dark:hover:bg-zinc-800/40 rounded-full transition-colors">
+            <div className="relative flex-1 min-w-0 flex items-center px-4 py-3 md:py-2.5 hover:bg-zinc-50 dark:hover:bg-zinc-800/40 rounded-xl md:rounded-full transition-colors">
               <Search className="h-4 w-4 text-orange-500 shrink-0 mr-3" />
               <div className="flex flex-col text-left w-full min-w-0">
                 <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400">Recherche</span>
@@ -548,49 +550,49 @@ export default function HomeClient({
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Que cherchez-vous ? (iPhone, Dacia...)"
-                  className="w-full bg-transparent text-xs sm:text-sm font-bold text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none border-0 p-0 m-0"
+                  placeholder="Que cherchez-vous ?"
+                  className="w-full bg-transparent text-sm md:text-base font-semibold text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none border-0 p-0 m-0"
                 />
               </div>
               {searchQuery && (
                 <button
                   type="button"
                   onClick={() => setSearchQuery("")}
-                  className="p-1 rounded-full text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200"
+                  className="p-1.5 rounded-full text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
                 >
                   <X className="h-3.5 w-3.5" />
                 </button>
               )}
             </div>
 
-            <div className="hidden md:block w-px h-8 bg-zinc-200 dark:bg-zinc-800" />
+            <div className="hidden md:block w-px h-8 bg-zinc-200 dark:border-zinc-800 shrink-0" />
 
             {/* 2. Custom Category Popover Dropdown (No Native Select!) */}
-            <div ref={categoryDropdownRef} className="relative w-full md:w-48">
+            <div ref={categoryDropdownRef} className="relative shrink-0">
               <button
                 type="button"
                 onClick={() => {
                   setIsCategoryDropdownOpen(!isCategoryDropdownOpen);
                   setIsCityDropdownOpen(false);
                 }}
-                className="w-full flex items-center justify-between px-4 py-2 hover:bg-zinc-50 dark:hover:bg-zinc-800/40 rounded-full transition-colors text-left"
+                className="w-full md:w-auto flex items-center justify-between md:justify-start gap-2.5 px-4 py-3 md:py-2.5 hover:bg-zinc-50 dark:hover:bg-zinc-800/40 rounded-xl md:rounded-full transition-colors text-left"
               >
                 <div className="flex items-center gap-2.5 min-w-0">
                   <Sparkles className="h-4 w-4 text-orange-500 shrink-0" />
                   <div className="flex flex-col min-w-0">
                     <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400">Catégorie</span>
-                    <span className="text-xs sm:text-sm font-bold text-zinc-900 dark:text-white truncate">
+                    <span className="text-sm md:text-base font-semibold text-zinc-900 dark:text-white truncate max-w-[120px]">
                       {selectedCategoryObj.label}
                     </span>
                   </div>
                 </div>
-                <ChevronDown className={`h-3.5 w-3.5 text-zinc-400 shrink-0 transition-transform ${isCategoryDropdownOpen ? "rotate-180 text-orange-500" : ""}`} />
+                <ChevronDown className={`h-4 w-4 text-zinc-400 shrink-0 transition-transform ${isCategoryDropdownOpen ? "rotate-180 text-orange-500" : ""}`} />
               </button>
 
               {/* Category Popover Menu */}
               {isCategoryDropdownOpen && (
-                <div className="absolute top-full left-0 md:left-1/2 md:-translate-x-1/2 mt-2 w-64 max-h-80 overflow-y-auto rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 scrollbar-hide text-left">
-                  <div className="px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-zinc-400 border-b border-zinc-100 dark:border-zinc-800 mb-1">
+                <div className="absolute top-full left-0 md:left-1/2 md:-translate-x-1/2 mt-2 w-72 max-h-96 overflow-y-auto rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 scrollbar-hide text-left">
+                  <div className="px-4 py-2 text-[11px] font-black uppercase tracking-wider text-zinc-400 border-b border-zinc-100 dark:border-zinc-800 mb-2">
                     Sélectionner une catégorie
                   </div>
                   {CATEGORIES_DATA.map((c) => {
@@ -604,17 +606,17 @@ export default function HomeClient({
                           setSelectedCategory(c.id);
                           setIsCategoryDropdownOpen(false);
                         }}
-                        className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition-all ${
+                        className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
                           isSelected
-                            ? "bg-orange-500 text-white shadow-sm"
+                            ? "bg-orange-500 text-white shadow-md"
                             : "hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200"
                         }`}
                       >
-                        <div className="flex items-center gap-2.5">
-                          <Icon className={`h-4 w-4 ${isSelected ? "text-white" : c.color}`} />
+                        <div className="flex items-center gap-3">
+                          <Icon className={`h-5 w-5 ${isSelected ? "text-white" : c.color}`} />
                           <span>{c.label}</span>
                         </div>
-                        {isSelected && <Check className="h-4 w-4 text-white" />}
+                        {isSelected && <Check className="h-5 w-5 text-white" />}
                       </button>
                     );
                   })}
@@ -622,34 +624,34 @@ export default function HomeClient({
               )}
             </div>
 
-            <div className="hidden md:block w-px h-8 bg-zinc-200 dark:bg-zinc-800" />
+            <div className="hidden md:block w-px h-8 bg-zinc-200 dark:border-zinc-800 shrink-0" />
 
             {/* 3. Custom City Popover Dropdown (No Native Select!) */}
-            <div ref={cityDropdownRef} className="relative w-full md:w-44">
+            <div ref={cityDropdownRef} className="relative shrink-0">
               <button
                 type="button"
                 onClick={() => {
                   setIsCityDropdownOpen(!isCityDropdownOpen);
                   setIsCategoryDropdownOpen(false);
                 }}
-                className="w-full flex items-center justify-between px-4 py-2 hover:bg-zinc-50 dark:hover:bg-zinc-800/40 rounded-full transition-colors text-left"
+                className="w-full md:w-auto flex items-center justify-between md:justify-start gap-2.5 px-4 py-3 md:py-2.5 hover:bg-zinc-50 dark:hover:bg-zinc-800/40 rounded-xl md:rounded-full transition-colors text-left"
               >
                 <div className="flex items-center gap-2.5 min-w-0">
                   <MapPin className="h-4 w-4 text-orange-500 shrink-0" />
                   <div className="flex flex-col min-w-0">
                     <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400">Ville</span>
-                    <span className="text-xs sm:text-sm font-bold text-zinc-900 dark:text-white truncate">
+                    <span className="text-sm md:text-base font-semibold text-zinc-900 dark:text-white truncate max-w-[110px]">
                       {selectedCity}
                     </span>
                   </div>
                 </div>
-                <ChevronDown className={`h-3.5 w-3.5 text-zinc-400 shrink-0 transition-transform ${isCityDropdownOpen ? "rotate-180 text-orange-500" : ""}`} />
+                <ChevronDown className={`h-4 w-4 text-zinc-400 shrink-0 transition-transform ${isCityDropdownOpen ? "rotate-180 text-orange-500" : ""}`} />
               </button>
 
               {/* City Popover Menu */}
               {isCityDropdownOpen && (
-                <div className="absolute top-full left-0 md:right-0 md:left-auto mt-2 w-60 max-h-80 overflow-y-auto rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 scrollbar-hide text-left">
-                  <div className="px-3 py-1.5 text-[10px] font-black uppercase tracking-wider text-zinc-400 border-b border-zinc-100 dark:border-zinc-800 mb-1">
+                <div className="absolute top-full left-0 md:right-0 md:left-auto mt-2 w-64 max-h-96 overflow-y-auto rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 scrollbar-hide text-left">
+                  <div className="px-4 py-2 text-[11px] font-black uppercase tracking-wider text-zinc-400 border-b border-zinc-100 dark:border-zinc-800 mb-2">
                     Villes marocaines
                   </div>
                   {MOROCCAN_CITIES.map((city) => {
@@ -662,17 +664,17 @@ export default function HomeClient({
                           setSelectedCity(city);
                           setIsCityDropdownOpen(false);
                         }}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all ${
+                        className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
                           isSelected
-                            ? "bg-orange-500 text-white shadow-sm"
+                            ? "bg-orange-500 text-white shadow-md"
                             : "hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200"
                         }`}
                       >
-                        <div className="flex items-center gap-2">
-                          <MapPin className={`h-3.5 w-3.5 ${isSelected ? "text-white" : "text-zinc-400"}`} />
+                        <div className="flex items-center gap-2.5">
+                          <MapPin className={`h-4 w-4 ${isSelected ? "text-white" : "text-zinc-400"}`} />
                           <span>{city}</span>
                         </div>
-                        {isSelected && <Check className="h-4 w-4 text-white" />}
+                        {isSelected && <Check className="h-5 w-5 text-white" />}
                       </button>
                     );
                   })}
@@ -680,20 +682,20 @@ export default function HomeClient({
               )}
             </div>
 
-            {/* 4. Search Submit Button */}
+            {/* 4. Search Submit Button - Compact and Perfectly Proportional */}
             <button
               type="submit"
-              className="w-full md:w-auto px-7 py-3.5 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-black text-xs sm:text-sm uppercase tracking-wider shadow-lg shadow-orange-500/25 transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2 shrink-0 cursor-pointer whitespace-nowrap"
+              className="w-full md:w-auto shrink-0 h-12 md:h-11 px-6 rounded-xl md:rounded-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-black text-sm uppercase tracking-wider shadow-lg shadow-orange-500/30 transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap"
             >
-              <Search className="h-4 w-4" />
+              <Search className="h-5 w-5" />
               <span>Trouver</span>
             </button>
           </form>
 
           {/* Popular Trending Tags */}
-          <div className="flex flex-wrap items-center justify-center gap-1.5 mt-4 text-[11px]">
-            <span className="font-bold text-zinc-400 flex items-center gap-1">
-              <TrendingUp className="h-3 w-3 text-orange-500" /> Populaire :
+          <div className="flex flex-wrap items-center justify-center gap-2 mt-6 text-sm">
+            <span className="font-semibold text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
+              <TrendingUp className="h-4 w-4 text-orange-500" /> Populaire :
             </span>
             {POPULAR_SEARCH_TAGS.map((tag) => (
               <button
@@ -703,7 +705,7 @@ export default function HomeClient({
                   setSearchQuery(tag);
                   listingsSectionRef.current?.scrollIntoView({ behavior: "smooth" });
                 }}
-                className="px-2.5 py-0.5 rounded-full bg-white/80 dark:bg-zinc-900/80 border border-zinc-200/80 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 font-semibold hover:border-orange-500 hover:text-orange-600 dark:hover:text-orange-400 transition-colors"
+                className="px-4 py-1.5 rounded-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm border border-zinc-200/80 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 font-semibold hover:border-orange-500 hover:text-orange-600 dark:hover:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-950/20 transition-all shadow-sm"
               >
                 {tag}
               </button>
@@ -711,44 +713,44 @@ export default function HomeClient({
           </div>
 
           {/* Trust Metrics Strip */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 max-w-3xl mx-auto mt-6 sm:mt-8">
-            <div className="flex items-center gap-2 p-2.5 rounded-xl bg-white/70 dark:bg-zinc-900/60 border border-zinc-200/60 dark:border-zinc-800/60 text-left">
-              <div className="h-8 w-8 rounded-lg bg-orange-500/10 text-orange-600 dark:text-orange-400 flex items-center justify-center shrink-0">
-                <Package className="h-4 w-4" />
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-4xl mx-auto mt-8 sm:mt-10">
+            <div className="flex items-center gap-3 p-4 rounded-2xl bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm border border-zinc-200/60 dark:border-zinc-800/60 shadow-lg shadow-zinc-200/10 dark:shadow-none text-left hover:shadow-xl hover:scale-105 transition-all duration-300">
+              <div className="h-10 w-10 rounded-xl bg-orange-500/10 text-orange-600 dark:text-orange-400 flex items-center justify-center shrink-0">
+                <Package className="h-5 w-5" />
               </div>
               <div className="min-w-0">
-                <div className="text-xs sm:text-sm font-black text-zinc-900 dark:text-white truncate">+50,000</div>
-                <div className="text-[10px] font-bold text-zinc-500 truncate">Annonces</div>
+                <div className="text-sm sm:text-base font-black text-zinc-900 dark:text-white truncate">+50,000</div>
+                <div className="text-[11px] font-semibold text-zinc-500 truncate">Annonces</div>
               </div>
             </div>
 
-            <div className="flex items-center gap-2 p-2.5 rounded-xl bg-white/70 dark:bg-zinc-900/60 border border-zinc-200/60 dark:border-zinc-800/60 text-left">
-              <div className="h-8 w-8 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
-                <ShieldCheck className="h-4 w-4" />
+            <div className="flex items-center gap-3 p-4 rounded-2xl bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm border border-zinc-200/60 dark:border-zinc-800/60 shadow-lg shadow-zinc-200/10 dark:shadow-none text-left hover:shadow-xl hover:scale-105 transition-all duration-300">
+              <div className="h-10 w-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                <ShieldCheck className="h-5 w-5" />
               </div>
               <div className="min-w-0">
-                <div className="text-xs sm:text-sm font-black text-zinc-900 dark:text-white truncate">100%</div>
-                <div className="text-[10px] font-bold text-zinc-500 truncate">Sécurisé</div>
+                <div className="text-sm sm:text-base font-black text-zinc-900 dark:text-white truncate">100%</div>
+                <div className="text-[11px] font-semibold text-zinc-500 truncate">Sécurisé</div>
               </div>
             </div>
 
-            <div className="flex items-center gap-2 p-2.5 rounded-xl bg-white/70 dark:bg-zinc-900/60 border border-zinc-200/60 dark:border-zinc-800/60 text-left">
-              <div className="h-8 w-8 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
-                <MapPin className="h-4 w-4" />
+            <div className="flex items-center gap-3 p-4 rounded-2xl bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm border border-zinc-200/60 dark:border-zinc-800/60 shadow-lg shadow-zinc-200/10 dark:shadow-none text-left hover:shadow-xl hover:scale-105 transition-all duration-300">
+              <div className="h-10 w-10 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                <MapPin className="h-5 w-5" />
               </div>
               <div className="min-w-0">
-                <div className="text-xs sm:text-sm font-black text-zinc-900 dark:text-white truncate">30+ Villes</div>
-                <div className="text-[10px] font-bold text-zinc-500 truncate">Au Maroc</div>
+                <div className="text-sm sm:text-base font-black text-zinc-900 dark:text-white truncate">30+ Villes</div>
+                <div className="text-[11px] font-semibold text-zinc-500 truncate">Au Maroc</div>
               </div>
             </div>
 
-            <div className="flex items-center gap-2 p-2.5 rounded-xl bg-white/70 dark:bg-zinc-900/60 border border-zinc-200/60 dark:border-zinc-800/60 text-left">
-              <div className="h-8 w-8 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
-                <Zap className="h-4 w-4" />
+            <div className="flex items-center gap-3 p-4 rounded-2xl bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm border border-zinc-200/60 dark:border-zinc-800/60 shadow-lg shadow-zinc-200/10 dark:shadow-none text-left hover:shadow-xl hover:scale-105 transition-all duration-300">
+              <div className="h-10 w-10 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+                <Zap className="h-5 w-5" />
               </div>
               <div className="min-w-0">
-                <div className="text-xs sm:text-sm font-black text-zinc-900 dark:text-white truncate">Gratuit</div>
-                <div className="text-[10px] font-bold text-zinc-500 truncate">En 2 min</div>
+                <div className="text-sm sm:text-base font-black text-zinc-900 dark:text-white truncate">Gratuit</div>
+                <div className="text-[11px] font-semibold text-zinc-500 truncate">En 2 min</div>
               </div>
             </div>
           </div>
@@ -758,22 +760,22 @@ export default function HomeClient({
       {/* =========================================================================
           2. HORIZONTAL CATEGORIES BAR (Swipeable & Native feel)
          ========================================================================= */}
-      <section className="w-full max-w-5xl mx-auto px-3 sm:px-6 pt-5 pb-3">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm sm:text-base font-black text-zinc-900 dark:text-white tracking-tight">
+      <section className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white tracking-tight">
             Catégories
           </h2>
           <Link
             href="/marketplace"
-            className="text-[11px] font-black text-orange-600 dark:text-orange-400 hover:text-orange-700 flex items-center gap-1 uppercase tracking-wider"
+            className="text-xs sm:text-sm font-bold text-orange-600 dark:text-orange-400 hover:text-orange-700 flex items-center gap-1.5 uppercase tracking-wider transition-colors"
           >
             <span>Tout voir</span>
-            <ArrowRight className="h-3 w-3" />
+            <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
 
         {/* Smooth horizontal scroll */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 pt-1 scrollbar-hide no-scrollbar -mx-3 px-3 sm:mx-0 sm:px-0">
+        <div className="flex items-center gap-2.5 overflow-x-auto pb-3 pt-1 scrollbar-hide no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
           {CATEGORIES_DATA.map((cat) => {
             const Icon = cat.icon;
             const isSelected = selectedCategory === cat.id;
@@ -786,14 +788,14 @@ export default function HomeClient({
                   setSelectedCategory(cat.id);
                   listingsSectionRef.current?.scrollIntoView({ behavior: "smooth" });
                 }}
-                className={`group flex items-center gap-2 whitespace-nowrap rounded-xl sm:rounded-2xl px-3.5 py-2 text-xs font-bold transition-all shrink-0 cursor-pointer ${
+                className={`group flex items-center gap-2.5 whitespace-nowrap rounded-2xl px-4 py-3 text-sm font-semibold transition-all shrink-0 cursor-pointer ${
                   isSelected
-                    ? "bg-orange-500 text-white shadow-md shadow-orange-500/25 scale-[1.02]"
-                    : "bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:border-orange-500/40 hover:text-orange-600"
+                    ? "bg-orange-500 text-white shadow-lg shadow-orange-500/30 scale-105"
+                    : "bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:border-orange-500/50 hover:text-orange-600 hover:shadow-md"
                 }`}
               >
                 <Icon
-                  className={`h-3.5 w-3.5 ${
+                  className={`h-5 w-5 ${
                     isSelected ? "text-white" : `${cat.color} group-hover:scale-110 transition-transform`
                   }`}
                 />
@@ -808,17 +810,17 @@ export default function HomeClient({
           3. VIP SPOTLIGHT "À LA UNE" CAROUSEL
          ========================================================================= */}
       {featuredVipAds.length > 0 && selectedCategory === "all" && !hasActiveFilters && (
-        <section className="w-full max-w-5xl mx-auto px-3 sm:px-6 py-3">
-          <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-r from-amber-500/15 via-orange-500/10 to-amber-500/5 dark:from-amber-500/10 dark:via-orange-500/5 dark:to-transparent p-3.5 sm:p-5 border border-amber-500/20 shadow-sm relative group/carousel">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2.5">
-                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm">
-                  <Flame className="h-4 w-4" />
+        <section className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+          <div className="rounded-3xl bg-gradient-to-r from-amber-500/10 via-orange-500/5 to-amber-500/10 dark:from-amber-500/10 dark:via-orange-500/5 dark:to-amber-500/10 p-4 sm:p-6 border border-amber-500/20 dark:border-amber-500/30 shadow-xl shadow-amber-500/5 dark:shadow-amber-500/10 relative group/carousel">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg shadow-orange-500/30">
+                  <Flame className="h-5 w-5" />
                 </div>
                 <div>
-                  <h2 className="text-sm sm:text-base font-black text-zinc-950 dark:text-white tracking-tight flex items-center gap-1.5">
+                  <h2 className="text-base sm:text-lg font-black text-zinc-950 dark:text-white tracking-tight flex items-center gap-2">
                     <span>Sélection VIP Exclusive</span>
-                    <span className="text-[9px] font-black uppercase tracking-wider bg-orange-500 text-white px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] font-black uppercase tracking-wider bg-gradient-to-r from-orange-500 to-amber-500 text-white px-3 py-1 rounded-full shadow-md">
                       À la une
                     </span>
                   </h2>
@@ -826,32 +828,32 @@ export default function HomeClient({
               </div>
 
               {/* Prev / Next controls */}
-              <div className="hidden sm:flex items-center gap-1.5">
+              <div className="hidden sm:flex items-center gap-2">
                 <button
                   type="button"
                   onClick={scrollPrev}
-                  className="w-8 h-8 rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm flex items-center justify-center text-zinc-700 dark:text-zinc-200 hover:text-orange-600 transition-all active:scale-95 cursor-pointer"
+                  className="w-10 h-10 rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-lg flex items-center justify-center text-zinc-700 dark:text-zinc-200 hover:text-orange-600 hover:border-orange-500 transition-all active:scale-95 cursor-pointer"
                   aria-label="Précédent"
                 >
-                  <ChevronLeft className="w-4 h-4" />
+                  <ChevronLeft className="w-5 h-5" />
                 </button>
                 <button
                   type="button"
                   onClick={scrollNext}
-                  className="w-8 h-8 rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-sm flex items-center justify-center text-zinc-700 dark:text-zinc-200 hover:text-orange-600 transition-all active:scale-95 cursor-pointer"
+                  className="w-10 h-10 rounded-full bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-lg flex items-center justify-center text-zinc-700 dark:text-zinc-200 hover:text-orange-600 hover:border-orange-500 transition-all active:scale-95 cursor-pointer"
                   aria-label="Suivant"
                 >
-                  <ChevronRight className="w-4 h-4" />
+                  <ChevronRight className="w-5 h-5" />
                 </button>
               </div>
             </div>
 
             <div className="overflow-hidden" ref={emblaRef}>
-              <div className="flex gap-2.5 sm:gap-3 pb-1">
+              <div className="flex gap-3 sm:gap-4 pb-2">
                 {featuredVipAds.map((ad) => (
                   <div
                     key={`vip-${ad.id}`}
-                    className="flex-[0_0_68%] min-[360px]:flex-[0_0_58%] min-[420px]:flex-[0_0_46%] sm:flex-[0_0_31%] md:flex-[0_0_24%] min-w-0"
+                    className="flex-[0_0_70%] min-[380px]:flex-[0_0_60%] min-[440px]:flex-[0_0_48%] sm:flex-[0_0_32%] md:flex-[0_0_25%] min-w-0"
                   >
                     <HomeAdCard ad={toAdCard(ad)} priority />
                   </div>
@@ -865,13 +867,13 @@ export default function HomeClient({
       {/* =========================================================================
           4. THE CORE VIRTUALIZED FEED (@tanstack/react-virtual)
          ========================================================================= */}
-      <section ref={listingsSectionRef} className="w-full max-w-5xl mx-auto px-3 sm:px-6 py-4">
+      <section ref={listingsSectionRef} className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         {error && (
-          <div className="alert alert-error mb-4 rounded-xl shadow-sm text-xs">
+          <div className="alert alert-error mb-6 rounded-2xl shadow-lg text-sm p-4">
             <span className="font-bold">Erreur : {error}</span>
             <button
               onClick={() => window.location.reload()}
-              className="btn btn-error btn-xs rounded-lg"
+              className="btn btn-error btn-sm rounded-xl ml-4"
             >
               Actualiser
             </button>
@@ -879,16 +881,16 @@ export default function HomeClient({
         )}
 
         {/* FEED TOP CONTROLS BAR: Responsive wrap on mobile */}
-        <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 p-3 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 shadow-sm">
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800/80 shadow-xl shadow-zinc-200/10 dark:shadow-none">
           {/* Feed Tabs Switcher */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-hide no-scrollbar">
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-hide no-scrollbar">
             <button
               type="button"
               onClick={() => setFeedTab("all")}
-              className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all whitespace-nowrap cursor-pointer ${
+              className={`px-4 py-2 rounded-2xl text-sm font-bold transition-all whitespace-nowrap cursor-pointer ${
                 feedTab === "all"
-                  ? "bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-sm"
-                  : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200"
+                  ? "bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 shadow-lg"
+                  : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700"
               }`}
             >
               ✨ Toutes
@@ -897,10 +899,10 @@ export default function HomeClient({
             <button
               type="button"
               onClick={() => setFeedTab("featured")}
-              className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all whitespace-nowrap cursor-pointer ${
+              className={`px-4 py-2 rounded-2xl text-sm font-bold transition-all whitespace-nowrap cursor-pointer ${
                 feedTab === "featured"
-                  ? "bg-orange-500 text-white shadow-sm"
-                  : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200"
+                  ? "bg-orange-500 text-white shadow-lg shadow-orange-500/30"
+                  : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700"
               }`}
             >
               🔥 À la une
@@ -909,10 +911,10 @@ export default function HomeClient({
             <button
               type="button"
               onClick={() => setFeedTab("nearby")}
-              className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all whitespace-nowrap cursor-pointer ${
+              className={`px-4 py-2 rounded-2xl text-sm font-bold transition-all whitespace-nowrap cursor-pointer ${
                 feedTab === "nearby"
-                  ? "bg-emerald-600 text-white shadow-sm"
-                  : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200"
+                  ? "bg-emerald-600 text-white shadow-lg shadow-emerald-500/30"
+                  : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700"
               }`}
             >
               📍 Proches
@@ -920,9 +922,9 @@ export default function HomeClient({
           </div>
 
           {/* Right Toolbar: Counter and Custom Sort Dropdown */}
-          <div className="flex items-center justify-between sm:justify-end gap-2.5">
-            <span className="text-[11px] font-bold text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-2.5 py-1 rounded-lg flex items-center gap-1 shrink-0">
-              <CheckCircle2 className="h-3 w-3 text-orange-500" />
+          <div className="flex items-center justify-between sm:justify-end gap-3">
+            <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 shrink-0">
+              <CheckCircle2 className="h-4 w-4 text-orange-500" />
               {filteredAds.length} annonce{filteredAds.length !== 1 ? "s" : ""}
             </span>
 
@@ -931,15 +933,15 @@ export default function HomeClient({
               <button
                 type="button"
                 onClick={() => setIsSortDropdownOpen(!isSortDropdownOpen)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-[11px] sm:text-xs font-bold text-zinc-800 dark:text-zinc-200 transition-colors cursor-pointer"
+                className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-sm font-bold text-zinc-800 dark:text-zinc-200 transition-colors cursor-pointer"
               >
-                <SlidersHorizontal className="h-3 w-3 text-zinc-400" />
+                <SlidersHorizontal className="h-4 w-4 text-zinc-400" />
                 <span>{currentSortObj.label}</span>
-                <ChevronDown className={`h-3 w-3 text-zinc-400 transition-transform ${isSortDropdownOpen ? "rotate-180 text-orange-500" : ""}`} />
+                <ChevronDown className={`h-4 w-4 text-zinc-400 transition-transform ${isSortDropdownOpen ? "rotate-180 text-orange-500" : ""}`} />
               </button>
 
               {isSortDropdownOpen && (
-                <div className="absolute right-0 top-full mt-1.5 w-48 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl p-1.5 z-40 animate-in fade-in zoom-in-95 text-left">
+                <div className="absolute right-0 top-full mt-2 w-52 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl p-2 z-40 animate-in fade-in zoom-in-95 text-left">
                   {SORT_OPTIONS.map((opt) => {
                     const isSelected = sortBy === opt.id;
                     return (
@@ -950,14 +952,14 @@ export default function HomeClient({
                           setSortBy(opt.id as any);
                           setIsSortDropdownOpen(false);
                         }}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-bold transition-colors ${
+                        className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-colors ${
                           isSelected
                             ? "bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400"
                             : "hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200"
                         }`}
                       >
                         <span>{opt.label}</span>
-                        {isSelected && <Check className="h-3.5 w-3.5 text-orange-600" />}
+                        {isSelected && <Check className="h-4 w-4 text-orange-600" />}
                       </button>
                     );
                   })}
@@ -969,30 +971,30 @@ export default function HomeClient({
 
         {/* Active Filters Tag Pills */}
         {hasActiveFilters && (
-          <div className="mb-3 flex flex-wrap items-center gap-1.5 text-[11px]">
-            <span className="font-bold text-zinc-400">Filtres :</span>
+          <div className="mb-4 flex flex-wrap items-center gap-2 text-sm">
+            <span className="font-semibold text-zinc-500 dark:text-zinc-400">Filtres :</span>
             {selectedCategory !== "all" && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-orange-100 dark:bg-orange-950/50 text-orange-700 dark:text-orange-300 font-bold">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-orange-100 dark:bg-orange-950/50 text-orange-700 dark:text-orange-300 font-semibold">
                 {selectedCategoryObj.label}
-                <X className="h-3 w-3 cursor-pointer hover:scale-110" onClick={() => setSelectedCategory("all")} />
+                <X className="h-4 w-4 cursor-pointer hover:scale-110" onClick={() => setSelectedCategory("all")} />
               </span>
             )}
             {selectedCity !== "Toutes les villes" && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 font-bold">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-100 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 font-semibold">
                 {selectedCity}
-                <X className="h-3 w-3 cursor-pointer hover:scale-110" onClick={() => setSelectedCity("Toutes les villes")} />
+                <X className="h-4 w-4 cursor-pointer hover:scale-110" onClick={() => setSelectedCity("Toutes les villes")} />
               </span>
             )}
             {searchQuery && (
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-purple-100 dark:bg-purple-950/50 text-purple-700 dark:text-purple-300 font-bold">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-purple-100 dark:bg-purple-950/50 text-purple-700 dark:text-purple-300 font-semibold">
                 &quot;{searchQuery}&quot;
-                <X className="h-3 w-3 cursor-pointer hover:scale-110" onClick={() => setSearchQuery("")} />
+                <X className="h-4 w-4 cursor-pointer hover:scale-110" onClick={() => setSearchQuery("")} />
               </span>
             )}
             <button
               type="button"
               onClick={handleClearFilters}
-              className="text-[11px] font-bold text-red-500 hover:text-red-700 underline ml-1 cursor-pointer"
+              className="text-sm font-bold text-red-500 hover:text-red-700 underline ml-2 cursor-pointer"
             >
               Effacer
             </button>
@@ -1001,16 +1003,16 @@ export default function HomeClient({
 
         {/* THE VIRTUALIZED GRID */}
         {loading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-4">
-            {[...Array(6)].map((_, i) => (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
+            {[...Array(8)].map((_, i) => (
               <div
                 key={i}
-                className="rounded-2xl border border-zinc-100 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-2.5 space-y-2.5"
+                className="rounded-3xl border border-zinc-200/80 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3 space-y-3 shadow-sm"
               >
-                <div className="aspect-[4/3] rounded-xl bg-zinc-200 dark:bg-zinc-800 animate-pulse" />
-                <div className="h-3.5 w-3/4 rounded bg-zinc-200 dark:bg-zinc-800 animate-pulse" />
-                <div className="h-4 w-1/3 rounded bg-zinc-200 dark:bg-zinc-800 animate-pulse" />
-                <div className="h-3 w-1/2 rounded bg-zinc-100 dark:bg-zinc-800/60 animate-pulse" />
+                <div className="aspect-[4/3] rounded-2xl bg-zinc-200 dark:bg-zinc-800 animate-pulse" />
+                <div className="h-4 w-3/4 rounded-xl bg-zinc-200 dark:bg-zinc-800 animate-pulse" />
+                <div className="h-5 w-1/3 rounded-xl bg-zinc-200 dark:bg-zinc-800 animate-pulse" />
+                <div className="h-3.5 w-1/2 rounded-xl bg-zinc-100 dark:bg-zinc-800/60 animate-pulse" />
               </div>
             ))}
           </div>
@@ -1026,28 +1028,28 @@ export default function HomeClient({
       {/* =========================================================================
           5. MOROCCAN CITIES EXPLORER
          ========================================================================= */}
-      <section className="w-full max-w-5xl mx-auto px-3 sm:px-6 py-6 sm:py-10">
-        <div className="rounded-2xl sm:rounded-3xl bg-white dark:bg-zinc-900 p-4 sm:p-7 border border-zinc-200/80 dark:border-zinc-800 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
+      <section className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <div className="rounded-3xl bg-white dark:bg-zinc-900 p-6 sm:p-8 border border-zinc-200/80 dark:border-zinc-800/80 shadow-xl shadow-zinc-200/10 dark:shadow-none">
+          <div className="flex items-center justify-between mb-6">
             <div>
-              <div className="inline-flex items-center gap-1 text-[10px] sm:text-xs font-black text-orange-600 dark:text-orange-400 uppercase tracking-wider">
-                <Compass className="h-3.5 w-3.5" />
+              <div className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-black text-orange-600 dark:text-orange-400 uppercase tracking-wider mb-2">
+                <Compass className="h-4 w-4" />
                 Marché Local
               </div>
-              <h2 className="text-sm sm:text-lg font-black text-zinc-900 dark:text-white tracking-tight">
+              <h2 className="text-xl sm:text-2xl font-black text-zinc-900 dark:text-white tracking-tight">
                 Explorez par ville
               </h2>
             </div>
             <Link
               href="/cities"
-              className="text-[11px] font-black text-orange-600 dark:text-orange-400 hover:text-orange-700 flex items-center gap-1 uppercase tracking-wider"
+              className="text-sm font-bold text-orange-600 dark:text-orange-400 hover:text-orange-700 flex items-center gap-2 uppercase tracking-wider transition-colors"
             >
               <span>Villes</span>
-              <ArrowRight className="h-3 w-3" />
+              <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 sm:gap-2.5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-4">
             {[
               { name: "Casablanca", icon: "🏙️", count: "Économie & Tech" },
               { name: "Rabat", icon: "🏛️", count: "Capitale & Pro" },
@@ -1063,16 +1065,16 @@ export default function HomeClient({
                   setSelectedCity(city.name);
                   listingsSectionRef.current?.scrollIntoView({ behavior: "smooth" });
                 }}
-                className="group p-2.5 sm:p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/70 dark:border-zinc-700/70 hover:border-orange-500 hover:bg-orange-500/5 transition-all text-left flex flex-col justify-between cursor-pointer"
+                className="group p-4 sm:p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/70 dark:border-zinc-700/70 hover:border-orange-500 hover:bg-orange-50 dark:hover:bg-orange-950/20 hover:shadow-lg hover:scale-105 transition-all duration-300 text-left flex flex-col justify-between cursor-pointer"
               >
-                <div className="text-xl mb-1 group-hover:scale-110 transition-transform">
+                <div className="text-2xl sm:text-3xl mb-2 group-hover:scale-110 transition-transform">
                   {city.icon}
                 </div>
                 <div>
-                  <h3 className="text-xs font-black text-zinc-900 dark:text-white group-hover:text-orange-600 transition-colors">
+                  <h3 className="text-sm font-black text-zinc-900 dark:text-white group-hover:text-orange-600 transition-colors">
                     {city.name}
                   </h3>
-                  <p className="text-[9px] font-bold text-zinc-400 truncate">
+                  <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 truncate">
                     {city.count}
                   </p>
                 </div>
