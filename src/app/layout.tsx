@@ -139,6 +139,11 @@ export default function RootLayout({
         `}} />
         <meta name="google-adsense-account" content="ca-pub-4945284817184050" />
         <meta name="google-adsense-platform-account" content="ca-host-pub-6129854895232620" />
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4945284817184050"
+          crossOrigin="anonymous"
+        />
 
         <script
           type="application/ld+json"
@@ -233,12 +238,6 @@ export default function RootLayout({
           src="https://fundingchoicesmessages.google.com/i/pub-4945284817184050?ers=1"
         />
 
-        <Script
-          id="google-adsense"
-          strategy="lazyOnload"
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4945284817184050"
-          crossOrigin="anonymous"
-        />
 
         <script
           type="application/ld+json"
