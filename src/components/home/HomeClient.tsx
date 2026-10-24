@@ -35,6 +35,7 @@ import {
   TrendingUp,
   X,
   Compass,
+  PlusCircle,
 } from "lucide-react";
 import { getCachedAds, saveAds } from "@/lib/pwa/jootiya-db";
 import { supabase } from "@/lib/supabaseClient";
@@ -222,6 +223,13 @@ export default function HomeClient({
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
   const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
   const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
+  const [citySearchText, setCitySearchText] = useState("");
+
+  const filteredCities = useMemo(() => {
+    if (!citySearchText.trim()) return MOROCCAN_CITIES;
+    const q = citySearchText.toLowerCase().trim();
+    return MOROCCAN_CITIES.filter((c) => c.toLowerCase().includes(q));
+  }, [citySearchText]);
 
   const categoryDropdownRef = useRef<HTMLDivElement>(null);
   const cityDropdownRef = useRef<HTMLDivElement>(null);
@@ -504,47 +512,47 @@ export default function HomeClient({
   }, [sortBy]);
 
   return (
-    <div dir="ltr" className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950 font-sans text-zinc-900 dark:text-zinc-100">
+    <div dir="ltr" className="min-h-screen bg-slate-50/60 dark:bg-zinc-950 font-sans text-zinc-900 dark:text-zinc-100 selection:bg-orange-500 selection:text-white">
       
       {/* =========================================================================
-          1. HERO SECTION WITH LUXURY AIRBNB-STYLE CUSTOM DROPDOWNS (No Native Selects)
+          1. HERO SECTION WITH AIRBNB-STYLE CUSTOM SEARCH CAPSULE
          ========================================================================= */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-orange-50 via-white to-amber-50 dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-950 pt-6 sm:pt-16 pb-8 sm:pb-16 border-b border-zinc-200/50 dark:border-zinc-800/50">
-        {/* Ambient Background Gradients */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-tr from-orange-500/10 via-amber-400/5 to-transparent rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 right-0 w-[600px] h-[300px] bg-gradient-to-bl from-amber-500/5 via-orange-400/5 to-transparent rounded-full blur-3xl pointer-events-none" />
+      <section className="relative overflow-hidden bg-gradient-to-b from-orange-50/80 via-white to-slate-50/40 dark:from-zinc-950 dark:via-zinc-900/90 dark:to-zinc-950 pt-8 sm:pt-16 pb-10 sm:pb-16 border-b border-zinc-200/60 dark:border-zinc-800/60">
+        {/* Ambient Glowing Meshes */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-gradient-to-tr from-orange-400/15 via-amber-300/10 to-transparent rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-10 right-10 w-[500px] h-[250px] bg-gradient-to-bl from-amber-400/10 via-orange-500/10 to-transparent rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Moroccan Flagship Pill Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm border border-orange-500/20 shadow-lg shadow-orange-500/5 text-[11px] sm:text-xs font-black tracking-widest text-zinc-800 dark:text-zinc-200 mb-4 sm:mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border border-orange-500/20 shadow-sm text-[11px] sm:text-xs font-black tracking-wider text-zinc-800 dark:text-zinc-200 mb-5 sm:mb-6 hover:border-orange-500/40 transition-colors">
             <span className="text-sm">🇲🇦</span>
-            <span className="bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent font-extrabold uppercase">
-              Le N°1 au Maroc
+            <span className="bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 bg-clip-text text-transparent font-black uppercase">
+              Le N°1 des Petites Annonces au Maroc
             </span>
-            <span className="flex h-2 w-2 rounded-full bg-orange-500 animate-pulse shadow-sm shadow-orange-500/50" />
+            <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse shadow-sm shadow-emerald-500/50" />
           </div>
 
-          {/* Responsive Headline */}
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-zinc-950 dark:text-white tracking-tight leading-[1.1] mb-3 sm:mb-4">
+          {/* Headline */}
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-zinc-950 dark:text-white tracking-tight leading-[1.12] mb-4">
             Achetez & Vendez <br className="hidden sm:inline" />
             <span className="bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500 bg-clip-text text-transparent">
               en toute confiance
             </span>
           </h1>
 
-          <p className="text-sm sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto font-medium mb-6 sm:mb-8 leading-relaxed">
-            Découvrez des milliers d'annonces vérifiées près de chez vous. Téléphones, voitures, immobilier, mode et plus encore.
+          <p className="text-sm sm:text-base lg:text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto font-medium mb-7 sm:mb-9 leading-relaxed">
+            Découvrez des milliers d'annonces vérifiées chaque jour partout au Maroc. Voitures, téléphones, immobilier, mode et plus.
           </p>
 
           {/* =========================================================================
-              AIRBNB-STYLE CUSTOM SEARCH CAPSULE (100% Custom Dropdowns, Zero Ugly Borders)
+              AIRBNB-STYLE CUSTOM SEARCH CAPSULE
              ========================================================================= */}
           <form
             onSubmit={handleHeroSearchSubmit}
-            className="mx-auto w-full max-w-5xl p-1.5 md:p-2 rounded-2xl md:rounded-full bg-white/90 dark:bg-zinc-900/90 backdrop-blur-xl border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl shadow-zinc-200/20 dark:shadow-zinc-900/50 flex flex-col md:flex-row items-stretch md:items-center gap-1.5 md:gap-2 relative z-30"
+            className="mx-auto w-full max-w-4xl p-2 md:p-2.5 rounded-2xl md:rounded-full bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xl border border-zinc-200/90 dark:border-zinc-800/90 shadow-xl shadow-zinc-200/30 dark:shadow-none flex flex-col md:flex-row items-stretch md:items-center gap-2 relative z-30 transition-all hover:border-orange-500/30"
           >
-            {/* 1. Keyword Search Input Segment */}
-            <div className="relative flex-1 min-w-0 flex items-center px-4 py-3 md:py-2.5 hover:bg-zinc-50 dark:hover:bg-zinc-800/40 rounded-xl md:rounded-full transition-colors">
+            {/* 1. Keyword Input Segment */}
+            <div className="relative flex-1 min-w-0 flex items-center px-4 py-2.5 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded-xl md:rounded-full transition-colors">
               <Search className="h-4 w-4 text-orange-500 shrink-0 mr-3" />
               <div className="flex flex-col text-left w-full min-w-0">
                 <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400">Recherche</span>
@@ -552,7 +560,7 @@ export default function HomeClient({
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Que cherchez-vous ?"
+                  placeholder="Que cherchez-vous ? (ex. iPhone 16, Golf 7...)"
                   className="w-full bg-transparent text-sm md:text-base font-semibold text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none border-0 p-0 m-0"
                 />
               </div>
@@ -560,16 +568,16 @@ export default function HomeClient({
                 <button
                   type="button"
                   onClick={() => setSearchQuery("")}
-                  className="p-1.5 rounded-full text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                  className="p-1 rounded-full text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 hover:bg-zinc-200/60 dark:hover:bg-zinc-700 transition-colors"
                 >
                   <X className="h-3.5 w-3.5" />
                 </button>
               )}
             </div>
 
-            <div className="hidden md:block w-px h-8 bg-zinc-200 dark:border-zinc-800 shrink-0" />
+            <div className="hidden md:block w-px h-8 bg-zinc-200 dark:bg-zinc-800 shrink-0" />
 
-            {/* 2. Custom Category Popover Dropdown (No Native Select!) */}
+            {/* 2. Custom Category Popover Dropdown */}
             <div ref={categoryDropdownRef} className="relative shrink-0">
               <button
                 type="button"
@@ -577,13 +585,13 @@ export default function HomeClient({
                   setIsCategoryDropdownOpen(!isCategoryDropdownOpen);
                   setIsCityDropdownOpen(false);
                 }}
-                className="w-full md:w-auto flex items-center justify-between md:justify-start gap-2.5 px-4 py-3 md:py-2.5 hover:bg-zinc-50 dark:hover:bg-zinc-800/40 rounded-xl md:rounded-full transition-colors text-left"
+                className="w-full md:w-auto flex items-center justify-between md:justify-start gap-2.5 px-4 py-2.5 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded-xl md:rounded-full transition-colors text-left cursor-pointer"
               >
                 <div className="flex items-center gap-2.5 min-w-0">
                   <Sparkles className="h-4 w-4 text-orange-500 shrink-0" />
                   <div className="flex flex-col min-w-0">
                     <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400">Catégorie</span>
-                    <span className="text-sm md:text-base font-semibold text-zinc-900 dark:text-white truncate max-w-[120px]">
+                    <span className="text-sm md:text-base font-semibold text-zinc-900 dark:text-white truncate max-w-[130px]">
                       {selectedCategoryObj.label}
                     </span>
                   </div>
@@ -591,11 +599,10 @@ export default function HomeClient({
                 <ChevronDown className={`h-4 w-4 text-zinc-400 shrink-0 transition-transform ${isCategoryDropdownOpen ? "rotate-180 text-orange-500" : ""}`} />
               </button>
 
-              {/* Category Popover Menu */}
               {isCategoryDropdownOpen && (
                 <div className="absolute top-full left-0 md:left-1/2 md:-translate-x-1/2 mt-2 w-72 max-h-96 overflow-y-auto rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 scrollbar-hide text-left">
-                  <div className="px-4 py-2 text-[11px] font-black uppercase tracking-wider text-zinc-400 border-b border-zinc-100 dark:border-zinc-800 mb-2">
-                    Sélectionner une catégorie
+                  <div className="px-3 py-1.5 text-[11px] font-black uppercase tracking-wider text-zinc-400 border-b border-zinc-100 dark:border-zinc-800 mb-1">
+                    Choisir une catégorie
                   </div>
                   {CATEGORIES_DATA.map((c) => {
                     const isSelected = selectedCategory === c.id;
@@ -608,17 +615,17 @@ export default function HomeClient({
                           setSelectedCategory(c.id);
                           setIsCategoryDropdownOpen(false);
                         }}
-                        className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
+                        className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
                           isSelected
-                            ? "bg-orange-500 text-white shadow-md"
+                            ? "bg-orange-500 text-white shadow-md shadow-orange-500/20"
                             : "hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200"
                         }`}
                       >
-                        <div className="flex items-center gap-3">
-                          <Icon className={`h-5 w-5 ${isSelected ? "text-white" : c.color}`} />
+                        <div className="flex items-center gap-2.5">
+                          <Icon className={`h-4 w-4 ${isSelected ? "text-white" : c.color}`} />
                           <span>{c.label}</span>
                         </div>
-                        {isSelected && <Check className="h-5 w-5 text-white" />}
+                        {isSelected && <Check className="h-4 w-4 text-white" />}
                       </button>
                     );
                   })}
@@ -626,9 +633,9 @@ export default function HomeClient({
               )}
             </div>
 
-            <div className="hidden md:block w-px h-8 bg-zinc-200 dark:border-zinc-800 shrink-0" />
+            <div className="hidden md:block w-px h-8 bg-zinc-200 dark:bg-zinc-800 shrink-0" />
 
-            {/* 3. Custom City Popover Dropdown (No Native Select!) */}
+            {/* 3. Custom City Popover Dropdown with Search Filter */}
             <div ref={cityDropdownRef} className="relative shrink-0">
               <button
                 type="button"
@@ -636,13 +643,13 @@ export default function HomeClient({
                   setIsCityDropdownOpen(!isCityDropdownOpen);
                   setIsCategoryDropdownOpen(false);
                 }}
-                className="w-full md:w-auto flex items-center justify-between md:justify-start gap-2.5 px-4 py-3 md:py-2.5 hover:bg-zinc-50 dark:hover:bg-zinc-800/40 rounded-xl md:rounded-full transition-colors text-left"
+                className="w-full md:w-auto flex items-center justify-between md:justify-start gap-2.5 px-4 py-2.5 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded-xl md:rounded-full transition-colors text-left cursor-pointer"
               >
                 <div className="flex items-center gap-2.5 min-w-0">
                   <MapPin className="h-4 w-4 text-orange-500 shrink-0" />
                   <div className="flex flex-col min-w-0">
                     <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400">Ville</span>
-                    <span className="text-sm md:text-base font-semibold text-zinc-900 dark:text-white truncate max-w-[110px]">
+                    <span className="text-sm md:text-base font-semibold text-zinc-900 dark:text-white truncate max-w-[120px]">
                       {selectedCity}
                     </span>
                   </div>
@@ -650,13 +657,18 @@ export default function HomeClient({
                 <ChevronDown className={`h-4 w-4 text-zinc-400 shrink-0 transition-transform ${isCityDropdownOpen ? "rotate-180 text-orange-500" : ""}`} />
               </button>
 
-              {/* City Popover Menu */}
               {isCityDropdownOpen && (
-                <div className="absolute top-full left-0 md:right-0 md:left-auto mt-2 w-64 max-h-96 overflow-y-auto rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 scrollbar-hide text-left">
-                  <div className="px-4 py-2 text-[11px] font-black uppercase tracking-wider text-zinc-400 border-b border-zinc-100 dark:border-zinc-800 mb-2">
-                    Villes marocaines
+                <div className="absolute top-full left-0 md:right-0 md:left-auto mt-2 w-72 max-h-96 overflow-y-auto rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 scrollbar-hide text-left">
+                  <div className="p-2 border-b border-zinc-100 dark:border-zinc-800 mb-1">
+                    <input
+                      type="text"
+                      value={citySearchText}
+                      onChange={(e) => setCitySearchText(e.target.value)}
+                      placeholder="Filtrer une ville..."
+                      className="w-full px-3 py-1.5 text-xs font-semibold rounded-lg bg-zinc-100 dark:bg-zinc-800 border-none focus:outline-none focus:ring-1 focus:ring-orange-500"
+                    />
                   </div>
-                  {MOROCCAN_CITIES.map((city) => {
+                  {filteredCities.map((city) => {
                     const isSelected = selectedCity === city;
                     return (
                       <button
@@ -665,18 +677,19 @@ export default function HomeClient({
                         onClick={() => {
                           setSelectedCity(city);
                           setIsCityDropdownOpen(false);
+                          setCitySearchText("");
                         }}
-                        className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
+                        className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
                           isSelected
-                            ? "bg-orange-500 text-white shadow-md"
+                            ? "bg-orange-500 text-white shadow-md shadow-orange-500/20"
                             : "hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200"
                         }`}
                       >
-                        <div className="flex items-center gap-2.5">
+                        <div className="flex items-center gap-2">
                           <MapPin className={`h-4 w-4 ${isSelected ? "text-white" : "text-zinc-400"}`} />
                           <span>{city}</span>
                         </div>
-                        {isSelected && <Check className="h-5 w-5 text-white" />}
+                        {isSelected && <Check className="h-4 w-4 text-white" />}
                       </button>
                     );
                   })}
@@ -684,22 +697,22 @@ export default function HomeClient({
               )}
             </div>
 
-            {/* 4. Search Submit Button - Compact and Perfectly Proportional */}
+            {/* 4. Search Submit Button */}
             <Button
               type="submit"
               size="lg"
               variant="orange"
-              className="w-full md:w-auto shrink-0 h-12 md:h-11 rounded-xl md:rounded-full"
+              className="w-full md:w-auto shrink-0 h-11 md:h-11 rounded-xl md:rounded-full px-6 shadow-md shadow-orange-500/25 font-bold"
             >
-              <Search className="h-5 w-5" />
-              <span>Trouver</span>
+              <Search className="h-4 w-4 mr-1.5" />
+              <span>Rechercher</span>
             </Button>
           </form>
 
           {/* Popular Trending Tags */}
           <div className="flex flex-wrap items-center justify-center gap-2 mt-6 text-sm">
-            <span className="font-semibold text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5">
-              <TrendingUp className="h-4 w-4 text-orange-500" /> Populaire :
+            <span className="font-semibold text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5 text-xs">
+              <TrendingUp className="h-3.5 w-3.5 text-orange-500" /> Populaire :
             </span>
             {POPULAR_SEARCH_TAGS.map((tag) => (
               <button
@@ -709,7 +722,7 @@ export default function HomeClient({
                   setSearchQuery(tag);
                   listingsSectionRef.current?.scrollIntoView({ behavior: "smooth" });
                 }}
-                className="px-4 py-1.5 rounded-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm border border-zinc-200/80 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 font-semibold hover:border-orange-500 hover:text-orange-600 dark:hover:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-950/20 transition-all shadow-sm"
+                className="px-3.5 py-1 rounded-full bg-white/90 dark:bg-zinc-900/90 backdrop-blur-sm border border-zinc-200/80 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 text-xs font-semibold hover:border-orange-500 hover:text-orange-600 dark:hover:text-orange-400 hover:bg-orange-50/50 dark:hover:bg-orange-950/20 transition-all shadow-sm cursor-pointer"
               >
                 {tag}
               </button>
@@ -718,43 +731,43 @@ export default function HomeClient({
 
           {/* Trust Metrics Strip */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-4xl mx-auto mt-8 sm:mt-10">
-            <div className="flex items-center gap-3 p-4 rounded-2xl bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm border border-zinc-200/60 dark:border-zinc-800/60 shadow-lg shadow-zinc-200/10 dark:shadow-none text-left hover:shadow-xl hover:scale-105 transition-all duration-300">
+            <div className="flex items-center gap-3 p-3.5 sm:p-4 rounded-2xl bg-white/90 dark:bg-zinc-900/90 backdrop-blur-sm border border-zinc-200/80 dark:border-zinc-800/80 shadow-sm text-left hover:shadow-md hover:border-orange-500/30 transition-all">
               <div className="h-10 w-10 rounded-xl bg-orange-500/10 text-orange-600 dark:text-orange-400 flex items-center justify-center shrink-0">
                 <Package className="h-5 w-5" />
               </div>
               <div className="min-w-0">
                 <div className="text-sm sm:text-base font-black text-zinc-900 dark:text-white truncate">+50,000</div>
-                <div className="text-[11px] font-semibold text-zinc-500 truncate">Annonces</div>
+                <div className="text-[11px] font-semibold text-zinc-500 truncate">Annonces actives</div>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 p-4 rounded-2xl bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm border border-zinc-200/60 dark:border-zinc-800/60 shadow-lg shadow-zinc-200/10 dark:shadow-none text-left hover:shadow-xl hover:scale-105 transition-all duration-300">
+            <div className="flex items-center gap-3 p-3.5 sm:p-4 rounded-2xl bg-white/90 dark:bg-zinc-900/90 backdrop-blur-sm border border-zinc-200/80 dark:border-zinc-800/80 shadow-sm text-left hover:shadow-md hover:border-emerald-500/30 transition-all">
               <div className="h-10 w-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
                 <ShieldCheck className="h-5 w-5" />
               </div>
               <div className="min-w-0">
-                <div className="text-sm sm:text-base font-black text-zinc-900 dark:text-white truncate">100%</div>
-                <div className="text-[11px] font-semibold text-zinc-500 truncate">Sécurisé</div>
+                <div className="text-sm sm:text-base font-black text-zinc-900 dark:text-white truncate">100% Gratuit</div>
+                <div className="text-[11px] font-semibold text-zinc-500 truncate">Sans commission</div>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 p-4 rounded-2xl bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm border border-zinc-200/60 dark:border-zinc-800/60 shadow-lg shadow-zinc-200/10 dark:shadow-none text-left hover:shadow-xl hover:scale-105 transition-all duration-300">
+            <div className="flex items-center gap-3 p-3.5 sm:p-4 rounded-2xl bg-white/90 dark:bg-zinc-900/90 backdrop-blur-sm border border-zinc-200/80 dark:border-zinc-800/80 shadow-sm text-left hover:shadow-md hover:border-blue-500/30 transition-all">
               <div className="h-10 w-10 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
                 <MapPin className="h-5 w-5" />
               </div>
               <div className="min-w-0">
                 <div className="text-sm sm:text-base font-black text-zinc-900 dark:text-white truncate">30+ Villes</div>
-                <div className="text-[11px] font-semibold text-zinc-500 truncate">Au Maroc</div>
+                <div className="text-[11px] font-semibold text-zinc-500 truncate">Partout au Maroc</div>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 p-4 rounded-2xl bg-white/80 dark:bg-zinc-900/80 backdrop-blur-sm border border-zinc-200/60 dark:border-zinc-800/60 shadow-lg shadow-zinc-200/10 dark:shadow-none text-left hover:shadow-xl hover:scale-105 transition-all duration-300">
+            <div className="flex items-center gap-3 p-3.5 sm:p-4 rounded-2xl bg-white/90 dark:bg-zinc-900/90 backdrop-blur-sm border border-zinc-200/80 dark:border-zinc-800/80 shadow-sm text-left hover:shadow-md hover:border-amber-500/30 transition-all">
               <div className="h-10 w-10 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
                 <Zap className="h-5 w-5" />
               </div>
               <div className="min-w-0">
-                <div className="text-sm sm:text-base font-black text-zinc-900 dark:text-white truncate">Gratuit</div>
-                <div className="text-[11px] font-semibold text-zinc-500 truncate">En 2 min</div>
+                <div className="text-sm sm:text-base font-black text-zinc-900 dark:text-white truncate">Rapide</div>
+                <div className="text-[11px] font-semibold text-zinc-500 truncate">Vendez en 2 min</div>
               </div>
             </div>
           </div>
@@ -764,16 +777,18 @@ export default function HomeClient({
       {/* =========================================================================
           2. HORIZONTAL CATEGORIES BAR (Swipeable & Native feel)
          ========================================================================= */}
-      <section className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white tracking-tight">
-            Catégories
-          </h2>
+      <section className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-3">
+        <div className="flex items-center justify-between mb-3.5">
+          <div>
+            <h2 className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white tracking-tight">
+              Explorer par catégorie
+            </h2>
+          </div>
           <Link
             href="/marketplace"
             className="text-xs sm:text-sm font-bold text-orange-600 dark:text-orange-400 hover:text-orange-700 flex items-center gap-1.5 uppercase tracking-wider transition-colors"
           >
-            <span>Tout voir</span>
+            <span>Toutes les catégories</span>
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
@@ -792,17 +807,19 @@ export default function HomeClient({
                   setSelectedCategory(cat.id);
                   listingsSectionRef.current?.scrollIntoView({ behavior: "smooth" });
                 }}
-                className={`group flex items-center gap-2.5 whitespace-nowrap rounded-2xl px-4 py-3 text-sm font-semibold transition-all shrink-0 cursor-pointer ${
+                className={`group flex items-center gap-2.5 whitespace-nowrap rounded-2xl px-4 py-2.5 text-xs sm:text-sm font-semibold transition-all shrink-0 cursor-pointer ${
                   isSelected
-                    ? "bg-orange-500 text-white shadow-lg shadow-orange-500/30 scale-105"
-                    : "bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:border-orange-500/50 hover:text-orange-600 hover:shadow-md"
+                    ? "bg-orange-500 text-white shadow-md shadow-orange-500/25 scale-[1.02]"
+                    : "bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:border-orange-500/40 hover:text-orange-600 hover:shadow-sm"
                 }`}
               >
-                <Icon
-                  className={`h-5 w-5 ${
-                    isSelected ? "text-white" : `${cat.color} group-hover:scale-110 transition-transform`
-                  }`}
-                />
+                <div className={`p-1 rounded-lg ${isSelected ? "bg-white/20 text-white" : cat.bg}`}>
+                  <Icon
+                    className={`h-4 w-4 ${
+                      isSelected ? "text-white" : `${cat.color} group-hover:scale-110 transition-transform`
+                    }`}
+                  />
+                </div>
                 <span>{cat.label}</span>
               </button>
             );
@@ -815,16 +832,16 @@ export default function HomeClient({
          ========================================================================= */}
       {featuredVipAds.length > 0 && selectedCategory === "all" && !hasActiveFilters && (
         <section className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-          <div className="rounded-3xl bg-gradient-to-r from-amber-500/10 via-orange-500/5 to-amber-500/10 dark:from-amber-500/10 dark:via-orange-500/5 dark:to-amber-500/10 p-4 sm:p-6 border border-amber-500/20 dark:border-amber-500/30 shadow-xl shadow-amber-500/5 dark:shadow-amber-500/10 relative group/carousel">
+          <div className="rounded-3xl bg-gradient-to-r from-amber-500/10 via-orange-500/5 to-amber-500/10 dark:from-amber-500/10 dark:via-orange-500/5 dark:to-amber-500/10 p-4 sm:p-6 border border-amber-500/20 dark:border-amber-500/30 shadow-sm relative group/carousel">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg shadow-orange-500/30">
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-md shadow-orange-500/20">
                   <Flame className="h-5 w-5" />
                 </div>
                 <div>
                   <h2 className="text-base sm:text-lg font-black text-zinc-950 dark:text-white tracking-tight flex items-center gap-2">
                     <span>Sélection VIP Exclusive</span>
-                    <span className="text-[10px] font-black uppercase tracking-wider bg-gradient-to-r from-orange-500 to-amber-500 text-white px-3 py-1 rounded-full shadow-md">
+                    <span className="text-[10px] font-black uppercase tracking-wider bg-gradient-to-r from-orange-500 to-amber-500 text-white px-2.5 py-0.5 rounded-full shadow-sm">
                       À la une
                     </span>
                   </h2>
@@ -838,20 +855,20 @@ export default function HomeClient({
                   onClick={scrollPrev}
                   size="icon"
                   variant="outline"
-                  className="rounded-full"
+                  className="rounded-full h-8 w-8"
                   aria-label="Précédent"
                 >
-                  <ChevronLeft className="w-5 h-5" />
+                  <ChevronLeft className="w-4 h-4" />
                 </Button>
                 <Button
                   type="button"
                   onClick={scrollNext}
                   size="icon"
                   variant="outline"
-                  className="rounded-full"
+                  className="rounded-full h-8 w-8"
                   aria-label="Suivant"
                 >
-                  <ChevronRight className="w-5 h-5" />
+                  <ChevronRight className="w-4 h-4" />
                 </Button>
               </div>
             </div>
@@ -889,14 +906,14 @@ export default function HomeClient({
         )}
 
         {/* FEED TOP CONTROLS BAR: Responsive wrap on mobile */}
-        <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800/80 shadow-xl shadow-zinc-200/10 dark:shadow-none">
+        <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl sm:rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800/80 shadow-sm">
           {/* Feed Tabs Switcher */}
           <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-hide no-scrollbar">
             <Button
               type="button"
               onClick={() => setFeedTab("all")}
               variant={feedTab === "all" ? "default" : "outline"}
-              className="rounded-2xl"
+              className="rounded-xl h-9 text-xs sm:text-sm font-bold"
             >
               ✨ Toutes
             </Button>
@@ -905,7 +922,7 @@ export default function HomeClient({
               type="button"
               onClick={() => setFeedTab("featured")}
               variant={feedTab === "featured" ? "orange" : "outline"}
-              className="rounded-2xl"
+              className="rounded-xl h-9 text-xs sm:text-sm font-bold"
             >
               🔥 À la une
             </Button>
@@ -914,7 +931,7 @@ export default function HomeClient({
               type="button"
               onClick={() => setFeedTab("nearby")}
               variant={feedTab === "nearby" ? "default" : "outline"}
-              className="rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-500/30"
+              className="rounded-xl h-9 text-xs sm:text-sm font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
             >
               📍 Proches
             </Button>
@@ -923,20 +940,20 @@ export default function HomeClient({
           {/* Right Toolbar: Counter and Custom Sort Dropdown */}
           <div className="flex items-center justify-between sm:justify-end gap-3">
             <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 shrink-0">
-              <CheckCircle2 className="h-4 w-4 text-orange-500" />
+              <CheckCircle2 className="h-3.5 w-3.5 text-orange-500" />
               {filteredAds.length} annonce{filteredAds.length !== 1 ? "s" : ""}
             </span>
 
-            {/* Custom Sort Dropdown (No Native Select!) */}
+            {/* Custom Sort Dropdown */}
             <div ref={sortDropdownRef} className="relative">
               <button
                 type="button"
                 onClick={() => setIsSortDropdownOpen(!isSortDropdownOpen)}
-                className="flex items-center gap-2 px-4 py-2 rounded-2xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-sm font-bold text-zinc-800 dark:text-zinc-200 transition-colors cursor-pointer"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-xs sm:text-sm font-bold text-zinc-800 dark:text-zinc-200 transition-colors cursor-pointer"
               >
-                <SlidersHorizontal className="h-4 w-4 text-zinc-400" />
+                <SlidersHorizontal className="h-3.5 w-3.5 text-zinc-400" />
                 <span>{currentSortObj.label}</span>
-                <ChevronDown className={`h-4 w-4 text-zinc-400 transition-transform ${isSortDropdownOpen ? "rotate-180 text-orange-500" : ""}`} />
+                <ChevronDown className={`h-3.5 w-3.5 text-zinc-400 transition-transform ${isSortDropdownOpen ? "rotate-180 text-orange-500" : ""}`} />
               </button>
 
               {isSortDropdownOpen && (
@@ -951,9 +968,9 @@ export default function HomeClient({
                           setSortBy(opt.id as any);
                           setIsSortDropdownOpen(false);
                         }}
-                        className={`w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-colors ${
+                        className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-colors ${
                           isSelected
-                            ? "bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400"
+                            ? "bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 font-bold"
                             : "hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200"
                         }`}
                       >
@@ -970,33 +987,33 @@ export default function HomeClient({
 
         {/* Active Filters Tag Pills */}
         {hasActiveFilters && (
-          <div className="mb-4 flex flex-wrap items-center gap-2 text-sm">
-            <span className="font-semibold text-zinc-500 dark:text-zinc-400">Filtres :</span>
+          <div className="mb-4 flex flex-wrap items-center gap-2 text-xs sm:text-sm">
+            <span className="font-semibold text-zinc-500 dark:text-zinc-400">Filtres actifs :</span>
             {selectedCategory !== "all" && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-orange-100 dark:bg-orange-950/50 text-orange-700 dark:text-orange-300 font-semibold">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-100 dark:bg-orange-950/50 text-orange-700 dark:text-orange-300 font-semibold text-xs">
                 {selectedCategoryObj.label}
-                <X className="h-4 w-4 cursor-pointer hover:scale-110" onClick={() => setSelectedCategory("all")} />
+                <X className="h-3.5 w-3.5 cursor-pointer hover:scale-110" onClick={() => setSelectedCategory("all")} />
               </span>
             )}
             {selectedCity !== "Toutes les villes" && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-100 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 font-semibold">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 font-semibold text-xs">
                 {selectedCity}
-                <X className="h-4 w-4 cursor-pointer hover:scale-110" onClick={() => setSelectedCity("Toutes les villes")} />
+                <X className="h-3.5 w-3.5 cursor-pointer hover:scale-110" onClick={() => setSelectedCity("Toutes les villes")} />
               </span>
             )}
             {searchQuery && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-purple-100 dark:bg-purple-950/50 text-purple-700 dark:text-purple-300 font-semibold">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-100 dark:bg-purple-950/50 text-purple-700 dark:text-purple-300 font-semibold text-xs">
                 &quot;{searchQuery}&quot;
-                <X className="h-4 w-4 cursor-pointer hover:scale-110" onClick={() => setSearchQuery("")} />
+                <X className="h-3.5 w-3.5 cursor-pointer hover:scale-110" onClick={() => setSearchQuery("")} />
               </span>
             )}
             <Button
               type="button"
               onClick={handleClearFilters}
               variant="ghost"
-              className="text-sm font-bold text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/20 ml-2"
+              className="text-xs font-bold text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/20 h-7 px-2.5"
             >
-              Effacer
+              Effacer tout
             </Button>
           </div>
         )}
@@ -1007,12 +1024,12 @@ export default function HomeClient({
             {[...Array(8)].map((_, i) => (
               <div
                 key={i}
-                className="rounded-3xl border border-zinc-200/80 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3 space-y-3 shadow-sm"
+                className="rounded-2xl sm:rounded-3xl border border-zinc-200/80 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3 space-y-3 shadow-sm"
               >
-                <div className="aspect-[4/3] rounded-2xl bg-zinc-200 dark:bg-zinc-800 animate-pulse" />
-                <div className="h-4 w-3/4 rounded-xl bg-zinc-200 dark:bg-zinc-800 animate-pulse" />
-                <div className="h-5 w-1/3 rounded-xl bg-zinc-200 dark:bg-zinc-800 animate-pulse" />
-                <div className="h-3.5 w-1/2 rounded-xl bg-zinc-100 dark:bg-zinc-800/60 animate-pulse" />
+                <div className="aspect-[4/3] rounded-xl bg-zinc-200 dark:bg-zinc-800 animate-pulse" />
+                <div className="h-4 w-3/4 rounded-lg bg-zinc-200 dark:bg-zinc-800 animate-pulse" />
+                <div className="h-5 w-1/3 rounded-lg bg-zinc-200 dark:bg-zinc-800 animate-pulse" />
+                <div className="h-3.5 w-1/2 rounded-lg bg-zinc-100 dark:bg-zinc-800/60 animate-pulse" />
               </div>
             ))}
           </div>
@@ -1025,26 +1042,27 @@ export default function HomeClient({
         )}
       </section>
 
+
       {/* =========================================================================
-          5. MOROCCAN CITIES EXPLORER
+          6. MOROCCAN CITIES EXPLORER
          ========================================================================= */}
-      <section className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-        <div className="rounded-3xl bg-white dark:bg-zinc-900 p-6 sm:p-8 border border-zinc-200/80 dark:border-zinc-800/80 shadow-xl shadow-zinc-200/10 dark:shadow-none">
+      <section className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+        <div className="rounded-3xl bg-white dark:bg-zinc-900 p-6 sm:p-8 border border-zinc-200/80 dark:border-zinc-800/80 shadow-sm">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <div className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-black text-orange-600 dark:text-orange-400 uppercase tracking-wider mb-2">
+              <div className="inline-flex items-center gap-1.5 text-xs font-black text-orange-600 dark:text-orange-400 uppercase tracking-wider mb-1.5">
                 <Compass className="h-4 w-4" />
                 Marché Local
               </div>
               <h2 className="text-xl sm:text-2xl font-black text-zinc-900 dark:text-white tracking-tight">
-                Explorez par ville
+                Explorez les offres par ville
               </h2>
             </div>
             <Link
               href="/cities"
-              className="text-sm font-bold text-orange-600 dark:text-orange-400 hover:text-orange-700 flex items-center gap-2 uppercase tracking-wider transition-colors"
+              className="text-xs sm:text-sm font-bold text-orange-600 dark:text-orange-400 hover:text-orange-700 flex items-center gap-1.5 uppercase tracking-wider transition-colors"
             >
-              <span>Villes</span>
+              <span>Toutes les villes</span>
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
@@ -1055,7 +1073,7 @@ export default function HomeClient({
               { name: "Rabat", icon: "🏛️", count: "Capitale & Pro" },
               { name: "Marrakech", icon: "🌴", count: "Tourisme & Déco" },
               { name: "Tanger", icon: "⚓", count: "Nord & Auto" },
-              { name: "Fès", icon: "🏺", count: "Artisanat" },
+              { name: "Fès", icon: "🏺", count: "Artisanat & Histoire" },
               { name: "Agadir", icon: "🌊", count: "Souss & Mer" },
             ].map((city) => (
               <button
@@ -1065,16 +1083,20 @@ export default function HomeClient({
                   setSelectedCity(city.name);
                   listingsSectionRef.current?.scrollIntoView({ behavior: "smooth" });
                 }}
-                className="group p-4 sm:p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/70 dark:border-zinc-700/70 hover:border-orange-500 hover:bg-orange-50 dark:hover:bg-orange-950/20 hover:shadow-lg hover:scale-105 transition-all duration-300 text-left flex flex-col justify-between cursor-pointer"
+                className={`group p-4 sm:p-5 rounded-2xl border text-left flex flex-col justify-between transition-all duration-300 cursor-pointer ${
+                  selectedCity === city.name
+                    ? "bg-orange-500 text-white border-orange-500 shadow-md shadow-orange-500/25 scale-105"
+                    : "bg-zinc-50 dark:bg-zinc-800/40 border-zinc-200/80 dark:border-zinc-800 hover:border-orange-500/50 hover:bg-orange-50/50 dark:hover:bg-orange-950/20 hover:shadow-sm hover:-translate-y-1"
+                }`}
               >
                 <div className="text-2xl sm:text-3xl mb-2 group-hover:scale-110 transition-transform">
                   {city.icon}
                 </div>
                 <div>
-                  <h3 className="text-sm font-black text-zinc-900 dark:text-white group-hover:text-orange-600 transition-colors">
+                  <h3 className={`text-sm font-black transition-colors ${selectedCity === city.name ? "text-white" : "text-zinc-900 dark:text-white group-hover:text-orange-600"}`}>
                     {city.name}
                   </h3>
-                  <p className="text-xs font-semibold text-zinc-500 dark:text-zinc-400 truncate">
+                  <p className={`text-[11px] font-semibold truncate ${selectedCity === city.name ? "text-white/80" : "text-zinc-500 dark:text-zinc-400"}`}>
                     {city.count}
                   </p>
                 </div>
@@ -1085,7 +1107,7 @@ export default function HomeClient({
       </section>
 
       {/* =========================================================================
-          6. TRUST & VALUE PROPOSITION
+          7. TRUST & VALUE PROPOSITION
          ========================================================================= */}
       <TrustSection />
     </div>
