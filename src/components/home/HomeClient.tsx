@@ -525,7 +525,10 @@ export default function HomeClient({
         <div className="relative w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Moroccan Flagship Pill Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border border-orange-500/20 shadow-sm text-[11px] sm:text-xs font-black tracking-wider text-zinc-800 dark:text-zinc-200 mb-5 sm:mb-6 hover:border-orange-500/40 transition-colors">
-            <span className="text-sm">🇲🇦</span>
+            <svg className="w-5 h-3.5 rounded-xs shadow-xs shrink-0" viewBox="0 0 900 600" aria-label="Maroc">
+              <rect width="900" height="600" fill="#c1272d" />
+              <polygon points="450,175 487,290 608,290 510,361 547,476 450,405 353,476 390,361 292,290 413,290" fill="none" stroke="#006233" strokeWidth="25" />
+            </svg>
             <span className="bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 bg-clip-text text-transparent font-black uppercase">
               Le N°1 des Petites Annonces au Maroc
             </span>
@@ -549,10 +552,10 @@ export default function HomeClient({
              ========================================================================= */}
           <form
             onSubmit={handleHeroSearchSubmit}
-            className="mx-auto w-full max-w-4xl p-2 md:p-2.5 rounded-2xl md:rounded-full bg-white/95 dark:bg-zinc-900/95 backdrop-blur-xl border border-zinc-200/90 dark:border-zinc-800/90 shadow-xl shadow-zinc-200/30 dark:shadow-none flex flex-col md:flex-row items-stretch md:items-center gap-2 relative z-30 transition-all hover:border-orange-500/30"
+            className="mx-auto w-full max-w-4xl p-1.5 md:p-2 rounded-2xl md:rounded-full bg-white dark:bg-zinc-900 border border-zinc-200/90 dark:border-zinc-800 shadow-xl shadow-zinc-200/30 dark:shadow-none flex flex-col md:flex-row items-stretch md:items-center gap-1.5 md:gap-2 relative z-30 transition-all hover:border-orange-500/30"
           >
             {/* 1. Keyword Input Segment */}
-            <div className="relative flex-1 min-w-0 flex items-center px-4 py-2.5 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded-xl md:rounded-full transition-colors">
+            <div className="relative flex-1 md:flex-[1.5] min-w-[200px] flex items-center px-4 py-2 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded-xl md:rounded-full transition-colors">
               <Search className="h-4 w-4 text-orange-500 shrink-0 mr-3" />
               <div className="flex flex-col text-left w-full min-w-0">
                 <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400">Recherche</span>
@@ -560,15 +563,15 @@ export default function HomeClient({
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Que cherchez-vous ? (ex. iPhone 16, Golf 7...)"
-                  className="w-full bg-transparent text-sm md:text-base font-semibold text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none border-0 p-0 m-0"
+                  placeholder="Que cherchez-vous ?"
+                  className="w-full bg-transparent text-sm md:text-base font-semibold text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none border-0 p-0 m-0 truncate"
                 />
               </div>
               {searchQuery && (
                 <button
                   type="button"
                   onClick={() => setSearchQuery("")}
-                  className="p-1 rounded-full text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 hover:bg-zinc-200/60 dark:hover:bg-zinc-700 transition-colors"
+                  className="p-1 rounded-full text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 hover:bg-zinc-200/60 dark:hover:bg-zinc-700 transition-colors shrink-0"
                 >
                   <X className="h-3.5 w-3.5" />
                 </button>
@@ -578,20 +581,20 @@ export default function HomeClient({
             <div className="hidden md:block w-px h-8 bg-zinc-200 dark:bg-zinc-800 shrink-0" />
 
             {/* 2. Custom Category Popover Dropdown */}
-            <div ref={categoryDropdownRef} className="relative shrink-0">
+            <div ref={categoryDropdownRef} className="relative flex-1 md:flex-initial md:w-44 shrink-0">
               <button
                 type="button"
                 onClick={() => {
                   setIsCategoryDropdownOpen(!isCategoryDropdownOpen);
                   setIsCityDropdownOpen(false);
                 }}
-                className="w-full md:w-auto flex items-center justify-between md:justify-start gap-2.5 px-4 py-2.5 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded-xl md:rounded-full transition-colors text-left cursor-pointer"
+                className="w-full flex items-center justify-between gap-2 px-3.5 py-2 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded-xl md:rounded-full transition-colors text-left cursor-pointer"
               >
-                <div className="flex items-center gap-2.5 min-w-0">
+                <div className="flex items-center gap-2 min-w-0">
                   <Sparkles className="h-4 w-4 text-orange-500 shrink-0" />
                   <div className="flex flex-col min-w-0">
                     <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400">Catégorie</span>
-                    <span className="text-sm md:text-base font-semibold text-zinc-900 dark:text-white truncate max-w-[130px]">
+                    <span className="text-sm font-semibold text-zinc-900 dark:text-white truncate">
                       {selectedCategoryObj.label}
                     </span>
                   </div>
@@ -636,20 +639,20 @@ export default function HomeClient({
             <div className="hidden md:block w-px h-8 bg-zinc-200 dark:bg-zinc-800 shrink-0" />
 
             {/* 3. Custom City Popover Dropdown with Search Filter */}
-            <div ref={cityDropdownRef} className="relative shrink-0">
+            <div ref={cityDropdownRef} className="relative flex-1 md:flex-initial md:w-40 shrink-0">
               <button
                 type="button"
                 onClick={() => {
                   setIsCityDropdownOpen(!isCityDropdownOpen);
                   setIsCategoryDropdownOpen(false);
                 }}
-                className="w-full md:w-auto flex items-center justify-between md:justify-start gap-2.5 px-4 py-2.5 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded-xl md:rounded-full transition-colors text-left cursor-pointer"
+                className="w-full flex items-center justify-between gap-2 px-3.5 py-2 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded-xl md:rounded-full transition-colors text-left cursor-pointer"
               >
-                <div className="flex items-center gap-2.5 min-w-0">
+                <div className="flex items-center gap-2 min-w-0">
                   <MapPin className="h-4 w-4 text-orange-500 shrink-0" />
                   <div className="flex flex-col min-w-0">
                     <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400">Ville</span>
-                    <span className="text-sm md:text-base font-semibold text-zinc-900 dark:text-white truncate max-w-[120px]">
+                    <span className="text-sm font-semibold text-zinc-900 dark:text-white truncate">
                       {selectedCity}
                     </span>
                   </div>
@@ -702,7 +705,7 @@ export default function HomeClient({
               type="submit"
               size="lg"
               variant="orange"
-              className="w-full md:w-auto shrink-0 h-11 md:h-11 rounded-xl md:rounded-full px-6 shadow-md shadow-orange-500/25 font-bold"
+              className="h-11 rounded-xl md:rounded-full px-6 shadow-md shadow-orange-500/25 font-bold shrink-0 self-stretch md:self-auto cursor-pointer"
             >
               <Search className="h-4 w-4 mr-1.5" />
               <span>Rechercher</span>
