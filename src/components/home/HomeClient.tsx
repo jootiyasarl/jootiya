@@ -109,20 +109,6 @@ const CATEGORIES_DATA = [
   { id: "other", label: "Autres", icon: Package, color: "text-slate-500", bg: "bg-slate-100 dark:bg-slate-800" },
 ];
 
-const MOROCCAN_CITIES = [
-  "Toutes les villes",
-  "Casablanca",
-  "Rabat",
-  "Marrakech",
-  "Tanger",
-  "Fès",
-  "Agadir",
-  "Meknès",
-  "Oujda",
-  "Kénitra",
-  "Tétouan",
-  "Salé",
-];
 
 
 const SORT_OPTIONS = [
@@ -209,38 +195,14 @@ export default function HomeClient({
   const [sortBy, setSortBy] = useState<"recent" | "price-asc" | "price-desc" | "featured">("recent");
   const [feedTab, setFeedTab] = useState<"all" | "featured" | "nearby">("all");
 
-  // Custom Dropdowns Open States
-  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
-  const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
+  // Sort Dropdown State
   const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
-  const [citySearchText, setCitySearchText] = useState("");
-
-  const filteredCities = useMemo(() => {
-    if (!citySearchText.trim()) return MOROCCAN_CITIES;
-    const q = citySearchText.toLowerCase().trim();
-    return MOROCCAN_CITIES.filter((c) => c.toLowerCase().includes(q));
-  }, [citySearchText]);
-
-  const categoryDropdownRef = useRef<HTMLDivElement>(null);
-  const cityDropdownRef = useRef<HTMLDivElement>(null);
   const sortDropdownRef = useRef<HTMLDivElement>(null);
   const listingsSectionRef = useRef<HTMLDivElement>(null);
 
   // Close dropdowns when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (
-        categoryDropdownRef.current &&
-        !categoryDropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsCategoryDropdownOpen(false);
-      }
-      if (
-        cityDropdownRef.current &&
-        !cityDropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsCityDropdownOpen(false);
-      }
       if (
         sortDropdownRef.current &&
         !sortDropdownRef.current.contains(event.target as Node)
@@ -473,12 +435,6 @@ export default function HomeClient({
     return filteredAds.map(toAdCard);
   }, [filteredAds, toAdCard]);
 
-  const handleHeroSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (listingsSectionRef.current) {
-      listingsSectionRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  };
 
   const handleClearFilters = () => {
     setSearchQuery("");
@@ -505,212 +461,9 @@ export default function HomeClient({
     <div dir="ltr" className="min-h-screen bg-slate-50/60 dark:bg-zinc-950 font-sans text-zinc-900 dark:text-zinc-100 selection:bg-orange-500 selection:text-white">
       
       {/* =========================================================================
-          1. HERO SECTION WITH AIRBNB-STYLE CUSTOM SEARCH CAPSULE
+          1. HORIZONTAL CATEGORIES BAR (Swipeable & Native feel)
          ========================================================================= */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-orange-50/80 via-white to-slate-50/40 dark:from-zinc-950 dark:via-zinc-900/90 dark:to-zinc-950 pt-8 sm:pt-14 pb-8 sm:pb-12 border-b border-zinc-200/60 dark:border-zinc-800/60">
-        {/* Ambient Glowing Meshes */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-gradient-to-tr from-orange-400/15 via-amber-300/10 to-transparent rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-10 right-10 w-[500px] h-[250px] bg-gradient-to-bl from-amber-400/10 via-orange-500/10 to-transparent rounded-full blur-3xl pointer-events-none" />
-
-        <div className="relative w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          {/* Moroccan Flagship Pill Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md border border-orange-500/20 shadow-sm text-[11px] sm:text-xs font-black tracking-wider text-zinc-800 dark:text-zinc-200 mb-5 sm:mb-6 hover:border-orange-500/40 transition-colors">
-            <svg className="w-5 h-3.5 rounded-xs shadow-xs shrink-0" viewBox="0 0 900 600" aria-label="Maroc">
-              <rect width="900" height="600" fill="#c1272d" />
-              <polygon points="450,175 487,290 608,290 510,361 547,476 450,405 353,476 390,361 292,290 413,290" fill="none" stroke="#006233" strokeWidth="25" />
-            </svg>
-            <span className="bg-gradient-to-r from-orange-600 via-amber-600 to-orange-500 bg-clip-text text-transparent font-black uppercase">
-              Le N°1 des Petites Annonces au Maroc
-            </span>
-            <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse shadow-sm shadow-emerald-500/50" />
-          </div>
-
-          {/* Headline */}
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-zinc-950 dark:text-white tracking-tight leading-[1.12] mb-4">
-            Achetez & Vendez <br className="hidden sm:inline" />
-            <span className="bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500 bg-clip-text text-transparent">
-              en toute confiance
-            </span>
-          </h1>
-
-          <p className="text-sm sm:text-base lg:text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto font-medium mb-7 sm:mb-9 leading-relaxed">
-            Découvrez des milliers d'annonces vérifiées chaque jour partout au Maroc. Voitures, téléphones, immobilier, mode et plus.
-          </p>
-
-          {/* =========================================================================
-              AIRBNB-STYLE CUSTOM SEARCH CAPSULE
-             ========================================================================= */}
-          <form
-            onSubmit={handleHeroSearchSubmit}
-            className="mx-auto w-full max-w-4xl p-1.5 md:p-2 rounded-2xl md:rounded-full bg-white dark:bg-zinc-900 border border-zinc-200/90 dark:border-zinc-800 shadow-xl shadow-zinc-200/30 dark:shadow-none flex flex-col md:flex-row items-stretch md:items-center gap-1.5 md:gap-2 relative z-30 transition-all hover:border-orange-500/30"
-          >
-            {/* 1. Keyword Input Segment */}
-            <div className="relative flex-1 md:flex-[1.5] min-w-[200px] flex items-center px-4 py-2 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded-xl md:rounded-full transition-colors">
-              <Search className="h-4 w-4 text-orange-500 shrink-0 mr-3" />
-              <div className="flex flex-col text-left w-full min-w-0">
-                <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400">Recherche</span>
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Que cherchez-vous ?"
-                  className="w-full bg-transparent text-sm md:text-base font-semibold text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-none border-0 p-0 m-0 truncate"
-                />
-              </div>
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery("")}
-                  className="p-1 rounded-full text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 hover:bg-zinc-200/60 dark:hover:bg-zinc-700 transition-colors shrink-0"
-                >
-                  <X className="h-3.5 w-3.5" />
-                </button>
-              )}
-            </div>
-
-            <div className="hidden md:block w-px h-8 bg-zinc-200 dark:bg-zinc-800 shrink-0" />
-
-            {/* 2. Custom Category Popover Dropdown */}
-            <div ref={categoryDropdownRef} className="relative flex-1 md:flex-initial md:w-44 shrink-0">
-              <button
-                type="button"
-                onClick={() => {
-                  setIsCategoryDropdownOpen(!isCategoryDropdownOpen);
-                  setIsCityDropdownOpen(false);
-                }}
-                className="w-full flex items-center justify-between gap-2 px-3.5 py-2 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded-xl md:rounded-full transition-colors text-left cursor-pointer"
-              >
-                <div className="flex items-center gap-2 min-w-0">
-                  <Sparkles className="h-4 w-4 text-orange-500 shrink-0" />
-                  <div className="flex flex-col min-w-0">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400">Catégorie</span>
-                    <span className="text-sm font-semibold text-zinc-900 dark:text-white truncate">
-                      {selectedCategoryObj.label}
-                    </span>
-                  </div>
-                </div>
-                <ChevronDown className={`h-4 w-4 text-zinc-400 shrink-0 transition-transform ${isCategoryDropdownOpen ? "rotate-180 text-orange-500" : ""}`} />
-              </button>
-
-              {isCategoryDropdownOpen && (
-                <div className="absolute top-full left-0 md:left-1/2 md:-translate-x-1/2 mt-2 w-72 max-h-96 overflow-y-auto rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 scrollbar-hide text-left">
-                  <div className="px-3 py-1.5 text-[11px] font-black uppercase tracking-wider text-zinc-400 border-b border-zinc-100 dark:border-zinc-800 mb-1">
-                    Choisir une catégorie
-                  </div>
-                  {CATEGORIES_DATA.map((c) => {
-                    const isSelected = selectedCategory === c.id;
-                    const Icon = c.icon;
-                    return (
-                      <button
-                        key={c.id}
-                        type="button"
-                        onClick={() => {
-                          setSelectedCategory(c.id);
-                          setIsCategoryDropdownOpen(false);
-                        }}
-                        className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
-                          isSelected
-                            ? "bg-orange-500 text-white shadow-md shadow-orange-500/20"
-                            : "hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200"
-                        }`}
-                      >
-                        <div className="flex items-center gap-2.5">
-                          <Icon className={`h-4 w-4 ${isSelected ? "text-white" : c.color}`} />
-                          <span>{c.label}</span>
-                        </div>
-                        {isSelected && <Check className="h-4 w-4 text-white" />}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-
-            <div className="hidden md:block w-px h-8 bg-zinc-200 dark:bg-zinc-800 shrink-0" />
-
-            {/* 3. Custom City Popover Dropdown with Search Filter */}
-            <div ref={cityDropdownRef} className="relative flex-1 md:flex-initial md:w-40 shrink-0">
-              <button
-                type="button"
-                onClick={() => {
-                  setIsCityDropdownOpen(!isCityDropdownOpen);
-                  setIsCategoryDropdownOpen(false);
-                }}
-                className="w-full flex items-center justify-between gap-2 px-3.5 py-2 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 rounded-xl md:rounded-full transition-colors text-left cursor-pointer"
-              >
-                <div className="flex items-center gap-2 min-w-0">
-                  <MapPin className="h-4 w-4 text-orange-500 shrink-0" />
-                  <div className="flex flex-col min-w-0">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-zinc-400">Ville</span>
-                    <span className="text-sm font-semibold text-zinc-900 dark:text-white truncate">
-                      {selectedCity}
-                    </span>
-                  </div>
-                </div>
-                <ChevronDown className={`h-4 w-4 text-zinc-400 shrink-0 transition-transform ${isCityDropdownOpen ? "rotate-180 text-orange-500" : ""}`} />
-              </button>
-
-              {isCityDropdownOpen && (
-                <div className="absolute top-full left-0 md:right-0 md:left-auto mt-2 w-72 max-h-96 overflow-y-auto rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 scrollbar-hide text-left">
-                  <div className="p-2 border-b border-zinc-100 dark:border-zinc-800 mb-1">
-                    <input
-                      type="text"
-                      value={citySearchText}
-                      onChange={(e) => setCitySearchText(e.target.value)}
-                      placeholder="Filtrer une ville..."
-                      className="w-full px-3 py-1.5 text-xs font-semibold rounded-lg bg-zinc-100 dark:bg-zinc-800 border-none focus:outline-none focus:ring-1 focus:ring-orange-500"
-                    />
-                  </div>
-                  {filteredCities.map((city) => {
-                    const isSelected = selectedCity === city;
-                    return (
-                      <button
-                        key={city}
-                        type="button"
-                        onClick={() => {
-                          setSelectedCity(city);
-                          setIsCityDropdownOpen(false);
-                          setCitySearchText("");
-                        }}
-                        className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
-                          isSelected
-                            ? "bg-orange-500 text-white shadow-md shadow-orange-500/20"
-                            : "hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200"
-                        }`}
-                      >
-                        <div className="flex items-center gap-2">
-                          <MapPin className={`h-4 w-4 ${isSelected ? "text-white" : "text-zinc-400"}`} />
-                          <span>{city}</span>
-                        </div>
-                        {isSelected && <Check className="h-4 w-4 text-white" />}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-
-            {/* 4. Search Submit Button */}
-            <Button
-              type="submit"
-              size="lg"
-              variant="orange"
-              className="h-11 rounded-xl md:rounded-full px-6 shadow-md shadow-orange-500/25 font-bold shrink-0 self-stretch md:self-auto cursor-pointer"
-            >
-              <Search className="h-4 w-4 mr-1.5" />
-              <span>Rechercher</span>
-            </Button>
-          </form>
-
-
-
-        </div>
-      </section>
-
-      {/* =========================================================================
-          2. HORIZONTAL CATEGORIES BAR (Swipeable & Native feel)
-         ========================================================================= */}
-      <section className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-3">
+      <section className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-3">
         <div className="flex items-center justify-between mb-3.5">
           <div>
             <h2 className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white tracking-tight">
