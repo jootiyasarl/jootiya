@@ -30,8 +30,6 @@ import {
   SlidersHorizontal,
   Flame,
   CheckCircle2,
-  ShieldCheck,
-  Zap,
   X,
   Compass,
   PlusCircle,
@@ -509,7 +507,7 @@ export default function HomeClient({
       {/* =========================================================================
           1. HERO SECTION WITH AIRBNB-STYLE CUSTOM SEARCH CAPSULE
          ========================================================================= */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-orange-50/80 via-white to-slate-50/40 dark:from-zinc-950 dark:via-zinc-900/90 dark:to-zinc-950 pt-8 sm:pt-16 pb-10 sm:pb-16 border-b border-zinc-200/60 dark:border-zinc-800/60">
+      <section className="relative overflow-hidden bg-gradient-to-b from-orange-50/80 via-white to-slate-50/40 dark:from-zinc-950 dark:via-zinc-900/90 dark:to-zinc-950 pt-8 sm:pt-14 pb-8 sm:pb-12 border-b border-zinc-200/60 dark:border-zinc-800/60">
         {/* Ambient Glowing Meshes */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-gradient-to-tr from-orange-400/15 via-amber-300/10 to-transparent rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-10 right-10 w-[500px] h-[250px] bg-gradient-to-bl from-amber-400/10 via-orange-500/10 to-transparent rounded-full blur-3xl pointer-events-none" />
@@ -705,48 +703,7 @@ export default function HomeClient({
           </form>
 
 
-          {/* Trust Metrics Strip */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-4xl mx-auto mt-8 sm:mt-10">
-            <div className="flex items-center gap-3 p-3.5 sm:p-4 rounded-2xl bg-white/90 dark:bg-zinc-900/90 backdrop-blur-sm border border-zinc-200/80 dark:border-zinc-800/80 shadow-sm text-left hover:shadow-md hover:border-orange-500/30 transition-all">
-              <div className="h-10 w-10 rounded-xl bg-orange-500/10 text-orange-600 dark:text-orange-400 flex items-center justify-center shrink-0">
-                <Package className="h-5 w-5" />
-              </div>
-              <div className="min-w-0">
-                <div className="text-sm sm:text-base font-black text-zinc-900 dark:text-white truncate">+50,000</div>
-                <div className="text-[11px] font-semibold text-zinc-500 truncate">Annonces actives</div>
-              </div>
-            </div>
 
-            <div className="flex items-center gap-3 p-3.5 sm:p-4 rounded-2xl bg-white/90 dark:bg-zinc-900/90 backdrop-blur-sm border border-zinc-200/80 dark:border-zinc-800/80 shadow-sm text-left hover:shadow-md hover:border-emerald-500/30 transition-all">
-              <div className="h-10 w-10 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
-                <ShieldCheck className="h-5 w-5" />
-              </div>
-              <div className="min-w-0">
-                <div className="text-sm sm:text-base font-black text-zinc-900 dark:text-white truncate">100% Gratuit</div>
-                <div className="text-[11px] font-semibold text-zinc-500 truncate">Sans commission</div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3 p-3.5 sm:p-4 rounded-2xl bg-white/90 dark:bg-zinc-900/90 backdrop-blur-sm border border-zinc-200/80 dark:border-zinc-800/80 shadow-sm text-left hover:shadow-md hover:border-blue-500/30 transition-all">
-              <div className="h-10 w-10 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
-                <MapPin className="h-5 w-5" />
-              </div>
-              <div className="min-w-0">
-                <div className="text-sm sm:text-base font-black text-zinc-900 dark:text-white truncate">30+ Villes</div>
-                <div className="text-[11px] font-semibold text-zinc-500 truncate">Partout au Maroc</div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3 p-3.5 sm:p-4 rounded-2xl bg-white/90 dark:bg-zinc-900/90 backdrop-blur-sm border border-zinc-200/80 dark:border-zinc-800/80 shadow-sm text-left hover:shadow-md hover:border-amber-500/30 transition-all">
-              <div className="h-10 w-10 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
-                <Zap className="h-5 w-5" />
-              </div>
-              <div className="min-w-0">
-                <div className="text-sm sm:text-base font-black text-zinc-900 dark:text-white truncate">Rapide</div>
-                <div className="text-[11px] font-semibold text-zinc-500 truncate">Vendez en 2 min</div>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
