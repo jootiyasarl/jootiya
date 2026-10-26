@@ -32,7 +32,6 @@ import {
   CheckCircle2,
   ShieldCheck,
   Zap,
-  TrendingUp,
   X,
   Compass,
   PlusCircle,
@@ -127,13 +126,6 @@ const MOROCCAN_CITIES = [
   "Salé",
 ];
 
-const POPULAR_SEARCH_TAGS = [
-  "iPhone 16",
-  "Dacia Sandero",
-  "Golf 7",
-  "Casablanca",
-  "PlayStation 5",
-];
 
 const SORT_OPTIONS = [
   { id: "recent", label: "Plus récents" },
@@ -712,25 +704,6 @@ export default function HomeClient({
             </Button>
           </form>
 
-          {/* Popular Trending Tags */}
-          <div className="flex flex-wrap items-center justify-center gap-2 mt-6 text-sm">
-            <span className="font-semibold text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5 text-xs">
-              <TrendingUp className="h-3.5 w-3.5 text-orange-500" /> Populaire :
-            </span>
-            {POPULAR_SEARCH_TAGS.map((tag) => (
-              <button
-                key={tag}
-                type="button"
-                onClick={() => {
-                  setSearchQuery(tag);
-                  listingsSectionRef.current?.scrollIntoView({ behavior: "smooth" });
-                }}
-                className="px-3.5 py-1 rounded-full bg-white/90 dark:bg-zinc-900/90 backdrop-blur-sm border border-zinc-200/80 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 text-xs font-semibold hover:border-orange-500 hover:text-orange-600 dark:hover:text-orange-400 hover:bg-orange-50/50 dark:hover:bg-orange-950/20 transition-all shadow-sm cursor-pointer"
-              >
-                {tag}
-              </button>
-            ))}
-          </div>
 
           {/* Trust Metrics Strip */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-4xl mx-auto mt-8 sm:mt-10">
