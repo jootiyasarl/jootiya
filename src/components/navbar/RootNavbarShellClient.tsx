@@ -48,8 +48,7 @@ export function RootNavbarShellClient({ children, navbar, footer }: RootNavbarSh
         </div>
       )}
 
-      <main className={cn("min-h-screen", !isSpecialPath && "pt-[56px] md:pt-[112px] pb-20 lg:pb-0")}
-      >
+      <main className={cn("min-h-screen", !isSpecialPath && "pt-[56px] md:pt-[64px] pb-20 lg:pb-0")}>
         <div className={cn(!isSpecialPath && "main-content-wrapper")}
         >
           {!isSpecialPath ? (

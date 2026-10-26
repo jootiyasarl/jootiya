@@ -6,7 +6,6 @@ import { DesktopActions } from "./DesktopActions";
 import { MobileMenu } from "./MobileMenu";
 import { getServerUser } from "@/lib/supabase-server";
 import { NavbarLogo } from "./NavbarLogo";
-import { HeaderCategories } from "./HeaderCategories";
 
 export default async function PublicNavbar() {
   const user = await getServerUser();
@@ -54,10 +53,6 @@ export default async function PublicNavbar() {
           </div>
         </div>
 
-        {/* Categories Row (BOTTOM) */}
-        <div className="hidden md:block border-t border-zinc-50 dark:border-zinc-900/50">
-          <HeaderCategories />
-        </div>
       </div>
     </header>
   );
