@@ -4,7 +4,7 @@ import React, { useEffect, useState, useCallback, useMemo, useRef } from "react"
 import Link from "next/link";
 import { TrustSection } from "@/components/home/TrustSection";
 import { type PublicAdCardAd } from "@/components/AdCard";
-import { HomeAdCard } from "@/components/home/HomeAdCard";
+import { HomeAdCard, ProductGridSkeleton } from "@/components/home/HomeAdCard";
 import { VirtualizedAdGrid } from "@/components/ads/VirtualizedAdGrid";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -33,6 +33,12 @@ import {
   X,
   Compass,
   PlusCircle,
+  Building2,
+  Landmark,
+  Palmtree,
+  Anchor,
+  History,
+  Waves,
 } from "lucide-react";
 import { getCachedAds, saveAds } from "@/lib/pwa/jootiya-db";
 import { supabase } from "@/lib/supabaseClient";
@@ -599,27 +605,30 @@ export default function HomeClient({
               type="button"
               onClick={() => setFeedTab("all")}
               variant={feedTab === "all" ? "default" : "outline"}
-              className="rounded-xl h-9 text-xs sm:text-sm font-bold"
+              className="rounded-xl h-9 text-xs sm:text-sm font-bold flex items-center gap-1.5"
             >
-              ✨ Toutes
+              <Sparkles className="h-3.5 w-3.5" />
+              <span>Toutes</span>
             </Button>
 
             <Button
               type="button"
               onClick={() => setFeedTab("featured")}
               variant={feedTab === "featured" ? "orange" : "outline"}
-              className="rounded-xl h-9 text-xs sm:text-sm font-bold"
+              className="rounded-xl h-9 text-xs sm:text-sm font-bold flex items-center gap-1.5"
             >
-              🔥 À la une
+              <Flame className="h-3.5 w-3.5" />
+              <span>À la une</span>
             </Button>
 
             <Button
               type="button"
               onClick={() => setFeedTab("nearby")}
               variant={feedTab === "nearby" ? "default" : "outline"}
-              className="rounded-xl h-9 text-xs sm:text-sm font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
+              className="rounded-xl h-9 text-xs sm:text-sm font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm flex items-center gap-1.5"
             >
-              📍 Proches
+              <MapPin className="h-3.5 w-3.5" />
+              <span>Proches</span>
             </Button>
           </div>
 
@@ -704,21 +713,9 @@ export default function HomeClient({
           </div>
         )}
 
-        {/* THE VIRTUALIZED GRID */}
+        {/* THE VIRTUALIZED GRID WITH FLAT MINIMALIST SKELETON */}
         {loading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
-            {[...Array(8)].map((_, i) => (
-              <div
-                key={i}
-                className="rounded-2xl sm:rounded-3xl border border-zinc-200/80 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-3 space-y-3 shadow-sm"
-              >
-                <div className="aspect-[4/3] rounded-xl bg-zinc-200 dark:bg-zinc-800 animate-pulse" />
-                <div className="h-4 w-3/4 rounded-lg bg-zinc-200 dark:bg-zinc-800 animate-pulse" />
-                <div className="h-5 w-1/3 rounded-lg bg-zinc-200 dark:bg-zinc-800 animate-pulse" />
-                <div className="h-3.5 w-1/2 rounded-lg bg-zinc-100 dark:bg-zinc-800/60 animate-pulse" />
-              </div>
-            ))}
-          </div>
+          <ProductGridSkeleton count={10} />
         ) : (
           <VirtualizedAdGrid
             ads={virtualizedCardList}
@@ -755,39 +752,42 @@ export default function HomeClient({
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-4">
             {[
-              { name: "Casablanca", icon: "🏙️", count: "Économie & Tech" },
-              { name: "Rabat", icon: "🏛️", count: "Capitale & Pro" },
-              { name: "Marrakech", icon: "🌴", count: "Tourisme & Déco" },
-              { name: "Tanger", icon: "⚓", count: "Nord & Auto" },
-              { name: "Fès", icon: "🏺", count: "Artisanat & Histoire" },
-              { name: "Agadir", icon: "🌊", count: "Souss & Mer" },
-            ].map((city) => (
-              <button
-                key={city.name}
-                type="button"
-                onClick={() => {
-                  setSelectedCity(city.name);
-                  listingsSectionRef.current?.scrollIntoView({ behavior: "smooth" });
-                }}
-                className={`group p-4 sm:p-5 rounded-2xl border text-left flex flex-col justify-between transition-all duration-300 cursor-pointer ${
-                  selectedCity === city.name
-                    ? "bg-orange-500 text-white border-orange-500 shadow-md shadow-orange-500/25 scale-105"
-                    : "bg-zinc-50 dark:bg-zinc-800/40 border-zinc-200/80 dark:border-zinc-800 hover:border-orange-500/50 hover:bg-orange-50/50 dark:hover:bg-orange-950/20 hover:shadow-sm hover:-translate-y-1"
-                }`}
-              >
-                <div className="text-2xl sm:text-3xl mb-2 group-hover:scale-110 transition-transform">
-                  {city.icon}
-                </div>
-                <div>
-                  <h3 className={`text-sm font-black transition-colors ${selectedCity === city.name ? "text-white" : "text-zinc-900 dark:text-white group-hover:text-orange-600"}`}>
-                    {city.name}
-                  </h3>
-                  <p className={`text-[11px] font-semibold truncate ${selectedCity === city.name ? "text-white/80" : "text-zinc-500 dark:text-zinc-400"}`}>
-                    {city.count}
-                  </p>
-                </div>
-              </button>
-            ))}
+              { name: "Casablanca", icon: Building2, count: "Économie & Tech" },
+              { name: "Rabat", icon: Landmark, count: "Capitale & Pro" },
+              { name: "Marrakech", icon: Palmtree, count: "Tourisme & Déco" },
+              { name: "Tanger", icon: Anchor, count: "Nord & Auto" },
+              { name: "Fès", icon: History, count: "Artisanat & Histoire" },
+              { name: "Agadir", icon: Waves, count: "Souss & Mer" },
+            ].map((city) => {
+              const Icon = city.icon;
+              return (
+                <button
+                  key={city.name}
+                  type="button"
+                  onClick={() => {
+                    setSelectedCity(city.name);
+                    listingsSectionRef.current?.scrollIntoView({ behavior: "smooth" });
+                  }}
+                  className={`group p-4 sm:p-5 rounded-2xl border text-left flex flex-col justify-between transition-all duration-300 cursor-pointer ${
+                    selectedCity === city.name
+                      ? "bg-orange-500 text-white border-orange-500 shadow-md shadow-orange-500/25 scale-105"
+                      : "bg-zinc-50 dark:bg-zinc-800/40 border-zinc-200/80 dark:border-zinc-800 hover:border-orange-500/50 hover:bg-orange-50/50 dark:hover:bg-orange-950/20 hover:shadow-sm hover:-translate-y-1"
+                  }`}
+                >
+                  <div className="mb-2 group-hover:scale-110 transition-transform">
+                    <Icon className={`h-6 w-6 ${selectedCity === city.name ? "text-white" : "text-orange-500 dark:text-orange-400"}`} />
+                  </div>
+                  <div>
+                    <h3 className={`text-sm font-black transition-colors ${selectedCity === city.name ? "text-white" : "text-zinc-900 dark:text-white group-hover:text-orange-600"}`}>
+                      {city.name}
+                    </h3>
+                    <p className={`text-[11px] font-semibold truncate ${selectedCity === city.name ? "text-white/80" : "text-zinc-500 dark:text-zinc-400"}`}>
+                      {city.count}
+                    </p>
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </div>
       </section>

@@ -26,14 +26,14 @@ export function VirtualizedAdGrid({
   const [columnCount, setColumnCount] = useState(2);
   const [containerOffset, setContainerOffset] = useState(0);
 
-  // Responsive column detection (2 on mobile, 3 on tablet, 4 on desktop/wide)
+  // Responsive column detection (2 on mobile, 3 on tablet, 4 on desktop, 5 on wide screens/TV)
   const updateLayout = useCallback(() => {
     if (typeof window === "undefined") return;
     const width = window.innerWidth;
     if (width >= 1280) {
-      setColumnCount(4);
+      setColumnCount(5);
     } else if (width >= 1024) {
-      setColumnCount(3);
+      setColumnCount(4);
     } else if (width >= 640) {
       setColumnCount(3);
     } else {
@@ -73,10 +73,10 @@ export function VirtualizedAdGrid({
     return chunked;
   }, [ads, columnCount]);
 
-  // TanStack Window Virtualizer
+  // TanStack Window Virtualizer (tuned for aspect-square flat cards)
   const rowVirtualizer = useWindowVirtualizer({
     count: rows.length,
-    estimateSize: () => (columnCount === 2 ? 360 : 400),
+    estimateSize: () => (columnCount === 2 ? 260 : 330),
     overscan: 2,
     scrollMargin: containerOffset,
   });
@@ -96,12 +96,12 @@ export function VirtualizedAdGrid({
     );
   }
 
-  // SSR / Initial Render (first 8 ads) for SEO & Hydration safety
+  // SSR / Initial Render (first 10 ads) for SEO & Hydration safety
   if (!mounted) {
     return (
       <div ref={containerRef} className={className}>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
-          {ads.slice(0, 8).map((ad, idx) => (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5 sm:gap-3 md:gap-4">
+          {ads.slice(0, 10).map((ad, idx) => (
             <div key={ad.id} className="h-full">
               {renderCard ? renderCard(ad, idx) : <HomeAdCard ad={ad} priority={idx < 4} />}
             </div>
@@ -144,7 +144,7 @@ export function VirtualizedAdGrid({
               }}
             >
               <div
-                className="grid gap-3 sm:gap-4 md:gap-5"
+                className="grid gap-2.5 sm:gap-3 md:gap-4"
                 style={{
                   gridTemplateColumns: `repeat(${columnCount}, minmax(0, 1fr))`,
                 }}

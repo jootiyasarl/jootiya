@@ -52,9 +52,9 @@ export function AdCard({ ad, variant = "default", footerSlot, href, priority = f
   const linkHref = href || `/ads/${ad.id}/${adSlug}`;
 
   return (
-    <article className="jootiya-card group relative flex h-full flex-col overflow-hidden p-1.5 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl active:scale-[0.99]">
-      {/* Image Section */}
-      <div className="relative w-full aspect-[4/3] bg-zinc-100 dark:bg-zinc-800 overflow-hidden shrink-0 rounded-[1.25rem] sm:rounded-[1.5rem]">
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-zinc-200/80 dark:border-zinc-800 bg-white dark:bg-zinc-900 transition-colors duration-200 hover:border-zinc-300 dark:hover:border-zinc-700">
+      {/* Image Section - aspect-square with rounded-t-2xl */}
+      <div className="relative w-full aspect-square bg-zinc-100 dark:bg-zinc-800 overflow-hidden shrink-0 rounded-t-2xl">
         {linkHref && (
           <Link href={linkHref} className="absolute inset-0 z-10" aria-label={ad.title}>
             <span className="sr-only">Voir l&apos;annonce</span>
@@ -81,30 +81,28 @@ export function AdCard({ ad, variant = "default", footerSlot, href, priority = f
           </div>
         )}
 
-        {/* Favorite Heart Icon Overlay */}
-        <div className="absolute right-3 top-3 z-30">
+        {/* Favorite Heart Icon Overlay with backdrop-blur-md */}
+        <div className="absolute right-2 top-2 z-20">
           <FavoriteButton 
             adId={ad.id} 
-            className="bg-white/90 shadow-sm hover:bg-white text-zinc-700 backdrop-blur-md hover:text-red-500" 
+            className="h-8 w-8 rounded-full bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md border border-white/50 dark:border-zinc-700/60 shadow-xs flex items-center justify-center text-zinc-600 dark:text-zinc-300 hover:text-red-500 hover:bg-white dark:hover:bg-zinc-800 transition-transform active:scale-90 hover:scale-105" 
           />
         </div>
 
         {/* Badges Overlay */}
-        <div className="absolute top-3 left-3 z-20 pointer-events-none">
-          {isFeatured && (
-            <div className="inline-flex items-center gap-1 rounded-full border border-orange-100 bg-white/95 px-2.5 py-1 shadow-sm backdrop-blur-sm dark:border-orange-900/40 dark:bg-zinc-900/95">
-              <Sparkles className="h-3 w-3 text-orange-500" />
-              <span className="text-[9px] sm:text-[10px] font-black text-orange-600 dark:text-orange-500 uppercase tracking-tight">
-                À la une
-              </span>
+        {isFeatured && (
+          <div className="absolute top-2 left-2 z-20 pointer-events-none">
+            <div className="inline-flex items-center gap-1 rounded-lg bg-orange-500 text-white px-2 py-0.5 text-[10px] font-bold shadow-xs">
+              <Sparkles className="h-2.5 w-2.5" />
+              <span>À la une</span>
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Sold Overlay */}
         {ad.status === "sold" && (
-          <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
-            <div className="rotate-[-12deg] rounded-xl border-4 border-white px-4 py-2 text-2xl font-black tracking-tighter text-white shadow-2xl outline outline-2 outline-white/50">
+          <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/60 backdrop-blur-xs">
+            <div className="rotate-[-12deg] rounded-xl border-2 border-white px-4 py-1 text-sm font-black tracking-tight text-white shadow-lg">
               VENDU
             </div>
           </div>
@@ -112,30 +110,35 @@ export function AdCard({ ad, variant = "default", footerSlot, href, priority = f
       </div>
 
       {/* Info Section */}
-      <div className="flex flex-grow flex-col justify-between px-2.5 pb-3 pt-3 sm:px-3.5 sm:pb-3.5">
-        <h3 className="line-clamp-2 min-h-[2.5rem] text-[13px] font-extrabold leading-snug text-zinc-900 transition-colors group-hover:text-orange-600 dark:text-zinc-100 sm:text-sm">
-          {ad.title}
-        </h3>
-        
-        <div className="mt-auto pt-2.5 flex flex-col gap-2">
-          <p className="truncate text-base font-black tracking-tight text-orange-600 dark:text-orange-500 sm:text-lg">
-            {ad.price}
-          </p>
-          <div className="flex min-w-0 flex-col gap-1 text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">
-            <span className="inline-flex min-w-0 items-center gap-1.5">
-              <MapPin className="h-3.5 w-3.5 shrink-0 text-zinc-400" />
-              <span className="truncate">{ad.location}</span>
-            </span>
-            <span className="inline-flex min-w-0 items-center gap-1.5">
-              <Clock3 className="h-3.5 w-3.5 shrink-0 text-zinc-400" />
-              <span className="truncate">{ad.createdAt || "Aujourd'hui"}</span>
+      <div className="p-2.5 sm:p-3 flex flex-col justify-between flex-1 gap-1.5">
+        <div className="flex flex-col gap-1">
+          <Link href={linkHref} className="block group/link">
+            <h3 className="line-clamp-1 text-xs sm:text-sm font-normal text-zinc-700 dark:text-zinc-300 group-hover/link:text-orange-600 dark:group-hover/link:text-orange-400 transition-colors">
+              {ad.title}
+            </h3>
+          </Link>
+          
+          <div className="mt-0.5">
+            <span className="text-sm sm:text-base font-bold text-zinc-950 dark:text-white tracking-tight">
+              {ad.price}
             </span>
           </div>
         </div>
 
+        <div className="flex items-center justify-between text-[11px] text-zinc-400 dark:text-zinc-500 font-normal pt-1.5 border-t border-zinc-100 dark:border-zinc-800/60 mt-auto">
+          <span className="inline-flex min-w-0 max-w-[62%] items-center gap-1">
+            <MapPin className="h-3 w-3 shrink-0 text-zinc-400 dark:text-zinc-500" />
+            <span className="truncate">{ad.location}</span>
+          </span>
+          <span className="inline-flex shrink-0 items-center gap-1">
+            <Clock3 className="h-3 w-3 shrink-0 text-zinc-400 dark:text-zinc-500" />
+            <span>{ad.createdAt || "Aujourd'hui"}</span>
+          </span>
+        </div>
+
         {/* Footer Slot: Stays at the bottom */}
         {footerSlot && (
-          <div className="mt-3 pt-3 border-t border-zinc-50 dark:border-zinc-800/50 relative z-20">
+          <div className="mt-2 pt-2 border-t border-zinc-100 dark:border-zinc-800/60 relative z-20">
             {footerSlot}
           </div>
         )}
