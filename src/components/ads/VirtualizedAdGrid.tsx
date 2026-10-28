@@ -73,11 +73,12 @@ export function VirtualizedAdGrid({
     return chunked;
   }, [ads, columnCount]);
 
-  // TanStack Window Virtualizer (tuned for aspect-square flat cards)
+  // TanStack Window Virtualizer — tuned for aspect-[4/3] cards
+  // Card height estimate: image(4/3 ratio) + info-block (~90px)
   const rowVirtualizer = useWindowVirtualizer({
     count: rows.length,
-    estimateSize: () => (columnCount === 2 ? 260 : 330),
-    overscan: 2,
+    estimateSize: () => (columnCount === 2 ? 220 : 290),
+    overscan: 3,
     scrollMargin: containerOffset,
   });
 
