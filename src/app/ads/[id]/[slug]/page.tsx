@@ -10,7 +10,7 @@ interface AdPageProps {
   params: Promise<{ id: string; slug: string }>;
 }
 
-// ─── Helpers ───────────────────────────────────────────────────────────────
+// ─── Image URL helper ──────────────────────────────────────────────────────
 function buildImageUrl(img: string, supabaseUrl: string): string {
   if (!img) return "/icon-512x512.png";
   if (img.startsWith("http")) return img;
@@ -23,8 +23,8 @@ function buildImageUrl(img: string, supabaseUrl: string): string {
 // ─── Metadata ──────────────────────────────────────────────────────────────
 export async function generateMetadata({ params }: AdPageProps) {
   const { id, slug: urlSlug } = await params;
-  const supabase   = createSupabaseServerClient();
-  const baseUrl    = process.env.NEXT_PUBLIC_APP_URL || "https://jootiya.com";
+  const supabase    = createSupabaseServerClient();
+  const baseUrl     = process.env.NEXT_PUBLIC_APP_URL  || "https://jootiya.com";
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 
   try {
@@ -39,14 +39,12 @@ export async function generateMetadata({ params }: AdPageProps) {
     const formattedPrice = ad.price
       ? `${Number(ad.price).toLocaleString("fr-FR")} ${ad.currency || "MAD"}`
       : "Prix sur demande";
-    const metaTitle    = `${ad.title} - ${formattedPrice} | Jootiya`;
     const adSlug       = ad.slug || urlSlug || generateSlug(ad.title);
     const canonicalUrl = `${baseUrl}/ads/${ad.id}/${adSlug}`;
-
-    const ogImage =
-      ad.image_urls?.[0]
-        ? buildImageUrl(ad.image_urls[0], supabaseUrl)
-        : `${baseUrl}/og-image.png`;
+    const metaTitle    = `${ad.title} - ${formattedPrice} | Jootiya`;
+    const ogImage      = ad.image_urls?.[0]
+      ? buildImageUrl(ad.image_urls[0], supabaseUrl)
+      : `${baseUrl}/og-image.png`;
 
     return {
       title: metaTitle,
@@ -79,8 +77,8 @@ export default async function AdPage({ params }: AdPageProps) {
   const supabase    = createSupabaseServerClient();
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 
-  // ── 1. Fetch ad + user in parallel ────────────────────────────────────────
-  const [{ data: ad, error: adError }, user] = await Promise.all([
+  // ── Step 1: Fetch the ad (with profile join) + current user — in parallel
+  const [adResult, user] = await Promise.all([
     supabase
       .from("ads")
       .select("*, profiles:seller_id(phone, full_name, avatar_url, created_at)")
@@ -89,26 +87,49 @@ export default async function AdPage({ params }: AdPageProps) {
     getServerUser(),
   ]);
 
-  if (adError || !ad) {
-    console.error("[AdPage] ad not found:", id, adError?.message);
-    notFound();
+  // ── Step 2: If join failed, retry with plain select (RLS on profiles can break the join)
+  let ad   = adResult.data as any;
+  let profile: any = ad?.profiles ?? null;
+
+  if (adResult.error || !ad) {
+    // The join may have failed due to RLS — try without it
+    const { data: plainAd, error: plainErr } = await supabase
+      .from("ads")
+      .select("*")
+      .or(`id.eq.${id},slug.eq.${id}`)
+      .maybeSingle();
+
+    if (plainErr || !plainAd) {
+      // Truly not found
+      notFound();
+    }
+
+    ad = plainAd;
+
+    // Fetch profile separately (no join, separate query)
+    const { data: sep } = await supabase
+      .from("profiles")
+      .select("full_name, avatar_url, created_at, phone")
+      .eq("id", ad.seller_id)
+      .maybeSingle();
+
+    profile = sep ?? null;
   }
 
-  // ── 2. Build seller data (prefer joined profile) ───────────────────────────
-  const profile     = ad.profiles as any;
-  const sellerName  = profile?.full_name  || "Utilisateur Jootiya";
-  const sellerAvatar= profile?.avatar_url || null;
-  const memberSince = profile?.created_at
+  // ── Step 3: Derive seller info ────────────────────────────────────────────
+  const sellerName   = profile?.full_name  || "Utilisateur Jootiya";
+  const sellerAvatar = profile?.avatar_url || null;
+  const memberSince  = profile?.created_at
     ? new Date(profile.created_at).getFullYear()
     : "2024";
-  const sellerPhone = ad.phone || profile?.phone;
+  const sellerPhone  = ad.phone || profile?.phone || undefined;
 
-  // ── 3. Build images ────────────────────────────────────────────────────────
+  // ── Step 4: Build image URLs ───────────────────────────────────────────────
   const images: string[] = (ad.image_urls || []).map((img: string) =>
     buildImageUrl(img, supabaseUrl)
   );
 
-  // ── 4. Format price / date ─────────────────────────────────────────────────
+  // ── Step 5: Format price / date ───────────────────────────────────────────
   const formattedPrice = ad.price
     ? `${Number(ad.price).toLocaleString("fr-FR")} ${ad.currency || "MAD"}`
     : "Sur demande";
@@ -116,15 +137,11 @@ export default async function AdPage({ params }: AdPageProps) {
     day: "numeric", month: "long", year: "numeric",
   });
 
-  // ── 5. Parallel: seller stats + similar ads ────────────────────────────────
-  //    get_seller_stats wrapped with a race-timeout so a missing RPC
-  //    never hangs the page.
-  const STATS_TIMEOUT = 3000; // ms
-
-  const statsPromise = Promise.race([
+  // ── Step 6: Parallel — seller stats (with 3 s timeout) + similar ads ──────
+  const statsPromise = Promise.race<{ data: any } | { data: null }>([
     supabase.rpc("get_seller_stats", { target_seller_id: ad.seller_id }),
-    new Promise<{ data: null }>((resolve) =>
-      setTimeout(() => resolve({ data: null }), STATS_TIMEOUT)
+    new Promise<{ data: null }>(resolve =>
+      setTimeout(() => resolve({ data: null }), 3000)
     ),
   ]);
 
@@ -142,13 +159,13 @@ export default async function AdPage({ params }: AdPageProps) {
     similarPromise,
   ]);
 
-  const stats       = (statsResult as any)?.data;
-  const avgRating   = stats?.[0]?.avg_rating  || 0;
-  const totalReviews= stats?.[0]?.total_reviews || 0;
-  const isTrusted   = totalReviews > 10 && avgRating >= 4.5;
-  const similarAds  = similarResult?.data || [];
+  const stats        = (statsResult as any)?.data;
+  const avgRating    = stats?.[0]?.avg_rating   ?? 0;
+  const totalReviews = stats?.[0]?.total_reviews ?? 0;
+  const isTrusted    = totalReviews > 10 && avgRating >= 4.5;
+  const similarAds   = similarResult?.data ?? [];
 
-  // ── 6. Render ──────────────────────────────────────────────────────────────
+  // ── Step 7: Render ─────────────────────────────────────────────────────────
   return (
     <>
       <ShadowViewTracker adId={ad.id} category={ad.category} />
