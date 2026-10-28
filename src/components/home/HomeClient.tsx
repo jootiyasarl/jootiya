@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import Link from "next/link";
@@ -40,7 +40,6 @@ import {
   History,
   Waves,
 } from "lucide-react";
-import { getCachedAds, saveAds } from "@/lib/pwa/jootiya-db";
 import { supabase } from "@/lib/supabaseClient";
 import { fetchNearbyAds } from "@/lib/nearbyAds";
 import useEmblaCarousel from "embla-carousel-react";
@@ -284,18 +283,6 @@ export default function HomeClient({
       if (!isMounted) return;
 
       try {
-        if (typeof window !== "undefined") {
-          const cached = await getCachedAds();
-          if (cached && cached.length > 0 && isMounted) {
-            setAds(cached);
-            setLoading(false);
-          }
-        }
-      } catch (e) {
-        console.error("IndexedDB error:", e);
-      }
-
-      try {
         let storedLocation = null;
         if (typeof window !== "undefined") {
           try {
@@ -359,10 +346,6 @@ export default function HomeClient({
           const formattedAds = resultData.map(mapHomepageAdRow);
           setAds(formattedAds);
           setLoading(false);
-
-          if (!latParam && !lngParam) {
-            saveAds(formattedAds);
-          }
         }
       } catch (err: unknown) {
         console.error("Fetch error:", err);
@@ -815,3 +798,4 @@ export default function HomeClient({
     </div>
   );
 }
+

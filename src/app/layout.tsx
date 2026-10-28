@@ -1,12 +1,10 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { Tajawal, Inter } from "next/font/google";
 import "./globals.css";
 import { RootNavbarShell } from "@/components/navbar/RootNavbarShell";
 import Footer from "@/components/layout/Footer";
 import { Toaster } from "sonner";
 import Script from "next/script";
-import { PushPermissionPrompt } from "@/components/notifications/PushPermissionPrompt";
-import { ServiceWorkerRegistration } from "@/components/notifications/ServiceWorkerRegistration";
 import PublicNavbar from "@/components/navbar/PublicNavbar";
 import { ProgressBar } from "@/components/layout/ProgressBar";
 import { PageTransition } from "@/components/layout/PageTransition";
@@ -14,39 +12,32 @@ import { ScrollToTop } from "@/components/layout/ScrollToTop";
 import { Suspense } from "react";
 import { ThemeProvider } from "@/components/theme-provider";
 import { PageViewTracker } from "@/components/analytics/PageViewTracker";
-import { GoogleAnalytics } from '@next/third-parties/google'
-import InstallPWA from "@/components/pwa/InstallPWA";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import FlyonuiInit from "@/components/FlyonuiInit";
 
 const tajawal = Tajawal({
   variable: "--font-tajawal",
   subsets: ["arabic"],
   weight: ["400", "500", "700"],
-  display: 'swap',
+  display: "swap",
 });
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   weight: ["400", "500", "700"],
-  display: 'swap',
+  display: "swap",
 });
 
 export const metadata: Metadata = {
   title: {
     template: "%s | Jootiya",
-    default: "Jootiya - Le n°1 de l'achat et de la vente au Maroc",
+    default: "Jootiya - Le n1 de l'achat et de la vente au Maroc",
   },
-  description: "Jootiya, la première plateforme au Maroc pour acheter et vendre en toute sécurité.",
-  manifest: "/manifest.json",
+  description: "Jootiya, la premiere plateforme au Maroc pour acheter et vendre en toute securite.",
   icons: {
     icon: "/favicon.svg",
     apple: "/icon-192x192.png",
-  },
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
-    title: "Jootiya",
   },
   verification: {
     google: "_BPJsUrFkTt42U-_XHVC0kBXAF2b9xpoT8RaX9BxU0Y",
@@ -70,7 +61,7 @@ export default function RootLayout({
   return (
     <html lang="fr" dir="ltr" className="scroll-smooth bg-white" suppressHydrationWarning prefix="og: https://ogp.me/ns#">
       <head>
-        {/* Preconnect & DNS-Prefetch to eliminate latency on critical network chains */}
+        {/* Preconnect & DNS-Prefetch */}
         <link rel="preconnect" href="https://ssfcfvuosxxmvsdoktws.supabase.co" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://ssfcfvuosxxmvsdoktws.supabase.co" />
         <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />
@@ -82,31 +73,11 @@ export default function RootLayout({
           body { background-color: #fff; color: #0f172a; font-family: sans-serif; margin: 0; width: 100%; max-width: 100%; overflow-x: clip; position: relative; }
           .dark body { background-color: #020617; color: #e2e8f0; }
           main { min-height: 100vh; width: 100%; overflow-x: clip; }
-          .container-standard {
-            width: 100%;
-            margin-right: auto;
-            margin-left: auto;
-            padding-right: 0.75rem;
-            padding-left: 0.75rem;
-            max-width: 1440px;
-          }
-          @media (min-width: 640px) {
-            .container-standard {
-              padding-right: 1.5rem;
-              padding-left: 1.5rem;
-            }
-          }
-          .main-content-wrapper {
-            padding-top: 1.25rem; /* pt-5 for mobile */
-          }
-          @media (min-width: 768px) {
-            .main-content-wrapper {
-              padding-top: 2.5rem; /* pt-10 for desktop */
-            }
-          }
-          /* Vertical Rhythm */
-          .breadcrumb-gap { margin-bottom: 1rem; } /* 16px */
-
+          .container-standard { width: 100%; margin-right: auto; margin-left: auto; padding-right: 0.75rem; padding-left: 0.75rem; max-width: 1440px; }
+          @media (min-width: 640px) { .container-standard { padding-right: 1.5rem; padding-left: 1.5rem; } }
+          .main-content-wrapper { padding-top: 1.25rem; }
+          @media (min-width: 768px) { .main-content-wrapper { padding-top: 2.5rem; } }
+          .breadcrumb-gap { margin-bottom: 1rem; }
           .sticky { position: sticky; position: -webkit-sticky; }
           .top-0 { top: 0; }
           .z-40 { z-index: 40; }
@@ -117,7 +88,7 @@ export default function RootLayout({
           .justify-between { justify-content: space-between; }
           .container { width: 100%; margin-right: auto; margin-left: auto; padding-right: 1rem; padding-left: 1rem; }
           @media (min-width: 1280px) { .container { max-width: 1280px; } }
-          .bg-white/80 { background-color: rgba(255, 255, 255, 0.8); }
+          .bg-white\/80 { background-color: rgba(255, 255, 255, 0.8); }
           .backdrop-blur-md { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
           .border-b { border-bottom-width: 1px; }
           .border-zinc-200 { border-color: #e4e4e7; }
@@ -126,15 +97,12 @@ export default function RootLayout({
           .font-black { font-weight: 900; font-display: swap; }
           .uppercase { text-transform: uppercase; }
           .tracking-tighter { letter-spacing: -0.05em; }
-          /* Font Display Swap for Critical Elements */
           .font-sans { font-display: swap; }
           h1, h2, .logo-text { font-display: swap; }
-          /* AdSense CLS & display optimization */
           .adsbygoogle { display: block; }
           ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
         `}} />
         <meta name="google-adsense-account" content="ca-pub-4945284817184050" />
-        {/* كود أدسنس القياسي المباشر لضمان التنفيذ الفوري وعدم التحميل المسبق فقط */}
         <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4945284817184050"
@@ -149,7 +117,7 @@ export default function RootLayout({
               "@type": "Organization",
               "name": "Jootiya Marketplace Maroc",
               "url": "https://jootiya.com",
-              "description": "Plateforme de petites annonces au Maroc pour acheter et vendre en toute sécurité."
+              "description": "Plateforme de petites annonces au Maroc pour acheter et vendre en toute securite."
             }),
           }}
         />
@@ -159,8 +127,8 @@ export default function RootLayout({
             __html: `
               (function() {
                 if (/Googlebot|AdsBot-Google|Lighthouse/i.test(navigator.userAgent)) {
-                  if (window.performance && window.performance.mark) { 
-                    window.performance.mark('fcp'); 
+                  if (window.performance && window.performance.mark) {
+                    window.performance.mark('fcp');
                     window.performance.mark('lcp');
                   }
                   console.log("Protocol 8.0: Infrastructure Verified.");
@@ -169,8 +137,8 @@ export default function RootLayout({
             `,
           }}
         />
-        <script 
-          async 
+        <script
+          async
           src="https://www.googletagmanager.com/gtag/js?id=G-2BS0D7DTDJ"
         ></script>
         <script
@@ -196,17 +164,17 @@ export default function RootLayout({
 
       <body
         className={`${tajawal.variable} ${inter.variable} font-sans antialiased overflow-x-clip bg-white dark:bg-zinc-950`}
-        style={{ backgroundColor: '#ffffff' }}
+        style={{ backgroundColor: "#ffffff" }}
       >
         <noscript>
-          <iframe 
+          <iframe
             src="https://www.googletagmanager.com/ns.html?id=GT-MKRC853R"
-            height="0" 
-            width="0" 
-            style={{ display: 'none', visibility: 'hidden' }}
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
           ></iframe>
         </noscript>
-        <h1 className="sr-only">Jootiya : Petites annonces au Maroc - Achat et vente en toute sécurité</h1>
+        <h1 className="sr-only">Jootiya : Petites annonces au Maroc - Achat et vente en toute securite</h1>
 
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <FlyonuiInit />
@@ -217,15 +185,12 @@ export default function RootLayout({
           <Suspense fallback={null}>
             <ProgressBar />
           </Suspense>
-          <ServiceWorkerRegistration />
-          
+
           <RootNavbarShell navbar={<PublicNavbar />} footer={<Footer />}>
             {children}
           </RootNavbarShell>
 
-          <PushPermissionPrompt />
           <Toaster position="top-center" richColors />
-          <InstallPWA />
         </ThemeProvider>
 
         <Script
@@ -233,7 +198,6 @@ export default function RootLayout({
           strategy="lazyOnload"
           src="https://fundingchoicesmessages.google.com/i/pub-4945284817184050?ers=1"
         />
-
 
         <script
           type="application/ld+json"

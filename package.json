@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "jootiya",
   "version": "0.1.0",
   "private": true,
@@ -9,8 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@ducanh2912/next-pwa": "^10.2.9",
-    "@fingerprintjs/fingerprintjs": "^5.0.1",
+        "@fingerprintjs/fingerprintjs": "^5.0.1",
     "@hookform/resolvers": "^5.2.2",
     "@next/third-parties": "^16.1.6",
     "@radix-ui/react-avatar": "^1.1.11",
@@ -88,3 +87,4 @@
     "typescript": "^5"
   }
 }
+
