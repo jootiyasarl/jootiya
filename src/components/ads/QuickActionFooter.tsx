@@ -2,116 +2,139 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Phone, MessageCircle, Heart, Lock, BellRing } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Phone, MessageCircle, Heart } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
 interface QuickActionFooterProps {
-    phone: string;
-    adTitle: string;
-    adPrice: string;
-    adId: string;
-    sellerId: string;
-    currentUser: any;
+  phone: string;
+  adTitle: string;
+  adPrice: string;
+  adId: string;
+  sellerId: string;
+  currentUser: any;
 }
 
-export function QuickActionFooter({ phone, adTitle, adPrice, adId, sellerId, currentUser }: QuickActionFooterProps) {
-    const router = useRouter();
-    const [isCreatingChat, setIsCreatingChat] = useState(false);
-    const [isFavorite, setIsFavorite] = useState(false);
-    const [isLoadingFav, setIsLoadingFav] = useState(false);
+export function QuickActionFooter({
+  phone,
+  adTitle,
+  adPrice,
+  adId,
+  sellerId,
+  currentUser,
+}: QuickActionFooterProps) {
+  const router = useRouter();
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [isLoadingFav, setIsLoadingFav] = useState(false);
 
-    // Format Moroccan phone number for WhatsApp
-    const cleanPhone = phone?.replace(/\D/g, '');
-    const formatPhone = (cleanPhone?.startsWith('0') && cleanPhone.length === 10)
-        ? '212' + cleanPhone.substring(1)
-        : cleanPhone;
+  // Format Moroccan phone for WhatsApp
+  const cleanPhone = phone?.replace(/\D/g, "");
+  const formatPhone =
+    cleanPhone?.startsWith("0") && cleanPhone.length === 10
+      ? "212" + cleanPhone.substring(1)
+      : cleanPhone;
 
-    const whatsappMessage = `Bonjour, j'ai vu votre annonce "${adTitle}" sur Jootiya ب ${adPrice} و أنا مهتم بها. هل لا زالت متوفرة؟`;
-    const whatsappUrl = `https://wa.me/${formatPhone}?text=${encodeURIComponent(whatsappMessage)}`;
+  const waMessage = `Bonjour, j'ai vu votre annonce "${adTitle}" sur Jootiya a ${adPrice}. Est-elle toujours disponible ?`;
+  const whatsappUrl = `https://wa.me/${formatPhone}?text=${encodeURIComponent(waMessage)}`;
 
-    // Check favorite status on mount
-    useEffect(() => {
-        if (currentUser) {
-            const checkFavoriteStatus = async () => {
-                const { data } = await supabase
-                    .from('favorites')
-                    .select('id')
-                    .eq('ad_id', adId)
-                    .eq('user_id', currentUser.id)
-                    .single();
-                setIsFavorite(!!data);
-            };
-            checkFavoriteStatus();
-        }
-    }, [currentUser, adId]);
-
-    const handleFavoriteClick = async () => {
-        if (!currentUser) {
-            router.push(`/login?next=/ads/${adId}`);
-            return;
-        }
-
-        setIsLoadingFav(true);
-        try {
-            if (isFavorite) {
-                await supabase
-                    .from('favorites')
-                    .delete()
-                    .eq('ad_id', adId)
-                    .eq('user_id', currentUser.id);
-                setIsFavorite(false);
-            } else {
-                await supabase
-                    .from('favorites')
-                    .insert({ ad_id: adId, user_id: currentUser.id });
-                setIsFavorite(true);
-            }
-        } catch (error) {
-            console.error("Error toggling favorite:", error);
-        } finally {
-            setIsLoadingFav(false);
-        }
+  // Check favorite status
+  useEffect(() => {
+    if (!currentUser) return;
+    const check = async () => {
+      const { data } = await supabase
+        .from("favorites")
+        .select("id")
+        .eq("ad_id", adId)
+        .eq("user_id", currentUser.id)
+        .single();
+      setIsFavorite(!!data);
     };
+    check();
+  }, [currentUser, adId]);
 
-    return (
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-zinc-900 border-t border-zinc-100 dark:border-zinc-800 p-3 shadow-[0_-10px_20px_rgba(0,0,0,0.05)] animate-in slide-in-from-bottom duration-300 safe-area-bottom">
-            <div className="flex gap-2 w-full items-center">
-                {/* Main Contact Buttons */}
-                <a
-                    href={`tel:${phone}`}
-                    className="flex-1 h-12 bg-orange-600 hover:bg-orange-700 text-white font-black rounded-xl flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-md shadow-orange-200 dark:shadow-none text-[13px] uppercase tracking-tight"
-                >
-                    <Phone className="w-4 h-4" />
-                    Appeler
-                </a>
+  const handleFavoriteClick = async () => {
+    if (!currentUser) {
+      router.push(`/login?next=/ads/${adId}`);
+      return;
+    }
+    setIsLoadingFav(true);
+    try {
+      if (isFavorite) {
+        await supabase
+          .from("favorites")
+          .delete()
+          .eq("ad_id", adId)
+          .eq("user_id", currentUser.id);
+        setIsFavorite(false);
+        toast.success("Retire des favoris");
+      } else {
+        await supabase
+          .from("favorites")
+          .insert({ ad_id: adId, user_id: currentUser.id });
+        setIsFavorite(true);
+        toast.success("Ajoute aux favoris");
+      }
+    } catch {
+      toast.error("Une erreur s'est produite.");
+    } finally {
+      setIsLoadingFav(false);
+    }
+  };
 
-                <a
-                    href={whatsappUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 h-12 bg-[#25D366] hover:bg-[#22c35e] text-white font-black rounded-xl flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-md shadow-green-100 dark:shadow-none text-[13px] uppercase tracking-tight"
-                >
-                    <MessageCircle className="w-4 h-4 fill-current" />
-                    WhatsApp
-                </a>
+  return (
+    <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-100 px-4 py-3 shadow-[0_-8px_24px_rgba(0,0,0,0.06)]">
+      <div className="flex items-center gap-2.5 max-w-xl mx-auto">
 
-                {/* Favorite Action */}
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={handleFavoriteClick}
-                    disabled={isLoadingFav}
-                    className={cn(
-                        "h-12 w-12 rounded-xl shrink-0 transition-all active:scale-90",
-                        isFavorite ? "text-red-500 bg-red-50 dark:bg-red-900/20" : "text-zinc-500 bg-zinc-50 dark:bg-zinc-800"
-                    )}
-                >
-                    <Heart className={cn("h-5 w-5", isFavorite && "fill-current")} />
-                </Button>
-            </div>
-        </div>
-    );
+        {/* Phone — Dark */}
+        <a
+          href={phone ? `tel:${phone}` : undefined}
+          onClick={!phone ? () => toast.error("Numero non disponible.") : undefined}
+          className="flex-1 h-12 bg-gray-900 hover:bg-gray-800 active:scale-[0.98] text-white font-black text-[13px] rounded-2xl flex items-center justify-center gap-2 transition-all shadow-sm"
+        >
+          <Phone className="h-4 w-4" />
+          Appeler
+        </a>
+
+        {/* WhatsApp — Emerald */}
+        <a
+          href={whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex-1 h-12 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-black text-[13px] rounded-2xl flex items-center justify-center gap-2 transition-all shadow-sm"
+        >
+          {/* WhatsApp SVG */}
+          <svg
+            viewBox="0 0 24 24"
+            className="h-4 w-4 fill-current shrink-0"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.008-.57-.008-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
+          </svg>
+          WhatsApp
+        </a>
+
+        {/* Favorite toggle */}
+        <button
+          onClick={handleFavoriteClick}
+          disabled={isLoadingFav}
+          aria-label={isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
+          className={cn(
+            "h-12 w-12 rounded-2xl flex items-center justify-center shrink-0 transition-all active:scale-90",
+            isFavorite
+              ? "bg-red-50 text-red-500"
+              : "bg-gray-50 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+          )}
+        >
+          <Heart
+            className={cn(
+              "h-5 w-5 transition-all",
+              isFavorite && "fill-current scale-110"
+            )}
+          />
+        </button>
+      </div>
+    </div>
+  );
 }
