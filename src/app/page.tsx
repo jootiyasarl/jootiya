@@ -22,60 +22,41 @@ export default async function Home({ searchParams }: { searchParams: Promise<Hom
 
   let initialAds: HomepageAdRow[] = [];
 
-  if (lat != null && lng != null) {
-    const { data: nearbyData, error: nearbyError } = await supabase.rpc("get_nearby_items", {
-      lat,
-      lon: lng,
-      distance_meters: radius * 1000,
-      limit_count: 60,
-    });
+  // Fetch ALL ads from database ordered by featured status and creation date
+  const { data: allAds, error: adsError } = await supabase
+    .from("ads")
+    .select(
+      "id, title, price, currency, city, neighborhood, created_at, is_featured, image_urls, category, status, latitude, longitude, seller_id"
+    )
+    .or("status.eq.active,status.eq.approved,status.eq.pending,status.is.null")
+    .order("is_featured", { ascending: false })
+    .order("created_at", { ascending: false })
+    .limit(1000);
 
-    if (nearbyError) {
-      console.error("Error fetching nearby ads:", nearbyError);
+  if (adsError) {
+    console.error("Error fetching homepage ads:", adsError);
+  }
+
+  if (allAds) {
+    if (lat != null && lng != null) {
+      initialAds = (allAds as HomepageAdRow[]).map((ad) => {
+        if (ad.latitude != null && ad.longitude != null) {
+          const dLat = ((ad.latitude - lat) * Math.PI) / 180;
+          const dLon = ((ad.longitude - lng) * Math.PI) / 180;
+          const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos((lat * Math.PI) / 180) *
+              Math.cos((ad.latitude * Math.PI) / 180) *
+              Math.sin(dLon / 2) *
+              Math.sin(dLon / 2);
+          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+          return { ...ad, distanceKm: 6371 * c };
+        }
+        return ad;
+      });
+    } else {
+      initialAds = allAds as HomepageAdRow[];
     }
-
-    initialAds = (nearbyData ?? []) as HomepageAdRow[];
-  } else {
-    const HOMEPAGE_CATEGORIES = [
-      "electronics", "home-furniture", "vehicles", "fashion",
-      "tools-equipment", "hobbies", "animals", "books",
-      "used-clearance", "other",
-    ];
-    const ADS_PER_CATEGORY = 6;
-
-    const categoryResults = await Promise.all(
-      HOMEPAGE_CATEGORIES.map((category) =>
-        supabase
-          .from("ads")
-          .select(
-            "id, title, price, currency, city, neighborhood, created_at, is_featured, image_urls, category, status, latitude, longitude, seller_id"
-          )
-          .or("status.eq.active,status.eq.approved,status.eq.pending")
-          .eq("category", category)
-          .order("is_featured", { ascending: false })
-          .order("created_at", { ascending: false })
-          .limit(ADS_PER_CATEGORY)
-      )
-    );
-
-    const allAds: HomepageAdRow[] = [];
-    for (const result of categoryResults) {
-      if (result.error) {
-        console.error("Error fetching category ads:", result.error);
-        continue;
-      }
-      allAds.push(...(result.data ?? []));
-    }
-
-    // Sort combined results for the "latest" section
-    allAds.sort((a, b) => {
-      const aFeatured = a.is_featured ? 1 : 0;
-      const bFeatured = b.is_featured ? 1 : 0;
-      if (bFeatured !== aFeatured) return bFeatured - aFeatured;
-      return new Date(b.created_at ?? 0).getTime() - new Date(a.created_at ?? 0).getTime();
-    });
-
-    initialAds = allAds as HomepageAdRow[];
   }
 
   return (

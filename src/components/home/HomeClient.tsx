@@ -194,6 +194,13 @@ export default function HomeClient({
   const [loading, setLoading] = useState(!initialAds?.length);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (initialAds && initialAds.length > 0) {
+      setAds(initialAds.map(mapHomepageAdRow));
+      setLoading(false);
+    }
+  }, [initialAds]);
+
   // Global Interactive Filters State
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedCity, setSelectedCity] = useState<string>("Toutes les villes");
@@ -239,6 +246,36 @@ export default function HomeClient({
     let isMounted = true;
 
     if (initialAds?.length) {
+      if (typeof window !== "undefined") {
+        try {
+          const stored = localStorage.getItem("user_location");
+          const storedLocation = stored ? JSON.parse(stored) : null;
+          const lat = latParam || storedLocation?.lat;
+          const lon = lngParam || storedLocation?.lon;
+
+          if (lat && lon) {
+            setAds((prev) =>
+              prev.map((ad) => {
+                if (ad.latitude && ad.longitude && typeof ad.distanceKm !== "number") {
+                  const dLat = ((ad.latitude - lat) * Math.PI) / 180;
+                  const dLon = ((ad.longitude - lon) * Math.PI) / 180;
+                  const a =
+                    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.cos((lat * Math.PI) / 180) *
+                      Math.cos((ad.latitude * Math.PI) / 180) *
+                      Math.sin(dLon / 2) *
+                      Math.sin(dLon / 2);
+                  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                  return { ...ad, distanceKm: 6371 * c };
+                }
+                return ad;
+              })
+            );
+          }
+        } catch (e) {
+          console.error("Distance calculation error:", e);
+        }
+      }
       if (isMounted) setLoading(false);
       return;
     }
@@ -272,71 +309,50 @@ export default function HomeClient({
         const lat = latParam || storedLocation?.lat;
         const lon = lngParam || storedLocation?.lon;
 
-        let resultData: HomepageAdRow[] | null = null;
+        // Fetch ALL ads without restricting by category or 12-ad limits
+        const { data: allAds, error: adsError } = await supabase
+          .from("ads")
+          .select(`
+            id, 
+            title, 
+            price, 
+            currency, 
+            city, 
+            neighborhood, 
+            created_at, 
+            is_featured, 
+            image_urls, 
+            category, 
+            status, 
+            latitude, 
+            longitude, 
+            seller_id
+          `)
+          .or("status.eq.active,status.eq.approved,status.eq.pending,status.is.null")
+          .order("is_featured", { ascending: false })
+          .order("created_at", { ascending: false })
+          .limit(1000);
+
+        if (adsError) throw adsError;
+
+        let resultData: HomepageAdRow[] = (allAds ?? []) as HomepageAdRow[];
+
         if (lat && lon) {
-          resultData = await fetchNearbyAds({
-            latitude: lat,
-            longitude: lon,
-            radiusKm: radiusParam,
-            limit: 60,
+          resultData = resultData.map((ad) => {
+            if (ad.latitude != null && ad.longitude != null) {
+              const dLat = ((ad.latitude - lat) * Math.PI) / 180;
+              const dLon = ((ad.longitude - lon) * Math.PI) / 180;
+              const a =
+                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos((lat * Math.PI) / 180) *
+                  Math.cos((ad.latitude * Math.PI) / 180) *
+                  Math.sin(dLon / 2) *
+                  Math.sin(dLon / 2);
+              const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+              return { ...ad, distanceKm: 6371 * c };
+            }
+            return ad;
           });
-        } else {
-          const HOMEPAGE_CATEGORIES = [
-            "electronics",
-            "home-furniture",
-            "vehicles",
-            "fashion",
-            "tools-equipment",
-            "hobbies",
-            "animals",
-            "books",
-            "used-clearance",
-            "other",
-          ];
-          const ADS_PER_CAT = 12;
-
-          const categoryResults = await Promise.all(
-            HOMEPAGE_CATEGORIES.map((cat) =>
-              supabase
-                .from("ads")
-                .select(`
-                  id, 
-                  title, 
-                  price, 
-                  currency, 
-                  city, 
-                  neighborhood, 
-                  created_at, 
-                  is_featured, 
-                  image_urls, 
-                  category, 
-                  status, 
-                  latitude, 
-                  longitude, 
-                  seller_id
-                `)
-                .or("status.eq.active,status.eq.approved,status.eq.pending")
-                .eq("category", cat)
-                .order("is_featured", { ascending: false })
-                .order("created_at", { ascending: false })
-                .limit(ADS_PER_CAT)
-            )
-          );
-
-          const allAds: HomepageAdRow[] = [];
-          for (const res of categoryResults) {
-            if (res.error) continue;
-            allAds.push(...(res.data ?? []));
-          }
-
-          allAds.sort((a, b) => {
-            const aF = a.is_featured ? 1 : 0;
-            const bF = b.is_featured ? 1 : 0;
-            if (bF !== aF) return bF - aF;
-            return new Date(b.created_at ?? 0).getTime() - new Date(a.created_at ?? 0).getTime();
-          });
-
-          resultData = allAds;
         }
 
         if (resultData && isMounted) {
