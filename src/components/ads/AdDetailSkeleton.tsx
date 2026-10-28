@@ -193,27 +193,43 @@ export function AdDetailSkeleton() {
             {[...Array(4)].map((_, i) => (
               <div
                 key={i}
-                className="bg-white border border-gray-100 rounded-2xl overflow-hidden"
+                className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.06)]"
               >
-                {/* Image — aspect-[4/3] */}
-                <Bone className="aspect-[4/3] w-full rounded-none" />
-                <div className="p-3 space-y-1.5">
-                  <Bone className="h-3.5 w-3/4" />
+                {/* Image — aspect-[4/3] matches real RelatedAdCard */}
+                <div className="relative aspect-[4/3] w-full bg-gray-200 animate-pulse" />
+                <div className="px-3.5 pt-3 pb-3.5 space-y-2">
+                  {/* Price */}
+                  <Bone className="h-4 w-1/2 rounded-md" />
+                  {/* Title line 1 */}
                   <Bone className="h-3 w-full" />
-                  <Bone className="h-3 w-1/2" />
+                  {/* Title line 2 */}
+                  <Bone className="h-3 w-4/5" />
+                  {/* Location row */}
+                  <div className="flex items-center gap-1.5 pt-0.5">
+                    <Bone className="h-2.5 w-2.5 rounded-full" />
+                    <Bone className="h-2.5 w-16" />
+                  </div>
                 </div>
+                {/* Accent bar */}
+                <div className="h-0.5 bg-gray-100" />
               </div>
             ))}
           </div>
         </section>
       </div>
 
-      {/* ── Mobile footer skeleton ── */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-4 py-3 shadow-[0_-8px_24px_rgba(0,0,0,0.06)]">
+        {/* Mobile footer: Price label + Phone + WhatsApp */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/95 border-t border-gray-100 px-4 pt-3 pb-3 shadow-[0_-8px_32px_rgba(0,0,0,0.08)]">
         <div className="flex items-center gap-2.5 max-w-xl mx-auto">
-          <Bone className="flex-1 h-12 rounded-2xl bg-gray-200" />
-          <Bone className="flex-1 h-12 rounded-2xl bg-emerald-100" />
-          <Bone className="h-12 w-12 rounded-2xl flex-shrink-0" />
+          {/* Price label */}
+          <div className="flex-1 min-w-0 space-y-1">
+            <Bone className="h-2.5 w-8" />
+            <Bone className="h-5 w-28 rounded-md" />
+          </div>
+          {/* Phone icon button */}
+          <Bone className="h-12 w-12 rounded-2xl flex-shrink-0 bg-gray-200" />
+          {/* WhatsApp button */}
+          <Bone className="h-12 w-[140px] rounded-2xl bg-emerald-100" />
         </div>
       </div>
     </div>
