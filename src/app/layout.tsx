@@ -73,10 +73,6 @@ export default function RootLayout({
         {/* Preconnect & DNS-Prefetch to eliminate latency on critical network chains */}
         <link rel="preconnect" href="https://ssfcfvuosxxmvsdoktws.supabase.co" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://ssfcfvuosxxmvsdoktws.supabase.co" />
-        <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
-        <link rel="preconnect" href="https://googleads.g.doubleclick.net" crossOrigin="anonymous" />
-        <link rel="dns-prefetch" href="https://googleads.g.doubleclick.net" />
         <link rel="preconnect" href="https://fonts.googleapis.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
 
@@ -138,8 +134,8 @@ export default function RootLayout({
           ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
         `}} />
         <meta name="google-adsense-account" content="ca-pub-4945284817184050" />
+        {/* كود أدسنس الأساسي بالطريقة الصحيحة والنشطة */}
         <Script
-          id="google-adsense"
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4945284817184050"
           crossOrigin="anonymous"
