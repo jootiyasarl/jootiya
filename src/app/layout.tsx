@@ -134,13 +134,12 @@ export default function RootLayout({
           ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
         `}} />
         <meta name="google-adsense-account" content="ca-pub-4945284817184050" />
-        {/* كود أدسنس الأساسي بالطريقة الصحيحة والنشطة */}
-        <Script
+        {/* كود أدسنس القياسي المباشر لضمان التنفيذ الفوري وعدم التحميل المسبق فقط */}
+        <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4945284817184050"
           crossOrigin="anonymous"
-          strategy="afterInteractive"
-        />
+        ></script>
 
         <script
           type="application/ld+json"
