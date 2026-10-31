@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import React, { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import Link from "next/link";
@@ -8,6 +8,7 @@ import { HomeAdCard, ProductGridSkeleton } from "@/components/home/HomeAdCard";
 import { VirtualizedAdGrid } from "@/components/ads/VirtualizedAdGrid";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useInView } from "@/hooks/useInView";
 import {
   Package,
   ArrowRight,
@@ -211,6 +212,18 @@ export default function HomeClient({
   const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
   const sortDropdownRef = useRef<HTMLDivElement>(null);
   const listingsSectionRef = useRef<HTMLDivElement>(null);
+  // Lazy reveal: the ads grid fades in only when the section enters the viewport
+  const [gridVisible, setGridVisible] = useState(false);
+  useEffect(() => {
+    const el = listingsSectionRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setGridVisible(true); observer.disconnect(); } },
+      { threshold: 0.01, rootMargin: "0px 0px -60px 0px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -712,15 +725,32 @@ export default function HomeClient({
           </div>
         )}
 
-        {/* THE VIRTUALIZED GRID WITH FLAT MINIMALIST SKELETON */}
+        {/* THE VIRTUALIZED GRID — appears with fade-in when user scrolls to it */}
         {loading ? (
           <ProductGridSkeleton count={10} />
+        ) : !gridVisible ? (
+          /* Placeholder height so scroll position doesn't jump */
+          <div className="min-h-[600px] flex items-start justify-center pt-16">
+            <ProductGridSkeleton count={10} />
+          </div>
         ) : (
-          <VirtualizedAdGrid
-            ads={virtualizedCardList}
-            emptyMessage="Aucune annonce ne correspond à votre recherche"
-            emptySubtext="Modifiez vos critères ou explorez une autre ville."
-          />
+          <div
+            style={{
+              animation: "fadeSlideUp 0.5s ease both",
+            }}
+          >
+            <style>{`
+              @keyframes fadeSlideUp {
+                from { opacity: 0; transform: translateY(24px); }
+                to   { opacity: 1; transform: translateY(0); }
+              }
+            `}</style>
+            <VirtualizedAdGrid
+              ads={virtualizedCardList}
+              emptyMessage="Aucune annonce ne correspond à votre recherche"
+              emptySubtext="Modifiez vos critères ou explorez une autre ville."
+            />
+          </div>
         )}
       </section>
 

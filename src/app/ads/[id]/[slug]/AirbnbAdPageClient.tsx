@@ -143,20 +143,21 @@ function PdpGallery({
     <>
       {/* ── Hero: aspect-[4/3] mobile → aspect-[16/10] sm+ ── */}
       <div
-        className="relative w-full bg-gray-100 overflow-hidden group aspect-[4/3] sm:aspect-[16/10]"
+        className="relative w-full bg-gray-100 overflow-hidden group aspect-[4/3] sm:aspect-[16/10] cursor-zoom-in"
         onTouchStart={onTS} onTouchEnd={onTE}
+        onClick={() => setLightbox(true)}
       >
         {canOptimise(safe[cur]) ? (
           <Image key={cur} src={safe[cur]} alt={`${title} – ${cur + 1}`} fill
             priority={cur === 0} sizes="(max-width:1024px) 100vw, 67vw"
-            className="object-cover select-none transition-opacity duration-150"
+            className="object-cover select-none transition-opacity duration-150 group-hover:scale-[1.02] transition-transform duration-300"
             draggable={false}
             onError={e => { const t = e.currentTarget as HTMLImageElement; if (t.src !== FB) t.src = FB; }}
           />
         ) : (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={safe[cur]} alt={`${title} – ${cur + 1}`}
-            className="absolute inset-0 h-full w-full object-cover select-none" loading="eager" draggable={false} />
+            className="absolute inset-0 h-full w-full object-cover select-none group-hover:scale-[1.02] transition-transform duration-300" loading="eager" draggable={false} />
         )}
 
         {/* Gradient */}
@@ -164,16 +165,16 @@ function PdpGallery({
 
         {/* Glassmorphic action buttons — top-right */}
         <div className="absolute top-3 right-3 z-20 flex flex-col gap-2">
-          <button onClick={toggleFav} disabled={favLoad} aria-label={isFav ? "Retirer" : "Favoris"}
+          <button onClick={(e) => { e.stopPropagation(); toggleFav(); }} disabled={favLoad} aria-label={isFav ? "Retirer" : "Favoris"}
             className={cn("h-9 w-9 rounded-full backdrop-blur-md border flex items-center justify-center transition-all active:scale-90",
               isFav ? "bg-red-500/80 border-red-400/40 text-white" : "bg-white/20 border-white/30 text-white hover:bg-white/35")}>
             <Heart className={cn("h-4 w-4", isFav && "fill-current")} />
           </button>
-          <button onClick={onShare} aria-label="Partager"
+          <button onClick={(e) => { e.stopPropagation(); onShare(); }} aria-label="Partager"
             className="h-9 w-9 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-white hover:bg-white/35 transition-all">
             <Share2 className="h-4 w-4" />
           </button>
-          <button onClick={() => setLightbox(true)} aria-label="Agrandir"
+          <button onClick={(e) => { e.stopPropagation(); setLightbox(true); }} aria-label="Agrandir"
             className="h-9 w-9 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-white hover:bg-white/35 transition-all">
             <ZoomIn className="h-4 w-4" />
           </button>
@@ -181,11 +182,11 @@ function PdpGallery({
 
         {/* Hover nav arrows */}
         {safe.length > 1 && (<>
-          <button aria-label="Precedent" onClick={prev}
+          <button aria-label="Precedent" onClick={(e) => { e.stopPropagation(); prev(); }}
             className="absolute left-3 top-1/2 -translate-y-1/2 z-10 h-9 w-9 rounded-full bg-white/90 shadow flex items-center justify-center text-gray-700 hover:bg-white transition-all opacity-0 group-hover:opacity-100 focus-visible:opacity-100">
             <ChevronLeft className="h-5 w-5" />
           </button>
-          <button aria-label="Suivant" onClick={next}
+          <button aria-label="Suivant" onClick={(e) => { e.stopPropagation(); next(); }}
             className="absolute right-3 top-1/2 -translate-y-1/2 z-10 h-9 w-9 rounded-full bg-white/90 shadow flex items-center justify-center text-gray-700 hover:bg-white transition-all opacity-0 group-hover:opacity-100 focus-visible:opacity-100">
             <ChevronRight className="h-5 w-5" />
           </button>
@@ -193,7 +194,7 @@ function PdpGallery({
 
         {/* Counter — bottom-left */}
         {safe.length > 1 && (
-          <div className="absolute bottom-3 left-3 z-10 bg-black/55 backdrop-blur-sm text-white text-[11px] font-bold px-2.5 py-1 rounded-full tabular-nums">
+          <div onClick={(e) => e.stopPropagation()} className="absolute bottom-3 left-3 z-10 bg-black/55 backdrop-blur-sm text-white text-[11px] font-bold px-2.5 py-1 rounded-full tabular-nums cursor-default">
             {cur + 1} / {safe.length}
           </div>
         )}
@@ -221,39 +222,48 @@ function PdpGallery({
       {/* ── Lightbox portal ── */}
       {lightbox && mounted && createPortal(
         <div role="dialog" aria-modal="true" aria-label="Galerie"
-          className="fixed inset-0 z-[9999] flex flex-col bg-black/96 animate-in fade-in duration-200"
+          className="fixed inset-0 z-[9999] flex flex-col bg-black/97 animate-in fade-in duration-150"
+          onClick={() => setLightbox(false)}
           onTouchStart={onTS} onTouchEnd={onTE}>
-          <div className="flex items-center justify-between px-4 py-4 shrink-0">
-            <span className="text-white/70 text-sm font-semibold tabular-nums">{cur + 1} sur {safe.length}</span>
+          {/* Top bar */}
+          <div className="flex items-center justify-between px-4 py-3 shrink-0" onClick={e => e.stopPropagation()}>
+            <span className="text-white/60 text-sm font-medium tabular-nums">{cur + 1} / {safe.length}</span>
             <button onClick={() => setLightbox(false)} aria-label="Fermer"
-              className="h-9 w-9 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20">
+              className="h-9 w-9 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/25 transition-colors">
               <X className="h-5 w-5" />
             </button>
           </div>
+          {/* Image area — clicking the image stops propagation (don't close) */}
           <div className="flex-1 flex items-center justify-center px-4 relative overflow-hidden">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img key={cur} src={safe[cur]} alt={`${title} – ${cur + 1}`}
-              className="max-h-full max-w-full object-contain select-none" draggable={false}
+              className="max-h-full max-w-full object-contain select-none rounded-lg shadow-2xl"
+              draggable={false}
+              onClick={e => e.stopPropagation()}
               onError={e => { const t = e.currentTarget as HTMLImageElement; if (t.src !== FB) t.src = FB; }} />
             {safe.length > 1 && (<>
-              <button onClick={prev} aria-label="Precedent"
-                className="absolute left-2 sm:left-4 h-11 w-11 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20">
+              <button onClick={(e) => { e.stopPropagation(); prev(); }} aria-label="Precedent"
+                className="absolute left-2 sm:left-6 h-11 w-11 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-white/25 transition-colors shadow-lg">
                 <ChevronLeft className="h-6 w-6" />
               </button>
-              <button onClick={next} aria-label="Suivant"
-                className="absolute right-2 sm:right-4 h-11 w-11 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/20">
+              <button onClick={(e) => { e.stopPropagation(); next(); }} aria-label="Suivant"
+                className="absolute right-2 sm:right-6 h-11 w-11 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-white/25 transition-colors shadow-lg">
                 <ChevronRight className="h-6 w-6" />
               </button>
             </>)}
           </div>
-          {safe.length > 1 && safe.length <= 12 && (
-            <div className="flex justify-center gap-1.5 py-4 shrink-0">
-              {safe.map((_, i) => (
-                <button key={i} onClick={() => setCur(i)} aria-label={`Photo ${i + 1}`}
-                  className={cn("h-1.5 rounded-full transition-all", i === cur ? "w-6 bg-white" : "w-1.5 bg-white/30")} />
-              ))}
-            </div>
-          )}
+          {/* Dot indicators + close hint */}
+          <div className="shrink-0 flex flex-col items-center gap-2 py-4" onClick={e => e.stopPropagation()}>
+            {safe.length > 1 && safe.length <= 12 && (
+              <div className="flex justify-center gap-1.5">
+                {safe.map((_, i) => (
+                  <button key={i} onClick={() => setCur(i)} aria-label={`Photo ${i + 1}`}
+                    className={cn("h-1.5 rounded-full transition-all", i === cur ? "w-6 bg-white" : "w-1.5 bg-white/30")} />
+                ))}
+              </div>
+            )}
+            <p className="text-white/30 text-[11px]">Appuyer en dehors pour fermer</p>
+          </div>
         </div>,
         document.body
       )}
