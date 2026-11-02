@@ -8,7 +8,6 @@ import { HomeAdCard, ProductGridSkeleton } from "@/components/home/HomeAdCard";
 import { VirtualizedAdGrid } from "@/components/ads/VirtualizedAdGrid";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useInView } from "@/hooks/useInView";
 import {
   Package,
   ArrowRight,
