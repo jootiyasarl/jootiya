@@ -6,6 +6,7 @@ import { TrustSection } from "@/components/home/TrustSection";
 import { type PublicAdCardAd } from "@/components/AdCard";
 import { HomeAdCard, ProductGridSkeleton } from "@/components/home/HomeAdCard";
 import { VirtualizedAdGrid } from "@/components/ads/VirtualizedAdGrid";
+import { InfiniteAdFeed } from "@/components/home/InfiniteAdFeed";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -41,7 +42,6 @@ import {
   Waves,
 } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
-import { fetchNearbyAds } from "@/lib/nearbyAds";
 import useEmblaCarousel from "embla-carousel-react";
 
 export type HomepageAd = {
@@ -79,6 +79,7 @@ export type HomepageAdRow = {
   images?: string[] | null;
   image_urls?: string[] | null;
   category?: string | null;
+  status?: string | null;
   latitude?: number | null;
   longitude?: number | null;
   distanceKm?: number;
@@ -183,9 +184,11 @@ function mapHomepageAdRow(row: HomepageAdRow): HomepageAd {
 export default function HomeClient({
   initialParams,
   initialAds,
+  initialHasMore = false,
 }: {
   initialParams: HomeInitialParams;
   initialAds?: HomepageAdRow[];
+  initialHasMore?: boolean;
 }) {
   const [ads, setAds] = useState<HomepageAd[]>(() =>
     (initialAds || []).map(mapHomepageAdRow)
@@ -241,8 +244,6 @@ export default function HomeClient({
 
   const latParam = typeof initialParams.lat === "string" ? parseFloat(initialParams.lat) : null;
   const lngParam = typeof initialParams.lng === "string" ? parseFloat(initialParams.lng) : null;
-  const radiusParam =
-    typeof initialParams.radius === "string" ? parseInt(initialParams.radius) : 50;
 
   // VIP Embla carousel
   const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -253,92 +254,25 @@ export default function HomeClient({
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
 
+  // Enrich ads with client-side distance if localStorage has coords
   useEffect(() => {
-    let isMounted = true;
+    if (!initialAds?.length) return;
 
-    if (initialAds?.length) {
-      if (typeof window !== "undefined") {
-        try {
-          const stored = localStorage.getItem("user_location");
-          const storedLocation = stored ? JSON.parse(stored) : null;
-          const lat = latParam || storedLocation?.lat;
-          const lon = lngParam || storedLocation?.lon;
-
-          if (lat && lon) {
-            setAds((prev) =>
-              prev.map((ad) => {
-                if (ad.latitude && ad.longitude && typeof ad.distanceKm !== "number") {
-                  const dLat = ((ad.latitude - lat) * Math.PI) / 180;
-                  const dLon = ((ad.longitude - lon) * Math.PI) / 180;
-                  const a =
-                    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                    Math.cos((lat * Math.PI) / 180) *
-                      Math.cos((ad.latitude * Math.PI) / 180) *
-                      Math.sin(dLon / 2) *
-                      Math.sin(dLon / 2);
-                  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-                  return { ...ad, distanceKm: 6371 * c };
-                }
-                return ad;
-              })
-            );
-          }
-        } catch (e) {
-          console.error("Distance calculation error:", e);
-        }
-      }
-      if (isMounted) setLoading(false);
+    if (typeof window === "undefined") {
+      setLoading(false);
       return;
     }
 
-    async function initData() {
-      if (!isMounted) return;
+    try {
+      const stored = localStorage.getItem("user_location");
+      const storedLocation = stored ? JSON.parse(stored) : null;
+      const lat = latParam ?? storedLocation?.lat;
+      const lon = lngParam ?? storedLocation?.lon;
 
-      try {
-        let storedLocation = null;
-        if (typeof window !== "undefined") {
-          try {
-            const stored = localStorage.getItem("user_location");
-            storedLocation = stored ? JSON.parse(stored) : null;
-          } catch (e) {
-            console.error("LocalStorage error:", e);
-          }
-        }
-
-        const lat = latParam || storedLocation?.lat;
-        const lon = lngParam || storedLocation?.lon;
-
-        // Fetch ALL ads without restricting by category or 12-ad limits
-        const { data: allAds, error: adsError } = await supabase
-          .from("ads")
-          .select(`
-            id, 
-            title, 
-            price, 
-            currency, 
-            city, 
-            neighborhood, 
-            created_at, 
-            is_featured, 
-            image_urls, 
-            category, 
-            status, 
-            latitude, 
-            longitude, 
-            seller_id
-          `)
-          .or("status.eq.active,status.eq.approved,status.eq.pending,status.is.null")
-          .order("is_featured", { ascending: false })
-          .order("created_at", { ascending: false })
-          .limit(1000);
-
-        if (adsError) throw adsError;
-
-        let resultData: HomepageAdRow[] = (allAds ?? []) as HomepageAdRow[];
-
-        if (lat && lon) {
-          resultData = resultData.map((ad) => {
-            if (ad.latitude != null && ad.longitude != null) {
+      if (lat && lon) {
+        setAds((prev) =>
+          prev.map((ad) => {
+            if (ad.latitude && ad.longitude && typeof ad.distanceKm !== "number") {
               const dLat = ((ad.latitude - lat) * Math.PI) / 180;
               const dLon = ((ad.longitude - lon) * Math.PI) / 180;
               const a =
@@ -351,26 +285,15 @@ export default function HomeClient({
               return { ...ad, distanceKm: 6371 * c };
             }
             return ad;
-          });
-        }
-
-        if (resultData && isMounted) {
-          const formattedAds = resultData.map(mapHomepageAdRow);
-          setAds(formattedAds);
-          setLoading(false);
-        }
-      } catch (err: unknown) {
-        console.error("Fetch error:", err);
-        setError(err instanceof Error ? err.message : "Erreur de chargement");
-        setLoading(false);
+          })
+        );
       }
+    } catch (e) {
+      console.error("Distance calculation error:", e);
     }
 
-    initData();
-    return () => {
-      isMounted = false;
-    };
-  }, [latParam, lngParam, radiusParam, initialAds]);
+    setLoading(false);
+  }, [latParam, lngParam, initialAds]);
 
   const toAdCard = useCallback(
     (ad: HomepageAd): PublicAdCardAd => ({
@@ -448,6 +371,7 @@ export default function HomeClient({
     return result;
   }, [ads, feedTab, selectedCategory, selectedCity, searchQuery, sortBy]);
 
+  // virtualizedCardList is preserved for the VIP featured carousel (toAdCard mapping)
   const virtualizedCardList = useMemo(() => {
     return filteredAds.map(toAdCard);
   }, [filteredAds, toAdCard]);
@@ -724,13 +648,13 @@ export default function HomeClient({
           </div>
         )}
 
-        {/* THE VIRTUALIZED GRID — appears with fade-in when user scrolls to it */}
+        {/* THE FEED — Infinite Scroll: SSR first batch + client-side pagination */}
         {loading ? (
-          <ProductGridSkeleton count={10} />
+          <ProductGridSkeleton count={12} />
         ) : !gridVisible ? (
-          /* Placeholder height so scroll position doesn't jump */
+          /* Placeholder height so scroll position doesn't jump before reveal */
           <div className="min-h-[600px] flex items-start justify-center pt-16">
-            <ProductGridSkeleton count={10} />
+            <ProductGridSkeleton count={12} />
           </div>
         ) : (
           <div
@@ -744,8 +668,17 @@ export default function HomeClient({
                 to   { opacity: 1; transform: translateY(0); }
               }
             `}</style>
-            <VirtualizedAdGrid
-              ads={virtualizedCardList}
+            {/*
+             * InfiniteAdFeed receives the SSR-rendered first 12 ads and handles
+             * all subsequent pages via /api/ads + IntersectionObserver sentinel.
+             * filterKey encodes the current filter state — when it changes, the
+             * feed resets its client-side page counter to 1.
+             */}
+            <InfiniteAdFeed
+              initialAds={initialAds || []}
+              initialHasMore={initialHasMore}
+              pageSize={12}
+              filterKey={`${feedTab}|${selectedCategory}|${selectedCity}|${sortBy}|${searchQuery}`}
               emptyMessage="Aucune annonce ne correspond à votre recherche"
               emptySubtext="Modifiez vos critères ou explorez une autre ville."
             />
