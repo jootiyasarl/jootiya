@@ -1,4 +1,4 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 @plugin "flyonui";
 
 @plugin "flyonui/theme" {
@@ -85,7 +85,13 @@
   --animate-fade-in-up: fade-in-up 0.8s ease-out forwards;
   --animate-blob: blob 7s infinite;
 
-  @keyframes fade-in-up {
+  
+  /* Shimmer animation for skeleton loaders */
+  @keyframes shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+@keyframes fade-in-up {
     0% {
       opacity: 0;
       transform: translateY(20px);
@@ -451,3 +457,4 @@
     -webkit-overflow-scrolling: touch;
   }
 }
+
