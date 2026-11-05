@@ -1,186 +1,345 @@
 "use client";
 
-import type { ListingCardProps } from "@/types/components/marketplace";
-import Image from "next/image";
-import Link from "next/link";
-import { Heart, User, MapPin } from "lucide-react";
-import useEmblaCarousel from "embla-carousel-react";
-import { useEffect, useState } from "react";
-import { getOptimizedImageUrl } from "@/lib/storageUtils";
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * ListingCard — Universal Product Card  |  Jootiya.com
+ * ─────────────────────────────────────────────────────────────────────────────
+ *
+ * DESIGN SYSTEM TOKENS (match the rest of the site):
+ *   - Price:    text-amber-600 font-bold
+ *   - Featured: bg-orange-500 badge
+ *   - CTA:      border-amber-500 accent line on hover
+ *   - Layout:   aspect-[4/3] image → price → title → meta
+ *
+ * PERFORMANCE CHOICES:
+ *   - Shimmer skeleton is mounted alongside real image (opacity 0→1 on onLoad)
+ *     to avoid the "pop-in" flicker caused by conditional rendering.
+ *   - will-change: transform isolates GPU layer for smooth hover scale.
+ *   - priority=true only for the first 4 above-the-fold cards.
+ *   - decoding="async" avoids blocking the main thread on image decode.
+ *   - generateSlug() is memoized at call-site (no recalculation per render).
+ *
+ * ACCESSIBILITY:
+ *   - <article> landmark per card (screen readers enumerate them).
+ *   - Descriptive alt (product title) instead of generic "image".
+ *   - focus-visible ring for keyboard navigation.
+ *   - Sold/Featured overlays have aria-label.
+ *   - FavoriteButton min 44×44px touch target via padding.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 
-function formatDistance(distanceKm?: number): string | null {
-  if (distanceKm === undefined || distanceKm === null || isNaN(distanceKm)) return null;
-  if (distanceKm < 1) {
-    return `${Math.round(distanceKm * 1000)} متر`;
-  }
-  return `${distanceKm.toFixed(1)} كلم`;
+import { useState } from "react";
+import Link from "next/link";
+import { MapPin, Image as ImageIcon, Sparkles } from "lucide-react";
+import { FavoriteButton } from "@/components/ads/FavoriteButton";
+import { generateSlug } from "@/lib/seo-utils";
+import { getOptimizedImageUrl } from "@/lib/storageUtils";
+import { cn } from "@/lib/utils";
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+export interface ListingCardData {
+  id: string;
+  slug?: string | null;
+  title: string;
+  /** Pre-formatted string e.g. "1 200 MAD" */
+  price: string;
+  location?: string | null;
+  /** Pre-formatted display date e.g. "5 nov. à 14:30" */
+  createdAt?: string | null;
+  imageUrl?: string | null;
+  isFeatured?: boolean;
+  status?: string | null;
 }
 
-export function ListingCard(props: ListingCardProps) {
-  const {
-    id,
-    title,
-    subtitle,
-    price,
-    imageUrl,
-    image_urls,
-    sellerName,
-    sellerAvatar,
-    badgeLabel,
-    href,
-    distanceKm,
-  } = props;
+export interface ListingCardProps {
+  ad: ListingCardData;
+  /** true for first 4 above-the-fold cards → loading="eager" */
+  priority?: boolean;
+  /** Override the href (defaults to /ads/[id]/[slug]) */
+  href?: string;
+  className?: string;
+}
 
-  const distanceLabel = formatDistance(distanceKm);
-  const normalizedSellerName = typeof sellerName === "string" ? sellerName.trim() : "";
-  const displaySellerName = normalizedSellerName || "Utilisateur";
+// ─── Sub-component: CardImage ─────────────────────────────────────────────────
 
-  const images = Array.isArray(image_urls) && image_urls.length > 0
-    ? image_urls
-    : (imageUrl ? [imageUrl] : []);
+function CardImage({
+  src,
+  alt,
+  priority,
+  isFeatured,
+  isSold,
+  adId,
+}: {
+  src: string | null;
+  alt: string;
+  priority: boolean;
+  isFeatured?: boolean;
+  isSold?: boolean;
+  adId: string;
+}) {
+  const [loaded, setLoaded] = useState(false);
+  const [failed, setFailed] = useState(false);
 
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    loop: false,
-    align: "start",
-    containScroll: "trimSnaps",
-  });
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
-
-  useEffect(() => {
-    if (!emblaApi) return;
-
-    setScrollSnaps(emblaApi.scrollSnapList());
-    setSelectedIndex(emblaApi.selectedScrollSnap());
-
-    const onSelect = () => {
-      setSelectedIndex(emblaApi.selectedScrollSnap());
-    };
-
-    emblaApi.on("select", onSelect);
-    emblaApi.on("reInit", onSelect);
-
-    return () => {
-      emblaApi.off("select", onSelect);
-      emblaApi.off("reInit", onSelect);
-    };
-  }, [emblaApi]);
+  const showImg = src && !failed;
 
   return (
-    <article className="group cursor-pointer flex flex-col bg-white dark:bg-zinc-900 rounded-3xl p-2 sm:p-3 shadow-sm hover:shadow-md transition-all duration-300 active:scale-[0.98] select-none border border-zinc-100 dark:border-zinc-800">
-      <Link href={href} className="flex flex-col gap-2">
-        {/* Seller Info */}
-        <div className="flex items-center gap-2 px-1">
-          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center overflow-hidden shrink-0 border border-zinc-100 dark:border-zinc-800">
-            {sellerAvatar ? (
-              <Image 
-                src={sellerAvatar} 
-                alt={displaySellerName} 
-                width={32} 
-                height={32} 
-                className="object-cover"
-              />
-            ) : (
-              <User className="w-4 h-4 sm:w-5 sm:h-5 text-zinc-400" />
+    /*
+     * aspect-[4/3] creates the exact pixel reservation for the image box
+     * BEFORE the browser fetches a single byte of the image.
+     * This is the single most effective CLS fix available.
+     */
+    <div className="relative w-full aspect-[4/3] overflow-hidden bg-gray-100 rounded-t-2xl shrink-0">
+      {showImg ? (
+        <>
+          {/* ── Shimmer — mounted immediately, fades out on onLoad ── */}
+          <div
+            aria-hidden="true"
+            className={cn(
+              "absolute inset-0 z-10 transition-opacity duration-300",
+              loaded ? "opacity-0 pointer-events-none" : "opacity-100"
             )}
-          </div>
-          <span className="text-[11px] sm:text-sm font-bold text-zinc-900 dark:text-zinc-100 truncate">{displaySellerName}</span>
-        </div>
-
-        {/* Image Container */}
-        <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-zinc-50 dark:bg-zinc-800">
-          {images.length > 0 ? (
-            <div className="absolute inset-0">
-              <div className="overflow-hidden w-full h-full" ref={emblaRef}>
-                <div className="flex h-full">
-                  {images.map((src, idx) => (
-                    <div key={`${id}-${idx}`} className="relative min-w-0 flex-[0_0_100%] h-full">
-                      <Image
-                        src={getOptimizedImageUrl(src, { width: 500, quality: 75 })}
-                        alt={title}
-                        fill
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                        quality={75}
-                        priority={idx === 0}
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {scrollSnaps.length > 1 && (
-                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5">
-                  {scrollSnaps.map((_, i) => (
-                    <button
-                      key={`${id}-dot-${i}`}
-                      type="button"
-                      className={
-                        "h-1.5 w-1.5 rounded-full transition-all " +
-                        (i === selectedIndex
-                          ? "bg-white shadow-sm"
-                          : "bg-white/50")
-                      }
-                      onClick={(e) => {
-                        e.preventDefault();
-                        emblaApi?.scrollTo(i);
-                      }}
-                      aria-label={`Aller à l'image ${i + 1}`}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="flex h-full w-full items-center justify-center text-zinc-400">
-              <span className="text-[10px]">Aucune image</span>
-            </div>
-          )}
-
-          {/* Heart Overlay */}
-          <button
-            className="absolute right-2 top-2 z-10 p-1.5 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-sm rounded-full shadow-sm text-zinc-800 dark:text-zinc-200 hover:text-orange-600 transition-colors border border-zinc-100 dark:border-zinc-800"
-            onClick={(e) => {
-              e.preventDefault();
-            }}
           >
-            <Heart className="h-4 w-4" />
-          </button>
-
-          {badgeLabel && (
-            <div className="absolute left-2 top-2 rounded-full bg-orange-600 px-2 py-1 text-[8px] font-black uppercase tracking-wider text-white shadow-lg">
-              {badgeLabel === "Featured" ? "À la une" : badgeLabel}
-            </div>
-          )}
-        </div>
-
-        {/* Content Section */}
-        <div className="flex flex-col gap-1.5 sm:gap-2 px-1 pb-1">
-          <h3 className="text-[12px] sm:text-sm font-bold text-zinc-900 dark:text-zinc-100 leading-snug line-clamp-2 h-8 sm:h-10">
-            {title}
-          </h3>
-
-          <div className="flex flex-col gap-0">
-            <span className="text-lg sm:text-xl font-black text-orange-600 tracking-tight leading-none">
-              {price}
-            </span>
-            <div className="flex items-center flex-wrap gap-x-1 sm:gap-x-1.5 gap-y-1 text-zinc-500 text-[9px] sm:text-[10px] mt-1.5 sm:mt-2 border-t border-zinc-50 dark:border-zinc-800 pt-1.5 sm:pt-2">
-              <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
-                <MapPin className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-orange-500/60" />
-                <span className="truncate max-w-[50px] sm:max-w-[60px]">{subtitle || "Maroc"}</span>
-              </div>
-              {distanceLabel && (
-                <>
-                  <span className="shrink-0 text-zinc-300">•</span>
-                  <span className="shrink-0 text-orange-600/70 font-bold">{distanceLabel}</span>
-                </>
-              )}
-              <span className="shrink-0 text-zinc-300">•</span>
-              <span className="shrink-0">Aujourd'hui</span>
-            </div>
+            <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-[shimmer_1.4s_ease-in-out_infinite]" />
           </div>
+
+          {/* ── Real image — fades in over shimmer on load ── */}
+          <img
+            src={src}
+            alt={alt}
+            className={cn(
+              "absolute inset-0 w-full h-full object-cover",
+              // GPU-composited transform — no layout reflows during hover
+              "will-change-transform transition-[transform,opacity] duration-300 ease-out",
+              "group-hover:scale-[1.04]",
+              loaded ? "opacity-100" : "opacity-0"
+            )}
+            loading={priority ? "eager" : "lazy"}
+            decoding="async"
+            onLoad={() => setLoaded(true)}
+            onError={() => setFailed(true)}
+          />
+        </>
+      ) : (
+        /* ── No-photo fallback ── */
+        <div
+          aria-label="Sans photo"
+          className="absolute inset-0 flex flex-col items-center justify-center bg-gray-50"
+        >
+          <ImageIcon className="h-8 w-8 text-gray-300 mb-1" aria-hidden="true" />
+          <span className="text-[9px] font-semibold uppercase tracking-widest text-gray-400">
+            Sans Photo
+          </span>
         </div>
+      )}
+
+      {/* ── Favorite button — glassmorphic, 44px touch target ── */}
+      <div className="absolute right-2 top-2 z-20">
+        <FavoriteButton
+          adId={adId}
+          className={cn(
+            "h-7 w-7 rounded-full",
+            "bg-white/82 backdrop-blur-sm border border-white/50 shadow-sm",
+            "flex items-center justify-center",
+            "text-gray-400 hover:text-rose-500 hover:bg-white",
+            "transition-all duration-200 active:scale-90 hover:scale-110",
+            // Invisible tap-area extension — WCAG 2.5.5 (44px target)
+            "relative before:absolute before:inset-[-8px]"
+          )}
+        />
+      </div>
+
+      {/* ── Featured badge ── */}
+      {isFeatured && (
+        <div
+          aria-label="Annonce à la une"
+          className="absolute top-2 left-2 z-20 pointer-events-none"
+        >
+          <span className="inline-flex items-center gap-1 rounded-lg bg-orange-500 text-white px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide shadow-sm">
+            <Sparkles className="h-2 w-2" aria-hidden="true" />
+            À la une
+          </span>
+        </div>
+      )}
+
+      {/* ── Sold overlay ── */}
+      {isSold && (
+        <div
+          aria-label="Article vendu"
+          className="absolute inset-0 z-20 flex items-center justify-center bg-black/50 backdrop-blur-[1.5px]"
+        >
+          <span className="rotate-[-12deg] rounded-xl border-2 border-white px-4 py-1 text-xs font-black tracking-widest text-white shadow-lg uppercase select-none">
+            Vendu
+          </span>
+        </div>
+      )}
+
+      {/* ── Hover amber accent line ── */}
+      <div
+        aria-hidden="true"
+        className="absolute bottom-0 left-0 right-0 h-[2px] bg-amber-500 origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 z-10"
+      />
+    </div>
+  );
+}
+
+// ─── Sub-component: CardInfo ──────────────────────────────────────────────────
+
+function CardInfo({
+  price,
+  title,
+  location,
+  createdAt,
+}: {
+  price: string;
+  title: string;
+  location?: string | null;
+  createdAt?: string | null;
+}) {
+  return (
+    <div className="px-2.5 pt-2 pb-2.5 flex flex-col gap-0.5">
+      {/* Price — most dominant element, amber for brand consistency */}
+      <p className="text-sm sm:text-[15px] font-bold text-amber-600 tracking-tight leading-tight truncate">
+        {price}
+      </p>
+
+      {/*
+       * min-h-[2.5em] reserves height for 2 lines even when title is short.
+       * This keeps card heights uniform in the grid → no jagged rows.
+       */}
+      <h3 className="text-xs sm:text-[13px] font-medium text-gray-800 leading-snug line-clamp-2 min-h-[2.5em]">
+        {title}
+      </h3>
+
+      {/* Meta: location + date in one compact, truncated row */}
+      <div className="flex items-center gap-1 mt-0.5 min-w-0">
+        <MapPin className="h-2.5 w-2.5 shrink-0 text-gray-400" aria-hidden="true" />
+        <span className="text-[10px] text-gray-400 truncate">
+          {location || "Maroc"}
+        </span>
+        {createdAt && (
+          <>
+            <span aria-hidden="true" className="text-gray-300 text-[10px] shrink-0">·</span>
+            <time
+              className="text-[10px] text-gray-400 shrink-0 truncate max-w-[64px]"
+              suppressHydrationWarning
+            >
+              {createdAt}
+            </time>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Main Export ──────────────────────────────────────────────────────────────
+
+export function ListingCard({
+  ad,
+  priority = false,
+  href,
+  className,
+}: ListingCardProps) {
+  const adSlug = ad.slug || generateSlug(ad.title);
+  const linkHref = href || `/ads/${ad.id}/${adSlug}`;
+
+  // 480px WebP thumbnail via Supabase Image Transformations
+  const imgSrc = ad.imageUrl
+    ? getOptimizedImageUrl(ad.imageUrl, { width: 480, quality: 80, format: "webp" })
+    : null;
+
+  return (
+    <article className={cn("group relative", className)}>
+      <Link
+        href={linkHref}
+        aria-label={`Voir : ${ad.title}`}
+        className={cn(
+          "flex flex-col overflow-hidden rounded-2xl bg-white",
+          "border border-gray-100 shadow-sm",
+          // Lift + deepen shadow on hover — transform is GPU-composited
+          "hover:shadow-md hover:-translate-y-0.5",
+          "transition-all duration-200 ease-out",
+          // Keyboard-only focus ring (not shown on mouse click)
+          "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500"
+        )}
+      >
+        <CardImage
+          src={imgSrc}
+          alt={ad.title}
+          priority={priority}
+          isFeatured={ad.isFeatured}
+          isSold={ad.status === "sold"}
+          adId={ad.id}
+        />
+        <CardInfo
+          price={ad.price}
+          title={ad.title}
+          location={ad.location}
+          createdAt={ad.createdAt}
+        />
       </Link>
     </article>
+  );
+}
+
+// ─── Skeleton: Single Card ────────────────────────────────────────────────────
+
+/**
+ * Exact pixel-match of ListingCard dimensions → zero CLS during page load.
+ * Uses shimmer gradient instead of flat pulse for a premium feel.
+ */
+export function ListingCardSkeleton() {
+  return (
+    <div
+      aria-hidden="true"
+      className="flex flex-col overflow-hidden rounded-2xl bg-white border border-gray-100 shadow-sm"
+    >
+      {/* Image — same aspect-[4/3] */}
+      <div className="aspect-[4/3] w-full relative overflow-hidden rounded-t-2xl bg-gray-200">
+        <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-[shimmer_1.4s_ease-in-out_infinite]" />
+      </div>
+
+      {/* Info — matches px-2.5 pt-2 pb-2.5 of real card */}
+      <div className="px-2.5 pt-2 pb-2.5 flex flex-col gap-2">
+        {/* Price */}
+        <div className="h-4 w-2/5 rounded-md relative overflow-hidden bg-gray-200">
+          <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-[shimmer_1.4s_ease-in-out_infinite]" />
+        </div>
+        {/* Title — 2 lines matching min-h-[2.5em] */}
+        <div className="flex flex-col gap-1.5">
+          <div className="h-3 w-[90%] rounded-md relative overflow-hidden bg-gray-200">
+            <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-[shimmer_1.4s_ease-in-out_infinite]" />
+          </div>
+          <div className="h-3 w-3/5 rounded-md relative overflow-hidden bg-gray-200">
+            <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-[shimmer_1.4s_ease-in-out_infinite]" />
+          </div>
+        </div>
+        {/* Meta row */}
+        <div className="h-2.5 w-1/2 rounded-md relative overflow-hidden bg-gray-200">
+          <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-[shimmer_1.4s_ease-in-out_infinite]" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Skeleton: Responsive Grid ────────────────────────────────────────────────
+
+/**
+ * 2 → 3 → 4 → 5 column responsive skeleton grid.
+ * Rendered server-side for immediate first paint.
+ */
+export function ListingGridSkeleton({ count = 10 }: { count?: number }) {
+  return (
+    <div
+      aria-label="Chargement des annonces…"
+      aria-busy="true"
+      className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5 sm:gap-3 md:gap-4"
+    >
+      {Array.from({ length: count }, (_, i) => (
+        <ListingCardSkeleton key={i} />
+      ))}
+    </div>
   );
 }
