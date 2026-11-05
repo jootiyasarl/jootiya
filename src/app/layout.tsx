@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { Tajawal, Inter } from "next/font/google";
 import "./globals.css";
 import { RootNavbarShell } from "@/components/navbar/RootNavbarShell";
@@ -103,11 +103,15 @@ export default function RootLayout({
           ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
         `}} />
         <meta name="google-adsense-account" content="ca-pub-4945284817184050" />
-        <script
+
+        {/* ── Google AdSense — afterInteractive ensures it loads after hydration ── */}
+        <Script
+          id="adsense-init"
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4945284817184050"
           crossOrigin="anonymous"
-        ></script>
+          strategy="afterInteractive"
+        />
 
         <script
           type="application/ld+json"
