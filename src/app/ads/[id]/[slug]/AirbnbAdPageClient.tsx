@@ -1,13 +1,37 @@
 "use client";
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * AirbnbAdPageClient — Avito-Style Professional Ad Detail Page
+ * ─────────────────────────────────────────────────────────────────────────────
+ *
+ * LAYOUT (matches reference image):
+ * ┌──────────────────────────────┬───────────────────────────┐
+ * │  LEFT (Main Content) 8 cols  │  RIGHT (Sidebar) 4 cols   │
+ * │                              │  sticky top-[72px]         │
+ * │  • Photo Gallery             │  • Title                   │
+ * │    (hero + thumbnails)       │  • Price (large amber)     │
+ * │                              │  • WhatsApp button (green) │
+ * │  • Specs Grid (2-col)        │  • Show phone button       │
+ * │                              │  • Message button          │
+ * │  • Description               │  ─────────────────────── │
+ * │                              │  • Seller card             │
+ * │  • Location                  │  • Safety tips             │
+ * │                              │                            │
+ * │  • Similar Ads grid          │                            │
+ * └──────────────────────────────┴───────────────────────────┘
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
 import { useState, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   MapPin, Clock, ShieldCheck, Share2, ChevronRight, ChevronLeft,
-  CheckCircle2, User, ArrowRight, Flag, Tag, Layers, Hash, X,
-  ZoomIn, Star, Heart, Phone, MessageCircle, Send, Loader2,
+  CheckCircle2, User, Flag, Tag, Layers, Hash, X,
+  Star, Heart, Phone, MessageCircle, Send, Loader2, Eye,
+  Calendar, Package,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -45,8 +69,12 @@ interface AirbnbAdPageClientProps {
 // ─────────────────────────────────────────────────────────────────
 async function shareAd(title: string) {
   const url = window.location.href;
-  if (navigator.share) { try { await navigator.share({ title, url }); } catch {} }
-  else { await navigator.clipboard.writeText(url); toast.success("Lien copie"); }
+  if (navigator.share) {
+    try { await navigator.share({ title, url }); } catch {}
+  } else {
+    await navigator.clipboard.writeText(url);
+    toast.success("Lien copié dans le presse-papiers");
+  }
 }
 
 function canOptimise(src: string) {
@@ -58,7 +86,6 @@ function toWaNumber(raw: string) {
   return c.startsWith("0") && c.length === 10 ? "212" + c.slice(1) : c;
 }
 
-// WhatsApp SVG icon
 function WaIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={cn("fill-current shrink-0", className)} aria-hidden="true">
@@ -68,18 +95,18 @@ function WaIcon({ className }: { className?: string }) {
 }
 
 // ─────────────────────────────────────────────────────────────────
-// GALLERY — glassmorphic overlays + hover arrows + thumbnails
+// GALLERY — Full Avito-style: hero + thumbnail strip + lightbox
 // ─────────────────────────────────────────────────────────────────
 function PdpGallery({
   images, title, adId, user, onShare,
 }: {
   images: string[]; title: string; adId: string; user: any; onShare: () => void;
 }) {
-  const [cur, setCur]             = useState(0);
-  const [lightbox, setLightbox]   = useState(false);
-  const [mounted, setMounted]     = useState(false);
-  const [isFav, setIsFav]         = useState(false);
-  const [favLoad, setFavLoad]     = useState(false);
+  const [cur, setCur]           = useState(0);
+  const [lightbox, setLightbox] = useState(false);
+  const [mounted, setMounted]   = useState(false);
+  const [isFav, setIsFav]       = useState(false);
+  const [favLoad, setFavLoad]   = useState(false);
   const touchX = useRef<number | null>(null);
   const FB = "/icon-512x512.png";
   const safe = images.length > 0 ? images : [FB];
@@ -99,10 +126,10 @@ function PdpGallery({
     try {
       if (isFav) {
         await supabase.from("favorites").delete().eq("ad_id", adId).eq("user_id", user.id);
-        setIsFav(false); toast.success("Retire des favoris");
+        setIsFav(false); toast.success("Retiré des favoris");
       } else {
         await supabase.from("favorites").insert({ ad_id: adId, user_id: user.id });
-        setIsFav(true); toast.success("Ajoute aux favoris");
+        setIsFav(true); toast.success("Ajouté aux favoris");
       }
     } catch { toast.error("Erreur"); } finally { setFavLoad(false); }
   };
@@ -141,60 +168,82 @@ function PdpGallery({
 
   return (
     <>
-      {/* ── Hero: aspect-[4/3] mobile → aspect-[16/10] sm+ ── */}
+      {/* ── Hero image — 4:3 aspect, zoom cursor ── */}
       <div
-        className="relative w-full bg-gray-100 overflow-hidden group aspect-[4/3] sm:aspect-[16/10] cursor-zoom-in"
+        className="relative w-full bg-gray-100 overflow-hidden group aspect-[4/3] cursor-zoom-in rounded-xl"
         onTouchStart={onTS} onTouchEnd={onTE}
         onClick={() => setLightbox(true)}
       >
         {canOptimise(safe[cur]) ? (
-          <Image key={cur} src={safe[cur]} alt={`${title} – ${cur + 1}`} fill
-            priority={cur === 0} sizes="(max-width:1024px) 100vw, 67vw"
-            className="object-cover select-none transition-opacity duration-150 group-hover:scale-[1.02] transition-transform duration-300"
+          <Image
+            key={cur}
+            src={safe[cur]}
+            alt={`${title} – photo ${cur + 1}`}
+            fill
+            priority={cur === 0}
+            sizes="(max-width:1024px) 100vw, 60vw"
+            className="object-cover select-none group-hover:scale-[1.02] transition-transform duration-500"
             draggable={false}
             onError={e => { const t = e.currentTarget as HTMLImageElement; if (t.src !== FB) t.src = FB; }}
           />
         ) : (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={safe[cur]} alt={`${title} – ${cur + 1}`}
-            className="absolute inset-0 h-full w-full object-cover select-none group-hover:scale-[1.02] transition-transform duration-300" loading="eager" draggable={false} />
+          <img src={safe[cur]} alt={`${title} – photo ${cur + 1}`}
+            className="absolute inset-0 h-full w-full object-cover select-none group-hover:scale-[1.02] transition-transform duration-500"
+            loading="eager" draggable={false} />
         )}
 
-        {/* Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent pointer-events-none" />
+        {/* Bottom gradient */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent pointer-events-none" />
 
-        {/* Glassmorphic action buttons — top-right */}
-        <div className="absolute top-3 right-3 z-20 flex flex-col gap-2">
-          <button onClick={(e) => { e.stopPropagation(); toggleFav(); }} disabled={favLoad} aria-label={isFav ? "Retirer" : "Favoris"}
-            className={cn("h-9 w-9 rounded-full backdrop-blur-md border flex items-center justify-center transition-all active:scale-90",
-              isFav ? "bg-red-500/80 border-red-400/40 text-white" : "bg-white/20 border-white/30 text-white hover:bg-white/35")}>
-            <Heart className={cn("h-4 w-4", isFav && "fill-current")} />
-          </button>
-          <button onClick={(e) => { e.stopPropagation(); onShare(); }} aria-label="Partager"
-            className="h-9 w-9 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-white hover:bg-white/35 transition-all">
+        {/* Top-right action buttons */}
+        <div className="absolute top-3 right-3 z-20 flex gap-2">
+          <button
+            onClick={(e) => { e.stopPropagation(); onShare(); }}
+            aria-label="Partager"
+            className="h-9 w-9 rounded-full bg-white/90 backdrop-blur-sm shadow-sm flex items-center justify-center text-gray-700 hover:bg-white hover:scale-110 transition-all"
+          >
             <Share2 className="h-4 w-4" />
           </button>
-          <button onClick={(e) => { e.stopPropagation(); setLightbox(true); }} aria-label="Agrandir"
-            className="h-9 w-9 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-white hover:bg-white/35 transition-all">
-            <ZoomIn className="h-4 w-4" />
+          <button
+            onClick={(e) => { e.stopPropagation(); toggleFav(); }}
+            disabled={favLoad}
+            aria-label={isFav ? "Retirer des favoris" : "Ajouter aux favoris"}
+            className={cn(
+              "h-9 w-9 rounded-full backdrop-blur-sm shadow-sm flex items-center justify-center transition-all hover:scale-110",
+              isFav
+                ? "bg-red-500 text-white"
+                : "bg-white/90 text-gray-700 hover:bg-white hover:text-red-500"
+            )}
+          >
+            <Heart className={cn("h-4 w-4", isFav && "fill-current")} />
           </button>
         </div>
 
-        {/* Hover nav arrows */}
+        {/* Navigation arrows — appear on hover */}
         {safe.length > 1 && (<>
-          <button aria-label="Precedent" onClick={(e) => { e.stopPropagation(); prev(); }}
-            className="absolute left-3 top-1/2 -translate-y-1/2 z-10 h-9 w-9 rounded-full bg-white/90 shadow flex items-center justify-center text-gray-700 hover:bg-white transition-all opacity-0 group-hover:opacity-100 focus-visible:opacity-100">
+          <button
+            aria-label="Photo précédente"
+            onClick={(e) => { e.stopPropagation(); prev(); }}
+            className="absolute left-3 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full bg-white/90 shadow-md flex items-center justify-center text-gray-700 hover:bg-white transition-all opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
+          >
             <ChevronLeft className="h-5 w-5" />
           </button>
-          <button aria-label="Suivant" onClick={(e) => { e.stopPropagation(); next(); }}
-            className="absolute right-3 top-1/2 -translate-y-1/2 z-10 h-9 w-9 rounded-full bg-white/90 shadow flex items-center justify-center text-gray-700 hover:bg-white transition-all opacity-0 group-hover:opacity-100 focus-visible:opacity-100">
+          <button
+            aria-label="Photo suivante"
+            onClick={(e) => { e.stopPropagation(); next(); }}
+            className="absolute right-3 top-1/2 -translate-y-1/2 z-10 h-10 w-10 rounded-full bg-white/90 shadow-md flex items-center justify-center text-gray-700 hover:bg-white transition-all opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
+          >
             <ChevronRight className="h-5 w-5" />
           </button>
         </>)}
 
-        {/* Counter — bottom-left */}
+        {/* Photo counter pill */}
         {safe.length > 1 && (
-          <div onClick={(e) => e.stopPropagation()} className="absolute bottom-3 left-3 z-10 bg-black/55 backdrop-blur-sm text-white text-[11px] font-bold px-2.5 py-1 rounded-full tabular-nums cursor-default">
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="absolute bottom-3 left-3 z-10 bg-black/60 backdrop-blur-sm text-white text-[11px] font-bold px-2.5 py-1 rounded-full tabular-nums cursor-default select-none"
+          >
             {cur + 1} / {safe.length}
           </div>
         )}
@@ -202,13 +251,21 @@ function PdpGallery({
 
       {/* ── Thumbnail strip ── */}
       {safe.length > 1 && (
-        <div className="flex gap-2 overflow-x-auto scrollbar-none px-4 sm:px-0 py-2.5 bg-white border-t border-gray-50">
+        <div className="flex gap-2 overflow-x-auto scrollbar-none py-2 mt-2">
           {safe.map((src, i) => (
-            <button key={i} onClick={() => setCur(i)} aria-label={`Photo ${i + 1}`}
-              className={cn("relative flex-shrink-0 w-[60px] h-[60px] sm:w-[68px] sm:h-[68px] rounded-lg overflow-hidden border-2 transition-all",
-                i === cur ? "border-gray-900 shadow-sm" : "border-transparent opacity-50 hover:opacity-80")}>
+            <button
+              key={i}
+              onClick={() => setCur(i)}
+              aria-label={`Afficher la photo ${i + 1}`}
+              className={cn(
+                "relative flex-shrink-0 w-[72px] h-[54px] rounded-lg overflow-hidden border-2 transition-all",
+                i === cur
+                  ? "border-gray-900 shadow-sm scale-[1.04]"
+                  : "border-gray-200 opacity-55 hover:opacity-85 hover:border-gray-400"
+              )}
+            >
               {canOptimise(src) ? (
-                <Image src={src} alt={`Miniature ${i + 1}`} fill loading="lazy" sizes="68px" className="object-cover"
+                <Image src={src} alt={`Miniature ${i + 1}`} fill loading="lazy" sizes="72px" className="object-cover"
                   onError={e => { const t = e.currentTarget as HTMLImageElement; if (t.src !== FB) t.src = FB; }} />
               ) : (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -221,19 +278,19 @@ function PdpGallery({
 
       {/* ── Lightbox portal ── */}
       {lightbox && mounted && createPortal(
-        <div role="dialog" aria-modal="true" aria-label="Galerie"
+        <div
+          role="dialog" aria-modal="true" aria-label="Galerie photos"
           className="fixed inset-0 z-[9999] flex flex-col bg-black/97 animate-in fade-in duration-150"
           onClick={() => setLightbox(false)}
-          onTouchStart={onTS} onTouchEnd={onTE}>
-          {/* Top bar */}
+          onTouchStart={onTS} onTouchEnd={onTE}
+        >
           <div className="flex items-center justify-between px-4 py-3 shrink-0" onClick={e => e.stopPropagation()}>
             <span className="text-white/60 text-sm font-medium tabular-nums">{cur + 1} / {safe.length}</span>
-            <button onClick={() => setLightbox(false)} aria-label="Fermer"
+            <button onClick={() => setLightbox(false)} aria-label="Fermer la galerie"
               className="h-9 w-9 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white/25 transition-colors">
               <X className="h-5 w-5" />
             </button>
           </div>
-          {/* Image area — clicking the image stops propagation (don't close) */}
           <div className="flex-1 flex items-center justify-center px-4 relative overflow-hidden">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img key={cur} src={safe[cur]} alt={`${title} – ${cur + 1}`}
@@ -242,17 +299,16 @@ function PdpGallery({
               onClick={e => e.stopPropagation()}
               onError={e => { const t = e.currentTarget as HTMLImageElement; if (t.src !== FB) t.src = FB; }} />
             {safe.length > 1 && (<>
-              <button onClick={(e) => { e.stopPropagation(); prev(); }} aria-label="Precedent"
-                className="absolute left-2 sm:left-6 h-11 w-11 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-white/25 transition-colors shadow-lg">
+              <button onClick={(e) => { e.stopPropagation(); prev(); }} aria-label="Précédent"
+                className="absolute left-2 sm:left-6 h-11 w-11 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-white/25 transition-colors">
                 <ChevronLeft className="h-6 w-6" />
               </button>
               <button onClick={(e) => { e.stopPropagation(); next(); }} aria-label="Suivant"
-                className="absolute right-2 sm:right-6 h-11 w-11 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-white/25 transition-colors shadow-lg">
+                className="absolute right-2 sm:right-6 h-11 w-11 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-white/25 transition-colors">
                 <ChevronRight className="h-6 w-6" />
               </button>
             </>)}
           </div>
-          {/* Dot indicators + close hint */}
           <div className="shrink-0 flex flex-col items-center gap-2 py-4" onClick={e => e.stopPropagation()}>
             {safe.length > 1 && safe.length <= 12 && (
               <div className="flex justify-center gap-1.5">
@@ -272,113 +328,119 @@ function PdpGallery({
 }
 
 // ─────────────────────────────────────────────────────────────────
-// SIDEBAR CTA BUTTONS — Avito-style stacked vertical
+// SPECS GRID — 2-column professional specs table
 // ─────────────────────────────────────────────────────────────────
-function SidebarCTA({
-  adId, sellerId, sellerPhone, user, adTitle, formattedPrice,
-}: {
-  adId: string; sellerId: string; sellerPhone: string | undefined;
-  user: any; adTitle: string; formattedPrice: string;
-}) {
-  const router = useRouter();
-  const [msgOpen, setMsgOpen]   = useState(false);
-  const [message, setMessage]   = useState("");
-  const [sending, setSending]   = useState(false);
-  const [showPhone, setShowPhone] = useState(false);
+interface SpecItem {
+  icon: React.ElementType;
+  label: string;
+  value: string;
+}
 
-  const clean = sellerPhone?.replace(/\D/g, "") || "";
-  const wa    = clean ? toWaNumber(clean) : "";
-  const waMsg = `Bonjour, je suis interesse par votre annonce "${adTitle}" a ${formattedPrice}. Est-elle toujours disponible ?`;
+function SpecsGrid({ specs }: { specs: SpecItem[] }) {
+  if (specs.length === 0) return null;
+  return (
+    <div className="bg-white border border-gray-100 rounded-xl p-5">
+      <h2 className="text-base font-black text-gray-900 mb-4 flex items-center gap-2">
+        <span className="h-1 w-4 rounded-full bg-orange-500 inline-block" />
+        Caractéristiques
+      </h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-0 divide-y sm:divide-y-0 sm:divide-x-0">
+        {specs.map((spec, i) => {
+          const Icon = spec.icon;
+          return (
+            <div
+              key={spec.label}
+              className={cn(
+                "flex items-center justify-between py-3 px-0",
+                i < specs.length - 1 && "border-b border-gray-50 sm:border-b"
+              )}
+            >
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="h-8 w-8 rounded-lg bg-gray-50 flex items-center justify-center shrink-0">
+                  <Icon className="h-3.5 w-3.5 text-gray-500" />
+                </div>
+                <span className="text-sm text-gray-500 truncate">{spec.label}</span>
+              </div>
+              <span className="text-sm font-bold text-gray-900 ml-3 shrink-0">{spec.value}</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
-  const handleWa = () => {
-    if (!wa) { toast.error("Numero non disponible."); return; }
-    window.open(`https://wa.me/${wa}?text=${encodeURIComponent(waMsg)}`, "_blank");
-  };
+// ─────────────────────────────────────────────────────────────────
+// DESCRIPTION BLOCK
+// ─────────────────────────────────────────────────────────────────
+function DescriptionBlock({ text }: { text: string | null }) {
+  const [expanded, setExpanded] = useState(false);
+  const raw   = text?.trim() || "";
+  const lines = raw.split(/\n+/).map(l => l.trim()).filter(Boolean);
 
-  const handleSend = async () => {
-    if (!message.trim()) return;
-    setSending(true);
-    try {
-      const r = await sendMessageAction({ adId, sellerId, content: message.trim() });
-      if (r.error) {
-        if (r.error.includes("connecter")) router.push(`/login?next=/ads/${adId}`);
-        else toast.error(r.error);
-        return;
-      }
-      setMsgOpen(false); setMessage("");
-      toast.success("Message envoye !");
-      router.push(`/dashboard/messages?id=${r.conversationId}`);
-    } catch { toast.error("Erreur lors de l'envoi."); }
-    finally { setSending(false); }
-  };
+  if (lines.length === 0) {
+    return <p className="text-sm text-gray-400 italic">Aucune description fournie.</p>;
+  }
+
+  const LIMIT = 5;
+  const visible = expanded ? lines : lines.slice(0, LIMIT);
+  const hasMore = lines.length > LIMIT;
 
   return (
-    <div className="space-y-2.5">
-      {/* ── WhatsApp — big green ── */}
-      <button onClick={handleWa}
-        className="w-full h-[52px] bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-black text-[15px] rounded-xl flex items-center justify-center gap-2.5 transition-all shadow-sm">
-        <WaIcon className="w-5 h-5" />
-        Contacter via WhatsApp
-      </button>
+    <div>
+      <div className="space-y-2.5">
+        {visible.map((l, i) => (
+          <p key={i} className="text-sm text-gray-700 leading-relaxed">{l}</p>
+        ))}
+      </div>
+      {hasMore && (
+        <button
+          onClick={() => setExpanded(v => !v)}
+          className="mt-3 text-sm font-bold text-orange-600 hover:text-orange-700 transition-colors"
+        >
+          {expanded ? "Voir moins" : "Voir plus"}
+        </button>
+      )}
+    </div>
+  );
+}
 
-      {/* ── Phone — big dark ── */}
-      {clean ? (
-        showPhone ? (
-          <a href={`tel:${sellerPhone}`}
-            className="w-full h-[52px] bg-gray-900 hover:bg-gray-800 active:scale-[0.98] text-white font-black text-[15px] rounded-xl flex items-center justify-center gap-2.5 transition-all shadow-sm">
-            <Phone className="h-5 w-5" />
-            {sellerPhone}
-          </a>
-        ) : (
-          <button onClick={() => setShowPhone(true)}
-            className="w-full h-[52px] bg-gray-900 hover:bg-gray-800 active:scale-[0.98] text-white font-black text-[15px] rounded-xl flex items-center justify-center gap-2.5 transition-all shadow-sm">
-            <Phone className="h-5 w-5" />
-            Afficher le numero
-          </button>
-        )
-      ) : null}
+// ─────────────────────────────────────────────────────────────────
+// LOCATION SECTION
+// ─────────────────────────────────────────────────────────────────
+function LocationSection({ city, neighborhood, ad }: { city?: string; neighborhood?: string; ad: any }) {
+  if (!city && !neighborhood) return null;
+  const fullLocation = [neighborhood, city].filter(Boolean).join(", ");
 
-      {/* ── Message — outline ── */}
-      <Dialog open={msgOpen} onOpenChange={setMsgOpen}>
-        <DialogTrigger className="w-full h-11 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 active:scale-[0.98] text-gray-700 font-bold text-sm rounded-xl flex items-center justify-center gap-2 transition-all">
-          <MessageCircle className="h-4 w-4" />
-          Envoyer un message
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-md bg-white rounded-3xl border-gray-100 shadow-2xl p-0 overflow-hidden gap-0 z-[99999]">
-          <DialogHeader className="p-6 pb-3 text-left">
-            <DialogTitle className="text-lg font-black text-gray-900 flex items-center gap-2.5">
-              <span className="h-9 w-9 rounded-xl bg-gray-100 flex items-center justify-center shrink-0">
-                <MessageCircle className="h-4.5 w-4.5 text-gray-600" />
-              </span>
-              Message au vendeur
-            </DialogTitle>
-            <DialogDescription className="text-gray-400 text-sm mt-1">
-              Votre message sera envoye directement au vendeur.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="p-6 pt-2 space-y-3">
-            <Textarea placeholder="Bonjour, je suis interesse par votre annonce..."
-              className="min-h-[110px] resize-none rounded-2xl bg-gray-50 border-gray-200 focus:border-gray-400 text-[15px] text-gray-800 placeholder:text-gray-400"
-              value={message} onChange={e => setMessage(e.target.value)} />
-            <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
-              {["Est-ce toujours disponible ?", "Quel est votre dernier prix ?", "Peut-on se voir ?"].map(q => (
-                <button key={q} onClick={() => setMessage(q)}
-                  className="whitespace-nowrap px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-full text-xs font-semibold transition-colors">
-                  {q}
-                </button>
-              ))}
-            </div>
-          </div>
-          <DialogFooter className="p-4 bg-gray-50 border-t border-gray-100 sm:justify-between flex-row items-center gap-2">
-            <span className="text-[10px] text-gray-400 pl-1 hidden sm:block">Reponse sous 24h en general</span>
-            <Button onClick={handleSend} disabled={!message.trim() || sending}
-              className="rounded-xl bg-gray-900 hover:bg-gray-800 text-white gap-2 font-bold px-6 ml-auto">
-              {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-              Envoyer
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+  return (
+    <div className="bg-white border border-gray-100 rounded-xl p-5">
+      <h2 className="text-base font-black text-gray-900 mb-4 flex items-center gap-2">
+        <span className="h-1 w-4 rounded-full bg-orange-500 inline-block" />
+        Localisation
+      </h2>
+      <div className="flex items-center gap-3 mb-4">
+        <div className="h-9 w-9 rounded-lg bg-orange-50 flex items-center justify-center shrink-0">
+          <MapPin className="h-4 w-4 text-orange-500" />
+        </div>
+        <div>
+          <p className="text-sm font-bold text-gray-900">{fullLocation}</p>
+          {ad.country && <p className="text-xs text-gray-400 mt-0.5">{ad.country}</p>}
+        </div>
+      </div>
+      {/* Static map placeholder — replace with real map if Leaflet is set up */}
+      <div className="relative h-[160px] rounded-xl overflow-hidden bg-gray-100 border border-gray-100">
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-gray-400">
+          <MapPin className="h-8 w-8 text-gray-300" />
+          <p className="text-xs font-medium">{fullLocation}</p>
+        </div>
+        <Link
+          href={`https://maps.google.com/?q=${encodeURIComponent(fullLocation)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="absolute inset-0"
+          aria-label="Voir sur Google Maps"
+        />
+      </div>
     </div>
   );
 }
@@ -387,7 +449,7 @@ function SidebarCTA({
 // SELLER AVATAR
 // ─────────────────────────────────────────────────────────────────
 function SellerAvatar({ avatar, name, size = "md" }: { avatar: string | null; name: string; size?: "sm" | "md" | "lg" }) {
-  const FB = "/icon-512x512.png";
+  const FB  = "/icon-512x512.png";
   const cls = { sm: "h-10 w-10 rounded-xl", md: "h-12 w-12 rounded-2xl", lg: "h-14 w-14 rounded-2xl" };
   const px  = { sm: 40, md: 48, lg: 56 };
   return (
@@ -404,168 +466,355 @@ function SellerAvatar({ avatar, name, size = "md" }: { avatar: string | null; na
 }
 
 // ─────────────────────────────────────────────────────────────────
-// DETAIL ROW
+// SIDEBAR CTA BUTTONS
 // ─────────────────────────────────────────────────────────────────
-function DetailRow({ icon: Icon, label, value }: { icon: React.ElementType; label: string; value: string }) {
+function SidebarCTA({
+  adId, sellerId, sellerPhone, user, adTitle, formattedPrice,
+}: {
+  adId: string; sellerId: string; sellerPhone: string | undefined;
+  user: any; adTitle: string; formattedPrice: string;
+}) {
+  const router = useRouter();
+  const [msgOpen, setMsgOpen]     = useState(false);
+  const [message, setMessage]     = useState("");
+  const [sending, setSending]     = useState(false);
+  const [showPhone, setShowPhone] = useState(false);
+
+  const clean = sellerPhone?.replace(/\D/g, "") || "";
+  const wa    = clean ? toWaNumber(clean) : "";
+  const waMsg = `Bonjour, je suis intéressé par votre annonce "${adTitle}" à ${formattedPrice}. Est-elle toujours disponible ?`;
+
+  const handleWa = () => {
+    if (!wa) { toast.error("Numéro non disponible."); return; }
+    window.open(`https://wa.me/${wa}?text=${encodeURIComponent(waMsg)}`, "_blank");
+  };
+
+  const handleSend = async () => {
+    if (!message.trim()) return;
+    setSending(true);
+    try {
+      const r = await sendMessageAction({ adId, sellerId, content: message.trim() });
+      if (r.error) {
+        if (r.error.includes("connecter")) router.push(`/login?next=/ads/${adId}`);
+        else toast.error(r.error);
+        return;
+      }
+      setMsgOpen(false); setMessage("");
+      toast.success("Message envoyé !");
+      router.push(`/dashboard/messages?id=${r.conversationId}`);
+    } catch { toast.error("Erreur lors de l'envoi."); }
+    finally { setSending(false); }
+  };
+
   return (
-    <div className="flex items-center justify-between py-3 border-b border-gray-50 last:border-0">
-      <div className="flex items-center gap-2.5 text-gray-400">
-        <Icon className="h-4 w-4 shrink-0" />
-        <span className="text-sm font-medium text-gray-500">{label}</span>
-      </div>
-      <span className="text-sm font-bold text-gray-900">{value}</span>
+    <div className="space-y-2.5">
+      {/* WhatsApp — full green */}
+      <button
+        onClick={handleWa}
+        className="w-full h-[52px] bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-black text-[15px] rounded-xl flex items-center justify-center gap-2.5 transition-all shadow-sm"
+      >
+        <WaIcon className="w-5 h-5" />
+        Contacter via WhatsApp
+      </button>
+
+      {/* Phone button */}
+      {clean ? (
+        showPhone ? (
+          <a
+            href={`tel:${sellerPhone}`}
+            className="w-full h-[52px] bg-gray-900 hover:bg-gray-800 active:scale-[0.98] text-white font-black text-[15px] rounded-xl flex items-center justify-center gap-2.5 transition-all shadow-sm"
+          >
+            <Phone className="h-5 w-5" />
+            {sellerPhone}
+          </a>
+        ) : (
+          <button
+            onClick={() => setShowPhone(true)}
+            className="w-full h-[52px] bg-gray-900 hover:bg-gray-800 active:scale-[0.98] text-white font-black text-[15px] rounded-xl flex items-center justify-center gap-2.5 transition-all shadow-sm"
+          >
+            <Phone className="h-5 w-5" />
+            Afficher le numéro
+          </button>
+        )
+      ) : null}
+
+      {/* Message — outline */}
+      <Dialog open={msgOpen} onOpenChange={setMsgOpen}>
+        <DialogTrigger className="w-full h-11 border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50 active:scale-[0.98] text-gray-700 font-bold text-sm rounded-xl flex items-center justify-center gap-2 transition-all">
+          <MessageCircle className="h-4 w-4" />
+          Envoyer un message
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-md bg-white rounded-3xl border-gray-100 shadow-2xl p-0 overflow-hidden gap-0 z-[99999]">
+          <DialogHeader className="p-6 pb-3 text-left">
+            <DialogTitle className="text-lg font-black text-gray-900 flex items-center gap-2.5">
+              <span className="h-9 w-9 rounded-xl bg-gray-100 flex items-center justify-center shrink-0">
+                <MessageCircle className="h-4 w-4 text-gray-600" />
+              </span>
+              Message au vendeur
+            </DialogTitle>
+            <DialogDescription className="text-gray-400 text-sm mt-1">
+              Votre message sera envoyé directement au vendeur.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="p-6 pt-2 space-y-3">
+            <Textarea
+              placeholder="Bonjour, je suis intéressé par votre annonce..."
+              className="min-h-[110px] resize-none rounded-2xl bg-gray-50 border-gray-200 focus:border-gray-400 text-[15px] text-gray-800 placeholder:text-gray-400"
+              value={message}
+              onChange={e => setMessage(e.target.value)}
+            />
+            <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+              {["Est-ce toujours disponible ?", "Quel est votre dernier prix ?", "Peut-on se voir ?"].map(q => (
+                <button key={q} onClick={() => setMessage(q)}
+                  className="whitespace-nowrap px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-full text-xs font-semibold transition-colors">
+                  {q}
+                </button>
+              ))}
+            </div>
+          </div>
+          <DialogFooter className="p-4 bg-gray-50 border-t border-gray-100 sm:justify-between flex-row items-center gap-2">
+            <span className="text-[10px] text-gray-400 pl-1 hidden sm:block">Réponse sous 24h en général</span>
+            <Button
+              onClick={handleSend}
+              disabled={!message.trim() || sending}
+              className="rounded-xl bg-gray-900 hover:bg-gray-800 text-white gap-2 font-bold px-6 ml-auto"
+            >
+              {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+              Envoyer
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
 
 // ─────────────────────────────────────────────────────────────────
-// DESCRIPTION BLOCK — amber accent
+// SIDEBAR — Right column (sticky)
+// Title + Price + CTAs + Seller + Safety
 // ─────────────────────────────────────────────────────────────────
-function DescriptionBlock({ text }: { text: string | null }) {
-  const raw = text?.trim() || "";
-  const lines = raw.split(/\n+/).map(l => l.trim()).filter(Boolean);
-  if (lines.length === 0) return <p className="text-sm text-gray-400 italic">Aucune description fournie.</p>;
-  if (lines.length === 1) return (
-    <p className="text-sm text-gray-600 leading-relaxed border-l-2 border-amber-400 pl-3">{lines[0]}</p>
-  );
+function DesktopSidebar({
+  ad, formattedPrice, formattedDate, sellerName, sellerAvatar,
+  memberSince, avgRating, totalReviews, isTrusted, sellerPhone, user,
+}: {
+  ad: any; formattedPrice: string; formattedDate: string;
+  sellerName: string; sellerAvatar: string | null;
+  memberSince: string | number; avgRating: number; totalReviews: number;
+  isTrusted: boolean; sellerPhone?: string; user: any;
+}) {
   return (
-    <ul className="space-y-2.5">
-      {lines.map((l, i) => (
-        <li key={i} className="flex items-start gap-2.5">
-          <span className="mt-[6px] h-1.5 w-1.5 rounded-full bg-amber-500 shrink-0" aria-hidden />
-          <span className="text-sm text-gray-600 leading-relaxed">{l}</span>
-        </li>
-      ))}
-    </ul>
-  );
-}
+    <div className="sticky top-[72px] space-y-3">
 
-// ─────────────────────────────────────────────────────────────────
-// SAFETY BANNER — amber alert
-// ─────────────────────────────────────────────────────────────────
-function SafetyBanner() {
-  return (
-    <div className="bg-amber-50/70 border border-amber-100 rounded-2xl px-5 py-4">
-      <div className="flex items-center gap-2 mb-3">
-        <ShieldCheck className="h-4 w-4 text-amber-600 shrink-0" />
-        <h3 className="text-sm font-black text-amber-800 uppercase tracking-wide">Conseils de securite</h3>
+      {/* ── 1. TITLE + PRICE card ── */}
+      <div className="bg-white border border-gray-100 rounded-xl p-5">
+        {/* Badge pills */}
+        <div className="flex flex-wrap gap-1.5 mb-3">
+          {ad.is_featured && (
+            <span className="bg-amber-50 text-amber-600 text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg border border-amber-100">
+              À la une
+            </span>
+          )}
+          {ad.condition && (
+            <span className="bg-sky-50 text-sky-600 text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg border border-sky-100">
+              {ad.condition === "new" ? "Neuf" : "Occasion"}
+            </span>
+          )}
+        </div>
+
+        {/* Title */}
+        <h1 className="text-[1.1rem] font-black text-gray-900 leading-snug mb-3">
+          {ad.title}
+        </h1>
+
+        {/* Price — large amber */}
+        <div className="bg-amber-50/60 rounded-xl px-4 py-3 mb-3">
+          <p className="text-[10px] font-black uppercase tracking-[0.18em] text-amber-700/70 mb-0.5">Prix</p>
+          <p className="text-[2rem] font-black text-amber-600 tabular-nums leading-none tracking-tight">
+            {formattedPrice}
+          </p>
+          <p className="text-[11px] text-amber-700/50 mt-1">Négociable avec le vendeur</p>
+        </div>
+
+        {/* Meta */}
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] text-gray-400 font-medium">
+          {ad.city && (
+            <span className="flex items-center gap-1">
+              <MapPin className="h-3 w-3" />{ad.city}
+            </span>
+          )}
+          <span className="flex items-center gap-1">
+            <Calendar className="h-3 w-3" />{formattedDate}
+          </span>
+          <span className="flex items-center gap-1">
+            <Eye className="h-3 w-3" />Annonce #{ad.id?.slice(0, 6).toUpperCase()}
+          </span>
+        </div>
       </div>
-      <ul className="space-y-1.5">
-        {[
-          "Rencontrez le vendeur dans un lieu public et sur.",
-          "Verifiez le produit avant tout paiement.",
-          "Ne partagez jamais vos coordonnees bancaires.",
-          "Privilegiez le paiement en especes en main propre.",
-        ].map(t => (
-          <li key={t} className="flex items-start gap-2 text-xs text-amber-700">
-            <span className="mt-[5px] h-1.5 w-1.5 rounded-full bg-amber-400 shrink-0" aria-hidden />
-            {t}
-          </li>
-        ))}
-      </ul>
+
+      {/* ── 2. CTA BUTTONS ── */}
+      <div className="bg-white border border-gray-100 rounded-xl p-5">
+        <SidebarCTA
+          adId={ad.id}
+          sellerId={ad.seller_id}
+          sellerPhone={sellerPhone}
+          user={user}
+          adTitle={ad.title}
+          formattedPrice={formattedPrice}
+        />
+      </div>
+
+      {/* ── 3. SELLER CARD ── */}
+      <div className="bg-white border border-gray-100 rounded-xl p-5">
+        <h2 className="text-xs font-black text-gray-500 uppercase tracking-widest mb-3">Vendeur</h2>
+        <div className="flex items-center gap-3">
+          <SellerAvatar avatar={sellerAvatar} name={sellerName} size="lg" />
+          <div className="min-w-0 flex-1">
+            <p className="font-black text-gray-900 text-[15px] truncate">{sellerName}</p>
+            <p className="text-xs text-gray-400 flex items-center gap-1 mt-0.5">
+              <Clock className="h-3 w-3" />
+              Membre depuis {memberSince}
+            </p>
+            {totalReviews > 0 && (
+              <div className="flex items-center gap-1 mt-1">
+                {[1, 2, 3, 4, 5].map(s => (
+                  <Star
+                    key={s}
+                    className={cn("h-3 w-3", s <= Math.round(avgRating) ? "fill-amber-400 text-amber-400" : "text-gray-200")}
+                  />
+                ))}
+                <span className="text-[11px] text-gray-500 ml-1 font-semibold">
+                  {avgRating.toFixed(1)} ({totalReviews})
+                </span>
+              </div>
+            )}
+          </div>
+          {isTrusted && (
+            <span className="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase px-2 py-1 rounded-lg border border-emerald-100 shrink-0">
+              <CheckCircle2 className="h-3 w-3" />Vérifié
+            </span>
+          )}
+        </div>
+        <Link
+          href={`/seller/${ad.seller_id}`}
+          className="mt-4 w-full h-9 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-600 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-all"
+        >
+          <User className="h-3.5 w-3.5" />
+          Voir le profil du vendeur
+        </Link>
+      </div>
+
+      {/* ── 4. SAFETY TIPS ── */}
+      <div className="bg-amber-50 border border-amber-100 rounded-xl p-4">
+        <div className="flex items-center gap-2 mb-2.5">
+          <ShieldCheck className="h-4 w-4 text-amber-600 shrink-0" />
+          <h3 className="text-xs font-black text-amber-800 uppercase tracking-wide">Conseils de sécurité</h3>
+        </div>
+        <ul className="space-y-1.5">
+          {[
+            "Rencontrez le vendeur dans un lieu public.",
+            "Vérifiez le produit avant tout paiement.",
+            "Ne partagez jamais vos données bancaires.",
+            "Privilégiez le paiement en espèces.",
+          ].map(t => (
+            <li key={t} className="flex items-start gap-2 text-[11px] text-amber-700 leading-relaxed">
+              <span className="mt-[5px] h-1.5 w-1.5 rounded-full bg-amber-400 shrink-0" aria-hidden />
+              {t}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* ── 5. REPORT ── */}
+      <button className="w-full flex items-center justify-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 transition-colors font-medium py-1">
+        <Flag className="h-3.5 w-3.5" />
+        Signaler cette annonce
+      </button>
     </div>
   );
 }
 
 // ─────────────────────────────────────────────────────────────────
-// RELATED AD CARD — Avito-style professional
+// SIMILAR ADS GRID — Avito-style
 // ─────────────────────────────────────────────────────────────────
 function RelatedAdCard({ ad }: { ad: any }) {
-  const SUPABASE = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const FB = "/icon-512x512.png";
+  const FB  = "/icon-512x512.png";
   const raw = ad.image_urls?.[0];
   const src = raw?.startsWith("http") ? raw
-    : raw ? `${SUPABASE}/storage/v1/object/public/ad-images/${raw.startsWith("/") ? raw.slice(1) : raw}`
+    : raw ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/ad-images/${raw.startsWith("/") ? raw.slice(1) : raw}`
     : FB;
   const slug  = ad.slug || ad.title?.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-  const price = ad.price ? `${Number(ad.price).toLocaleString("fr-FR")} ${ad.currency || "MAD"}` : "Sur demande";
+  const price = ad.price
+    ? `${Number(ad.price).toLocaleString("fr-FR")} ${ad.currency || "MAD"}`
+    : "Sur demande";
 
   return (
     <Link href={`/ads/${ad.id}/${slug}`} className="group block">
-      <div className="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-[0_1px_4px_rgba(0,0,0,0.06)] hover:shadow-[0_6px_24px_rgba(0,0,0,0.10)] hover:-translate-y-0.5 transition-all duration-200 ease-out">
+      <div className="bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
         <div className="relative aspect-[4/3] w-full overflow-hidden bg-gray-100">
           {canOptimise(src) ? (
             <Image src={src} alt={ad.title} fill loading="lazy"
-              sizes="(max-width:640px) 50vw,(max-width:1024px) 25vw,20vw"
-              className="object-cover group-hover:scale-[1.05] transition-transform duration-500 ease-out"
+              sizes="(max-width:640px) 50vw, 25vw"
+              className="object-cover group-hover:scale-[1.05] transition-transform duration-500"
               onError={e => { const t = e.currentTarget as HTMLImageElement; if (t.src !== FB) t.src = FB; }} />
           ) : (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={src} alt={ad.title} loading="lazy"
-              className="absolute inset-0 h-full w-full object-cover group-hover:scale-[1.05] transition-transform duration-500 ease-out" />
+              className="absolute inset-0 h-full w-full object-cover group-hover:scale-[1.05] transition-transform duration-500" />
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
           {ad.condition && (
             <div className="absolute top-2 left-2 z-10">
-              <span className={cn("text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md",
+              <span className={cn("text-[9px] font-black uppercase tracking-wide px-1.5 py-0.5 rounded",
                 ad.condition === "new" ? "bg-emerald-500 text-white" : "bg-white/90 text-gray-700 border border-gray-200/60")}>
                 {ad.condition === "new" ? "Neuf" : "Occasion"}
               </span>
             </div>
           )}
-          {ad.is_featured && (
-            <div className="absolute top-2 right-2 z-10">
-              <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-500 text-white">A la une</span>
-            </div>
+        </div>
+        <div className="p-3">
+          <p className="text-[14px] font-black text-amber-600 tabular-nums">{price}</p>
+          <h3 className="text-gray-800 font-semibold text-[12px] leading-snug line-clamp-2 mt-0.5">{ad.title}</h3>
+          {ad.city && (
+            <span className="flex items-center gap-1 text-[10px] text-gray-400 mt-1.5">
+              <MapPin className="h-2.5 w-2.5 shrink-0" />{ad.city}
+            </span>
           )}
         </div>
-        <div className="px-3.5 pt-3 pb-3.5 space-y-1">
-          <p className="text-[15px] font-black text-amber-600 tabular-nums leading-tight">{price}</p>
-          <h3 className="text-gray-900 font-semibold text-[13px] leading-[1.35] line-clamp-2 mt-0.5">{ad.title}</h3>
-          <div className="flex items-center gap-1.5 mt-1.5">
-            {ad.city && (
-              <span className="flex items-center gap-1 text-[11px] text-gray-400 font-medium">
-                <MapPin className="h-3 w-3 shrink-0 text-gray-300" />{ad.city}
-              </span>
-            )}
-            {ad.city && ad.condition && <span className="h-0.5 w-0.5 rounded-full bg-gray-300 shrink-0" />}
-            {ad.condition && (
-              <span className="text-[11px] text-gray-400 font-medium">
-                {ad.condition === "new" ? "Neuf" : "Occasion"}
-              </span>
-            )}
-          </div>
-        </div>
-        <div className="h-0.5 bg-amber-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+        <div className="h-[2px] bg-orange-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
       </div>
     </Link>
   );
 }
 
 // ─────────────────────────────────────────────────────────────────
-// MOBILE STICKY BAR — price + Phone + WhatsApp
+// MOBILE STICKY BAR
 // ─────────────────────────────────────────────────────────────────
 function MobileStickyBar({ phone, adTitle, formattedPrice }: { phone: string; adTitle: string; formattedPrice: string }) {
   const clean = phone?.replace(/\D/g, "") || "";
   const wa    = clean ? toWaNumber(clean) : "";
-  const waMsg = `Bonjour, je suis interesse par votre annonce "${adTitle}" a ${formattedPrice}. Est-elle toujours disponible ?`;
+  const waMsg = `Bonjour, je suis intéressé par votre annonce "${adTitle}" à ${formattedPrice}. Est-elle toujours disponible ?`;
   return (
     <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-t border-gray-100 px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))] shadow-[0_-8px_32px_rgba(0,0,0,0.08)]">
       <div className="max-w-xl mx-auto flex items-center gap-2.5">
-        {/* Price */}
         <div className="flex-1 min-w-0">
-          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-0.5">Prix</p>
+          <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none mb-0.5">Prix</p>
           <p className="text-lg font-black text-amber-600 tabular-nums truncate leading-tight">{formattedPrice}</p>
         </div>
-        {/* Phone */}
         {clean && (
-          <a href={`tel:${phone}`} aria-label="Appeler"
-            className="h-12 w-12 rounded-2xl bg-gray-900 hover:bg-gray-800 active:scale-[0.96] text-white flex items-center justify-center shrink-0 transition-all shadow-sm">
+          <a href={`tel:${phone}`} aria-label="Appeler le vendeur"
+            className="h-12 w-12 rounded-xl bg-gray-900 hover:bg-gray-800 active:scale-[0.96] text-white flex items-center justify-center shrink-0 transition-all shadow-sm">
             <Phone className="h-5 w-5" />
           </a>
         )}
-        {/* WhatsApp */}
         {wa && (
           <a href={`https://wa.me/${wa}?text=${encodeURIComponent(waMsg)}`} target="_blank" rel="noopener noreferrer"
-            aria-label="WhatsApp"
-            className="h-12 flex-1 max-w-[160px] rounded-2xl bg-emerald-600 hover:bg-emerald-700 active:scale-[0.96] text-white font-black text-sm flex items-center justify-center gap-2 transition-all shadow-sm">
+            className="h-12 flex-1 max-w-[160px] rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-[0.96] text-white font-black text-sm flex items-center justify-center gap-2 transition-all shadow-sm">
             <WaIcon className="w-4 h-4" />
             WhatsApp
           </a>
         )}
         {!clean && !wa && (
-          <button onClick={() => toast.error("Numero non disponible.")}
-            className="h-12 flex-1 rounded-2xl bg-gray-900 text-white font-bold text-sm flex items-center justify-center gap-2">
+          <button onClick={() => toast.error("Numéro non disponible.")}
+            className="h-12 flex-1 rounded-xl bg-gray-900 text-white font-bold text-sm flex items-center justify-center gap-2">
             <Phone className="h-4 w-4" />Contacter
           </button>
         )}
@@ -583,27 +832,35 @@ export function AirbnbAdPageClient({
 }: AirbnbAdPageClientProps) {
   const safeImages = images.length > 0 ? images : ["/icon-512x512.png"];
 
-  const detailRows = [
-    ad.category && { icon: Tag,    label: "Categorie", value: ad.category },
-    ad.condition && { icon: Layers, label: "Etat",      value: ad.condition === "new" ? "Neuf" : "Occasion" },
-    ad.city      && { icon: MapPin, label: "Ville",     value: ad.city },
-    ad.id        && { icon: Hash,   label: "Reference", value: ad.id.slice(0, 8).toUpperCase() },
-  ].filter(Boolean) as { icon: React.ElementType; label: string; value: string }[];
+  // Build specs from available ad fields
+  const specs: SpecItem[] = [
+    ad.category  && { icon: Tag,          label: "Catégorie",  value: ad.category },
+    ad.condition && { icon: Layers,        label: "État",       value: ad.condition === "new" ? "Neuf" : "Occasion" },
+    ad.city      && { icon: MapPin,        label: "Ville",      value: ad.city },
+    ad.created_at && { icon: Calendar,    label: "Publié le",  value: formattedDate },
+    ad.id        && { icon: Hash,          label: "Référence",  value: ad.id.slice(0, 8).toUpperCase() },
+    ad.brand     && { icon: Package,       label: "Marque",     value: ad.brand },
+    ad.model     && { icon: Package,       label: "Modèle",     value: ad.model },
+    ad.year      && { icon: Calendar,      label: "Année",      value: String(ad.year) },
+    ad.mileage   && { icon: Eye,           label: "Kilométrage", value: `${Number(ad.mileage).toLocaleString("fr-FR")} km` },
+  ].filter(Boolean) as SpecItem[];
 
   return (
-    <div className="bg-gray-50 min-h-screen pb-28 lg:pb-10 font-sans antialiased overflow-x-hidden">
+    <div className="bg-gray-50 min-h-screen pb-28 lg:pb-12 font-sans antialiased">
 
-      {/* ══ BREADCRUMB ══════════════════════════════════════════ */}
-      <div className="bg-white border-b border-gray-100">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-12 flex items-center">
+      {/* ══ BREADCRUMB ══════════════════════════════════════════════ */}
+      <div className="bg-white border-b border-gray-100 sticky top-0 z-30">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-11 flex items-center">
           <nav aria-label="Fil d'Ariane" className="flex items-center gap-1 text-xs font-medium text-gray-400 min-w-0 overflow-hidden">
             <Link href="/" className="hover:text-gray-700 transition-colors whitespace-nowrap shrink-0">Accueil</Link>
             <ChevronRight className="h-3 w-3 shrink-0 text-gray-300" />
             <Link href="/marketplace" className="hover:text-gray-700 transition-colors whitespace-nowrap shrink-0">Annonces</Link>
             {ad.category && (<>
               <ChevronRight className="h-3 w-3 shrink-0 text-gray-300" />
-              <Link href={`/marketplace/category/${ad.category.toLowerCase().replace(/\s+/g, "-")}`}
-                className="hover:text-gray-700 transition-colors whitespace-nowrap shrink-0">{ad.category}</Link>
+              <Link href={`/categories/${ad.category?.toLowerCase().replace(/\s+/g, "-")}`}
+                className="hover:text-gray-700 transition-colors whitespace-nowrap shrink-0 capitalize">
+                {ad.category}
+              </Link>
             </>)}
             <ChevronRight className="h-3 w-3 shrink-0 text-gray-300" />
             <span className="truncate text-gray-700 font-semibold">{ad.title}</span>
@@ -611,226 +868,170 @@ export function AirbnbAdPageClient({
         </div>
       </div>
 
-      {/* ══ MAIN GRID ═══════════════════════════════════════════ */}
-      <div className="max-w-6xl mx-auto px-0 sm:px-6 pt-0 sm:pt-5">
+      {/* ══ MAIN GRID ════════════════════════════════════════════════ */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-5 pb-4">
         <div className="flex flex-col lg:grid lg:grid-cols-12 gap-5">
 
-          {/* ╔══════════════════════════════════════
-              LEFT COLUMN — 8 cols
-          ══════════════════════════════════════╝ */}
-          <main className="lg:col-span-8 space-y-3 order-2 lg:order-1">
+          {/* ╔══════════════════════════════════════════════
+              LEFT — Main Content (8 cols)
+              Order: Gallery → Specs → Description → Location → Similar
+          ════════════════════════════════════════════════╝ */}
+          <main className="lg:col-span-8 space-y-4 order-2 lg:order-1">
 
-            {/* TITLE + META — above gallery (Avito pattern) */}
-            <div className="bg-white border border-gray-100 rounded-none sm:rounded-2xl px-4 sm:px-5 py-4 sm:py-5">
-              {/* Pills */}
-              {(ad.is_featured || ad.condition || ad.category) && (
-                <div className="flex flex-wrap gap-1.5 mb-2.5">
-                  {ad.is_featured && (
-                    <span className="bg-amber-50 text-amber-600 text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md border border-amber-100">A la une</span>
-                  )}
-                  {ad.condition && (
-                    <span className="bg-sky-50 text-sky-600 text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md border border-sky-100">
-                      {ad.condition === "new" ? "Neuf" : "Occasion"}
-                    </span>
-                  )}
-                  {ad.category && (
-                    <span className="bg-sky-50 text-sky-600 text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md border border-sky-100">{ad.category}</span>
-                  )}
-                </div>
-              )}
-              {/* Title */}
-              <h1 className="text-xl sm:text-[1.5rem] font-black text-gray-900 leading-snug tracking-tight">{ad.title}</h1>
-              {/* Meta row */}
-              <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-medium text-gray-400">
-                {ad.city && (
-                  <span className="inline-flex items-center gap-1.5">
-                    <MapPin className="h-3.5 w-3.5 shrink-0" />{ad.city}
+            {/* ── GALLERY ── */}
+            <div className="bg-white border border-gray-100 rounded-xl p-4">
+              <PdpGallery
+                images={safeImages}
+                title={ad.title}
+                adId={ad.id}
+                user={user}
+                onShare={() => shareAd(ad.title)}
+              />
+            </div>
+
+            {/* ── MOBILE ONLY: Title + Price ── */}
+            <div className="lg:hidden bg-white border border-gray-100 rounded-xl p-5 space-y-3">
+              <div className="flex flex-wrap gap-1.5">
+                {ad.is_featured && (
+                  <span className="bg-amber-50 text-amber-600 text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg border border-amber-100">
+                    À la une
                   </span>
                 )}
-                <span className="inline-flex items-center gap-1.5">
-                  <Clock className="h-3.5 w-3.5 shrink-0" />{formattedDate}
-                </span>
                 {ad.condition && (
-                  <span className="inline-flex items-center gap-1.5">
-                    <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
+                  <span className="bg-sky-50 text-sky-600 text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg border border-sky-100">
                     {ad.condition === "new" ? "Neuf" : "Occasion"}
                   </span>
                 )}
               </div>
+              <h1 className="text-xl font-black text-gray-900 leading-snug">{ad.title}</h1>
+              <div className="bg-amber-50/60 rounded-xl px-4 py-3">
+                <p className="text-[9px] font-black uppercase tracking-[0.18em] text-amber-700/60 mb-0.5">Prix</p>
+                <p className="text-[2rem] font-black text-amber-600 tabular-nums leading-none">{formattedPrice}</p>
+              </div>
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] text-gray-400 font-medium">
+                {ad.city && (
+                  <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{ad.city}</span>
+                )}
+                <span className="flex items-center gap-1"><Calendar className="h-3 w-3" />{formattedDate}</span>
+              </div>
             </div>
 
-            {/* GALLERY */}
-            <div className="bg-white border border-gray-100 overflow-hidden sm:rounded-2xl">
-              <PdpGallery images={safeImages} title={ad.title} adId={ad.id} user={user} onShare={() => shareAd(ad.title)} />
-            </div>
+            {/* ── SPECS GRID ── */}
+            {specs.length > 0 && <SpecsGrid specs={specs} />}
 
-            {/* PRICE — mobile only (shown between gallery and description) */}
-            <div className="lg:hidden bg-white border border-gray-100 rounded-2xl px-5 py-4">
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-0.5">Prix</p>
-              <p className="text-[2.2rem] font-black text-amber-600 tabular-nums leading-none tracking-tight">{formattedPrice}</p>
-              <p className="text-xs text-gray-400 mt-1.5">Negociable directement avec le vendeur</p>
-            </div>
-
-            {/* DESCRIPTION */}
-            <div className="bg-white border border-gray-100 rounded-2xl px-5 py-5">
-              <h2 className="text-base font-black text-gray-900 mb-4">Description</h2>
+            {/* ── DESCRIPTION ── */}
+            <div className="bg-white border border-gray-100 rounded-xl p-5">
+              <h2 className="text-base font-black text-gray-900 mb-4 flex items-center gap-2">
+                <span className="h-1 w-4 rounded-full bg-orange-500 inline-block" />
+                Description
+              </h2>
               <DescriptionBlock text={ad.description} />
             </div>
 
-            {/* DETAILS */}
-            {detailRows.length > 0 && (
-              <div className="bg-white border border-gray-100 rounded-2xl px-5 py-4">
-                <h2 className="text-base font-black text-gray-900 mb-1">Details de l&apos;annonce</h2>
-                {detailRows.map(r => <DetailRow key={r.label} icon={r.icon} label={r.label} value={r.value} />)}
-              </div>
-            )}
+            {/* ── LOCATION ── */}
+            <LocationSection city={ad.city} neighborhood={ad.neighborhood} ad={ad} />
 
-            {/* SAFETY */}
-            <SafetyBanner />
-
-            {/* SELLER — mobile */}
-            <div className="lg:hidden bg-white border border-gray-100 rounded-2xl px-5 py-5">
-              <h2 className="text-base font-black text-gray-900 mb-4">Vendeur</h2>
+            {/* ── MOBILE: Seller card ── */}
+            <div className="lg:hidden bg-white border border-gray-100 rounded-xl p-5">
+              <h2 className="text-xs font-black text-gray-500 uppercase tracking-widest mb-3">Vendeur</h2>
               <div className="flex items-center gap-3">
                 <SellerAvatar avatar={sellerAvatar} name={sellerName} size="lg" />
                 <div className="min-w-0 flex-1">
-                  <p className="font-black text-gray-900 text-sm truncate">{sellerName}</p>
+                  <p className="font-black text-gray-900 text-[15px] truncate">{sellerName}</p>
                   <p className="text-xs text-gray-400 flex items-center gap-1 mt-0.5">
                     <Clock className="h-3 w-3" />Membre depuis {memberSince}
                   </p>
                   {totalReviews > 0 && (
-                    <p className="text-xs text-gray-500 flex items-center gap-1 mt-1">
-                      <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-                      {avgRating.toFixed(1)} ({totalReviews} avis)
-                    </p>
+                    <div className="flex items-center gap-1 mt-1">
+                      {[1,2,3,4,5].map(s => (
+                        <Star key={s} className={cn("h-3 w-3", s <= Math.round(avgRating) ? "fill-amber-400 text-amber-400" : "text-gray-200")} />
+                      ))}
+                      <span className="text-[11px] text-gray-500 ml-1">{avgRating.toFixed(1)} ({totalReviews})</span>
+                    </div>
                   )}
                 </div>
                 {isTrusted && (
                   <span className="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase px-2 py-1 rounded-lg border border-emerald-100 shrink-0">
-                    <CheckCircle2 className="h-3 w-3" />Verifie
+                    <CheckCircle2 className="h-3 w-3" />Vérifié
                   </span>
                 )}
               </div>
             </div>
 
-            {/* CTA — mobile */}
-            <div className="lg:hidden bg-white border border-gray-100 rounded-2xl px-5 py-5">
-              <SidebarCTA adId={ad.id} sellerId={ad.seller_id} sellerPhone={sellerPhone}
-                user={user} adTitle={ad.title} formattedPrice={formattedPrice} />
+            {/* ── MOBILE: CTA ── */}
+            <div className="lg:hidden bg-white border border-gray-100 rounded-xl p-5">
+              <SidebarCTA
+                adId={ad.id}
+                sellerId={ad.seller_id}
+                sellerPhone={sellerPhone}
+                user={user}
+                adTitle={ad.title}
+                formattedPrice={formattedPrice}
+              />
             </div>
 
-            {/* REPORT */}
-            <div className="pb-1 px-1">
+            {/* ── SIMILAR ADS ── */}
+            {similarAds.length > 0 && (
+              <div className="bg-white border border-gray-100 rounded-xl p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-base font-black text-gray-900 flex items-center gap-2">
+                    <span className="h-1 w-4 rounded-full bg-orange-500 inline-block" />
+                    Annonces similaires
+                  </h2>
+                  {ad.category && (
+                    <Link
+                      href={`/categories/${ad.category?.toLowerCase().replace(/\s+/g, "-")}`}
+                      className="text-xs font-bold text-orange-600 hover:text-orange-700 flex items-center gap-1 transition-colors"
+                    >
+                      Voir tout <ChevronRight className="h-3.5 w-3.5" />
+                    </Link>
+                  )}
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {similarAds.map(sim => (
+                    <RelatedAdCard key={sim.id} ad={sim} />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* ── REPORT ── */}
+            <div className="pb-1">
               <button className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 transition-colors font-medium">
-                <Flag className="h-3.5 w-3.5" />Signaler cette annonce
+                <Flag className="h-3.5 w-3.5" />
+                Signaler cette annonce
               </button>
             </div>
           </main>
 
-          {/* ╔══════════════════════════════════════
-              RIGHT SIDEBAR — 4 cols, sticky
-              Avito layout: Price → CTAs → Seller → Share
-          ══════════════════════════════════════╝ */}
+          {/* ╔══════════════════════════════════════════════
+              RIGHT — Sticky Sidebar (4 cols, desktop only)
+          ════════════════════════════════════════════════╝ */}
           <aside className="lg:col-span-4 order-1 lg:order-2 hidden lg:block">
-            <div className="sticky top-[72px] space-y-3">
-
-              {/* 1. PRICE */}
-              <div className="bg-white border border-gray-100 rounded-2xl px-5 py-4">
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-1">Prix</p>
-                <p className="text-[2.4rem] font-black text-amber-600 tabular-nums leading-none tracking-tight">{formattedPrice}</p>
-                <p className="text-[11px] text-gray-400 mt-1.5">Negociable directement avec le vendeur</p>
-              </div>
-
-              {/* 2. CTA BUTTONS — Avito-style stacked */}
-              <div className="bg-white border border-gray-100 rounded-2xl px-5 py-4">
-                <SidebarCTA
-                  adId={ad.id} sellerId={ad.seller_id} sellerPhone={sellerPhone}
-                  user={user} adTitle={ad.title} formattedPrice={formattedPrice}
-                />
-                <p className="text-center text-[10px] text-gray-400 mt-3">Aucun frais ne vous sera preleve</p>
-              </div>
-
-              {/* 3. SELLER CARD */}
-              <div className="bg-white border border-gray-100 rounded-2xl px-5 py-4">
-                <div className="flex items-center gap-3">
-                  <SellerAvatar avatar={sellerAvatar} name={sellerName} size="md" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-black text-gray-900 truncate">{sellerName}</p>
-                    <p className="text-[11px] text-gray-400 flex items-center gap-1 mt-0.5">
-                      <Clock className="h-3 w-3" />Membre depuis {memberSince}
-                    </p>
-                    {totalReviews > 0 && (
-                      <p className="text-[11px] text-gray-500 flex items-center gap-0.5 mt-1">
-                        <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-                        {avgRating.toFixed(1)}
-                        <span className="text-gray-400 ml-0.5">({totalReviews})</span>
-                      </p>
-                    )}
-                  </div>
-                  {isTrusted && (
-                    <span className="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase px-2 py-1 rounded-lg border border-emerald-100 shrink-0">
-                      <CheckCircle2 className="h-3 w-3" />Verifie
-                    </span>
-                  )}
-                </div>
-                {isTrusted && (
-                  <div className="mt-3 flex items-center gap-2 bg-emerald-50 border border-emerald-100 rounded-xl px-3 py-2">
-                    <ShieldCheck className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-                    <span className="text-[11px] font-bold text-emerald-700">Vendeur verifie par Jootiya</span>
-                  </div>
-                )}
-              </div>
-
-              {/* 4. SHARE */}
-              <button onClick={() => shareAd(ad.title)}
-                className="w-full bg-white border border-gray-100 rounded-2xl px-4 py-3.5 flex items-center justify-between hover:border-gray-200 hover:shadow-sm transition-all group">
-                <div className="flex items-center gap-3">
-                  <span className="h-9 w-9 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center shrink-0">
-                    <Share2 className="h-4 w-4 text-gray-500" />
-                  </span>
-                  <span className="text-sm font-bold text-gray-700">Partager cette annonce</span>
-                </div>
-                <ArrowRight className="h-4 w-4 text-gray-300 group-hover:text-gray-500 group-hover:translate-x-0.5 transition-all" />
-              </button>
-
-              {/* 5. QUICK DETAILS */}
-              {detailRows.length > 0 && (
-                <div className="bg-white border border-gray-100 rounded-2xl px-5 py-4">
-                  <h3 className="text-[11px] font-black uppercase tracking-widest text-gray-400 mb-2">Informations</h3>
-                  {detailRows.map(r => <DetailRow key={r.label} icon={r.icon} label={r.label} value={r.value} />)}
-                </div>
-              )}
-
-              {/* 6. SAFETY — compact */}
-              <div className="bg-amber-50/70 border border-amber-100 rounded-2xl px-4 py-3 flex items-center gap-2">
-                <ShieldCheck className="h-3.5 w-3.5 text-amber-600 shrink-0" />
-                <p className="text-[11px] font-bold text-amber-700">Verifiez toujours le produit avant paiement.</p>
-              </div>
-            </div>
+            <DesktopSidebar
+              ad={ad}
+              formattedPrice={formattedPrice}
+              formattedDate={formattedDate}
+              sellerName={sellerName}
+              sellerAvatar={sellerAvatar}
+              memberSince={memberSince}
+              avgRating={avgRating}
+              totalReviews={totalReviews}
+              isTrusted={isTrusted}
+              sellerPhone={sellerPhone}
+              user={user}
+            />
           </aside>
-        </div>
 
-        {/* ══ RELATED ADS ══════════════════════════════════════ */}
-        {similarAds.length > 0 && (
-          <section className="mt-8 pb-4 px-4 sm:px-0">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-base font-black text-gray-900">Ces annonces peuvent vous interesser</h2>
-              {ad.category && (
-                <Link href={`/marketplace/category/${ad.category.toLowerCase().replace(/\s+/g, "-")}`}
-                  className="flex items-center gap-1 text-xs font-bold text-gray-500 hover:text-gray-800 transition-colors">
-                  Voir tout <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
-              )}
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              {similarAds.map(a => <RelatedAdCard key={a.id} ad={a} />)}
-            </div>
-          </section>
-        )}
+        </div>
       </div>
 
-      {/* ══ MOBILE STICKY BAR ════════════════════════════════ */}
-      <MobileStickyBar phone={sellerPhone || ""} adTitle={ad.title} formattedPrice={formattedPrice} />
+      {/* ══ MOBILE STICKY BOTTOM BAR ════════════════════════════════ */}
+      <MobileStickyBar
+        phone={sellerPhone || ""}
+        adTitle={ad.title}
+        formattedPrice={formattedPrice}
+      />
     </div>
   );
 }
