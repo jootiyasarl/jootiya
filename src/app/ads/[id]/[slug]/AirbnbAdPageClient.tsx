@@ -27,6 +27,17 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
+
+// ── Load Leaflet map client-side only (Leaflet requires window/document) ──────
+const AdMap = dynamic(() => import("@/components/ads/AdMap"), {
+  ssr: false,
+  loading: () => (
+    <div className="h-[180px] w-full bg-gray-100 animate-pulse rounded-xl flex items-center justify-center">
+      <MapPin className="h-6 w-6 text-gray-300 animate-bounce" />
+    </div>
+  ),
+});
 import {
   MapPin, Clock, ShieldCheck, Share2, ChevronRight, ChevronLeft,
   CheckCircle2, User, Flag, Tag, Layers, Hash, X,
@@ -406,11 +417,14 @@ function DescriptionBlock({ text }: { text: string | null }) {
 }
 
 // ─────────────────────────────────────────────────────────────────
-// LOCATION SECTION
+// LOCATION SECTION — OpenStreetMap via Leaflet (dynamic import)
 // ─────────────────────────────────────────────────────────────────
 function LocationSection({ city, neighborhood, ad }: { city?: string; neighborhood?: string; ad: any }) {
-  if (!city && !neighborhood) return null;
+  const hasCoords = typeof ad.latitude === "number" && typeof ad.longitude === "number";
   const fullLocation = [neighborhood, city].filter(Boolean).join(", ");
+
+  // No location data at all — skip the section
+  if (!city && !neighborhood && !hasCoords) return null;
 
   return (
     <div className="bg-white border border-gray-100 rounded-xl p-5">
@@ -418,29 +432,48 @@ function LocationSection({ city, neighborhood, ad }: { city?: string; neighborho
         <span className="h-1 w-4 rounded-full bg-orange-500 inline-block" />
         Localisation
       </h2>
-      <div className="flex items-center gap-3 mb-4">
-        <div className="h-9 w-9 rounded-lg bg-orange-50 flex items-center justify-center shrink-0">
-          <MapPin className="h-4 w-4 text-orange-500" />
+
+      {/* City label */}
+      {fullLocation && (
+        <div className="flex items-center gap-3 mb-4">
+          <div className="h-9 w-9 rounded-lg bg-orange-50 flex items-center justify-center shrink-0">
+            <MapPin className="h-4 w-4 text-orange-500" />
+          </div>
+          <div>
+            <p className="text-sm font-bold text-gray-900">{fullLocation}</p>
+            {ad.country && <p className="text-xs text-gray-400 mt-0.5">{ad.country}</p>}
+          </div>
         </div>
-        <div>
-          <p className="text-sm font-bold text-gray-900">{fullLocation}</p>
-          {ad.country && <p className="text-xs text-gray-400 mt-0.5">{ad.country}</p>}
-        </div>
-      </div>
-      {/* Static map placeholder — replace with real map if Leaflet is set up */}
-      <div className="relative h-[160px] rounded-xl overflow-hidden bg-gray-100 border border-gray-100">
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-gray-400">
+      )}
+
+      {/* Map — real OSM map if coordinates exist, static fallback otherwise */}
+      {hasCoords ? (
+        <>
+          <AdMap
+            lat={ad.latitude}
+            lng={ad.longitude}
+            title={ad.title}
+            city={fullLocation}
+            heightClass="h-[180px]"
+          />
+          <a
+            href={`https://maps.openstreetmap.org/?mlat=${ad.latitude}&mlon=${ad.longitude}&zoom=15`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-2.5 flex items-center justify-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-orange-600 transition-colors"
+          >
+            <MapPin className="h-3.5 w-3.5" />
+            Ouvrir dans OpenStreetMap
+          </a>
+        </>
+      ) : (
+        /* Fallback: no coords — show a static placeholder with city name */
+        <div className="relative h-[180px] rounded-xl overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 border border-gray-100 flex flex-col items-center justify-center gap-2 text-gray-400">
           <MapPin className="h-8 w-8 text-gray-300" />
-          <p className="text-xs font-medium">{fullLocation}</p>
+          <p className="text-sm font-semibold text-gray-500">{fullLocation}</p>
+          <p className="text-xs text-gray-400">Coordonnées non disponibles</p>
         </div>
-        <Link
-          href={`https://maps.google.com/?q=${encodeURIComponent(fullLocation)}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="absolute inset-0"
-          aria-label="Voir sur Google Maps"
-        />
-      </div>
+      )}
     </div>
   );
 }
