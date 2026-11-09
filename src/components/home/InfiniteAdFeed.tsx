@@ -8,7 +8,7 @@
  * ARCHITECTURAL DECISIONS
  * ───────────────────────
  * 1. SSR hydration-safe:
- *    Props accept `initialAds` (the first 12 fetched on the server).
+ *    Props accept `initialAds` (the first 10 fetched on the server).
  *    State is seeded from props so the first render matches the RSC HTML
  *    byte-for-byte — zero hydration mismatch.
  *
@@ -125,9 +125,12 @@ function BatchSkeleton({ count = 12 }: { count?: number }) {
 function FadeInBatch({
   ads,
   startIndex,
+  showAd = false,
 }: {
   ads: PublicAdCardAd[];
   startIndex: number;
+  /** Insert an AdSense unit in the middle of the card grid */
+  showAd?: boolean;
 }) {
   const [visible, setVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -138,24 +141,35 @@ function FadeInBatch({
     return () => cancelAnimationFrame(id);
   }, []);
 
+  // Position of the in-grid ad: right after the middle card (only when the
+  // batch is large enough for an ad to feel natural — min 6 cards)
+  const adAfterIndex =
+    showAd && ads.length >= 6 ? Math.floor(ads.length / 2) - 1 : -1;
+
   return (
     <div
       ref={ref}
       className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2.5 sm:gap-3 md:gap-4 mt-2.5 sm:mt-3 md:mt-4"
     >
       {ads.map((ad, colIdx) => (
-        <div
-          key={ad.id}
-          style={{
-            transitionDelay: `${colIdx * 40}ms`,
-            opacity: visible ? 1 : 0,
-            transform: visible ? "translateY(0)" : "translateY(16px)",
-            transition: "opacity 0.35s ease, transform 0.35s ease",
-            willChange: "opacity, transform",
-          }}
-        >
-          <HomeAdCard ad={ad} priority={startIndex + colIdx < 4} />
-        </div>
+        <React.Fragment key={ad.id}>
+          <div
+            style={{
+              transitionDelay: `${colIdx * 40}ms`,
+              opacity: visible ? 1 : 0,
+              transform: visible ? "translateY(0)" : "translateY(16px)",
+              transition: "opacity 0.35s ease, transform 0.35s ease",
+              willChange: "opacity, transform",
+            }}
+          >
+            <HomeAdCard ad={ad} priority={startIndex + colIdx < 4} />
+          </div>
+          {colIdx === adAfterIndex && (
+            <div className="col-span-full">
+              <AdUnit format="auto" minHeight={250} />
+            </div>
+          )}
+        </React.Fragment>
       ))}
     </div>
   );
@@ -167,13 +181,13 @@ function FadeInBatch({
 
 export interface InfiniteAdFeedProps {
   /**
-   * First 12 ads fetched server-side (page 1). Rendered immediately by the
+   * First 10 ads fetched server-side (page 1). Rendered immediately by the
    * VirtualizedAdGrid — no fetch needed on mount.
    */
   initialAds: HomepageAdRow[];
-  /** Pass-through: whether the SSR fetch returned fewer than 12 items */
+  /** Pass-through: whether the SSR fetch returned fewer than 10 items */
   initialHasMore: boolean;
-  /** Number of ads per batch (must match the API default). Default: 12 */
+  /** Number of ads per batch (must match the API default). Default: 10 */
   pageSize?: number;
   /**
    * Optional: filter/sort that the parent (HomeClient) manages.
@@ -199,7 +213,7 @@ export interface InfiniteAdFeedProps {
 export function InfiniteAdFeed({
   initialAds,
   initialHasMore,
-  pageSize = 12,
+  pageSize = 10,
   filterKey = "",
   emptyMessage = "Aucune annonce trouvée",
   emptySubtext = "Modifiez vos critères ou revenez plus tard.",
@@ -368,14 +382,22 @@ export function InfiniteAdFeed({
           VirtualizedAdGrid uses @tanstack/react-virtual for efficient rendering
           of the first page. Transitions + fade-in stagger are handled internally.
       ──────────────────────────────────────────────────────────────────────── */}
-      <VirtualizedAdGrid
-        ads={initialCards}
-        emptyMessage={emptyMessage}
-        emptySubtext={emptySubtext}
-      />
+      {fetchFirstPage ? (
+        /* Filtered page 1 (client-fetched) renders as a regular grid so the
+           in-grid ad can sit in the middle of the cards */
+        initialCards.length > 0 && (
+          <FadeInBatch ads={initialCards} startIndex={0} showAd />
+        )
+      ) : (
+        <VirtualizedAdGrid
+          ads={initialCards}
+          emptyMessage={emptyMessage}
+          emptySubtext={emptySubtext}
+        />
+      )}
 
       {/* ── In-feed ad slot — shown once the SSR batch has rendered ─────── */}
-      {initialCards.length >= 6 && (
+      {!fetchFirstPage && initialCards.length >= 6 && (
         <AdUnit format="auto" minHeight={280} className="mt-6" />
       )}
 
@@ -388,9 +410,8 @@ export function InfiniteAdFeed({
           <FadeInBatch
             ads={batch}
             startIndex={initialCards.length + batchIdx * pageSize}
+            showAd
           />
-          {/* In-feed ad: one AdSense unit after every batch of `pageSize` ads */}
-          <AdUnit format="auto" minHeight={250} className="mt-2" />
         </React.Fragment>
       ))}
 

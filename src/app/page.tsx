@@ -11,11 +11,11 @@
  *    serves the stale page instantly (TTFB < 50 ms) while the new page bakes.
  *    This eliminates SSR cold-start latency for 99% of visitors.
  *
- * 2. Only first 12 ads fetched on the server:
+ * 2. Only first 10 ads fetched on the server:
  *    - Reduces initial DB query time (Supabase row scanning stops early).
  *    - Keeps the HTML payload small for faster FCP/LCP.
  *    - Remaining pages are fetched client-side via /api/ads (infinite scroll).
- *    - `.range(0, 12)` fetches 13 rows so we can compute `initialHasMore`
+ *    - `.range(0, 10)` fetches 11 rows so we can compute `initialHasMore`
  *      without a separate COUNT query (same probe trick as the API route).
  *
  * 3. Distance calculation stays server-side when lat/lng are present:
@@ -33,7 +33,7 @@ import { createSupabaseServerClient } from "@/lib/supabase-server";
 export const revalidate = 60;
 
 /** Number of ads to show in the SSR-rendered first batch */
-const INITIAL_PAGE_SIZE = 12;
+const INITIAL_PAGE_SIZE = 10;
 
 /** Fields projected from Supabase — keep in sync with HomepageAdRow type */
 const AD_SELECT =
@@ -64,7 +64,7 @@ export default async function Home({
   const supabase = createSupabaseServerClient();
 
   // ── Fetch first page + one probe row ─────────────────────────────────────
-  // Fetching INITIAL_PAGE_SIZE + 1 (index 0 → 12) = 13 rows total.
+  // Fetching INITIAL_PAGE_SIZE + 1 (index 0 → 10) = 11 rows total.
   // If 13 rows come back, there are more pages → hasMore = true.
   const { data: rawAds, error: adsError } = await supabase
     .from("ads")
@@ -73,7 +73,7 @@ export default async function Home({
     .order("is_featured", { ascending: false })
     .order("created_at", { ascending: false })
     // Fetch one extra row to detect hasMore without a COUNT query
-    .range(0, INITIAL_PAGE_SIZE); // inclusive: rows 0..12 → 13 rows
+    .range(0, INITIAL_PAGE_SIZE); // inclusive: rows 0..10 → 11 rows
 
   if (adsError) {
     console.error("Error fetching homepage initial ads:", adsError);

@@ -567,7 +567,7 @@ export default function HomeClient({
               }
             `}</style>
             {/*
-             * InfiniteAdFeed receives the SSR-rendered first 12 ads and handles
+             * InfiniteAdFeed receives the SSR-rendered first 10 ads and handles
              * all subsequent pages via /api/ads + IntersectionObserver sentinel.
              * filterKey encodes the current filter state — when it changes, the
              * feed resets its client-side page counter to 1.
