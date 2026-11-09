@@ -34,4 +34,3 @@ export default async function AdRedirectPage({ params }: AdRedirectPageProps) {
     // Let's use the standard redirect which is 307/308.
     redirect(`/ads/${id}/${adSlug}`);
 }
-import AdsenseHeader from "@/components/AdsenseHeader";

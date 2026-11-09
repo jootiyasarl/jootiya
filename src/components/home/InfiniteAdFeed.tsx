@@ -44,6 +44,7 @@ import React, {
 } from "react";
 import { HomeAdCard, ProductCardSkeleton } from "@/components/home/HomeAdCard";
 import { VirtualizedAdGrid } from "@/components/ads/VirtualizedAdGrid";
+import { AdUnit } from "@/components/ads/AdUnit";
 import type { HomepageAdRow } from "@/components/home/HomeClient";
 import type { PublicAdCardAd } from "@/components/AdCard";
 import { generateSlug } from "@/lib/seo-utils";
@@ -324,6 +325,11 @@ export function InfiniteAdFeed({
         emptyMessage={emptyMessage}
         emptySubtext={emptySubtext}
       />
+
+      {/* ── In-feed ad slot — shown once the SSR batch has rendered ─────── */}
+      {initialCards.length >= 6 && (
+        <AdUnit format="rectangle" minHeight={280} className="mt-6" />
+      )}
 
       {/* ── Segment 2: Dynamically appended pages ─────────────────────────
           Each fetched batch is an independent FadeInBatch — this avoids

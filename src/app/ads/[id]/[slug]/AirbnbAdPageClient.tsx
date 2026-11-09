@@ -55,6 +55,7 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { AdUnit } from "@/components/ads/AdUnit";
 
 // ─────────────────────────────────────────────────────────────────
 // Types
@@ -757,6 +758,9 @@ function DesktopSidebar({
         </ul>
       </div>
 
+      {/* ── 4b. ADVERTISEMENT ── */}
+      <AdUnit format="rectangle" minHeight={280} className="my-0" />
+
       {/* ── 5. REPORT ── */}
       <button className="w-full flex items-center justify-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 transition-colors font-medium py-1">
         <Flag className="h-3.5 w-3.5" />
@@ -1027,6 +1031,9 @@ export function AirbnbAdPageClient({
                 </div>
               </div>
             )}
+
+            {/* ── ADVERTISEMENT (mobile + below similar ads) ── */}
+            <AdUnit format="rectangle" minHeight={280} className="my-0" />
 
             {/* ── REPORT ── */}
             <div className="pb-1">

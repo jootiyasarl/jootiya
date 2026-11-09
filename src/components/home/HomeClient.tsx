@@ -7,6 +7,7 @@ import { type PublicAdCardAd } from "@/components/AdCard";
 import { HomeAdCard, ProductGridSkeleton } from "@/components/home/HomeAdCard";
 import { VirtualizedAdGrid } from "@/components/ads/VirtualizedAdGrid";
 import { InfiniteAdFeed } from "@/components/home/InfiniteAdFeed";
+import { AdUnit } from "@/components/ads/AdUnit";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -684,6 +685,13 @@ export default function HomeClient({
             />
           </div>
         )}
+      </section>
+
+      {/* =========================================================================
+          5b. ADVERTISEMENT — between listings feed and cities explorer
+         ========================================================================= */}
+      <section className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <AdUnit format="horizontal" minHeight={100} />
       </section>
 
 

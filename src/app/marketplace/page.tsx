@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SellBanner } from '@/components/home/SellBanner';
+import { AdUnit } from "@/components/ads/AdUnit";
 
 export const metadata = {
   title: 'Catégories - Jootiya',
@@ -89,6 +90,9 @@ export default function MarketplacePage() {
             );
           })}
         </div>
+
+        {/* AdSense — between categories grid and sell banner */}
+        <AdUnit format="horizontal" minHeight={90} className="mt-8" />
 
         {/* Sell Banner - Moved to bottom as per user requirement */}
         <div className="mt-12 block">
