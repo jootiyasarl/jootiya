@@ -15,9 +15,6 @@ import {
   ArrowRight,
   ChevronLeft,
   ChevronRight,
-  ChevronDown,
-  Check,
-  MapPin,
   Sparkles,
   Smartphone,
   Car,
@@ -29,9 +26,7 @@ import {
   BookOpen,
   Tag,
   Search,
-  SlidersHorizontal,
   Flame,
-  CheckCircle2,
   X,
   Compass,
   PlusCircle,
@@ -113,15 +108,6 @@ const CATEGORIES_DATA = [
   { id: "books", label: "Livres", icon: BookOpen, color: "text-sky-500", bg: "bg-sky-50 dark:bg-sky-950/40" },
   { id: "used-clearance", label: "Occasions", icon: Tag, color: "text-red-500", bg: "bg-red-50 dark:bg-red-950/40" },
   { id: "other", label: "Autres", icon: Package, color: "text-slate-500", bg: "bg-slate-100 dark:bg-slate-800" },
-];
-
-
-
-const SORT_OPTIONS = [
-  { id: "recent", label: "Plus récents" },
-  { id: "price-asc", label: "Prix : Moins cher" },
-  { id: "price-desc", label: "Prix : Plus cher" },
-  { id: "featured", label: "À la une d'abord" },
 ];
 
 function mapHomepageAdRow(row: HomepageAdRow): HomepageAd {
@@ -207,12 +193,10 @@ export default function HomeClient({
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedCity, setSelectedCity] = useState<string>("Toutes les villes");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [sortBy, setSortBy] = useState<"recent" | "price-asc" | "price-desc" | "featured">("recent");
-  const [feedTab, setFeedTab] = useState<"all" | "featured" | "nearby">("all");
+  // Feed sort/tab are fixed defaults — the controls UI was removed.
+  const [sortBy] = useState<"recent" | "price-asc" | "price-desc" | "featured">("recent");
+  const [feedTab] = useState<"all" | "featured" | "nearby">("all");
 
-  // Sort Dropdown State
-  const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
-  const sortDropdownRef = useRef<HTMLDivElement>(null);
   const listingsSectionRef = useRef<HTMLDivElement>(null);
   // Lazy reveal: the ads grid fades in only when the section enters the viewport
   const [gridVisible, setGridVisible] = useState(false);
@@ -225,21 +209,6 @@ export default function HomeClient({
     );
     observer.observe(el);
     return () => observer.disconnect();
-  }, []);
-
-  // Close dropdowns when clicking outside
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        sortDropdownRef.current &&
-        !sortDropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsSortDropdownOpen(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const latParam = typeof initialParams.lat === "string" ? parseFloat(initialParams.lat) : null;
@@ -381,22 +350,16 @@ export default function HomeClient({
     setSearchQuery("");
     setSelectedCity("Toutes les villes");
     setSelectedCategory("all");
-    setFeedTab("all");
   };
 
   const hasActiveFilters =
     searchQuery.trim() !== "" ||
     selectedCity !== "Toutes les villes" ||
-    selectedCategory !== "all" ||
-    feedTab !== "all";
+    selectedCategory !== "all";
 
   const selectedCategoryObj = useMemo(() => {
     return CATEGORIES_DATA.find((c) => c.id === selectedCategory) || CATEGORIES_DATA[0];
   }, [selectedCategory]);
-
-  const currentSortObj = useMemo(() => {
-    return SORT_OPTIONS.find((s) => s.id === sortBy) || SORT_OPTIONS[0];
-  }, [sortBy]);
 
   return (
     <div dir="ltr" className="min-h-screen bg-slate-50/60 dark:bg-zinc-950 font-sans text-zinc-900 dark:text-zinc-100 selection:bg-orange-500 selection:text-white">
@@ -531,89 +494,6 @@ export default function HomeClient({
             </button>
           </div>
         )}
-
-        {/* FEED TOP CONTROLS BAR: sticky under navbar (OLX-style), wraps on mobile */}
-        <div className="sticky top-[64px] md:top-[72px] z-30 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 sm:p-3.5 rounded-2xl bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border border-zinc-200/80 dark:border-zinc-800 shadow-md">
-          {/* Feed Tabs Switcher */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-hide no-scrollbar">
-            <Button
-              type="button"
-              onClick={() => setFeedTab("all")}
-              variant={feedTab === "all" ? "default" : "outline"}
-              className="rounded-xl h-9 text-xs sm:text-sm font-bold flex items-center gap-1.5"
-            >
-              <Sparkles className="h-3.5 w-3.5" />
-              <span>Toutes</span>
-            </Button>
-
-            <Button
-              type="button"
-              onClick={() => setFeedTab("featured")}
-              variant={feedTab === "featured" ? "orange" : "outline"}
-              className="rounded-xl h-9 text-xs sm:text-sm font-bold flex items-center gap-1.5"
-            >
-              <Flame className="h-3.5 w-3.5" />
-              <span>À la une</span>
-            </Button>
-
-            <Button
-              type="button"
-              onClick={() => setFeedTab("nearby")}
-              variant={feedTab === "nearby" ? "default" : "outline"}
-              className="rounded-xl h-9 text-xs sm:text-sm font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm flex items-center gap-1.5"
-            >
-              <MapPin className="h-3.5 w-3.5" />
-              <span>Proches</span>
-            </Button>
-          </div>
-
-          {/* Right Toolbar: Counter and Custom Sort Dropdown */}
-          <div className="flex items-center justify-between sm:justify-end gap-3">
-            <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5 shrink-0">
-              <CheckCircle2 className="h-3.5 w-3.5 text-orange-500" />
-              {filteredAds.length} annonce{filteredAds.length !== 1 ? "s" : ""}
-            </span>
-
-            {/* Custom Sort Dropdown */}
-            <div ref={sortDropdownRef} className="relative">
-              <button
-                type="button"
-                onClick={() => setIsSortDropdownOpen(!isSortDropdownOpen)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-xs sm:text-sm font-bold text-zinc-800 dark:text-zinc-200 transition-colors cursor-pointer"
-              >
-                <SlidersHorizontal className="h-3.5 w-3.5 text-zinc-400" />
-                <span>{currentSortObj.label}</span>
-                <ChevronDown className={`h-3.5 w-3.5 text-zinc-400 transition-transform ${isSortDropdownOpen ? "rotate-180 text-orange-500" : ""}`} />
-              </button>
-
-              {isSortDropdownOpen && (
-                <div className="absolute right-0 top-full mt-2 w-52 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl p-2 z-40 animate-in fade-in zoom-in-95 text-left">
-                  {SORT_OPTIONS.map((opt) => {
-                    const isSelected = sortBy === opt.id;
-                    return (
-                      <button
-                        key={opt.id}
-                        type="button"
-                        onClick={() => {
-                          setSortBy(opt.id as any);
-                          setIsSortDropdownOpen(false);
-                        }}
-                        className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-colors ${
-                          isSelected
-                            ? "bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 font-bold"
-                            : "hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200"
-                        }`}
-                      >
-                        <span>{opt.label}</span>
-                        {isSelected && <Check className="h-4 w-4 text-orange-600" />}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
 
         {/* Active Filters Tag Pills */}
         {hasActiveFilters && (
