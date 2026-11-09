@@ -42,7 +42,6 @@ import {
   History,
   Waves,
 } from "lucide-react";
-import { supabase } from "@/lib/supabaseClient";
 import useEmblaCarousel from "embla-carousel-react";
 
 export type HomepageAd = {

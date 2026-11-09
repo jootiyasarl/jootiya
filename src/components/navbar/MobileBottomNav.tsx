@@ -1,35 +1,21 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Search, PlusCircle, MessageCircle, User, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { supabase } from "@/lib/supabaseClient";
+import { useAuth } from "@/components/auth/AuthProvider";
 
 export function MobileBottomNav() {
     const pathname = usePathname();
-    const [profileHref, setProfileHref] = useState<string>("/login?next=/dashboard");
+    const { userEmail } = useAuth();
 
-    useEffect(() => {
-        const resolveProfileHref = (email: string | null | undefined) => {
-            if (!email) return "/login?next=/dashboard";
-            if (email === "jootiyasarl@gmail.com") return "/admin";
-            return "/dashboard";
-        };
-
-        const init = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            setProfileHref(resolveProfileHref(session?.user?.email));
-        };
-        init();
-
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-            setProfileHref(resolveProfileHref(session?.user?.email));
-        });
-
-        return () => subscription.unsubscribe();
-    }, []);
+    const profileHref = !userEmail
+        ? "/login?next=/dashboard"
+        : userEmail === "jootiyasarl@gmail.com"
+          ? "/admin"
+          : "/dashboard";
 
     // Hide bottom nav on chat detail pages to give full space to the conversation
     if (pathname?.startsWith("/dashboard/messages/") && pathname !== "/dashboard/messages") {

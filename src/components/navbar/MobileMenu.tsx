@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabaseClient";
+import { useAuth } from "@/components/auth/AuthProvider";
 import {
     X,
     Menu,
@@ -34,22 +35,9 @@ interface MobileMenuProps {
 
 export function MobileMenu({ initialUserEmail = null }: MobileMenuProps) {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [userEmail, setUserEmail] = useState<string | null>(initialUserEmail);
+    const { userEmail: authEmail } = useAuth();
+    const userEmail = authEmail ?? initialUserEmail;
     const { setTheme, theme } = useTheme();
-
-    useEffect(() => {
-        const checkSession = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            setUserEmail(session?.user?.email ?? null);
-        };
-        checkSession();
-
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-            setUserEmail(session?.user?.email ?? null);
-        });
-
-        return () => subscription.unsubscribe();
-    }, []);
 
     useEffect(() => {
         if (isMobileMenuOpen) {

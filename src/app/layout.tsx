@@ -7,12 +7,11 @@ import { Toaster } from "sonner";
 import Script from "next/script";
 import PublicNavbar from "@/components/navbar/PublicNavbar";
 import { ProgressBar } from "@/components/layout/ProgressBar";
-import { PageTransition } from "@/components/layout/PageTransition";
 import { ScrollToTop } from "@/components/layout/ScrollToTop";
 import { Suspense } from "react";
 import { ThemeProvider } from "@/components/theme-provider";
 import { PageViewTracker } from "@/components/analytics/PageViewTracker";
-import { GoogleAnalytics } from "@next/third-parties/google";
+import { AuthProvider } from "@/components/auth/AuthProvider";
 import FlyonuiInit from "@/components/FlyonuiInit";
 
 const tajawal = Tajawal({
@@ -155,29 +154,12 @@ export default function RootLayout({
             `,
           }}
         />
-        <Script id="google-tag-manager" strategy="afterInteractive">
-          {`
-            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-            })(window,document,'script','dataLayer','GT-MKRC853R');
-          `}
-        </Script>
       </head>
 
       <body
         className={`${tajawal.variable} ${inter.variable} font-sans antialiased overflow-x-clip bg-white dark:bg-zinc-950`}
         style={{ backgroundColor: "#ffffff" }}
       >
-        <noscript>
-          <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GT-MKRC853R"
-            height="0"
-            width="0"
-            style={{ display: "none", visibility: "hidden" }}
-          ></iframe>
-        </noscript>
         <h1 className="sr-only">Jootiya : Petites annonces au Maroc - Achat et vente en toute securite</h1>
 
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
@@ -190,9 +172,11 @@ export default function RootLayout({
             <ProgressBar />
           </Suspense>
 
-          <RootNavbarShell navbar={<PublicNavbar />} footer={<Footer />}>
-            {children}
-          </RootNavbarShell>
+          <AuthProvider>
+            <RootNavbarShell navbar={<PublicNavbar />} footer={<Footer />}>
+              {children}
+            </RootNavbarShell>
+          </AuthProvider>
 
           <Toaster position="top-center" richColors />
         </ThemeProvider>

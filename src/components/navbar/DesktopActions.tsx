@@ -10,6 +10,7 @@ import {
     ShieldAlert
 } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
+import { useAuth } from "@/components/auth/AuthProvider";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { NotificationBell } from "@/components/notifications/NotificationBell";
 import { useRouter } from "next/navigation";
@@ -20,105 +21,45 @@ interface DesktopActionsProps {
 }
 
 export function DesktopActions({ initialUserEmail = null, initialIsAdmin = false }: DesktopActionsProps) {
-    const [userEmail, setUserEmail] = useState<string | null>(initialUserEmail);
-    const [isAdmin, setIsAdmin] = useState(initialIsAdmin);
-    const [hasUnreadMessages, setHasUnreadMessages] = useState(false);
+    const { user, userEmail: authEmail, isAdmin: authIsAdmin } = useAuth();
+    // SSR-seeded props avoid a flash of the logged-out UI before hydration
+    const userEmail = authEmail ?? initialUserEmail;
+    const isAdmin = authIsAdmin || initialIsAdmin;
+    const [unreadResult, setUnreadResult] = useState<{
+        userId: string;
+        has: boolean;
+    } | null>(null);
     const router = useRouter();
 
-    const isAdminEmail = (email: string) => email === "jootiyasarl@gmail.com";
-    const isAdminPhone = (phone: string) => phone === "0618112646";
-
+    // Unread-messages badge — the only per-component query left.
+    // Tagged with userId so stale results never leak across accounts.
     useEffect(() => {
-        const checkSession = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session?.user) {
-                const user = session.user;
-                setUserEmail(user.email ?? null);
-                
-                const { data: profile } = await supabase
-                    .from('profiles')
-                    .select('role, phone')
-                    .eq('id', user.id)
-                    .maybeSingle();
-
-                const isAuthorized = 
-                    user.email === "jootiyasarl@gmail.com" || 
-                    profile?.role === "super_admin" || 
-                    profile?.role === "admin" ||
-                    profile?.phone === "0618112646";
-
-                setIsAdmin(isAuthorized);
-
-                // Session sync for server on admin detection
-                if (isAuthorized) {
-                    const { data: { session } } = await supabase.auth.getSession();
-                    if (session) {
-                        document.cookie = `sb-access-token=${session.access_token}; path=/; SameSite=Lax; max-age=${session.expires_in};`;
-                    }
+        if (!user?.id) return;
+        let active = true;
+        supabase
+            .from('messages')
+            .select('*', { count: 'exact', head: true })
+            .eq('is_read', false)
+            .neq('sender_id', user.id)
+            .then(({ count }) => {
+                if (active) {
+                    setUnreadResult({
+                        userId: user.id,
+                        has: count !== null && count > 0,
+                    });
                 }
-                
-                // Fetch unread messages count
-                const { count } = await supabase
-                    .from('messages')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('is_read', false)
-                    .neq('sender_id', user.id);
-
-                setHasUnreadMessages(count !== null && count > 0);
-            } else {
-                setUserEmail(null);
-                setIsAdmin(false);
-                setHasUnreadMessages(false);
-            }
-        };
-
-        checkSession();
-
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-            // Use session from auth state change event
-            const user = session?.user;
-            
-            if (user) {
-                setUserEmail(user.email ?? null);
-
-                const { data: profile } = await supabase
-                    .from('profiles')
-                    .select('role, phone')
-                    .eq('id', user.id)
-                    .maybeSingle();
-
-                const isAuthorized = 
-                    user.email === "jootiyasarl@gmail.com" || 
-                    profile?.role === "super_admin" || 
-                    profile?.role === "admin" ||
-                    profile?.phone === "0618112646";
-
-                setIsAdmin(isAuthorized);
-
-                const { count } = await supabase
-                    .from('messages')
-                    .select('*', { count: 'exact', head: true })
-                    .eq('is_read', false)
-                    .neq('sender_id', user.id);
-
-                setHasUnreadMessages(count !== null && count > 0);
-            } else {
-                setUserEmail(null);
-                setIsAdmin(false);
-                setHasUnreadMessages(false);
-            }
-        });
-
+            });
         return () => {
-            subscription.unsubscribe();
+            active = false;
         };
-    }, []);
+    }, [user?.id]);
+
+    const hasUnreadMessages =
+        !!user?.id && unreadResult?.userId === user.id && unreadResult.has;
 
     const handleLogout = async () => {
         try {
-            setUserEmail(null);
-            setIsAdmin(false);
-            setHasUnreadMessages(false);
+            setUnreadResult(null);
             
             try {
                 await supabase.auth.signOut();

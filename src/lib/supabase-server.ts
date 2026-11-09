@@ -1,5 +1,6 @@
 import "server-only";
 
+import { cache } from "react";
 import { cookies } from "next/headers";
 import { createClient, type Session, type User } from "@supabase/supabase-js";
 
@@ -116,7 +117,7 @@ export async function getProfileRole(userId: string): Promise<UserRole | null> {
     return null;
 }
 
-export async function getServerUser(): Promise<User | null> {
+async function getServerUserImpl(): Promise<User | null> {
     const cookieStore = await cookies();
     const accessToken = cookieStore.get("sb-access-token")?.value
         || cookieStore.get("session_token")?.value;
@@ -160,3 +161,10 @@ export async function getServerUser(): Promise<User | null> {
 
     return null;
 }
+
+/**
+ * Cached per-request wrapper: PublicNavbar, page components and layouts all
+ * call getServerUser() during the same render. React cache() dedupes the
+ * Supabase auth.getUser() network call so it only happens once per request.
+ */
+export const getServerUser = cache(getServerUserImpl);
