@@ -9,16 +9,13 @@
  * ┌──────────────────────────────┬───────────────────────────┐
  * │  LEFT (Main Content) 8 cols  │  RIGHT (Sidebar) 4 cols   │
  * │                              │  sticky top-[72px]         │
- * │  • Photo Gallery             │  • Title                   │
- * │    (hero + thumbnails)       │  • Price (large amber)     │
- * │                              │  • WhatsApp button (green) │
- * │  • Specs Grid (2-col)        │  • Show phone button       │
- * │                              │  • Message button          │
- * │  • Description               │  ─────────────────────── │
- * │                              │  • Seller card             │
+ * │  • Title + badges + meta     │  • Price (large)           │
+ * │  • Photo Gallery             │  • WhatsApp button (green) │
+ * │    (hero + thumbnails)       │  • Phone + message buttons │
+ * │  • Specs Grid (2-col)        │  • AdSense unit            │
+ * │  • Description               │  • Seller card             │
  * │  • Location                  │  • Safety tips             │
- * │                              │                            │
- * │  • Similar Ads grid          │                            │
+ * │  • Similar Ads grid          │                           │
  * └──────────────────────────────┴───────────────────────────┘
  * ─────────────────────────────────────────────────────────────────────────────
  */
@@ -340,6 +337,55 @@ function PdpGallery({
 }
 
 // ─────────────────────────────────────────────────────────────────
+// TITLE BLOCK — top of the left column (all viewports)
+// Badges + title + meta; price box is mobile-only (desktop shows it
+// in the sticky sidebar instead)
+// ─────────────────────────────────────────────────────────────────
+function TitleBlock({
+  ad, formattedPrice, formattedDate,
+}: {
+  ad: any; formattedPrice: string; formattedDate: string;
+}) {
+  return (
+    <div className="space-y-3">
+      <div className="flex flex-wrap gap-1.5">
+        {ad.is_featured && (
+          <span className="bg-amber-50 text-amber-600 text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg border border-amber-100">
+            À la une
+          </span>
+        )}
+        {ad.condition && (
+          <span className="bg-sky-50 text-sky-600 text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg border border-sky-100">
+            {ad.condition === "new" ? "Neuf" : "Occasion"}
+          </span>
+        )}
+      </div>
+      <h1 className="text-xl lg:text-2xl font-black text-gray-900 leading-snug">
+        {ad.title}
+      </h1>
+      {/* Mobile-only price — desktop price lives in the sticky sidebar */}
+      <div className="lg:hidden bg-amber-50/60 rounded-xl px-4 py-3">
+        <p className="text-[9px] font-black uppercase tracking-[0.18em] text-amber-700/60 mb-0.5">Prix</p>
+        <p className="text-[2rem] font-black text-amber-600 tabular-nums leading-none">{formattedPrice}</p>
+      </div>
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] text-gray-400 font-medium">
+        {ad.city && (
+          <span className="flex items-center gap-1">
+            <MapPin className="h-3 w-3" />{ad.city}
+          </span>
+        )}
+        <span className="flex items-center gap-1">
+          <Calendar className="h-3 w-3" />{formattedDate}
+        </span>
+        <span className="flex items-center gap-1">
+          <Eye className="h-3 w-3" />Annonce #{ad.id?.slice(0, 6).toUpperCase()}
+        </span>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────
 // SPECS GRID — 2-column professional specs table
 // ─────────────────────────────────────────────────────────────────
 interface SpecItem {
@@ -628,10 +674,10 @@ function SidebarCTA({
 // Title + Price + CTAs + Seller + Safety
 // ─────────────────────────────────────────────────────────────────
 function DesktopSidebar({
-  ad, formattedPrice, formattedDate, sellerName, sellerAvatar,
+  ad, formattedPrice, sellerName, sellerAvatar,
   memberSince, avgRating, totalReviews, isTrusted, sellerPhone, user,
 }: {
-  ad: any; formattedPrice: string; formattedDate: string;
+  ad: any; formattedPrice: string;
   sellerName: string; sellerAvatar: string | null;
   memberSince: string | number; avgRating: number; totalReviews: number;
   isTrusted: boolean; sellerPhone?: string; user: any;
@@ -639,53 +685,16 @@ function DesktopSidebar({
   return (
     <div className="sticky top-[72px] space-y-3">
 
-      {/* ── 1. TITLE + PRICE card ── */}
+      {/* ── 1. PRICE card ── */}
       <div className="bg-white border border-gray-100 rounded-xl p-5">
-        {/* Badge pills */}
-        <div className="flex flex-wrap gap-1.5 mb-3">
-          {ad.is_featured && (
-            <span className="bg-amber-50 text-amber-600 text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg border border-amber-100">
-              À la une
-            </span>
-          )}
-          {ad.condition && (
-            <span className="bg-sky-50 text-sky-600 text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg border border-sky-100">
-              {ad.condition === "new" ? "Neuf" : "Occasion"}
-            </span>
-          )}
-        </div>
-
-        {/* Title */}
-        <h1 className="text-[1.1rem] font-black text-gray-900 leading-snug mb-3">
-          {ad.title}
-        </h1>
-
-        {/* Price — large amber */}
-        <div className="bg-amber-50/60 rounded-xl px-4 py-3 mb-3">
-          <p className="text-[10px] font-black uppercase tracking-[0.18em] text-amber-700/70 mb-0.5">Prix</p>
-          <p className="text-[2rem] font-black text-amber-600 tabular-nums leading-none tracking-tight">
-            {formattedPrice}
-          </p>
-          <p className="text-[11px] text-amber-700/50 mt-1">Négociable avec le vendeur</p>
-        </div>
-
-        {/* Meta */}
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] text-gray-400 font-medium">
-          {ad.city && (
-            <span className="flex items-center gap-1">
-              <MapPin className="h-3 w-3" />{ad.city}
-            </span>
-          )}
-          <span className="flex items-center gap-1">
-            <Calendar className="h-3 w-3" />{formattedDate}
-          </span>
-          <span className="flex items-center gap-1">
-            <Eye className="h-3 w-3" />Annonce #{ad.id?.slice(0, 6).toUpperCase()}
-          </span>
-        </div>
+        <p className="text-[10px] font-black uppercase tracking-[0.18em] text-gray-400 mb-1">Prix</p>
+        <p className="text-[2rem] font-black text-gray-900 tabular-nums leading-none tracking-tight">
+          {formattedPrice}
+        </p>
+        <p className="text-[11px] text-gray-400 mt-1.5">Négociable avec le vendeur</p>
       </div>
 
-      {/* ── 2. CTA BUTTONS ── */}
+      {/* ── 2. CTA BUTTONS — WhatsApp / Phone / Message ── */}
       <div className="bg-white border border-gray-100 rounded-xl p-5">
         <SidebarCTA
           adId={ad.id}
@@ -696,6 +705,9 @@ function DesktopSidebar({
           formattedPrice={formattedPrice}
         />
       </div>
+
+      {/* ── 3. ADVERTISEMENT — directly under the contact buttons ── */}
+      <AdUnit format="rectangle" minHeight={280} className="my-0" />
 
       {/* ── 3. SELLER CARD ── */}
       <div className="bg-white border border-gray-100 rounded-xl p-5">
@@ -757,9 +769,6 @@ function DesktopSidebar({
           ))}
         </ul>
       </div>
-
-      {/* ── 4b. ADVERTISEMENT ── */}
-      <AdUnit format="rectangle" minHeight={280} className="my-0" />
 
       {/* ── 5. REPORT ── */}
       <button className="w-full flex items-center justify-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 transition-colors font-medium py-1">
@@ -915,6 +924,13 @@ export function AirbnbAdPageClient({
           ════════════════════════════════════════════════╝ */}
           <main className="lg:col-span-8 space-y-4 order-2 lg:order-1">
 
+            {/* ── TITLE + badges + meta (price shows here on mobile only) ── */}
+            <TitleBlock
+              ad={ad}
+              formattedPrice={formattedPrice}
+              formattedDate={formattedDate}
+            />
+
             {/* ── GALLERY ── */}
             <div className="bg-white border border-gray-100 rounded-xl p-4">
               <PdpGallery
@@ -924,33 +940,6 @@ export function AirbnbAdPageClient({
                 user={user}
                 onShare={() => shareAd(ad.title)}
               />
-            </div>
-
-            {/* ── MOBILE ONLY: Title + Price ── */}
-            <div className="lg:hidden bg-white border border-gray-100 rounded-xl p-5 space-y-3">
-              <div className="flex flex-wrap gap-1.5">
-                {ad.is_featured && (
-                  <span className="bg-amber-50 text-amber-600 text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg border border-amber-100">
-                    À la une
-                  </span>
-                )}
-                {ad.condition && (
-                  <span className="bg-sky-50 text-sky-600 text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg border border-sky-100">
-                    {ad.condition === "new" ? "Neuf" : "Occasion"}
-                  </span>
-                )}
-              </div>
-              <h1 className="text-xl font-black text-gray-900 leading-snug">{ad.title}</h1>
-              <div className="bg-amber-50/60 rounded-xl px-4 py-3">
-                <p className="text-[9px] font-black uppercase tracking-[0.18em] text-amber-700/60 mb-0.5">Prix</p>
-                <p className="text-[2rem] font-black text-amber-600 tabular-nums leading-none">{formattedPrice}</p>
-              </div>
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[11px] text-gray-400 font-medium">
-                {ad.city && (
-                  <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{ad.city}</span>
-                )}
-                <span className="flex items-center gap-1"><Calendar className="h-3 w-3" />{formattedDate}</span>
-              </div>
             </div>
 
             {/* ── SPECS GRID ── */}
@@ -1051,7 +1040,6 @@ export function AirbnbAdPageClient({
             <DesktopSidebar
               ad={ad}
               formattedPrice={formattedPrice}
-              formattedDate={formattedDate}
               sellerName={sellerName}
               sellerAvatar={sellerAvatar}
               memberSince={memberSince}
