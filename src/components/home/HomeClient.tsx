@@ -357,6 +357,24 @@ export default function HomeClient({
     selectedCity !== "Toutes les villes" ||
     selectedCategory !== "all";
 
+  // ── Feed filter params → forwarded to /api/ads for server-side filtering ──
+  const apiParams = useMemo(() => {
+    const p = new URLSearchParams();
+    if (selectedCategory !== "all") {
+      const cat = CATEGORIES_DATA.find((c) => c.id === selectedCategory);
+      p.set("category", selectedCategory);
+      if (cat) p.set("categoryLabel", cat.label);
+    }
+    if (selectedCity !== "Toutes les villes") p.set("city", selectedCity);
+    if (searchQuery.trim()) p.set("q", searchQuery.trim());
+    return p.toString();
+  }, [selectedCategory, selectedCity, searchQuery]);
+
+  const feedFiltersActive =
+    selectedCategory !== "all" ||
+    selectedCity !== "Toutes les villes" ||
+    searchQuery.trim() !== "";
+
   const selectedCategoryObj = useMemo(() => {
     return CATEGORIES_DATA.find((c) => c.id === selectedCategory) || CATEGORIES_DATA[0];
   }, [selectedCategory]);
@@ -557,8 +575,10 @@ export default function HomeClient({
             <InfiniteAdFeed
               initialAds={initialAds || []}
               initialHasMore={initialHasMore}
-              pageSize={12}
+              pageSize={10}
               filterKey={`${feedTab}|${selectedCategory}|${selectedCity}|${sortBy}|${searchQuery}`}
+              apiParams={apiParams}
+              fetchFirstPage={feedFiltersActive}
               emptyMessage="Aucune annonce ne correspond à votre recherche"
               emptySubtext="Modifiez vos critères ou explorez une autre ville."
             />

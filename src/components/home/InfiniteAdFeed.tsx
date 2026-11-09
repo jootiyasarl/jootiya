@@ -184,6 +184,16 @@ export interface InfiniteAdFeedProps {
   /** Forward virtualised grid props so layout stays consistent */
   emptyMessage?: string;
   emptySubtext?: string;
+  /**
+   * Extra query string appended to every /api/ads call
+   * (e.g. "category=electronics&city=Rabat&q=iphone").
+   */
+  apiParams?: string;
+  /**
+   * When true, page 1 is fetched client-side through /api/ads (used when
+   * homepage filters are active) instead of rendering the SSR initialAds.
+   */
+  fetchFirstPage?: boolean;
 }
 
 export function InfiniteAdFeed({
@@ -193,6 +203,8 @@ export function InfiniteAdFeed({
   filterKey = "",
   emptyMessage = "Aucune annonce trouvée",
   emptySubtext = "Modifiez vos critères ou revenez plus tard.",
+  apiParams = "",
+  fetchFirstPage = false,
 }: InfiniteAdFeedProps) {
   // ── State ─────────────────────────────────────────────────────────────────
   // Initial batch is handled by VirtualizedAdGrid — subsequent batches live here
@@ -201,6 +213,9 @@ export function InfiniteAdFeed({
   const [hasMore, setHasMore] = useState(initialHasMore);
   const [isFetchingState, setIsFetchingState] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
+  // Client-side page 1 — used only when feed filters are active
+  const [firstPage, setFirstPage] = useState<HomepageAdRow[] | null>(null);
+  const [firstPageLoading, setFirstPageLoading] = useState(false);
 
   // Ref used INSIDE the observer callback to prevent stale closure on state
   const isFetchingRef = useRef(false);
@@ -221,11 +236,36 @@ export function InfiniteAdFeed({
     // The parent re-fetches page 1 on the server — we just reset client state
     setBatches([]);
     setCurrentPage(1);
-    setHasMore(initialHasMore);
     setFetchError(null);
     isFetchingRef.current = false;
-    hasMoreRef.current = initialHasMore;
     currentPageRef.current = 1;
+
+    const suffix = apiParams ? `&${apiParams}` : "";
+
+    if (fetchFirstPage) {
+      // Filters active → fetch page 1 client-side with the same params
+      setFirstPage(null);
+      setFirstPageLoading(true);
+      fetch(`/api/ads?page=1&limit=${pageSize}${suffix}`, { cache: "no-store" })
+        .then((res) => {
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return res.json();
+        })
+        .then((json: AdsApiResponse) => {
+          setFirstPage(json.ads);
+          setHasMore(json.hasMore);
+          hasMoreRef.current = json.hasMore;
+        })
+        .catch((err: unknown) => {
+          console.error("[InfiniteAdFeed] first-page fetch error:", err);
+          setFetchError("Erreur de chargement. Vérifiez votre connexion.");
+        })
+        .finally(() => setFirstPageLoading(false));
+    } else {
+      setHasMore(initialHasMore);
+      hasMoreRef.current = initialHasMore;
+      setFirstPage(null);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterKey]);
 
@@ -241,8 +281,9 @@ export function InfiniteAdFeed({
     const nextPage = currentPageRef.current + 1;
 
     try {
+      const suffix = apiParams ? `&${apiParams}` : "";
       const res = await fetch(
-        `/api/ads?page=${nextPage}&limit=${pageSize}`,
+        `/api/ads?page=${nextPage}&limit=${pageSize}${suffix}`,
         {
           // next: { revalidate: 30 } only works in Server Components;
           // here we use browser cache headers instead
@@ -269,7 +310,7 @@ export function InfiniteAdFeed({
       isFetchingRef.current = false;
       setIsFetchingState(false);
     }
-  }, [pageSize]);
+  }, [pageSize, apiParams]);
 
   // ── IntersectionObserver sentinel ─────────────────────────────────────────
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -299,7 +340,14 @@ export function InfiniteAdFeed({
   }, [fetchNextPage]);
 
   // ── Map initial ads for the VirtualizedAdGrid ─────────────────────────────
-  const initialCards = initialAds.map(rowToCardAd);
+  // With filters active, page 1 comes from the client-side fetch instead of SSR.
+  const effectiveInitialAds = fetchFirstPage ? (firstPage ?? []) : initialAds;
+  const initialCards = effectiveInitialAds.map(rowToCardAd);
+
+  // ── Loading state while the filtered first page is being fetched ──────────
+  if (fetchFirstPage && firstPageLoading) {
+    return <BatchSkeleton count={pageSize} />;
+  }
 
   // ── Empty state (no initial ads at all) ───────────────────────────────────
   if (initialCards.length === 0 && batches.length === 0) {
@@ -336,11 +384,14 @@ export function InfiniteAdFeed({
           triggering a re-render of the entire VirtualizedAdGrid on each fetch.
       ──────────────────────────────────────────────────────────────────────── */}
       {batches.map((batch, batchIdx) => (
-        <FadeInBatch
-          key={`batch-${batchIdx}`}
-          ads={batch}
-          startIndex={initialCards.length + batchIdx * pageSize}
-        />
+        <React.Fragment key={`batch-${batchIdx}`}>
+          <FadeInBatch
+            ads={batch}
+            startIndex={initialCards.length + batchIdx * pageSize}
+          />
+          {/* In-feed ad: one AdSense unit after every batch of `pageSize` ads */}
+          <AdUnit format="auto" minHeight={250} className="mt-2" />
+        </React.Fragment>
       ))}
 
       {/* ── Loading skeleton ─────────────────────────────────────────────── */}

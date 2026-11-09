@@ -36,6 +36,15 @@ export async function GET(request: NextRequest) {
     // Cap at 48 to prevent accidental DB overload from crafted requests
     const limit = Math.min(48, Math.max(1, parseInt(rawLimit ?? "12", 10) || 12));
 
+    // ── Optional filters (homepage category/city/search) ────────────────────
+    const sanitize = (s: string | null) =>
+      (s ?? "").replace(/[%_,()"\\]/g, "").trim().slice(0, 80);
+
+    const category = sanitize(searchParams.get("category"));
+    const categoryLabel = sanitize(searchParams.get("categoryLabel"));
+    const city = sanitize(searchParams.get("city"));
+    const q = sanitize(searchParams.get("q"));
+
     // ── Supabase range: 0-indexed, inclusive on both ends ────────────────────
     // Page 1 → rows  0 … 11  (for limit=12)
     // Page 2 → rows 12 … 23
@@ -48,13 +57,29 @@ export async function GET(request: NextRequest) {
 
     const supabase = createSupabaseServerClient();
 
-    const { data, error } = await supabase
+    let query = supabase
       .from("ads")
       .select(AD_SELECT)
       .or("status.eq.active,status.eq.approved,status.eq.pending,status.is.null")
       .order("is_featured", { ascending: false })
-      .order("created_at", { ascending: false })
-      .range(from, toProbe); // fetch limit+1 rows
+      .order("created_at", { ascending: false });
+
+    // Category: match slug exactly OR label loosely (older rows may store names)
+    if (category) {
+      const orParts = [`category.eq.${category}`];
+      if (categoryLabel) orParts.push(`category.ilike.%${categoryLabel}%`);
+      query = query.or(orParts.join(","));
+    }
+
+    if (city) {
+      query = query.ilike("city", city);
+    }
+
+    if (q) {
+      query = query.or(`title.ilike.%${q}%,description.ilike.%${q}%`);
+    }
+
+    const { data, error } = await query.range(from, toProbe); // fetch limit+1 rows
 
     if (error) {
       console.error("[/api/ads] Supabase error:", error.message);
