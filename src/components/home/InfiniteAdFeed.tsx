@@ -328,7 +328,7 @@ export function InfiniteAdFeed({
 
       {/* ── In-feed ad slot — shown once the SSR batch has rendered ─────── */}
       {initialCards.length >= 6 && (
-        <AdUnit format="rectangle" minHeight={280} className="mt-6" />
+        <AdUnit format="auto" minHeight={280} className="mt-6" />
       )}
 
       {/* ── Segment 2: Dynamically appended pages ─────────────────────────

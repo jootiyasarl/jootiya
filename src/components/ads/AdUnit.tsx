@@ -49,7 +49,7 @@ export function AdUnit({
   }, []);
 
   return (
-    <div className={`w-full my-4 ${className}`} style={{ minHeight }}>
+    <div className={`ad-unit w-full my-4 ${className}`} style={{ minHeight }}>
       <ins
         className="adsbygoogle"
         style={{ display: "block" }}

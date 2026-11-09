@@ -690,7 +690,7 @@ export default function HomeClient({
           5b. ADVERTISEMENT — between listings feed and cities explorer
          ========================================================================= */}
       <section className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <AdUnit format="horizontal" minHeight={100} />
+        <AdUnit format="auto" minHeight={100} />
       </section>
 
 

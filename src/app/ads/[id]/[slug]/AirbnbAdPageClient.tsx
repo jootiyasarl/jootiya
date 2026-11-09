@@ -1033,7 +1033,7 @@ export function AirbnbAdPageClient({
             )}
 
             {/* ── ADVERTISEMENT (mobile + below similar ads) ── */}
-            <AdUnit format="rectangle" minHeight={280} className="my-0" />
+            <AdUnit format="auto" minHeight={280} className="my-0" />
 
             {/* ── REPORT ── */}
             <div className="pb-1">

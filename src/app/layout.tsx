@@ -100,6 +100,7 @@ export default function RootLayout({
           h1, h2, .logo-text { font-display: swap; }
           .adsbygoogle { display: block; }
           ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
+          .ad-unit:has(ins.adsbygoogle[data-ad-status="unfilled"]) { display: none !important; }
         `}} />
         <meta name="google-adsense-account" content="ca-pub-4945284817184050" />
 
