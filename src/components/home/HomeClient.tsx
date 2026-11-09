@@ -533,8 +533,8 @@ export default function HomeClient({
           </div>
         )}
 
-        {/* FEED TOP CONTROLS BAR: Responsive wrap on mobile */}
-        <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl sm:rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800/80 shadow-sm">
+        {/* FEED TOP CONTROLS BAR: sticky under navbar (OLX-style), wraps on mobile */}
+        <div className="sticky top-[64px] md:top-[72px] z-30 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 sm:p-3.5 rounded-2xl bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border border-zinc-200/80 dark:border-zinc-800 shadow-md">
           {/* Feed Tabs Switcher */}
           <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-hide no-scrollbar">
             <Button
@@ -698,28 +698,29 @@ export default function HomeClient({
       {/* =========================================================================
           6. MOROCCAN CITIES EXPLORER
          ========================================================================= */}
-      <section className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
-        <div className="rounded-3xl bg-white dark:bg-zinc-900 p-6 sm:p-8 border border-zinc-200/80 dark:border-zinc-800/80 shadow-sm">
-          <div className="flex items-center justify-between mb-6">
+      <section className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="rounded-2xl bg-white dark:bg-zinc-900 p-5 sm:p-6 border border-zinc-200/80 dark:border-zinc-800/80 shadow-sm">
+          <div className="flex items-center justify-between mb-5">
             <div>
-              <div className="inline-flex items-center gap-1.5 text-xs font-black text-orange-600 dark:text-orange-400 uppercase tracking-wider mb-1.5">
-                <Compass className="h-4 w-4" />
+              <div className="inline-flex items-center gap-1.5 text-[11px] font-black text-orange-600 dark:text-orange-400 uppercase tracking-wider mb-1">
+                <Compass className="h-3.5 w-3.5" />
                 Marché Local
               </div>
-              <h2 className="text-xl sm:text-2xl font-black text-zinc-900 dark:text-white tracking-tight">
+              <h2 className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white tracking-tight">
                 Explorez les offres par ville
               </h2>
             </div>
             <Link
               href="/cities"
-              className="text-xs sm:text-sm font-bold text-orange-600 dark:text-orange-400 hover:text-orange-700 flex items-center gap-1.5 uppercase tracking-wider transition-colors"
+              className="text-xs font-bold text-orange-600 dark:text-orange-400 hover:text-orange-700 flex items-center gap-1 uppercase tracking-wider transition-colors"
             >
               <span>Toutes les villes</span>
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-4">
+          {/* Compact OLX-style city links */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
             {[
               { name: "Casablanca", icon: Building2, count: "Économie & Tech" },
               { name: "Rabat", icon: Landmark, count: "Capitale & Pro" },
@@ -729,6 +730,7 @@ export default function HomeClient({
               { name: "Agadir", icon: Waves, count: "Souss & Mer" },
             ].map((city) => {
               const Icon = city.icon;
+              const isSelected = selectedCity === city.name;
               return (
                 <button
                   key={city.name}
@@ -737,23 +739,21 @@ export default function HomeClient({
                     setSelectedCity(city.name);
                     listingsSectionRef.current?.scrollIntoView({ behavior: "smooth" });
                   }}
-                  className={`group p-4 sm:p-5 rounded-2xl border text-left flex flex-col justify-between transition-all duration-300 cursor-pointer ${
-                    selectedCity === city.name
-                      ? "bg-orange-500 text-white border-orange-500 shadow-md shadow-orange-500/25 scale-105"
-                      : "bg-zinc-50 dark:bg-zinc-800/40 border-zinc-200/80 dark:border-zinc-800 hover:border-orange-500/50 hover:bg-orange-50/50 dark:hover:bg-orange-950/20 hover:shadow-sm hover:-translate-y-1"
+                  className={`group flex items-center gap-2.5 px-3 py-2.5 rounded-xl border text-left transition-all duration-200 cursor-pointer ${
+                    isSelected
+                      ? "bg-orange-500 border-orange-500 text-white shadow-md shadow-orange-500/25"
+                      : "bg-zinc-50 dark:bg-zinc-800/40 border-zinc-200/70 dark:border-zinc-800 hover:border-orange-400/60 hover:bg-orange-50/60 dark:hover:bg-orange-950/20"
                   }`}
                 >
-                  <div className="mb-2 group-hover:scale-110 transition-transform">
-                    <Icon className={`h-6 w-6 ${selectedCity === city.name ? "text-white" : "text-orange-500 dark:text-orange-400"}`} />
-                  </div>
-                  <div>
-                    <h3 className={`text-sm font-black transition-colors ${selectedCity === city.name ? "text-white" : "text-zinc-900 dark:text-white group-hover:text-orange-600"}`}>
+                  <Icon className={`h-4 w-4 shrink-0 ${isSelected ? "text-white" : "text-orange-500 dark:text-orange-400"}`} />
+                  <span className="min-w-0">
+                    <span className={`block text-[13px] font-bold truncate ${isSelected ? "text-white" : "text-zinc-800 dark:text-zinc-100 group-hover:text-orange-600"}`}>
                       {city.name}
-                    </h3>
-                    <p className={`text-[11px] font-semibold truncate ${selectedCity === city.name ? "text-white/80" : "text-zinc-500 dark:text-zinc-400"}`}>
+                    </span>
+                    <span className={`block text-[10px] font-medium truncate ${isSelected ? "text-white/80" : "text-zinc-400 dark:text-zinc-500"}`}>
                       {city.count}
-                    </p>
-                  </div>
+                    </span>
+                  </span>
                 </button>
               );
             })}

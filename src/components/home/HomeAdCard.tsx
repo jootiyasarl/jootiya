@@ -73,7 +73,7 @@ function CardImage({ src, alt, priority, isFeatured, isSold, adId }: CardImagePr
      * aspect-[4/3] reserves height before image loads → zero CLS.
      * overflow-hidden clips the scale(1.05) hover effect cleanly.
      */
-    <div className="relative w-full aspect-[4/3] overflow-hidden bg-gray-100 rounded-t-2xl shrink-0">
+    <div className="relative w-full aspect-[4/3] overflow-hidden bg-gray-100 rounded-t-xl shrink-0">
 
       {showImage ? (
         <>
@@ -162,7 +162,7 @@ function CardImage({ src, alt, priority, isFeatured, isSold, adId }: CardImagePr
       {/* ── Amber accent line — slides in from left on hover ── */}
       <div
         aria-hidden="true"
-        className="absolute bottom-0 left-0 right-0 h-[2px] bg-amber-500 origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 z-10"
+        className="absolute bottom-0 left-0 right-0 h-[2px] bg-orange-500 origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-300 z-10"
       />
     </div>
   );
@@ -179,9 +179,9 @@ interface CardInfoProps {
 
 function CardInfo({ price, title, location, createdAt }: CardInfoProps) {
   return (
-    <div className="px-2.5 pt-2 pb-2.5 flex flex-col gap-0.5">
-      {/* Price — amber, most visually dominant element in info area */}
-      <p className="text-sm sm:text-[15px] font-bold text-amber-600 tracking-tight leading-tight truncate">
+    <div className="px-3 pt-2.5 pb-3 flex flex-col gap-1">
+      {/* Price — bold dark like OLX, most dominant element */}
+      <p className="text-[15px] sm:text-base font-extrabold text-zinc-900 dark:text-zinc-50 tracking-tight leading-tight truncate">
         {price}
       </p>
 
@@ -189,21 +189,21 @@ function CardInfo({ price, title, location, createdAt }: CardInfoProps) {
        * Title — 2-line clamp with min-height reserves space even when
        * title is very short, keeping card heights consistent in the grid.
        */}
-      <h3 className="text-xs sm:text-[13px] font-medium text-gray-800 leading-snug line-clamp-2 min-h-[2.5em]">
+      <h3 className="text-[13px] font-medium text-zinc-600 dark:text-zinc-300 leading-snug line-clamp-2 min-h-[2.5em]">
         {title}
       </h3>
 
       {/* Meta row: location + date in a single compact line */}
       <div className="flex items-center gap-1 mt-0.5 min-w-0">
-        <MapPin className="h-2.5 w-2.5 shrink-0 text-gray-400" aria-hidden="true" />
-        <span className="text-[10px] text-gray-400 truncate">
+        <MapPin className="h-3 w-3 shrink-0 text-zinc-400" aria-hidden="true" />
+        <span className="text-[11px] text-zinc-400 dark:text-zinc-500 truncate">
           {location || "Maroc"}
         </span>
         {createdAt && (
           <>
-            <span aria-hidden="true" className="text-gray-300 text-[10px]">·</span>
+            <span aria-hidden="true" className="text-zinc-300 dark:text-zinc-600 text-[11px]">·</span>
             <time
-              className="text-[10px] text-gray-400 shrink-0 truncate max-w-[64px]"
+              className="text-[11px] text-zinc-400 dark:text-zinc-500 shrink-0 truncate max-w-[72px]"
               suppressHydrationWarning
             >
               {createdAt}
@@ -243,12 +243,12 @@ export function HomeAdCard({
         href={linkHref}
         aria-label={`Voir l'annonce : ${ad.title}`}
         className={cn(
-          "flex flex-col overflow-hidden rounded-2xl bg-white",
-          "border border-gray-100 shadow-sm",
-          "hover:shadow-md hover:-translate-y-0.5",
+          "flex flex-col overflow-hidden rounded-xl bg-white dark:bg-zinc-900",
+          "border border-zinc-200/80 dark:border-zinc-800",
+          "hover:shadow-lg hover:border-zinc-300 dark:hover:border-zinc-700 hover:-translate-y-0.5",
           "transition-all duration-200 ease-out",
           // Outline only on keyboard focus (not mouse click)
-          "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-500"
+          "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500"
         )}
       >
         <CardImage
@@ -280,15 +280,15 @@ export function ProductCardSkeleton() {
   return (
     <div
       aria-hidden="true"
-      className="flex flex-col overflow-hidden rounded-2xl bg-white border border-gray-100 shadow-sm"
+      className="flex flex-col overflow-hidden rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800"
     >
       {/* Image area — same aspect ratio as real card */}
-      <div className="aspect-[4/3] w-full overflow-hidden rounded-t-2xl bg-gray-200 relative">
+      <div className="aspect-[4/3] w-full overflow-hidden rounded-t-xl bg-gray-200 relative">
         <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-[shimmer_1.4s_ease-in-out_infinite]" />
       </div>
 
-      {/* Info area — matches px-2.5 pt-2 pb-2.5 of real card */}
-      <div className="px-2.5 pt-2 pb-2.5 flex flex-col gap-2">
+      {/* Info area — matches px-3 pt-2.5 pb-3 of real card */}
+      <div className="px-3 pt-2.5 pb-3 flex flex-col gap-1.5">
         {/* Price line */}
         <div className="h-4 w-2/5 rounded-md bg-gray-200 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%] animate-[shimmer_1.4s_ease-in-out_infinite]" />
