@@ -27,6 +27,8 @@
 import React, { Suspense } from "react";
 import { SessionSync } from "@/components/auth/SessionSync";
 import HomeClient, { type HomepageAdRow } from "@/components/home/HomeClient";
+import { StatsBar } from "@/components/home/StatsBar";
+import { MOROCCAN_CITIES } from "@/lib/constants/cities";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 
 // ISR: re-generate in background every 60 seconds; serve stale from edge cache
@@ -86,6 +88,23 @@ export default async function Home({
   // Slice off the probe row — only pass exactly INITIAL_PAGE_SIZE to client
   const initialAds = initialHasMore ? rows.slice(0, INITIAL_PAGE_SIZE) : rows;
 
+  // ── Social-proof counters (cheap head-only COUNT queries, in parallel) ──
+  const [adsCountRes, usersCountRes] = await Promise.all([
+    supabase
+      .from("ads")
+      .select("*", { count: "exact", head: true })
+      .or("status.eq.active,status.eq.approved,status.eq.pending,status.is.null"),
+    supabase.from("profiles").select("*", { count: "exact", head: true }),
+  ]);
+
+  const statsBar = (
+    <StatsBar
+      adsCount={adsCountRes.count ?? 0}
+      usersCount={usersCountRes.count ?? 0}
+      citiesCount={MOROCCAN_CITIES.reduce((n, r) => n + r.cities.length, 0)}
+    />
+  );
+
   // ── Server-side distance enrichment (when ?lat=&lng= present) ────────────
   let enrichedAds = initialAds;
   if (lat != null && lng != null) {
@@ -112,6 +131,7 @@ export default async function Home({
         initialParams={resolvedParams}
         initialAds={enrichedAds}
         initialHasMore={initialHasMore}
+        statsBar={statsBar}
       />
     </Suspense>
   );
