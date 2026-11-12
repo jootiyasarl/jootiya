@@ -57,6 +57,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { AdUnit } from "@/components/ads/AdUnit";
+import { FavoriteButton } from "@/components/ads/FavoriteButton";
 
 // ─────────────────────────────────────────────────────────────────
 // Types
@@ -333,7 +334,7 @@ function SidebarCTA({
 
   const clean = sellerPhone?.replace(/\D/g, "") || "";
   const wa    = clean ? toWaNumber(clean) : "";
-  const waMsg = `Bonjour, je suis intéressé par votre annonce "${adTitle}" à ${formattedPrice}. Est-elle toujours disponible ?`;
+  const waMsg = `Bonjour, je suis intéressé par votre annonce "${adTitle}" à ${formattedPrice}. Je souhaite l'acheter — est-elle toujours disponible ?`;
 
   const handleWa = () => {
     if (!wa) { toast.error("Numéro non disponible."); return; }
@@ -359,41 +360,20 @@ function SidebarCTA({
 
   return (
     <div className="space-y-2.5">
-      {/* WhatsApp — full green */}
+      {/* Acheter — primary action, opens WhatsApp with purchase intent */}
       <button
         onClick={handleWa}
-        className="w-full h-[52px] bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-black text-[15px] rounded-xl flex items-center justify-center gap-2.5 transition-all shadow-sm"
+        className="w-full h-[52px] bg-orange-500 hover:bg-orange-600 active:scale-[0.98] text-white font-black text-[15px] rounded-xl flex items-center justify-center gap-2.5 transition-all shadow-sm"
       >
         <WaIcon className="w-5 h-5" />
-        Contacter via WhatsApp
+        Acheter
       </button>
 
-      {/* Phone button */}
-      {clean ? (
-        showPhone ? (
-          <a
-            href={`tel:${sellerPhone}`}
-            className="w-full h-[52px] bg-gray-900 hover:bg-gray-800 active:scale-[0.98] text-white font-black text-[15px] rounded-xl flex items-center justify-center gap-2.5 transition-all shadow-sm"
-          >
-            <Phone className="h-5 w-5" />
-            {sellerPhone}
-          </a>
-        ) : (
-          <button
-            onClick={() => setShowPhone(true)}
-            className="w-full h-[52px] bg-gray-900 hover:bg-gray-800 active:scale-[0.98] text-white font-black text-[15px] rounded-xl flex items-center justify-center gap-2.5 transition-all shadow-sm"
-          >
-            <Phone className="h-5 w-5" />
-            Afficher le numéro
-          </button>
-        )
-      ) : null}
-
-      {/* Message — outline */}
+      {/* Chat — internal messaging dialog */}
       <Dialog open={msgOpen} onOpenChange={setMsgOpen}>
-        <DialogTrigger className="w-full h-11 border-2 border-gray-200 hover:border-gray-300 hover:bg-gray-50 active:scale-[0.98] text-gray-700 font-bold text-sm rounded-xl flex items-center justify-center gap-2 transition-all">
-          <MessageCircle className="h-4 w-4" />
-          Envoyer un message
+        <DialogTrigger className="w-full h-[52px] bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-black text-[15px] rounded-xl flex items-center justify-center gap-2.5 transition-all shadow-sm">
+          <MessageCircle className="h-5 w-5" />
+          Chat
         </DialogTrigger>
         <DialogContent className="sm:max-w-md bg-white rounded-3xl border-gray-100 shadow-2xl p-0 overflow-hidden gap-0 z-[99999]">
           <DialogHeader className="p-6 pb-3 text-left">
@@ -436,13 +416,104 @@ function SidebarCTA({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Phone — compact reveal */}
+      {clean && (
+        showPhone ? (
+          <a
+            href={`tel:${sellerPhone}`}
+            className="w-full h-11 bg-gray-900 hover:bg-gray-800 active:scale-[0.98] text-white font-bold text-sm rounded-xl flex items-center justify-center gap-2 transition-all"
+          >
+            <Phone className="h-4 w-4" />
+            {sellerPhone}
+          </a>
+        ) : (
+          <button
+            onClick={() => setShowPhone(true)}
+            className="w-full h-11 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-600 font-bold text-sm rounded-xl flex items-center justify-center gap-2 transition-all"
+          >
+            <Phone className="h-4 w-4" />
+            Afficher le numéro
+          </button>
+        )
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────
+// SELLER CARD — shared between desktop sidebar and mobile column
+// ─────────────────────────────────────────────────────────────────
+function SellerCard({
+  sellerId, sellerName, sellerAvatar, memberSince,
+  avgRating, totalReviews, isTrusted, sellerPhone,
+}: {
+  sellerId: string; sellerName: string; sellerAvatar: string | null;
+  memberSince: string | number; avgRating: number; totalReviews: number;
+  isTrusted: boolean; sellerPhone?: string;
+}) {
+  const phoneVerified = !!sellerPhone?.replace(/\D/g, "");
+  return (
+    <div className="bg-white border border-gray-100 rounded-xl p-5">
+      <h2 className="text-xs font-black text-gray-500 uppercase tracking-widest mb-3">Vendeur</h2>
+      <div className="flex items-center gap-3">
+        <SellerAvatar avatar={sellerAvatar} name={sellerName} size="lg" />
+        <div className="min-w-0 flex-1">
+          <p className="font-black text-gray-900 text-[15px] truncate">{sellerName}</p>
+          <p className="text-xs text-gray-400 flex items-center gap-1 mt-0.5">
+            <Clock className="h-3 w-3" />
+            Membre depuis {memberSince}
+          </p>
+          {totalReviews > 0 && (
+            <div className="flex items-center gap-1 mt-1">
+              {[1, 2, 3, 4, 5].map(s => (
+                <Star
+                  key={s}
+                  className={cn("h-3 w-3", s <= Math.round(avgRating) ? "fill-amber-400 text-amber-400" : "text-gray-200")}
+                />
+              ))}
+              <span className="text-[11px] text-gray-500 ml-1 font-semibold">
+                {avgRating.toFixed(1)} ({totalReviews})
+              </span>
+            </div>
+          )}
+        </div>
+        {isTrusted && (
+          <span className="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase px-2 py-1 rounded-lg border border-emerald-100 shrink-0">
+            <CheckCircle2 className="h-3 w-3" />Vérifié
+          </span>
+        )}
+      </div>
+
+      {/* Verification chips */}
+      <div className="flex flex-wrap gap-1.5 mt-3">
+        {phoneVerified && (
+          <span className="inline-flex items-center gap-1 bg-sky-50 text-sky-700 text-[10px] font-bold px-2 py-1 rounded-lg border border-sky-100">
+            <Phone className="h-2.5 w-2.5" />Téléphone vérifié
+          </span>
+        )}
+        {totalReviews > 0 && (
+          <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-700 text-[10px] font-bold px-2 py-1 rounded-lg border border-amber-100">
+            <Star className="h-2.5 w-2.5 fill-amber-400 text-amber-400" />
+            {totalReviews} avis
+          </span>
+        )}
+      </div>
+
+      <Link
+        href={`/seller/${sellerId}`}
+        className="mt-4 w-full h-9 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-600 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-all"
+      >
+        <User className="h-3.5 w-3.5" />
+        Acheter avec le profil du vendeur
+      </Link>
     </div>
   );
 }
 
 // ─────────────────────────────────────────────────────────────────
 // SIDEBAR — Right column (sticky)
-// Title + Price + CTAs + Seller + Safety
+// Price + CTAs + AdSense + Seller + Safety
 // ─────────────────────────────────────────────────────────────────
 function DesktopSidebar({
   ad, formattedPrice, sellerName, sellerAvatar,
@@ -480,45 +551,17 @@ function DesktopSidebar({
       {/* ── 3. ADVERTISEMENT — directly under the contact buttons ── */}
       <AdUnit format="rectangle" minHeight={280} className="my-0" />
 
-      {/* ── 3. SELLER CARD ── */}
-      <div className="bg-white border border-gray-100 rounded-xl p-5">
-        <h2 className="text-xs font-black text-gray-500 uppercase tracking-widest mb-3">Vendeur</h2>
-        <div className="flex items-center gap-3">
-          <SellerAvatar avatar={sellerAvatar} name={sellerName} size="lg" />
-          <div className="min-w-0 flex-1">
-            <p className="font-black text-gray-900 text-[15px] truncate">{sellerName}</p>
-            <p className="text-xs text-gray-400 flex items-center gap-1 mt-0.5">
-              <Clock className="h-3 w-3" />
-              Membre depuis {memberSince}
-            </p>
-            {totalReviews > 0 && (
-              <div className="flex items-center gap-1 mt-1">
-                {[1, 2, 3, 4, 5].map(s => (
-                  <Star
-                    key={s}
-                    className={cn("h-3 w-3", s <= Math.round(avgRating) ? "fill-amber-400 text-amber-400" : "text-gray-200")}
-                  />
-                ))}
-                <span className="text-[11px] text-gray-500 ml-1 font-semibold">
-                  {avgRating.toFixed(1)} ({totalReviews})
-                </span>
-              </div>
-            )}
-          </div>
-          {isTrusted && (
-            <span className="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase px-2 py-1 rounded-lg border border-emerald-100 shrink-0">
-              <CheckCircle2 className="h-3 w-3" />Vérifié
-            </span>
-          )}
-        </div>
-        <Link
-          href={`/seller/${ad.seller_id}`}
-          className="mt-4 w-full h-9 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 text-gray-600 font-bold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-all"
-        >
-          <User className="h-3.5 w-3.5" />
-          Voir le profil du vendeur
-        </Link>
-      </div>
+      {/* ── 4. SELLER CARD ── */}
+      <SellerCard
+        sellerId={ad.seller_id}
+        sellerName={sellerName}
+        sellerAvatar={sellerAvatar}
+        memberSince={memberSince}
+        avgRating={avgRating}
+        totalReviews={totalReviews}
+        isTrusted={isTrusted}
+        sellerPhone={sellerPhone}
+      />
 
       {/* ── 4. SAFETY TIPS ── */}
       <div className="bg-amber-50 border border-amber-100 rounded-xl p-4">
@@ -566,7 +609,20 @@ function RelatedAdCard({ ad }: { ad: any }) {
 
   return (
     <Link href={`/ads/${ad.id}/${slug}`} className="group block">
-      <div className="bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+      <div className="relative bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
+        <div className="absolute right-1.5 top-1.5 z-20">
+          <FavoriteButton
+            adId={ad.id}
+            className={cn(
+              "h-7 w-7 rounded-full",
+              "bg-white/80 backdrop-blur-sm border border-white/50 shadow-sm",
+              "flex items-center justify-center",
+              "text-gray-500 hover:text-rose-500 hover:bg-white",
+              "transition-all duration-200 active:scale-90 hover:scale-110",
+              "relative before:absolute before:inset-[-8px]"
+            )}
+          />
+        </div>
         <div className="relative aspect-[4/3] w-full overflow-hidden bg-gray-100">
           {canOptimise(src) ? (
             <Image src={src} alt={ad.title} fill loading="lazy"
@@ -729,30 +785,17 @@ export function AirbnbAdPageClient({
             <LocationSection city={ad.city} neighborhood={ad.neighborhood} ad={ad} />
 
             {/* ── MOBILE: Seller card ── */}
-            <div className="lg:hidden bg-white border border-gray-100 rounded-xl p-5">
-              <h2 className="text-xs font-black text-gray-500 uppercase tracking-widest mb-3">Vendeur</h2>
-              <div className="flex items-center gap-3">
-                <SellerAvatar avatar={sellerAvatar} name={sellerName} size="lg" />
-                <div className="min-w-0 flex-1">
-                  <p className="font-black text-gray-900 text-[15px] truncate">{sellerName}</p>
-                  <p className="text-xs text-gray-400 flex items-center gap-1 mt-0.5">
-                    <Clock className="h-3 w-3" />Membre depuis {memberSince}
-                  </p>
-                  {totalReviews > 0 && (
-                    <div className="flex items-center gap-1 mt-1">
-                      {[1,2,3,4,5].map(s => (
-                        <Star key={s} className={cn("h-3 w-3", s <= Math.round(avgRating) ? "fill-amber-400 text-amber-400" : "text-gray-200")} />
-                      ))}
-                      <span className="text-[11px] text-gray-500 ml-1">{avgRating.toFixed(1)} ({totalReviews})</span>
-                    </div>
-                  )}
-                </div>
-                {isTrusted && (
-                  <span className="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase px-2 py-1 rounded-lg border border-emerald-100 shrink-0">
-                    <CheckCircle2 className="h-3 w-3" />Vérifié
-                  </span>
-                )}
-              </div>
+            <div className="lg:hidden">
+              <SellerCard
+                sellerId={ad.seller_id}
+                sellerName={sellerName}
+                sellerAvatar={sellerAvatar}
+                memberSince={memberSince}
+                avgRating={avgRating}
+                totalReviews={totalReviews}
+                isTrusted={isTrusted}
+                sellerPhone={sellerPhone}
+              />
             </div>
 
             {/* ── MOBILE: CTA ── */}
@@ -773,7 +816,7 @@ export function AirbnbAdPageClient({
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-base font-black text-gray-900 flex items-center gap-2">
                     <span className="h-1 w-4 rounded-full bg-orange-500 inline-block" />
-                    Annonces similaires
+                    Vous pourriez également être intéressé par
                   </h2>
                   {ad.category && (
                     <Link
