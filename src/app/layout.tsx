@@ -12,7 +12,6 @@ import { Suspense } from "react";
 import { ThemeProvider } from "@/components/theme-provider";
 import { PageViewTracker } from "@/components/analytics/PageViewTracker";
 import { AuthProvider } from "@/components/auth/AuthProvider";
-import FlyonuiInit from "@/components/FlyonuiInit";
 
 const tajawal = Tajawal({
   variable: "--font-tajawal",
@@ -164,7 +163,6 @@ export default function RootLayout({
         <h1 className="sr-only">Jootiya : Petites annonces au Maroc - Achat et vente en toute securite</h1>
 
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <FlyonuiInit />
           <Suspense fallback={null}>
             <PageViewTracker />
           </Suspense>
