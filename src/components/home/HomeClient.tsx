@@ -171,13 +171,10 @@ export default function HomeClient({
   initialParams,
   initialAds,
   initialHasMore = false,
-  statsBar,
 }: {
   initialParams: HomeInitialParams;
   initialAds?: HomepageAdRow[];
   initialHasMore?: boolean;
-  /** Server-rendered social-proof strip (StatsBar) — zero client JS */
-  statsBar?: React.ReactNode;
 }) {
   const [ads, setAds] = useState<HomepageAd[]>(() =>
     (initialAds || []).map(mapHomepageAdRow)
@@ -437,9 +434,6 @@ export default function HomeClient({
           })}
         </div>
       </section>
-
-      {/* Social-proof stats strip (server-rendered, no client JS) */}
-      {statsBar}
 
       {/* =========================================================================
           3. VIP SPOTLIGHT "À LA UNE" CAROUSEL
