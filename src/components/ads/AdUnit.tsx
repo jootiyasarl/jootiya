@@ -1,6 +1,15 @@
 "use client";
 
-import { useEffect } from "react";
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ * AdUnit — Generic Google AdSense ad unit
+ * ─────────────────────────────────────────────────────────────────────────────
+ * The adsbygoogle.js script is loaded ONCE in src/app/layout.tsx.
+ * This component only renders the <ins> slot and pushes a fill request.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
+import { useEffect, useId } from "react";
 
 declare global {
   interface Window {
@@ -9,47 +18,42 @@ declare global {
 }
 
 const DEFAULT_AD_CLIENT = "ca-pub-4945284817184050";
-const DEFAULT_AD_SLOT = "1125687784";
+const DEFAULT_AD_SLOT   = "1125687784";
 
 export type AdFormat = "auto" | "rectangle" | "horizontal" | "vertical" | "fluid";
 
 interface AdUnitProps {
-  /** AdSense ad slot ID. Defaults to the site's main display unit. */
   slot?: string;
-  /** AdSense ad format. */
   format?: AdFormat;
-  /** Extra classes on the outer wrapper (margins, width…). */
   className?: string;
-  /** Minimum height (px) to reduce CLS while the ad loads. */
   minHeight?: number;
-  /** data-full-width-responsive — defaults to true. */
   fullWidthResponsive?: boolean;
 }
 
-/**
- * Generic Google AdSense ad unit.
- *
- * The adsbygoogle.js script is loaded once in the root layout
- * (src/app/layout.tsx). This component only renders the <ins> slot and
- * pushes a fill request to window.adsbygoogle on mount.
- */
 export function AdUnit({
   slot = DEFAULT_AD_SLOT,
   format = "auto",
   className = "",
-  minHeight = 250,
+  minHeight = 100,
   fullWidthResponsive = true,
 }: AdUnitProps) {
+  const uid = useId();
+
   useEffect(() => {
     try {
       (window.adsbygoogle = window.adsbygoogle || []).push({});
     } catch (err) {
-      console.error("AdSense Error:", err);
+      console.warn("[AdSense] push failed:", err);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
-    <div className={`ad-unit w-full my-4 ${className}`} style={{ minHeight }}>
+    <div
+      key={uid}
+      className={`ad-unit w-full ${className}`}
+      style={{ minHeight }}
+    >
       <ins
         className="adsbygoogle"
         style={{ display: "block" }}
