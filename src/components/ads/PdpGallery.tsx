@@ -81,6 +81,7 @@ export function PdpGallery({
     <>
       {/* ── Hero image — 4:3 aspect, zoom cursor ── */}
       <div
+        data-pdp-hero
         className="relative w-full bg-gray-100 overflow-hidden group aspect-[4/3] cursor-zoom-in rounded-xl"
         onTouchStart={onTS} onTouchEnd={onTE}
         onClick={() => setLightbox(true)}
