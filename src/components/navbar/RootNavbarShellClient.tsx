@@ -33,6 +33,9 @@ export function RootNavbarShellClient({ children, navbar, footer }: RootNavbarSh
     pathname?.startsWith("/forgot-password") ||
     pathname?.startsWith("/auth/reset-password");
 
+  // Pages that manage their own full-width layout — no global SidebarAd banners
+  const isFullWidthPath = pathname === "/" || pathname?.startsWith("/ads/");
+
   return (
     <>
       {!isSpecialPath && (
@@ -53,7 +56,7 @@ export function RootNavbarShellClient({ children, navbar, footer }: RootNavbarSh
         >
           {!isSpecialPath ? (
             <div className="max-w-[1440px] mx-auto px-2 min-[360px]:px-3 sm:px-4 md:px-8 relative">
-              {pathname === "/" ? (
+              {isFullWidthPath ? (
                 <div className="w-full">{children}</div>
               ) : (
                 <div className="flex flex-col 2xl:flex-row gap-6 2xl:gap-8 items-start relative">
