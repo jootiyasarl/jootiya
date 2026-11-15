@@ -3,16 +3,17 @@
 /**
  * AirbnbAdPageClient — Ad Details Page (jootiya.com)
  *
- * LAYOUT (2 columns on desktop, stacked on mobile):
- * ┌──────────────────────────────┬───────────────────────────┐
- * │  LEFT (~70%)                 │  RIGHT (~30%)             │
- * │  • Card A: Ad details        │  • Seller info card       │
- * │    (gallery + ribbon + meta  │  • AdSense 300x600        │
- * │     + price ribbon + desc /  │    (sticky top-4)         │
- * │     overview split)          │                           │
- * │  • Card B: Location map      │                           │
- * │  • Card C: Similar ads       │                           │
- * └──────────────────────────────┴───────────────────────────┘
+ * LAYOUT (desktop):
+ *  LEFT  col-span-8  → Gallery · Price · Description · Specs chips · Social share · Map · Similar
+ *  RIGHT col-span-4  → Seller card (sticky) · AdSense
+ *
+ * IMPROVEMENTS (v2):
+ *  - Full-bleed gallery with no card wrapper (image-first)
+ *  - Floating price ribbon with gradient background
+ *  - Spec chips instead of plain key/value list
+ *  - Seller card with gradient header + prominent CTAs
+ *  - Refined breadcrumb bar
+ *  - Mobile sticky bar preserved
  */
 
 import { useState, useRef, useCallback } from "react";
@@ -23,17 +24,15 @@ import dynamic from "next/dynamic";
 import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
 
-// Leaflet requires window/document — client-only
 const AdMap = dynamic(() => import("@/components/ads/AdMap"), {
   ssr: false,
   loading: () => (
-    <div className="h-[220px] w-full bg-gray-100 animate-pulse rounded-md flex items-center justify-center">
+    <div className="h-[220px] w-full bg-gray-100 animate-pulse rounded-xl flex items-center justify-center">
       <MapPin className="h-6 w-6 text-gray-300 animate-bounce" />
     </div>
   ),
 });
 
-// Gallery is code-split but still SSR'd (default ssr: true)
 const PdpGallery = dynamic(() =>
   import("@/components/ads/PdpGallery").then((m) => m.PdpGallery)
 );
@@ -42,7 +41,8 @@ import { AdSenseSidebar } from "@/components/ads/AdSenseSidebar";
 import {
   MapPin, Calendar, Tag, Eye, Flag, Share2,
   ChevronRight, ChevronLeft, Phone, MessageCircle,
-  Send, Loader2, User, CheckCircle2, Mail, Maximize2,
+  Send, Loader2, User, CheckCircle2, Mail, Shield,
+  Gauge, Car, Layers, Wrench, Hash,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -54,9 +54,9 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 
-// ─────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
 // Types
-// ─────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
 interface AirbnbAdPageClientProps {
   ad: any;
   images: string[];
@@ -73,9 +73,9 @@ interface AirbnbAdPageClientProps {
   similarAds?: any[];
 }
 
-// ─────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
 // Utilities
-// ─────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
 async function shareAd(title: string) {
   const url = window.location.href;
   if (navigator.share) {
@@ -110,9 +110,9 @@ function maskPhone(raw?: string) {
   return `${c.slice(0, 4)} XX XX XX`;
 }
 
-// ─────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
 // Social share icons (inline SVG — Lucide has no brand icons)
-// ─────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
 function FacebookIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden="true">
@@ -142,56 +142,102 @@ function WhatsAppIcon({ className }: { className?: string }) {
   );
 }
 
-// ─────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// Spec chip — icon + label + value pill
+// ─────────────────────────────────────────────────────────────────────────────
+function SpecChip({
+  label,
+  value,
+  icon: Icon,
+}: {
+  label: string;
+  value: string;
+  icon: React.ElementType;
+}) {
+  return (
+    <div className="flex items-center gap-2 bg-gray-50 border border-gray-100 rounded-xl px-3 py-2.5 min-w-0">
+      <span className="h-7 w-7 rounded-lg bg-white border border-gray-200 flex items-center justify-center shrink-0 shadow-sm">
+        <Icon className="h-3.5 w-3.5 text-orange-500" />
+      </span>
+      <div className="min-w-0">
+        <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider leading-none mb-0.5">
+          {label}
+        </p>
+        <p className="text-[12px] font-bold text-gray-800 truncate leading-tight">
+          {value}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// Map field name → Lucide icon
+function specIcon(label: string): React.ElementType {
+  const l = label.toLowerCase();
+  if (l.includes("catég")) return Tag;
+  if (l.includes("état") || l.includes("condition")) return Shield;
+  if (l.includes("marque")) return Layers;
+  if (l.includes("modèle")) return Car;
+  if (l.includes("année")) return Calendar;
+  if (l.includes("kilo")) return Gauge;
+  if (l.includes("ville")) return MapPin;
+  return Wrench;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // CARD A — Main ad content
-// ─────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
 function MainAdCard({
   ad, images, formattedPrice, formattedDate, user,
 }: {
   ad: any; images: string[]; formattedPrice: string; formattedDate: string; user: any;
 }) {
   const safeImages = images.length > 0 ? images : ["/icon-512x512.png"];
-  const views      = ad.views ?? ad.view_count;
-  const isSold     = ad.status === "sold";
-  const shareUrl   = typeof window !== "undefined" ? window.location.href : "";
+  const views = ad.views ?? ad.view_count;
+  const isSold = ad.status === "sold";
 
-  const overview: { label: string; value: string }[] = [
-    ad.category   && { label: "Catégorie",  value: ad.category },
-    ad.condition  && { label: "État",        value: ad.condition === "new" ? "Neuf" : "Occasion" },
-    ad.brand      && { label: "Marque",      value: ad.brand },
-    ad.model      && { label: "Modèle",     value: ad.model },
-    ad.year       && { label: "Année",       value: String(ad.year) },
-    ad.mileage    && { label: "Kilométrage", value: `${Number(ad.mileage).toLocaleString("fr-FR")} km` },
-    ad.city       && { label: "Ville",       value: ad.city },
+  const specs: { label: string; value: string }[] = [
+    ad.category  && { label: "Catégorie",   value: ad.category },
+    ad.condition && { label: "État",         value: ad.condition === "new" ? "Neuf" : "Occasion" },
+    ad.brand     && { label: "Marque",       value: ad.brand },
+    ad.model     && { label: "Modèle",       value: ad.model },
+    ad.year      && { label: "Année",        value: String(ad.year) },
+    ad.mileage   && { label: "Kilométrage",  value: `${Number(ad.mileage).toLocaleString("fr-FR")} km` },
+    ad.city      && { label: "Ville",        value: ad.city },
   ].filter(Boolean) as { label: string; value: string }[];
 
+  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
   const socials = [
     {
       label: "Facebook",
       href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
       Icon: FacebookIcon,
+      color: "hover:bg-blue-600 hover:border-blue-600",
     },
     {
-      label: "X (Twitter)",
+      label: "X",
       href: `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(ad.title)}`,
       Icon: XIcon,
+      color: "hover:bg-gray-900 hover:border-gray-900",
     },
     {
       label: "LinkedIn",
       href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`,
       Icon: LinkedInIcon,
+      color: "hover:bg-blue-700 hover:border-blue-700",
     },
     {
       label: "WhatsApp",
-      href: `https://wa.me/?text=${encodeURIComponent(`${ad.title} — ${formattedPrice} ${shareUrl}`)}`,
+      href: `https://wa.me/?text=${encodeURIComponent(`${ad.title} - ${formattedPrice} ${shareUrl}`)}`,
       Icon: WhatsAppIcon,
+      color: "hover:bg-emerald-600 hover:border-emerald-600",
     },
   ];
 
   return (
-    <div className="bg-white border border-gray-200 rounded-md shadow-sm overflow-hidden">
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
 
-      {/* ── Gallery + diagonal ribbon + zoom button ── */}
+      {/* ── Gallery ── */}
       <div className="relative">
         <PdpGallery
           images={safeImages}
@@ -201,139 +247,125 @@ function MainAdCard({
           onShare={() => shareAd(ad.title)}
         />
 
-        {/* Diagonal ribbon — top-left */}
+        {/* Status badge */}
         {(isSold || ad.is_featured) && (
           <div
             className={cn(
-              "absolute top-4 left-0 z-20 pointer-events-none",
-              "px-8 py-1.5 text-[11px] font-black uppercase tracking-widest text-white shadow-md",
-              isSold ? "bg-red-600" : "bg-orange-500"
+              "absolute top-3 left-3 z-20 pointer-events-none",
+              "px-3 py-1 text-[10px] font-black uppercase tracking-widest text-white rounded-full shadow-lg backdrop-blur-sm",
+              isSold ? "bg-red-500/90" : "bg-orange-500/90"
             )}
-            style={{ transform: "rotate(-45deg) translateX(-14px) translateY(14px)", transformOrigin: "top left" }}
           >
-            {isSold ? "Vendu" : "À la une"}
+            {isSold ? "Vendu" : "Top"}
           </div>
         )}
-
-        {/* Circular zoom button — top-right (lightbox trigger) */}
-        <button
-          type="button"
-          aria-label="Agrandir l'image"
-          onClick={() => document.querySelector<HTMLElement>("[data-pdp-hero]")?.click()}
-          className="absolute top-3 right-14 z-20 h-9 w-9 rounded-full bg-white/90 backdrop-blur-sm shadow-sm flex items-center justify-center text-gray-700 hover:bg-white hover:scale-110 transition-all"
-        >
-          <Maximize2 className="h-4 w-4" />
-        </button>
       </div>
 
-      {/* ── Metadata row ── */}
-      <div className="px-5 pt-4 pb-3 flex flex-wrap items-center gap-x-5 gap-y-2 border-b border-gray-100">
-        <span className="flex items-center gap-1.5 text-xs text-gray-500 font-medium">
-          <Calendar className="h-3.5 w-3.5 text-gray-400" />
-          Publié le {formattedDate}
+      {/* ── Meta bar (date · location · category · views) ── */}
+      <div className="px-5 pt-4 pb-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-b border-gray-100">
+        <span className="flex items-center gap-1.5 text-xs text-gray-400 font-medium">
+          <Calendar className="h-3.5 w-3.5" />
+          {formattedDate}
         </span>
-        <span className="flex items-center gap-1.5 text-xs text-gray-500 font-medium">
-          <MapPin className="h-3.5 w-3.5 text-gray-400" />
+        <span className="flex items-center gap-1.5 text-xs text-gray-400 font-medium">
+          <MapPin className="h-3.5 w-3.5" />
           {ad.city ? `${ad.city}, Maroc` : "Maroc"}
         </span>
-        <span className="flex items-center gap-1.5 text-xs text-gray-500 font-medium">
-          <Tag className="h-3.5 w-3.5 text-gray-400" />
+        <span className="flex items-center gap-1.5 text-xs text-gray-400 font-medium">
+          <Tag className="h-3.5 w-3.5" />
           {ad.category || "À vendre"}
         </span>
-        {ad.is_featured && (
-          <span className="ml-auto inline-flex items-center gap-1 bg-orange-50 text-orange-600 border border-orange-100 text-[10px] font-black uppercase tracking-widest px-2.5 py-1 rounded">
-            Top
+        {typeof views === "number" && views > 0 && (
+          <span className="flex items-center gap-1.5 text-xs text-gray-400 font-medium ml-auto">
+            <Eye className="h-3.5 w-3.5" />
+            {views.toLocaleString("fr-FR")} vues
           </span>
         )}
       </div>
 
-      {/* ── Price ribbon ── */}
+      {/* ── Title ── */}
       <div className="px-5 pt-4">
-        <div className="relative inline-block">
-          <div
-            className="bg-[#f97316] text-white font-black text-lg px-6 py-2.5 pr-8 tracking-tight"
-            style={{
-              clipPath: "polygon(0 0, 100% 0, calc(100% - 14px) 50%, 100% 100%, 0 100%)",
-            }}
-          >
-            {formattedPrice}
-            <span className="font-bold text-sm opacity-90"> (Négociable)</span>
-          </div>
-        </div>
+        <h1 className="text-xl font-black text-gray-900 leading-tight">{ad.title}</h1>
       </div>
 
-      {/* ── Description / Overview split ── */}
-      <div className="px-5 py-5 grid grid-cols-1 md:grid-cols-[3fr_2fr] gap-6">
-        {/* Left — description */}
+      {/* ── Price card ── */}
+      <div className="mx-5 mt-3 mb-4 rounded-xl bg-gradient-to-r from-orange-50 via-amber-50 to-white border border-orange-100 px-4 py-3 flex items-center justify-between gap-3">
         <div>
-          <h2 className="text-sm font-black text-gray-900 uppercase tracking-wide mb-3">
-            Description
-          </h2>
-          <DescriptionBlock text={ad.description} />
+          <p className="text-[9px] font-bold text-orange-400 uppercase tracking-widest mb-0.5">Prix</p>
+          <p className="text-2xl font-black text-[#f97316] tabular-nums leading-none">{formattedPrice}</p>
         </div>
+        <span className="text-[10px] font-black uppercase tracking-widest text-orange-400 bg-orange-100 px-2.5 py-1 rounded-full">
+          Négociable
+        </span>
+      </div>
 
-        {/* Right — overview */}
-        <div className="border-t md:border-t-0 md:border-l border-gray-100 md:pl-6 pt-5 md:pt-0">
-          <h2 className="text-sm font-black text-gray-900 uppercase tracking-wide mb-3">
+      {/* ── Description ── */}
+      <div className="px-5 pb-5">
+        <h2 className="text-xs font-black text-gray-500 uppercase tracking-widest mb-3">
+          Description
+        </h2>
+        <DescriptionBlock text={ad.description} />
+      </div>
+
+      {/* ── Specs chips grid ── */}
+      {specs.length > 0 && (
+        <div className="px-5 pb-5 border-t border-gray-100 pt-4">
+          <h2 className="text-xs font-black text-gray-500 uppercase tracking-widest mb-3">
             Caractéristiques
           </h2>
-          {overview.length > 0 ? (
-            <dl className="space-y-2.5">
-              {overview.map((item) => (
-                <div key={item.label} className="flex items-center justify-between gap-3">
-                  <dt className="text-xs text-gray-400 font-medium">{item.label}</dt>
-                  <dd className="text-xs font-bold text-gray-800 text-right truncate">{item.value}</dd>
-                </div>
-              ))}
-            </dl>
-          ) : (
-            <p className="text-xs text-gray-400 italic">Aucune caractéristique.</p>
-          )}
-
-          {/* Overview footer — views / report / share */}
-          <div className="mt-5 pt-4 border-t border-gray-100 space-y-3">
-            {typeof views === "number" && views > 0 && (
-              <p className="flex items-center gap-1.5 text-xs text-gray-500 font-medium">
-                <Eye className="h-3.5 w-3.5 text-gray-400" />
-                {views.toLocaleString("fr-FR")} vues
-              </p>
-            )}
-            <button className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-red-500 transition-colors font-medium">
-              <Flag className="h-3.5 w-3.5" />
-              Signaler l&apos;annonce
-            </button>
-            <div className="flex items-center gap-2">
-              <span className="flex items-center gap-1.5 text-xs text-gray-500 font-medium mr-auto">
-                <Share2 className="h-3.5 w-3.5 text-gray-400" />
-                Partager cette annonce
-              </span>
-              {socials.map(({ label, href, Icon }) => (
-                <a
-                  key={label}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`Partager sur ${label}`}
-                  className="h-8 w-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:text-white hover:bg-gray-900 hover:border-gray-900 transition-all"
-                >
-                  <Icon className="h-3.5 w-3.5" />
-                </a>
-              ))}
-            </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            {specs.map((s) => (
+              <SpecChip
+                key={s.label}
+                label={s.label}
+                value={s.value}
+                icon={specIcon(s.label)}
+              />
+            ))}
           </div>
         </div>
+      )}
+
+      {/* ── Share + Report ── */}
+      <div className="px-5 pb-5 border-t border-gray-100 pt-4 flex flex-wrap items-center gap-3">
+        <span className="flex items-center gap-1.5 text-xs text-gray-500 font-semibold">
+          <Share2 className="h-3.5 w-3.5 text-gray-400" />
+          Partager
+        </span>
+        {socials.map(({ label, href, Icon, color }) => (
+          <a
+            key={label}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Partager sur ${label}`}
+            className={cn(
+              "h-8 w-8 rounded-full border border-gray-200 flex items-center justify-center",
+              "text-gray-400 hover:text-white transition-all duration-200",
+              color
+            )}
+          >
+            <Icon className="h-3.5 w-3.5" />
+          </a>
+        ))}
+        <button
+          className="ml-auto flex items-center gap-1.5 text-xs text-gray-400 hover:text-red-500 transition-colors font-medium"
+        >
+          <Flag className="h-3.5 w-3.5" />
+          Signaler
+        </button>
       </div>
     </div>
   );
 }
 
-// ─────────────────────────────────────────────────────────────────
-// Description — collapsible paragraphs
-// ─────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// Description — collapsible
+// ─────────────────────────────────────────────────────────────────────────────
 function DescriptionBlock({ text }: { text: string | null }) {
   const [expanded, setExpanded] = useState(false);
-  const raw   = text?.trim() || "";
-  const lines = raw.split(/\n+/).map(l => l.trim()).filter(Boolean);
+  const raw = text?.trim() || "";
+  const lines = raw.split(/\n+/).map((l) => l.trim()).filter(Boolean);
 
   if (lines.length === 0) {
     return <p className="text-sm text-gray-400 italic">Aucune description fournie.</p>;
@@ -345,15 +377,17 @@ function DescriptionBlock({ text }: { text: string | null }) {
 
   return (
     <div>
-      <div className="space-y-2.5">
+      <div className="space-y-2">
         {visible.map((l, i) => (
-          <p key={i} className="text-sm text-gray-600 leading-relaxed">{l}</p>
+          <p key={i} className="text-sm text-gray-600 leading-relaxed">
+            {l}
+          </p>
         ))}
       </div>
       {hasMore && (
         <button
-          onClick={() => setExpanded(v => !v)}
-          className="mt-3 text-sm font-bold text-orange-600 hover:text-orange-700 transition-colors"
+          onClick={() => setExpanded((v) => !v)}
+          className="mt-3 text-sm font-bold text-orange-500 hover:text-orange-600 transition-colors"
         >
           {expanded ? "Voir moins" : "Voir plus"}
         </button>
@@ -362,9 +396,9 @@ function DescriptionBlock({ text }: { text: string | null }) {
   );
 }
 
-// ─────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
 // CARD B — Location
-// ─────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
 function LocationCard({ ad }: { ad: any }) {
   const hasCoords = typeof ad.latitude === "number" && typeof ad.longitude === "number";
   const fullLocation = [ad.neighborhood, ad.city].filter(Boolean).join(", ");
@@ -372,38 +406,40 @@ function LocationCard({ ad }: { ad: any }) {
   if (!ad.city && !ad.neighborhood && !hasCoords) return null;
 
   return (
-    <div className="bg-white border border-gray-200 rounded-md shadow-sm">
-      <div className="px-5 py-4 border-b border-gray-100">
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="px-5 py-4 border-b border-gray-100 flex items-center gap-2">
+        <div className="h-7 w-7 rounded-lg bg-orange-50 flex items-center justify-center">
+          <MapPin className="h-4 w-4 text-orange-500" />
+        </div>
         <h2 className="text-base font-black text-gray-900">Localisation</h2>
-      </div>
-      <div className="p-5">
         {fullLocation && (
-          <p className="flex items-center gap-2 text-sm font-semibold text-gray-800 mb-4">
-            <MapPin className="h-4 w-4 text-orange-500" />
-            {fullLocation}{ad.country ? `, ${ad.country}` : ""}
-          </p>
+          <span className="ml-auto text-sm font-semibold text-gray-500">{fullLocation}</span>
         )}
+      </div>
+      <div className="p-4">
         {hasCoords ? (
           <>
-            <AdMap
-              lat={ad.latitude}
-              lng={ad.longitude}
-              title={ad.title}
-              city={fullLocation}
-              heightClass="h-[220px]"
-            />
+            <div className="rounded-xl overflow-hidden">
+              <AdMap
+                lat={ad.latitude}
+                lng={ad.longitude}
+                title={ad.title}
+                city={fullLocation}
+                heightClass="h-[220px]"
+              />
+            </div>
             <a
               href={`https://maps.openstreetmap.org/?mlat=${ad.latitude}&mlon=${ad.longitude}&zoom=15`}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-2.5 flex items-center justify-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-orange-600 transition-colors"
+              className="mt-2.5 flex items-center justify-center gap-1.5 text-xs font-semibold text-gray-400 hover:text-orange-500 transition-colors"
             >
               <MapPin className="h-3.5 w-3.5" />
               Ouvrir dans OpenStreetMap
             </a>
           </>
         ) : (
-          <div className="relative h-[220px] rounded-md overflow-hidden bg-gray-50 border border-gray-100 flex flex-col items-center justify-center gap-2 text-gray-400">
+          <div className="relative h-[180px] rounded-xl overflow-hidden bg-gray-50 border border-gray-100 flex flex-col items-center justify-center gap-2 text-gray-400">
             <MapPin className="h-8 w-8 text-gray-300" />
             <p className="text-sm font-semibold text-gray-500">{fullLocation || "Maroc"}</p>
             <p className="text-xs text-gray-400">Coordonnées non disponibles</p>
@@ -414,9 +450,9 @@ function LocationCard({ ad }: { ad: any }) {
   );
 }
 
-// ─────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
 // CARD C — Similar ads carousel
-// ─────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
 function SimilarAdsCard({ ads }: { ads: any[] }) {
   const trackRef = useRef<HTMLDivElement>(null);
 
@@ -429,7 +465,7 @@ function SimilarAdsCard({ ads }: { ads: any[] }) {
   if (!ads.length) return null;
 
   return (
-    <div className="bg-white border border-gray-200 rounded-md shadow-sm">
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
       <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
         <h2 className="text-base font-black text-gray-900">Annonces similaires</h2>
         <div className="flex items-center gap-2">
@@ -437,7 +473,7 @@ function SimilarAdsCard({ ads }: { ads: any[] }) {
             type="button"
             onClick={() => scroll(-1)}
             aria-label="Annonces précédentes"
-            className="h-8 w-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-600 hover:border-gray-900 hover:text-gray-900 transition-colors"
+            className="h-8 w-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:border-orange-400 hover:text-orange-500 transition-colors"
           >
             <ChevronLeft className="h-4 w-4" />
           </button>
@@ -445,7 +481,7 @@ function SimilarAdsCard({ ads }: { ads: any[] }) {
             type="button"
             onClick={() => scroll(1)}
             aria-label="Annonces suivantes"
-            className="h-8 w-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-600 hover:border-gray-900 hover:text-gray-900 transition-colors"
+            className="h-8 w-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-500 hover:border-orange-400 hover:text-orange-500 transition-colors"
           >
             <ChevronRight className="h-4 w-4" />
           </button>
@@ -453,10 +489,10 @@ function SimilarAdsCard({ ads }: { ads: any[] }) {
       </div>
       <div
         ref={trackRef}
-        className="flex gap-4 overflow-x-auto scrollbar-none snap-x snap-mandatory px-5 py-4"
+        className="flex gap-3 overflow-x-auto scrollbar-none snap-x snap-mandatory px-5 py-4"
       >
         {ads.map((sim) => (
-          <div key={sim.id} className="snap-start shrink-0 w-[78%] sm:w-[48%] lg:w-[31%]">
+          <div key={sim.id} className="snap-start shrink-0 w-[78%] sm:w-[46%] lg:w-[30%]">
             <RelatedAdCard ad={sim} />
           </div>
         ))}
@@ -466,61 +502,85 @@ function SimilarAdsCard({ ads }: { ads: any[] }) {
 }
 
 function RelatedAdCard({ ad }: { ad: any }) {
-  const FB  = "/icon-512x512.png";
+  const FB = "/icon-512x512.png";
   const raw = ad.image_urls?.[0];
-  const src = raw?.startsWith("http") ? raw
-    : raw ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/ad-images/${raw.startsWith("/") ? raw.slice(1) : raw}`
-    : FB;
-  const slug  = ad.slug || ad.title?.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  const src =
+    raw?.startsWith("http")
+      ? raw
+      : raw
+      ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/ad-images/${
+          raw.startsWith("/") ? raw.slice(1) : raw
+        }`
+      : FB;
+  const slug = ad.slug || ad.title?.toLowerCase().replace(/[^a-z0-9]+/g, "-");
   const price = ad.price
     ? `${Number(ad.price).toLocaleString("fr-FR")} ${ad.currency || "MAD"}`
     : "Sur demande";
-  const badge = ad.status === "sold" ? "Vendu" : (ad.category || "À vendre");
-  const ago   = timeAgo(ad.created_at);
+  const ago = timeAgo(ad.created_at);
 
   return (
     <Link href={`/ads/${ad.id}/${slug}`} className="group block h-full">
-      <div className="bg-white rounded-md overflow-hidden border border-gray-200 shadow-sm hover:shadow-md transition-shadow h-full flex flex-col">
-        <div className="relative aspect-[4/3] w-full overflow-hidden bg-gray-100">
+      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden h-full flex flex-col hover:shadow-md hover:border-orange-200 transition-all duration-200">
+        {/* Image */}
+        <div className="relative aspect-[4/3] bg-gray-100 overflow-hidden">
           {canOptimise(src) ? (
-            <Image src={src} alt={ad.title} fill loading="lazy"
-              sizes="(max-width:640px) 78vw, 30vw"
+            <Image
+              src={src}
+              alt={ad.title}
+              fill
+              sizes="(max-width:768px) 78vw, 30vw"
               className="object-cover group-hover:scale-[1.04] transition-transform duration-500"
-              onError={e => { const t = e.currentTarget as HTMLImageElement; if (t.src !== FB) t.src = FB; }} />
+              onError={(e) => {
+                const t = e.target as HTMLImageElement;
+                if (t.src !== FB) t.src = FB;
+              }}
+            />
           ) : (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={src} alt={ad.title} loading="lazy"
-              className="absolute inset-0 h-full w-full object-cover group-hover:scale-[1.04] transition-transform duration-500" />
+            <img
+              src={src}
+              alt={ad.title}
+              loading="lazy"
+              className="absolute inset-0 h-full w-full object-cover group-hover:scale-[1.04] transition-transform duration-500"
+            />
           )}
-          {/* Status badge — bottom-right */}
-          <span className={cn(
-            "absolute bottom-2 right-2 z-10 text-[9px] font-black uppercase tracking-wide px-2 py-1 rounded",
-            ad.status === "sold" ? "bg-red-600 text-white" : "bg-white/90 text-gray-700 border border-gray-200/60"
-          )}>
-            {badge}
-          </span>
+          {ad.status === "sold" && (
+            <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+              <span className="text-[10px] font-black uppercase tracking-widest text-white bg-red-500 px-2.5 py-1 rounded-full">
+                Vendu
+              </span>
+            </div>
+          )}
         </div>
+        {/* Info */}
         <div className="p-3 flex flex-col flex-1">
-          <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wide">{ad.category || "Annonce"}</p>
-          <h3 className="text-[13px] font-bold text-gray-800 leading-snug line-clamp-2 mt-0.5">{ad.title}</h3>
+          <p className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">
+            {ad.category || "Annonce"}
+          </p>
+          <h3 className="text-[13px] font-bold text-gray-800 leading-snug line-clamp-2 mt-0.5">
+            {ad.title}
+          </h3>
           <div className="mt-1.5 space-y-0.5 text-[11px] text-gray-400">
             {ago && <p>{ago}</p>}
             {ad.city && (
               <p className="flex items-center gap-1">
-                <MapPin className="h-2.5 w-2.5 shrink-0" />{ad.city}
+                <MapPin className="h-2.5 w-2.5 shrink-0" />
+                {ad.city}
               </p>
             )}
           </div>
-          <p className="mt-auto pt-2 text-[15px] font-black text-[#f97316] tabular-nums">{price}</p>
+          <p className="mt-auto pt-2 text-[15px] font-black text-[#f97316] tabular-nums">
+            {price}
+          </p>
         </div>
       </div>
     </Link>
   );
 }
 
-// ─────────────────────────────────────────────────────────────────
-// RIGHT COLUMN — Seller card
-// ─────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// RIGHT COLUMN — Seller card (redesigned)
+// ─────────────────────────────────────────────────────────────────────────────
 function SellerInfoCard({
   ad, sellerName, sellerAvatar, memberSince,
   avgRating, totalReviews, isTrusted, sellerPhone,
@@ -537,86 +597,109 @@ function SellerInfoCard({
 
   const clean = sellerPhone?.replace(/\D/g, "") || "";
   const phoneVerified = clean.length >= 9;
+  const wa = phoneVerified ? toWaNumber(sellerPhone!) : "";
+  const waMsg = `Bonjour, je suis intéressé par votre annonce "${ad.title}" sur Jootiya.`;
 
   const handleSend = async () => {
     if (!message.trim()) return;
     setSending(true);
     try {
-      const r = await sendMessageAction({ adId: ad.id, sellerId: ad.seller_id, content: message.trim() });
+      const r = await sendMessageAction({
+        adId: ad.id,
+        sellerId: ad.seller_id,
+        content: message.trim(),
+      });
       if (r.error) {
         if (r.error.includes("connecter")) router.push(`/login?next=/ads/${ad.id}`);
         else toast.error(r.error);
         return;
       }
-      setMsgOpen(false); setMessage("");
+      setMsgOpen(false);
+      setMessage("");
       toast.success("Message envoyé !");
       router.push(`/dashboard/messages?id=${r.conversationId}`);
-    } catch { toast.error("Erreur lors de l'envoi."); }
-    finally { setSending(false); }
+    } catch {
+      toast.error("Erreur lors de l'envoi.");
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-md shadow-sm">
-      {/* Header */}
-      <div className="px-5 py-4 border-b border-gray-100">
-        <h2 className="text-base font-black text-gray-900">Informations sur le vendeur</h2>
-      </div>
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
 
-      <div className="p-5 space-y-4">
-        {/* Profile row */}
+      {/* Gradient header */}
+      <div className="bg-gradient-to-br from-orange-50 via-amber-50 to-white px-5 pt-5 pb-4 border-b border-orange-100">
         <div className="flex items-center gap-3">
-          <div className="relative h-12 w-12 rounded-full overflow-hidden bg-gray-100 border border-gray-200 shrink-0 flex items-center justify-center text-gray-400">
+          {/* Avatar */}
+          <div className="relative h-14 w-14 rounded-2xl overflow-hidden bg-gray-100 border-2 border-white shadow-md shrink-0 flex items-center justify-center text-gray-400">
             {sellerAvatar && canOptimise(sellerAvatar) ? (
-              <Image src={sellerAvatar} alt={sellerName} fill sizes="48px" className="object-cover" />
+              <Image src={sellerAvatar} alt={sellerName} fill sizes="56px" className="object-cover" />
             ) : sellerAvatar ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={sellerAvatar} alt={sellerName} className="absolute inset-0 h-full w-full object-cover" />
             ) : (
-              <User className="h-5 w-5" />
+              <User className="h-6 w-6 text-gray-400" />
             )}
           </div>
+
+          {/* Name + status */}
           <div className="min-w-0 flex-1">
-            <p className="font-black text-gray-900 text-[15px] truncate">{sellerName}</p>
+            <div className="flex items-center gap-1.5">
+              <p className="font-black text-gray-900 text-[15px] truncate">{sellerName}</p>
+              {isTrusted && (
+                <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" aria-label="Vendeur vérifié" />
+              )}
+            </div>
             <div className="flex items-center gap-1.5 mt-1">
-              <span className="h-2 w-2 rounded-full bg-emerald-500" />
+              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
               <span className="text-[11px] text-gray-500 font-medium">En ligne</span>
               <span className="text-gray-300">·</span>
               <span className="text-[11px] text-gray-400">Membre depuis {memberSince}</span>
             </div>
             {totalReviews > 0 && (
-              <p className="text-[11px] text-gray-500 mt-1 font-semibold">
-                {avgRating.toFixed(1)} ★ ({totalReviews} avis)
+              <p className="text-[11px] text-amber-500 font-bold mt-0.5">
+                {avgRating.toFixed(1)} / 5 ({totalReviews} avis)
               </p>
             )}
           </div>
-          {isTrusted && (
-            <CheckCircle2 className="h-5 w-5 text-emerald-500 shrink-0" aria-label="Vendeur vérifié" />
-          )}
         </div>
 
-        {/* Details list */}
-        <div className="space-y-2 text-xs text-gray-500 font-medium">
-          <p className="flex items-center gap-1.5">
+        {/* Verified badge */}
+        {isTrusted && (
+          <div className="mt-3 flex items-center gap-1.5 bg-emerald-50 border border-emerald-100 rounded-lg px-3 py-1.5">
+            <Shield className="h-3.5 w-3.5 text-emerald-500" />
+            <span className="text-[11px] font-bold text-emerald-600">Vendeur vérifié Jootiya</span>
+          </div>
+        )}
+      </div>
+
+      {/* Body */}
+      <div className="p-4 space-y-3">
+
+        {/* Location + profile link */}
+        <div className="flex items-center justify-between text-xs text-gray-500">
+          <span className="flex items-center gap-1.5 font-medium">
             <MapPin className="h-3.5 w-3.5 text-gray-400" />
             {ad.city ? `${ad.city}, Maroc` : "Maroc"}
-          </p>
+          </span>
           <Link
             href={`/seller/${ad.seller_id}`}
-            className="inline-flex items-center gap-1 text-orange-600 hover:text-orange-700 font-bold"
+            className="inline-flex items-center gap-1 text-orange-500 hover:text-orange-600 font-bold text-xs"
           >
-            <User className="h-3 w-3" />
             Voir la boutique
+            <ChevronRight className="h-3 w-3" />
           </Link>
         </div>
 
-        {/* Click-to-reveal phone box */}
+        {/* Click-to-reveal phone */}
         {phoneVerified && (
           <button
             type="button"
-            onClick={() => setShowPhone(v => !v)}
-            className="w-full bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-md px-4 py-3 flex items-center gap-3 transition-colors text-left"
+            onClick={() => setShowPhone((v) => !v)}
+            className="w-full bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-xl px-4 py-3 flex items-center gap-3 transition-colors text-left"
           >
-            <span className="h-9 w-9 rounded-full bg-white border border-gray-200 flex items-center justify-center shrink-0">
+            <span className="h-9 w-9 rounded-xl bg-white border border-gray-200 shadow-sm flex items-center justify-center shrink-0">
               <Phone className="h-4 w-4 text-gray-600" />
             </span>
             <span className="min-w-0 flex-1">
@@ -630,19 +713,33 @@ function SellerInfoCard({
           </button>
         )}
 
-        {/* Action buttons */}
+        {/* CTA buttons */}
         <div className="space-y-2.5 pt-1">
-          {/* Chat — internal messaging dialog */}
+
+          {/* WhatsApp */}
+          {wa && (
+            <a
+              href={`https://wa.me/${wa}?text=${encodeURIComponent(waMsg)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full h-11 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-bold text-sm rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm"
+            >
+              <WhatsAppIcon className="w-4 h-4" />
+              WhatsApp
+            </a>
+          )}
+
+          {/* Internal chat */}
           <Dialog open={msgOpen} onOpenChange={setMsgOpen}>
-            <DialogTrigger className="w-full h-11 bg-[#f97316] hover:bg-orange-600 active:scale-[0.98] text-white font-bold text-sm rounded-md flex items-center justify-center gap-2 transition-all">
+            <DialogTrigger className="w-full h-11 bg-[#f97316] hover:bg-orange-600 active:scale-[0.98] text-white font-bold text-sm rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm">
               <MessageCircle className="h-4 w-4" />
-              Chat
+              Envoyer un message
             </DialogTrigger>
             <DialogContent className="sm:max-w-md bg-white rounded-2xl border-gray-200 shadow-2xl p-0 overflow-hidden gap-0 z-[99999]">
               <DialogHeader className="p-6 pb-3 text-left">
                 <DialogTitle className="text-lg font-black text-gray-900 flex items-center gap-2.5">
-                  <span className="h-9 w-9 rounded-xl bg-gray-100 flex items-center justify-center shrink-0">
-                    <MessageCircle className="h-4 w-4 text-gray-600" />
+                  <span className="h-9 w-9 rounded-xl bg-orange-50 flex items-center justify-center shrink-0">
+                    <MessageCircle className="h-4 w-4 text-orange-500" />
                   </span>
                   Message au vendeur
                 </DialogTitle>
@@ -653,78 +750,120 @@ function SellerInfoCard({
               <div className="p-6 pt-2 space-y-3">
                 <Textarea
                   placeholder="Bonjour, je suis intéressé par votre annonce..."
-                  className="min-h-[110px] resize-none rounded-xl bg-gray-50 border-gray-200 focus:border-gray-400 text-[15px] text-gray-800 placeholder:text-gray-400"
+                  className="min-h-[110px] resize-none rounded-xl bg-gray-50 border-gray-200 focus:border-orange-300 text-[15px] text-gray-800 placeholder:text-gray-400"
                   value={message}
-                  onChange={e => setMessage(e.target.value)}
+                  onChange={(e) => setMessage(e.target.value)}
                 />
                 <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
-                  {["Est-ce toujours disponible ?", "Quel est votre dernier prix ?", "Peut-on se voir ?"].map(q => (
-                    <button key={q} onClick={() => setMessage(q)}
-                      className="whitespace-nowrap px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-full text-xs font-semibold transition-colors">
+                  {[
+                    "Est-ce toujours disponible ?",
+                    "Quel est votre dernier prix ?",
+                    "Peut-on se voir ?",
+                  ].map((q) => (
+                    <button
+                      key={q}
+                      onClick={() => setMessage(q)}
+                      className="whitespace-nowrap px-3 py-1.5 bg-orange-50 hover:bg-orange-100 text-orange-600 rounded-full text-xs font-semibold transition-colors border border-orange-100"
+                    >
                       {q}
                     </button>
                   ))}
                 </div>
               </div>
               <DialogFooter className="p-4 bg-gray-50 border-t border-gray-100 sm:justify-between flex-row items-center gap-2">
-                <span className="text-[10px] text-gray-400 pl-1 hidden sm:block">Réponse sous 24h en général</span>
+                <span className="text-[10px] text-gray-400 pl-1 hidden sm:block">
+                  Réponse sous 24h en général
+                </span>
                 <Button
                   onClick={handleSend}
                   disabled={!message.trim() || sending}
                   className="rounded-xl bg-gray-900 hover:bg-gray-800 text-white gap-2 font-bold px-6 ml-auto"
                 >
-                  {sending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                  {sending ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Send className="h-4 w-4" />
+                  )}
                   Envoyer
                 </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
 
-          {/* Email */}
-          <a
-            href={`mailto:?subject=${encodeURIComponent(`Annonce: ${ad.title}`)}&body=${encodeURIComponent(`Bonjour, je suis intéressé par votre annonce "${ad.title}" sur Jootiya.`)}`}
-            className="w-full h-11 bg-gray-800 hover:bg-gray-900 active:scale-[0.98] text-white font-bold text-sm rounded-md flex items-center justify-center gap-2 transition-all"
-          >
-            <Mail className="h-4 w-4" />
-            Envoyer un email
-          </a>
+          {/* Phone call */}
+          {phoneVerified && (
+            <a
+              href={`tel:${sellerPhone}`}
+              className="w-full h-11 bg-gray-900 hover:bg-gray-800 active:scale-[0.98] text-white font-bold text-sm rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm"
+            >
+              <Phone className="h-4 w-4" />
+              Appeler
+            </a>
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-// ─────────────────────────────────────────────────────────────────
-// MOBILE STICKY BAR — call + WhatsApp
-// ─────────────────────────────────────────────────────────────────
-function MobileStickyBar({ phone, adTitle, formattedPrice }: { phone: string; adTitle: string; formattedPrice: string }) {
+// ─────────────────────────────────────────────────────────────────────────────
+// Mobile sticky bottom bar
+// ─────────────────────────────────────────────────────────────────────────────
+function MobileStickyBar({
+  phone,
+  adTitle,
+  formattedPrice,
+}: {
+  phone: string;
+  adTitle: string;
+  formattedPrice: string;
+}) {
   const clean = phone?.replace(/\D/g, "") || "";
-  const wa    = clean ? toWaNumber(clean) : "";
-  const waMsg = `Bonjour, je suis intéressé par votre annonce "${adTitle}" à ${formattedPrice}. Est-elle toujours disponible ?`;
+  const wa = clean
+    ? clean.startsWith("0") && clean.length === 10
+      ? "212" + clean.slice(1)
+      : clean
+    : "";
+  const waMsg = `Bonjour, je suis intéressé par votre annonce "${adTitle}" sur Jootiya.`;
+
   return (
-    <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-t border-gray-200 px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))] shadow-[0_-8px_32px_rgba(0,0,0,0.08)]">
-      <div className="max-w-xl mx-auto flex items-center gap-2.5">
+    <div className="fixed bottom-0 inset-x-0 z-40 lg:hidden bg-white/95 backdrop-blur-md border-t border-gray-200 px-4 py-3 safe-area-inset-bottom">
+      <div className="flex items-center gap-2 max-w-lg mx-auto">
         <div className="flex-1 min-w-0">
-          <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none mb-0.5">Prix</p>
-          <p className="text-lg font-black text-[#f97316] tabular-nums truncate leading-tight">{formattedPrice}</p>
+          <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none mb-0.5">
+            Prix
+          </p>
+          <p className="text-lg font-black text-[#f97316] tabular-nums truncate leading-tight">
+            {formattedPrice}
+          </p>
         </div>
         {clean && (
-          <a href={`tel:${phone}`} aria-label="Appeler le vendeur"
-            className="h-12 w-12 rounded-md bg-gray-900 hover:bg-gray-800 active:scale-[0.96] text-white flex items-center justify-center shrink-0 transition-all shadow-sm">
+          <a
+            href={`tel:${phone}`}
+            aria-label="Appeler le vendeur"
+            className="h-12 w-12 rounded-xl bg-gray-900 hover:bg-gray-800 active:scale-[0.96] text-white flex items-center justify-center shrink-0 transition-all shadow-sm"
+          >
             <Phone className="h-5 w-5" />
           </a>
         )}
         {wa && (
-          <a href={`https://wa.me/${wa}?text=${encodeURIComponent(waMsg)}`} target="_blank" rel="noopener noreferrer"
-            className="h-12 flex-1 max-w-[160px] rounded-md bg-emerald-600 hover:bg-emerald-700 active:scale-[0.96] text-white font-black text-sm flex items-center justify-center gap-2 transition-all shadow-sm">
+          <a
+            href={`https://wa.me/${wa}?text=${encodeURIComponent(waMsg)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="h-12 flex-1 max-w-[160px] rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-[0.96] text-white font-black text-sm flex items-center justify-center gap-2 transition-all shadow-sm"
+          >
             <WhatsAppIcon className="w-4 h-4" />
             WhatsApp
           </a>
         )}
         {!clean && !wa && (
-          <button onClick={() => toast.error("Numéro non disponible.")}
-            className="h-12 flex-1 rounded-md bg-gray-900 text-white font-bold text-sm flex items-center justify-center gap-2">
-            <Phone className="h-4 w-4" />Contacter
+          <button
+            onClick={() => toast.error("Numéro non disponible.")}
+            className="h-12 flex-1 rounded-xl bg-gray-900 text-white font-bold text-sm flex items-center justify-center gap-2"
+          >
+            <Phone className="h-4 w-4" />
+            Contacter
           </button>
         )}
       </div>
@@ -732,43 +871,53 @@ function MobileStickyBar({ phone, adTitle, formattedPrice }: { phone: string; ad
   );
 }
 
-// ─────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
 // MAIN PAGE COMPONENT
-// ─────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
 export function AirbnbAdPageClient({
   ad, images, sellerName, sellerAvatar, memberSince, sellerPhone,
   formattedPrice, formattedDate, avgRating, totalReviews, isTrusted, user, similarAds = [],
 }: AirbnbAdPageClientProps) {
   return (
-    <div className="bg-gray-100 min-h-screen pb-28 lg:pb-12 font-sans antialiased">
+    <div className="bg-gray-50 min-h-screen pb-28 lg:pb-12 font-sans antialiased">
 
-      {/* ══ BREADCRUMB ══ */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-30">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-11 flex items-center">
-          <nav aria-label="Fil d'Ariane" className="flex items-center gap-1 text-xs font-medium text-gray-400 min-w-0 overflow-hidden">
-            <Link href="/" className="hover:text-gray-700 transition-colors whitespace-nowrap shrink-0">Accueil</Link>
+      {/* ── Breadcrumb ── */}
+      <div className="bg-white border-b border-gray-100 sticky top-0 z-30 shadow-sm">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-11 flex items-center gap-3">
+          <nav
+            aria-label="Fil d'Ariane"
+            className="flex items-center gap-1 text-xs font-medium text-gray-400 min-w-0 overflow-hidden flex-1"
+          >
+            <Link href="/" className="hover:text-orange-500 transition-colors whitespace-nowrap shrink-0">
+              Accueil
+            </Link>
             <ChevronRight className="h-3 w-3 shrink-0 text-gray-300" />
-            <Link href="/marketplace" className="hover:text-gray-700 transition-colors whitespace-nowrap shrink-0">Annonces</Link>
-            {ad.category && (<>
-              <ChevronRight className="h-3 w-3 shrink-0 text-gray-300" />
-              <Link href={`/categories/${ad.category?.toLowerCase().replace(/\s+/g, "-")}`}
-                className="hover:text-gray-700 transition-colors whitespace-nowrap shrink-0 capitalize">
-                {ad.category}
-              </Link>
-            </>)}
+            <Link href="/marketplace" className="hover:text-orange-500 transition-colors whitespace-nowrap shrink-0">
+              Annonces
+            </Link>
+            {ad.category && (
+              <>
+                <ChevronRight className="h-3 w-3 shrink-0 text-gray-300" />
+                <Link
+                  href={`/categories/${ad.category?.toLowerCase().replace(/\s+/g, "-")}`}
+                  className="hover:text-orange-500 transition-colors whitespace-nowrap shrink-0 capitalize"
+                >
+                  {ad.category}
+                </Link>
+              </>
+            )}
             <ChevronRight className="h-3 w-3 shrink-0 text-gray-300" />
             <span className="truncate text-gray-700 font-semibold">{ad.title}</span>
           </nav>
         </div>
       </div>
 
-      {/* ══ MAIN GRID ══ */}
+      {/* ── Main grid ── */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-5 pb-4">
         <div className="flex flex-col lg:grid lg:grid-cols-12 gap-5">
 
-          {/* ── LEFT — Main content ── */}
-          <main className="lg:col-span-8 space-y-5 order-2 lg:order-1">
-
+          {/* LEFT — main content */}
+          <main className="lg:col-span-8 space-y-4 order-2 lg:order-1">
             <MainAdCard
               ad={ad}
               images={images}
@@ -777,8 +926,8 @@ export function AirbnbAdPageClient({
               user={user}
             />
 
-            {/* Mobile: seller card + ad stacked below the main ad card */}
-            <div className="lg:hidden space-y-5">
+            {/* Mobile: seller card below main card */}
+            <div className="lg:hidden space-y-4">
               <SellerInfoCard
                 ad={ad}
                 sellerName={sellerName}
@@ -793,23 +942,22 @@ export function AirbnbAdPageClient({
             </div>
 
             <LocationCard ad={ad} />
-
             <SimilarAdsCard ads={similarAds} />
           </main>
 
-          {/* ── RIGHT — Sidebar (desktop only) ── */}
-          <aside className="lg:col-span-4 order-1 lg:order-2 hidden lg:block space-y-5">
-            <SellerInfoCard
-              ad={ad}
-              sellerName={sellerName}
-              sellerAvatar={sellerAvatar}
-              memberSince={memberSince}
-              avgRating={avgRating}
-              totalReviews={totalReviews}
-              isTrusted={isTrusted}
-              sellerPhone={sellerPhone}
-            />
-            <div className="sticky top-4">
+          {/* RIGHT — sticky sidebar (desktop) */}
+          <aside className="lg:col-span-4 order-1 lg:order-2 hidden lg:block">
+            <div className="sticky top-16 space-y-4">
+              <SellerInfoCard
+                ad={ad}
+                sellerName={sellerName}
+                sellerAvatar={sellerAvatar}
+                memberSince={memberSince}
+                avgRating={avgRating}
+                totalReviews={totalReviews}
+                isTrusted={isTrusted}
+                sellerPhone={sellerPhone}
+              />
               <AdSenseSidebar />
             </div>
           </aside>
@@ -817,7 +965,7 @@ export function AirbnbAdPageClient({
         </div>
       </div>
 
-      {/* ══ MOBILE STICKY BOTTOM BAR ══ */}
+      {/* Mobile sticky bottom bar */}
       <MobileStickyBar
         phone={sellerPhone || ""}
         adTitle={ad.title}
